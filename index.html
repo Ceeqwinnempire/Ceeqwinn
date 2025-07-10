@@ -1,92 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="monetag" content="e7ada30de487ec83ab37e0d50398e2a0">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ceeqwinn Multiverse</title>
-  <link rel="stylesheet" href="styles.css">
+  <style>
+    body.dark-mode {
+      background-color: #111;
+      color: #f1f1f1;
+    }
+    .toggle-btn {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #444;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    section {
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 10px;
+    }
+    .ebook-section, .dashboard, .email-signup, .unlockables, .character-tree {
+      background: #f0f0f0;
+    }
+    .character-tree { background: #eef; }
+    button {
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #6200ea;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <!-- HEADER -->
-  <header>
-    <h1>Ceeqwinn Multiverse</h1>
-    <nav>
-      <script>(function(d,z,s){s.src='https://'+d+'/400/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('vemtoutcheeg.com',9526684,document.createElement('script'))</script>
-      <a href="#story">Story</a>
-      <a href="#fashion">Fashion</a>
-      <a href="#video">Videos</a>
-      <a href="#community">Community</a>
-      <a href="#about">About</a>
-    </nav>
-    <div class="lang-toggle">
-      <button>ENG</button>
-      <button>NIG ENG</button>
-      <button>PIDGIN</button>
-    </div>
-  </header>
 
-  <!-- HOMEPAGE HUB -->
-  <section id="home" class="hub">
-    <h2>Welcome to the Ceeqwinn Realm</h2>
-    <p>Enter a world where fashion, mystery, and story collide.</p>
-    <a href="characters.html" class="btn">Meet the Characters</a>
+<!-- DARK MODE TOGGLE -->
+<button class="toggle-btn" onclick="toggleDarkMode()">🌓 Mode</button>
+<script>
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+  }
+</script>
 
-    <div class="hub-buttons">
-      
-      <a href="#story" class="btn">Play the Game</a>
-      <a href="#fashion" class="btn">View Fashion</a>
-      <a href="#video" class="btn">Watch Videos</a>
-      <a href="#community" class="btn">Join Community</a>
-    </div>
-  </section>
+<!-- HOMEPAGE -->
+<section id="home">
+  <h1>Welcome to the Ceeqwinn Realm</h1>
+  <p>Enter a world where fashion, mystery, and story collide.</p>
+  <div>
+    <a href="#dashboard">Planner Mode</a> |
+    <a href="#story">Read Story</a> |
+    <a href="#unlockables">Unlocks</a>
+  </div>
+</section>
 
-  <!-- STORY PREVIEW -->
-  <section id="story">
-    <h2>Interactive Story: Chapter 1</h2>
-    <p>You awaken in the city of masks. A voice whispers, “Will you follow the light or shadow?”</p>
-    <ul>
-      <li><button>Follow the Light 🌟</button></li>
-      <li><button>Enter the Shadow Realm 🌑</button></li>
-    </ul>
-    <p>More chapters coming soon...</p>
-  </section>
+<!-- EBOOK ACCESS -->
+<section class="ebook-section">
+  <h2>📘 Soft Hustle Planner Access</h2>
+  <p>Plan your glow-up based on your mood — not pressure.</p>
+  <a href="https://your-link-to-ebook.pdf" target="_blank">📓 View Free Version</a>
+</section>
 
-  <!-- FASHION GALLERY -->
-  <section id="fashion">
-    <h2>Fashion & Craft Showcase</h2>
-    <div class="gallery">
-      <div class="item">🧵 Outfit Teaser 1</div>
-      <div class="item">🎭 Disguise Drop</div>
-      <div class="item">💃🏽 Dance Reveal Snippet</div>
-    </div>
-  </section>
+<!-- DASHBOARD -->
+<section id="dashboard" class="dashboard">
+  <h2>🌟 Your Glow-Up Dashboard</h2>
+  <ul>
+    <li>🗓 Daily Check-In: <span id="dailyCheck"></span></li>
+    <li>🔥 GlowOrbs Earned: <span id="glowPoints">0</span></li>
+    <li>🎯 Tasks Done: <span id="tasksDone">0</span></li>
+  </ul>
+  <button onclick="addTask()">✅ I Completed a Task</button>
+</section>
+<script>
+  let glowPoints = localStorage.getItem('glowPoints') || 0;
+  let tasksDone = localStorage.getItem('tasksDone') || 0;
+  document.getElementById("glowPoints").innerText = glowPoints;
+  document.getElementById("tasksDone").innerText = tasksDone;
+  if (!localStorage.getItem("dailyCheckinToday") || localStorage.getItem("dailyCheckinToday") !== new Date().toDateString()) {
+    glowPoints = parseInt(glowPoints) + 5;
+    localStorage.setItem('glowPoints', glowPoints);
+    localStorage.setItem("dailyCheckinToday", new Date().toDateString());
+    document.getElementById("dailyCheck").innerText = "✅ Checked in!";
+  } else {
+    document.getElementById("dailyCheck").innerText = "✅ Already checked in!";
+  }
 
-  <!-- VIDEO TEASERS -->
-  <section id="video">
-    <h2>Watch & Learn</h2>
-    <p>Short teaser videos coming soon. Click below to view full tutorials.</p>
-    <a href="https://youtube.com" class="btn" target="_blank">Visit YouTube</a>
-  </section>
+  function addTask() {
+    let tasks = parseInt(localStorage.getItem('tasksDone') || 0) + 1;
+    let points = parseInt(localStorage.getItem('glowPoints') || 0) + 10;
+    localStorage.setItem('tasksDone', tasks);
+    localStorage.setItem('glowPoints', points);
+    document.getElementById("tasksDone").innerText = tasks;
+    document.getElementById("glowPoints").innerText = points;
+    alert("Task recorded! +10 GlowOrbs 💫");
+  }
+</script>
 
-  <!-- COMMUNITY -->
-  <section id="community">
-    <h2>Ceeqwinn Circle</h2>
-    <p>Voting Polls, Fan Art, Challenges & More</p>
-    <a href="#" class="btn">Join Telegram</a>
-    <a href="#" class="btn">Enter Discord</a>
-  </section>
+<!-- CHARACTER TREE -->
+<section id="characters" class="character-tree">
+  <h2>🧬 Character Tree</h2>
+  <ul>
+    <li><strong>Ceeqwinn</strong> — Heroine of the Envepad</li>
+    <li><strong>Anderson</strong> — Fashion tactician, possible traitor</li>
+    <li><strong>Vienna</strong> — Head of School, secret manipulator</li>
+    <li><strong>R.O.B.O. Beta Unit</strong> — School AI security bot</li>
+  </ul>
+</section>
 
-  <!-- ABOUT -->
-  <section id="about">
-    <h2>About the Disguised Designer</h2>
-    <p>This multiverse was crafted by an INTJ fashion-seer. It blends story, mystery, and irresistible creativity for fans who crave more.</p>
-  </section>
+<!-- UNLOCKABLES -->
+<section id="unlockables" class="unlockables">
+  <h2>🔓 Unlock Exclusive Chapter</h2>
+  <button onclick="unlockContent()">🔓 Unlock (30 GlowOrbs)</button>
+  <div id="unlockedContent" style="display:none;">
+    <p>🎉 Unlocked: <em>Soft Hustle Theory</em> continues here...</p>
+  </div>
+</section>
+<script>
+  function unlockContent() {
+    let points = parseInt(localStorage.getItem('glowPoints') || 0);
+    if (points >= 30) {
+      points -= 30;
+      localStorage.setItem('glowPoints', points);
+      document.getElementById("glowPoints").innerText = points;
+      document.getElementById("unlockedContent").style.display = 'block';
+    } else {
+      alert("You need 30 GlowOrbs to unlock this content.");
+    }
+  }
+</script>
 
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2025 Ceeqwin Multiverse. Powered by faith and fashion. Jehovah gets the glory.</p>
-  </footer>
-  <script>(function(d,z,s){s.src='https://'+d+'/400/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('vemtoutcheeg.com',9526684,document.createElement('script'))</script>
+<!-- EMAIL SIGNUP -->
+<section class="email-signup">
+  <h2>📩 Join the Secret GlowUp List</h2>
+  <form action="https://formspree.io/f/yourFormID" method="POST">
+    <input type="email" name="email" placeholder="Enter your email" required />
+    <button type="submit">Subscribe</button>
+  </form>
+</section>
+
+<!-- STORY CHOICE -->
+<section id="story">
+  <h2>📘 Choose Your Path</h2>
+  <p>A voice whispers: “Will you follow the Light... or Shadow?”</p>
+  <button>🌟 Follow Light</button>
+  <button>🌑 Enter Shadow Realm</button>
+</section>
+
+<!-- COMMENT SYSTEM -->
+<section class="comments">
+  <h2>💬 Comments</h2>
+  <script src="https://giscus.app/client.js"
+    data-repo="yourusername/yourrepo"
+    data-repo-id="YOUR_REPO_ID"
+    data-category="General"
+    data-category-id="YOUR_CATEGORY_ID"
+    data-mapping="pathname"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="light"
+    data-lang="en"
+    crossorigin="anonymous"
+    async>
+  </script>
+</section>
+
 </body>
 </html>
