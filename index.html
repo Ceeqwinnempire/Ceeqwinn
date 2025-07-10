@@ -1,176 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ceeqwinn Multiverse</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soft Hustle Planner Hub | Ceeqwinn</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;600&display=swap">
   <style>
-    body.dark-mode {
-      background-color: #111;
-      color: #f1f1f1;
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #fff0f5, #ffe4e1);
+      color: #222;
     }
-    .toggle-btn {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #444;
+    header {
+      background-color: #8b0000;
       color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 5px;
-      cursor: pointer;
+      padding: 1rem 2rem;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
     }
-    section {
-      padding: 20px;
-      margin: 30px 0;
+    .container {
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    .audio-intro {
+      margin: 1rem 0;
+    }
+    .planner-pages {
+      margin-top: 2rem;
+    }
+    .page-preview {
+      background: white;
+      border: 1px solid #ddd;
       border-radius: 10px;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
-    .ebook-section, .dashboard, .email-signup, .unlockables, .character-tree {
-      background: #f0f0f0;
+    .unlock-section {
+      background-color: #fcefee;
+      border: 1px dashed #8b0000;
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: bold;
     }
-    .character-tree { background: #eef; }
-    button {
-      margin: 10px 0;
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: #6200ea;
+    .gloworb-counter {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background-color: gold;
+      color: black;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+    .unlock-btn, .partial-btn {
+      background: #8b0000;
       color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      font-weight: bold;
+      border-radius: 8px;
       cursor: pointer;
+      margin-top: 1rem;
+    }
+    .pay-btn {
+      display: inline-block;
+      background-color: darkmagenta;
+      color: white;
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      margin-top: 1rem;
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
     }
   </style>
 </head>
 <body>
+  <div class="gloworb-counter">GlowOrbs: <span id="gloworbBalance">50</span></div>
+  <header>
+    Soft Hustle: Planner Hub ✨
+  </header>
+  <div class="container">
+    <section class="audio-intro">
+      <strong>Voice Activation:</strong><br>
+      <audio controls>
+        <source src="alpha-lite.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+    </section>
 
-<!-- DARK MODE TOGGLE -->
-<button class="toggle-btn" onclick="toggleDarkMode()">🌓 Mode</button>
-<script>
-  function toggleDarkMode() {
-    document.body.classList.toggle('dark-mode');
-  }
-</script>
+    <section class="planner-pages">
+      <div class="page-preview">
+        <h3>📘 Page 1 – Cover Page</h3>
+        <p>Soft Hustle: How to Plan Based on Your Mood, Not Pressure.</p>
+      </div>
+      <div class="page-preview">
+        <h3>📘 Page 2 – Alterborne Intro</h3>
+        <p>Ceeqwinn stopped fighting her moods — and started flowing with them.</p>
+      </div>
+      <div class="page-preview">
+        <h3>📘 Page 3 – Real Talk: Is This You?</h3>
+        <p>✅ You plan your day… then scroll TikTok till 5pm? Time to soft hustle.</p>
+      </div>
+      <div class="page-preview">
+        <h3>📘 Page 4 – The 1–3–1 Formula</h3>
+        <p>One mission. Three boosters. One backup win. Rinse & repeat.</p>
+      </div>
+      <div class="page-preview">
+        <h3>📘 Page 5 – Day 1 Soft Hustle Mission</h3>
+        <p>Mood: “I'm Tired but Trying.” Outfit: Calm Girl Energy. Task: 20 mins.</p>
+      </div>
 
-<!-- HOMEPAGE -->
-<section id="home">
-  <h1>Welcome to the Ceeqwinn Realm</h1>
-  <p>Enter a world where fashion, mystery, and story collide.</p>
-  <div>
-    <a href="#dashboard">Planner Mode</a> |
-    <a href="#story">Read Story</a> |
-    <a href="#unlockables">Unlocks</a>
+      <div class="unlock-section">
+        🚧 Pages 7–23 are LOCKED 🔐<br><br>
+
+        🔸 <strong>Option 1:</strong> Pay ₦2,000 to unlock all:<br>
+        <p style="font-weight:normal;">
+          <strong>Moniepoint:</strong> 8274645458<br>
+          <strong>Account Name:</strong> Comfort Okorie / Iruka Best<br>
+          <strong>WhatsApp:</strong> <a href="https://wa.me/2348033868070" target="_blank">08033868070</a><br>
+          Send screenshot of your payment for full access.
+        </p>
+        <a class="pay-btn" href="https://wa.me/2348033868070" target="_blank">💳 Pay ₦2000 & Message Now</a>
+
+        <hr>
+
+        🔹 <strong>Option 2:</strong> Use 30 GlowOrbs (Free Unlock)<br>
+        <button class="unlock-btn" onclick="unlockPremium()">Unlock Full with GlowOrbs</button>
+
+        <hr>
+
+        🔸 <strong>Option 3:</strong> One-Time Partial Unlock (₦500 + 10 GlowOrbs)<br>
+        <button class="partial-btn" onclick="unlockPart()">💠 Unlock 1 Part</button>
+
+        <div id="unlockMsg"></div>
+      </div>
+    </section>
   </div>
-</section>
 
-<!-- EBOOK ACCESS -->
-<section class="ebook-section">
-  <h2>📘 Soft Hustle Planner Access</h2>
-  <p>Plan your glow-up based on your mood — not pressure.</p>
-  <a href="https://your-link-to-ebook.pdf" target="_blank">📓 View Free Version</a>
-</section>
+  <script>
+    let gloworbs = parseInt(localStorage.getItem("gloworbs")) || 50;
+    let partUnlocked = localStorage.getItem("partUnlocked") === "true";
+    let fullUnlocked = localStorage.getItem("fullUnlocked") === "true";
+    document.getElementById("gloworbBalance").innerText = gloworbs;
 
-<!-- DASHBOARD -->
-<section id="dashboard" class="dashboard">
-  <h2>🌟 Your Glow-Up Dashboard</h2>
-  <ul>
-    <li>🗓 Daily Check-In: <span id="dailyCheck"></span></li>
-    <li>🔥 GlowOrbs Earned: <span id="glowPoints">0</span></li>
-    <li>🎯 Tasks Done: <span id="tasksDone">0</span></li>
-  </ul>
-  <button onclick="addTask()">✅ I Completed a Task</button>
-</section>
-<script>
-  let glowPoints = localStorage.getItem('glowPoints') || 0;
-  let tasksDone = localStorage.getItem('tasksDone') || 0;
-  document.getElementById("glowPoints").innerText = glowPoints;
-  document.getElementById("tasksDone").innerText = tasksDone;
-  if (!localStorage.getItem("dailyCheckinToday") || localStorage.getItem("dailyCheckinToday") !== new Date().toDateString()) {
-    glowPoints = parseInt(glowPoints) + 5;
-    localStorage.setItem('glowPoints', glowPoints);
-    localStorage.setItem("dailyCheckinToday", new Date().toDateString());
-    document.getElementById("dailyCheck").innerText = "✅ Checked in!";
-  } else {
-    document.getElementById("dailyCheck").innerText = "✅ Already checked in!";
-  }
-
-  function addTask() {
-    let tasks = parseInt(localStorage.getItem('tasksDone') || 0) + 1;
-    let points = parseInt(localStorage.getItem('glowPoints') || 0) + 10;
-    localStorage.setItem('tasksDone', tasks);
-    localStorage.setItem('glowPoints', points);
-    document.getElementById("tasksDone").innerText = tasks;
-    document.getElementById("glowPoints").innerText = points;
-    alert("Task recorded! +10 GlowOrbs 💫");
-  }
-</script>
-
-<!-- CHARACTER TREE -->
-<section id="characters" class="character-tree">
-  <h2>🧬 Character Tree</h2>
-  <ul>
-    <li><strong>Ceeqwinn</strong> — Heroine of the Envepad</li>
-    <li><strong>Anderson</strong> — Fashion tactician, possible traitor</li>
-    <li><strong>Vienna</strong> — Head of School, secret manipulator</li>
-    <li><strong>R.O.B.O. Beta Unit</strong> — School AI security bot</li>
-  </ul>
-</section>
-
-<!-- UNLOCKABLES -->
-<section id="unlockables" class="unlockables">
-  <h2>🔓 Unlock Exclusive Chapter</h2>
-  <button onclick="unlockContent()">🔓 Unlock (30 GlowOrbs)</button>
-  <div id="unlockedContent" style="display:none;">
-    <p>🎉 Unlocked: <em>Soft Hustle Theory</em> continues here...</p>
-  </div>
-</section>
-<script>
-  function unlockContent() {
-    let points = parseInt(localStorage.getItem('glowPoints') || 0);
-    if (points >= 30) {
-      points -= 30;
-      localStorage.setItem('glowPoints', points);
-      document.getElementById("glowPoints").innerText = points;
-      document.getElementById("unlockedContent").style.display = 'block';
-    } else {
-      alert("You need 30 GlowOrbs to unlock this content.");
+    if (fullUnlocked) {
+      document.getElementById("unlockMsg").innerHTML = `
+        ✅ Already unlocked! View the full eBook here:<br>
+        <iframe src="https://docs.google.com/document/d/your-full-doc-id-here/preview"></iframe>
+      `;
+    } else if (partUnlocked) {
+      document.getElementById("unlockMsg").innerHTML = `
+        ✅ Already unlocked! View partial content here:<br>
+        <iframe src="https://docs.google.com/document/d/your-part-doc-id-here/preview"></iframe><br>
+        📌 Send ₦1500 to Moniepoint 8274645458 and message us to unlock the rest!
+      `;
     }
-  }
-</script>
 
-<!-- EMAIL SIGNUP -->
-<section class="email-signup">
-  <h2>📩 Join the Secret GlowUp List</h2>
-  <form action="https://formspree.io/f/yourFormID" method="POST">
-    <input type="email" name="email" placeholder="Enter your email" required />
-    <button type="submit">Subscribe</button>
-  </form>
-</section>
+    function unlockPremium() {
+      if (gloworbs >= 30) {
+        gloworbs -= 30;
+        localStorage.setItem("gloworbs", gloworbs);
+        localStorage.setItem("fullUnlocked", "true");
+        document.getElementById("gloworbBalance").innerText = gloworbs;
+        document.getElementById("unlockMsg").innerHTML = `
+          ✅ Unlocked! View the full eBook here:<br>
+          <iframe src="https://docs.google.com/document/d/your-full-doc-id-here/preview"></iframe>
+        `;
+      } else {
+        document.getElementById("unlockMsg").innerText = "❌ Not enough GlowOrbs!";
+      }
+    }
 
-<!-- STORY CHOICE -->
-<section id="story">
-  <h2>📘 Choose Your Path</h2>
-  <p>A voice whispers: “Will you follow the Light... or Shadow?”</p>
-  <button>🌟 Follow Light</button>
-  <button>🌑 Enter Shadow Realm</button>
-</section>
-
-<!-- COMMENT SYSTEM -->
-<section class="comments">
-  <h2>💬 Comments</h2>
-  <script src="https://giscus.app/client.js"
-    data-repo="yourusername/yourrepo"
-    data-repo-id="YOUR_REPO_ID"
-    data-category="General"
-    data-category-id="YOUR_CATEGORY_ID"
-    data-mapping="pathname"
-    data-reactions-enabled="1"
-    data-emit-metadata="0"
-    data-input-position="bottom"
-    data-theme="light"
-    data-lang="en"
-    crossorigin="anonymous"
-    async>
+    function unlockPart() {
+      if (partUnlocked || fullUnlocked) {
+        document.getElementById("unlockMsg").innerHTML = `
+          ✅ Already unlocked! View partial content here:<br>
+          <iframe src="https://docs.google.com/document/d/your-part-doc-id-here/preview"></iframe><br>
+          📌 Send ₦1500 to Moniepoint 8274645458 and message us to unlock the rest!
+        `;
+      } else if (gloworbs >= 10) {
+        gloworbs -= 10;
+        localStorage.setItem("gloworbs", gloworbs);
+        localStorage.setItem("partUnlocked", "true");
+        document.getElementById("gloworbBalance").innerText = gloworbs;
+        document.getElementById("unlockMsg").innerHTML = `
+          ✅ Part unlocked! View it here:<br>
+          <iframe src="https://docs.google.com/document/d/your-part-doc-id-here/preview"></iframe><br>
+          📌 Send ₦1500 to Moniepoint 8274645458 and message us to unlock the rest!
+        `;
+      } else {
+        document.getElementById("unlockMsg").innerText = "❌ Not enough GlowOrbs for partial unlock!";
+      }
+    }
   </script>
-</section>
-
 </body>
 </html>
