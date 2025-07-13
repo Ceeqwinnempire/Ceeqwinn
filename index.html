@@ -1,207 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Soft Hustle Planner Hub | Ceeqwinn</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;600&display=swap">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ceeqwinn | Alterborne Saga</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(to bottom right, #fff0f5, #ffe4e1);
+      background: #fff0f5;
       color: #222;
     }
-    header {
-      background-color: #8b0000;
+    header.hero {
+      position: relative;
+      background-image: url('https://i.postimg.cc/GmMwRYW7/a-futuristic-floating-school-in-broad-daylight-split-into-two-breathtaking-halves-one-side-is-a-g-7.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
       color: white;
-      padding: 1rem 2rem;
-      text-align: center;
+    }
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.5);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+    .hero-content h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.6);
     }
-    .container {
-      padding: 2rem;
-      max-width: 900px;
-      margin: auto;
+    .hero-content p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
-    .audio-intro {
-      margin: 1rem 0;
-    }
-    .planner-pages {
+    .main-button {
+      display: inline-block;
       margin-top: 2rem;
-    }
-    .page-preview {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-    }
-    .unlock-section {
-      background-color: #fcefee;
-      border: 1px dashed #8b0000;
-      padding: 1rem;
-      border-radius: 10px;
-      text-align: center;
+      padding: 0.75rem 1.5rem;
       font-weight: bold;
-    }
-    .gloworb-counter {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      background-color: gold;
-      color: black;
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      font-weight: bold;
-    }
-    .unlock-btn, .partial-btn {
       background: #8b0000;
       color: white;
-      border: none;
-      padding: 0.7rem 1.2rem;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-    .pay-btn {
-      display: inline-block;
-      background-color: darkmagenta;
-      color: white;
-      padding: 0.7rem 1.2rem;
-      border-radius: 8px;
-      font-weight: bold;
+      border-radius: 10px;
       text-decoration: none;
-      margin-top: 1rem;
-    }
-    iframe {
-      width: 100%;
-      height: 600px;
-      border: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
-  <div class="gloworb-counter">GlowOrbs: <span id="gloworbBalance">50</span></div>
-  <header>
-    Soft Hustle: Planner Hub ✨
+  <header class="hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+      <h1>ALTERBORNE</h1>
+      <p>Between the realms of Alpha & Beta... one floating school holds the fate of many.</p>
+      <a href="#enter" class="main-button">Enter the Saga</a>
+    </div>
   </header>
-  <div class="container">
-    <section class="audio-intro">
-      <strong>Voice Activation:</strong><br>
-      <audio controls>
-        <source src="alpha-lite.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-      </audio>
-    </section>
-
-    <section class="planner-pages">
-      <div class="page-preview">
-        <h3>📘 Page 1 – Cover Page</h3>
-        <p>Soft Hustle: How to Plan Based on Your Mood, Not Pressure.</p>
-      </div>
-      <div class="page-preview">
-        <h3>📘 Page 2 – Alterborne Intro</h3>
-        <p>Ceeqwinn stopped fighting her moods — and started flowing with them.</p>
-      </div>
-      <div class="page-preview">
-        <h3>📘 Page 3 – Real Talk: Is This You?</h3>
-        <p>✅ You plan your day… then scroll TikTok till 5pm? Time to soft hustle.</p>
-      </div>
-      <div class="page-preview">
-        <h3>📘 Page 4 – The 1–3–1 Formula</h3>
-        <p>One mission. Three boosters. One backup win. Rinse & repeat.</p>
-      </div>
-      <div class="page-preview">
-        <h3>📘 Page 5 – Day 1 Soft Hustle Mission</h3>
-        <p>Mood: “I'm Tired but Trying.” Outfit: Calm Girl Energy. Task: 20 mins.</p>
-      </div>
-
-      <div class="unlock-section">
-        🚧 Pages 7–23 are LOCKED 🔐<br><br>
-
-        🔸 <strong>Option 1:</strong> Pay ₦2,000 to unlock all:<br>
-        <p style="font-weight:normal;">
-          <strong>Moniepoint:</strong> 8274645458<br>
-          <strong>Account Name:</strong> Comfort Okorie / Iruka Best<br>
-          <strong>WhatsApp:</strong> <a href="https://wa.me/2348033868070" target="_blank">08033868070</a><br>
-          Send screenshot of your payment for full access.
-        </p>
-        <a class="pay-btn" href="https://wa.me/2348033868070" target="_blank">💳 Pay ₦2000 & Message Now</a>
-
-        <hr>
-
-        🔹 <strong>Option 2:</strong> Use 30 GlowOrbs (Free Unlock)<br>
-        <button class="unlock-btn" onclick="unlockPremium()">Unlock Full with GlowOrbs</button>
-
-        <hr>
-
-        🔸 <strong>Option 3:</strong> One-Time Partial Unlock (₦500 + 10 GlowOrbs)<br>
-        <button class="partial-btn" onclick="unlockPart()">💠 Unlock 1 Part</button>
-
-        <div id="unlockMsg"></div>
-      </div>
-    </section>
-  </div>
-
-  <script>
-    let gloworbs = parseInt(localStorage.getItem("gloworbs")) || 50;
-    let partUnlocked = localStorage.getItem("partUnlocked") === "true";
-    let fullUnlocked = localStorage.getItem("fullUnlocked") === "true";
-    document.getElementById("gloworbBalance").innerText = gloworbs;
-
-    if (fullUnlocked) {
-      document.getElementById("unlockMsg").innerHTML = `
-        ✅ Already unlocked! View the full eBook here:<br>
-        <iframe src="https://docs.google.com/document/d/your-full-doc-id-here/preview"></iframe>
-      `;
-    } else if (partUnlocked) {
-      document.getElementById("unlockMsg").innerHTML = `
-        ✅ Already unlocked! View partial content here:<br>
-        <iframe src="https://docs.google.com/document/d/your-part-doc-id-here/preview"></iframe><br>
-        📌 Send ₦1500 to Moniepoint 8274645458 and message us to unlock the rest!
-      `;
-    }
-
-    function unlockPremium() {
-      if (gloworbs >= 30) {
-        gloworbs -= 30;
-        localStorage.setItem("gloworbs", gloworbs);
-        localStorage.setItem("fullUnlocked", "true");
-        document.getElementById("gloworbBalance").innerText = gloworbs;
-        document.getElementById("unlockMsg").innerHTML = `
-          ✅ Unlocked! View the full eBook here:<br>
-          <iframe src="https://docs.google.com/document/d/your-full-doc-id-here/preview"></iframe>
-        `;
-      } else {
-        document.getElementById("unlockMsg").innerText = "❌ Not enough GlowOrbs!";
-      }
-    }
-
-    function unlockPart() {
-      if (partUnlocked || fullUnlocked) {
-        document.getElementById("unlockMsg").innerHTML = `
-          ✅ Already unlocked! View partial content here:<br>
-          <iframe src="https://docs.google.com/document/d/your-part-doc-id-here/preview"></iframe><br>
-          📌 Send ₦1500 to Moniepoint 8274645458 and message us to unlock the rest!
-        `;
-      } else if (gloworbs >= 10) {
-        gloworbs -= 10;
-        localStorage.setItem("gloworbs", gloworbs);
-        localStorage.setItem("partUnlocked", "true");
-        document.getElementById("gloworbBalance").innerText = gloworbs;
-        document.getElementById("unlockMsg").innerHTML = `
-          ✅ Part unlocked! View it here:<br>
-          <iframe src="https://docs.google.com/document/d/your-part-doc-id-here/preview"></iframe><br>
-          📌 Send ₦1500 to Moniepoint 8274645458 and message us to unlock the rest!
-        `;
-      } else {
-        document.getElementById("unlockMsg").innerText = "❌ Not enough GlowOrbs for partial unlock!";
-      }
-    }
-  </script>
 </body>
 </html>
