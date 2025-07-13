@@ -6,6 +6,9 @@
   <title>Ceeqwinn | Alterborne Saga</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
@@ -82,18 +85,46 @@
     .main-button:hover {
       background: #b22222;
     }
+    section {
+      padding: 4rem 1rem;
+      text-align: center;
+      background: white;
+    }
+    .planner-section img {
+      max-width: 400px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
   <header class="hero">
     <div class="overlay"></div>
     <div class="hero-content">
-      <div class="verse-label"></div>
-      <h1>CEEQWINN VERSE</h1>
-      <h2>THE ALTERBORNE SAGA BEGINS</h2>
-      <p>Between the realms of Alpha & Beta... one school holds the fate of many.</p>
+      <div class="verse-label">CEEQWINN VERSE</div>
+      <h1>ALTERBORNE</h1>
+      <h2>THE SAGA BEGINS</h2>
+      <p>Between the realms of Alpha & Beta... one floating school holds the fate of many.</p>
       <a href="#enter" class="main-button">Enter the Saga</a>
     </div>
   </header>
+
+  <section id="enter">
+    <h2 style="font-size: 2rem; color: #8b0000;">Welcome to Your Glow-Up Hub</h2>
+    <p style="max-width: 600px; margin: auto; font-size: 1rem;">
+      Here's where your journey begins. Explore the planner, dive into the chapters, and unlock exclusive content as you rise through the ranks of Alterborne.
+    </p>
+  </section>
+
+  <section class="planner-section">
+    <h2 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: #8b0000;">✨ The Student Glow-Up Planner ✨</h2>
+    <p style="max-width: 600px; margin: 1rem auto; font-size: 1.1rem;">
+      Plan by mood, not pressure. Ceeqwinn’s system is more than a planner — it's your entry pass to mastery in your own energy flow.
+    </p>
+    <img src="https://i.postimg.cc/ZY2smHsD/CEE-COVER-PDF-EBOOK.png" alt="Glow-Up Planner" />
+    <br><br>
+    <a href="#enter-planner" class="main-button">Explore Planner</a>
+  </section>
 </body>
 </html>
