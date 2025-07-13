@@ -34,17 +34,37 @@
     .hero-content {
       position: relative;
       z-index: 2;
+      padding: 1rem;
+    }
+    .hero-content .verse-label {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #ffdee9;
+      background: rgba(0,0,0,0.4);
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
     }
     .hero-content h1 {
       font-family: 'Playfair Display', serif;
       font-size: 3rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       text-shadow: 0 4px 10px rgba(0,0,0,0.6);
     }
-    .hero-content p {
+    .hero-content h2 {
       font-size: 1.2rem;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 0.2rem;
+      color: #ffd1dc;
+    }
+    .hero-content p {
+      font-size: 1.1rem;
       max-width: 600px;
-      margin: 0 auto;
+      margin: 1rem auto;
       text-shadow: 0 2px 5px rgba(0,0,0,0.5);
     }
     .main-button {
@@ -57,6 +77,10 @@
       border-radius: 10px;
       text-decoration: none;
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+    .main-button:hover {
+      background: #b22222;
     }
   </style>
 </head>
@@ -64,7 +88,9 @@
   <header class="hero">
     <div class="overlay"></div>
     <div class="hero-content">
+      <div class="verse-label">CEEQWINN VERSE</div>
       <h1>ALTERBORNE</h1>
+      <h2>THE SAGA BEGINS</h2>
       <p>Between the realms of Alpha & Beta... one floating school holds the fate of many.</p>
       <a href="#enter" class="main-button">Enter the Saga</a>
     </div>
