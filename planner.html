@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Envepad: Mood-Based Planner Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #fbeaf3, #fdf7f0);
+      color: #2c001e;
+    }
+    header {
+      padding: 2rem;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #ffd1dc;
+    }
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      color: #8b0000;
+    }
+    .planner-section {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    .planner {
+      margin-bottom: 3rem;
+    }
+    .planner img {
+      max-width: 90%;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+    .download-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background: #8b0000;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background 0.3s;
+    }
+    .download-btn:hover {
+      background: #b22222;
+    }
+    .return-btn {
+      display: inline-block;
+      margin: 2rem auto;
+      padding: 0.75rem 1.5rem;
+      background: #222;
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: bold;
+    }
+    @media (display-mode: standalone) {
+      body {
+        background: #fffdfc;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🪞 Envepad: Mood-Based Planner Portal</h1>
+    <p>Use your planner live on-screen or download to start tracking your glow-up journey.</p>
+  </header>
+
+  <section class="planner-section">
+    <div class="planner">
+      <h2>📝 Mood Planner (Blank)</h2>
+      <img src="https://i.postimg.cc/sg5NxrFQ/cee-mood-blank-to-fill.png" alt="Mood Planner Template">
+      <br>
+      <a href="https://i.postimg.cc/sg5NxrFQ/cee-mood-blank-to-fill.png" download class="download-btn">Download Mood Planner</a>
+    </div>
+
+    <div class="planner">
+      <h2>⚡ Energy Tracker (Blank)</h2>
+      <img src="https://i.postimg.cc/NGVJxMB2/cee-energy-tracker-blank.png" alt="Energy Tracker Template">
+      <br>
+      <a href="https://i.postimg.cc/NGVJxMB2/cee-energy-tracker-blank.png" download class="download-btn">Download Energy Tracker</a>
+    </div>
+
+    <a href="/" class="return-btn">✨ Return to Envepad</a>
+  </section>
+
+  <!-- Android Add to Home Screen Meta -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#fff0f5" />
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+</body>
+</html>
