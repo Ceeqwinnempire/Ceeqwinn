@@ -5,61 +5,56 @@
   <title>Mood Planner (Editable)</title>
   <style>
     body {
-      font-family: sans-serif;
-      background: #fdf6f9;
+      margin: 0;
+      padding: 0;
+      background: #000;
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      padding: 2rem;
+      height: 100vh;
     }
-    h1 {
-      margin-bottom: 1rem;
+    .planner-container {
+      position: relative;
+      width: 90vw;
+      max-width: 700px;
+      aspect-ratio: 5 / 7;
+      background: url('https://i.postimg.cc/sg5NxrFQ/cee-mood-blank-to-fill.png') no-repeat center/cover;
+      box-shadow: 0 0 20px rgba(255, 192, 203, 0.4);
+      border-radius: 20px;
+      overflow: hidden;
     }
-    form {
-      background: white;
+    .planner-input {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.75);
+      border: none;
       border-radius: 10px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 500px;
+      padding: 0.6rem;
+      resize: none;
+      font-size: 0.9rem;
+      width: 80%;
     }
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.25rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-    button {
-      margin-top: 1.5rem;
+    #mood { top: 23%; left: 10%; height: 2rem; }
+    #tasks { top: 36%; left: 10%; height: 5rem; }
+    #notes { top: 65%; left: 10%; height: 5rem; }
+    .save-hint {
+      position: absolute;
+      bottom: 3%; left: 50%; transform: translateX(-50%);
       background: #e87ca1;
       color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>Mood Planner</h1>
-  <form>
-    <label for="mood">How do you feel today?</label>
-    <input type="text" id="mood" placeholder="E.g. Motivated, Calm, Tired" />
-
-    <label for="tasks">What would help you align with your mood?</label>
-    <textarea id="tasks" rows="4" placeholder="E.g. Journal, Meditate, Draw..."></textarea>
-
-    <label for="notes">Soft Hustle Notes</label>
-    <textarea id="notes" rows="5" placeholder="Reflections or reminders for yourself..."></textarea>
-
-    <button type="submit" onclick="alert('This can be printed or screenshotted!')">Save for Now</button>
-  </form>
+  <div class="planner-container">
+    <textarea id="mood" class="planner-input" placeholder="How do you feel today?"></textarea>
+    <textarea id="tasks" class="planner-input" placeholder="What would help you align?"></textarea>
+    <textarea id="notes" class="planner-input" placeholder="Soft Hustle Notes..."></textarea>
+    <div class="save-hint" onclick="alert('Take a screenshot to save your entry!')">📸 Save by Screenshot</div>
+  </div>
 </body>
 </html>
