@@ -1,18 +1,65 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Energy Tracker Blank</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Energy Tracker (Editable)</title>
   <style>
-    body { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; font-family: sans-serif; background: #fdf6f9; }
-    img { max-width: 90%; height: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 10px; }
-    h1 { margin-top: 1rem; }
+    body {
+      font-family: sans-serif;
+      background: #fdf6f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+    form {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.25rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      background: #e87ca1;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h1>Energy Tracker (Blank)</h1>
-  <img src="https://i.postimg.cc/NGVJxMB2/cee-energy-tracker-blank.png" alt="Blank Energy Tracker" />
+  <h1>Energy Tracker</h1>
+  <form>
+    <label for="energy-gain">What gave you energy today?</label>
+    <textarea id="energy-gain" rows="3" placeholder="E.g. Talking to a friend, working on my passion project..."></textarea>
+
+    <label for="energy-drain">What drained your energy?</label>
+    <textarea id="energy-drain" rows="3" placeholder="E.g. Arguments, overthinking, too many tasks..."></textarea>
+
+    <label for="action">What will you do differently tomorrow?</label>
+    <textarea id="action" rows="4" placeholder="E.g. Take a nap, say no early, plan breaks..."></textarea>
+
+    <button type="submit" onclick="alert('This can be printed or screenshotted!')">Save for Now</button>
+  </form>
 </body>
 </html>
