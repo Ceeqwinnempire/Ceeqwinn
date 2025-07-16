@@ -1,60 +1,10 @@
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mood Planner (Editable)</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .planner-container {
-      position: relative;
-      width: 90vw;
-      max-width: 700px;
-      aspect-ratio: 5 / 7;
-      background: url('https://i.postimg.cc/sg5NxrFQ/cee-mood-blank-to-fill.png') no-repeat center/cover;
-      box-shadow: 0 0 20px rgba(255, 192, 203, 0.4);
-      border-radius: 20px;
-      overflow: hidden;
-    }
-    .planner-input {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.75);
-      border: none;
-      border-radius: 10px;
-      padding: 0.6rem;
-      resize: none;
-      font-size: 0.9rem;
-      width: 80%;
-    }
-    #mood { top: 23%; left: 10%; height: 2rem; }
-    #tasks { top: 36%; left: 10%; height: 5rem; }
-    #notes { top: 65%; left: 10%; height: 5rem; }
-    .save-hint {
-      position: absolute;
-      bottom: 3%; left: 50%; transform: translateX(-50%);
-      background: #e87ca1;
-      color: white;
-      padding: 0.5rem 1rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-  <div class="planner-container">
-    <textarea id="mood" class="planner-input" placeholder="How do you feel today?"></textarea>
-    <textarea id="tasks" class="planner-input" placeholder="What would help you align?"></textarea>
-    <textarea id="notes" class="planner-input" placeholder="Soft Hustle Notes..."></textarea>
-    <div class="save-hint" onclick="alert('Take a screenshot to save your entry!')">📸 Save by Screenshot</div>
+<!-- ✅ Mood Planner Embed + Edit Button -->
+<section id="mood-planner">
+  <h2>Mood Planner (Editable)</h2>
+  <div style="position: relative; width: 100%; height: 0; padding-top: 100.0000%; padding-bottom: 0; box-shadow: 0 2px 8px 0 rgba(63,69,81,0.16); margin-top: 1.6em; margin-bottom: 0.9em; overflow: hidden; border-radius: 8px; will-change: transform;">
+    <iframe loading="lazy" style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; border: none; padding: 0; margin: 0;" src="https://www.canva.com/design/DAGs8MfF7Mw/PYhRzrzp4RDlggYhbefcwA/view?embed" allowfullscreen="allowfullscreen" allow="fullscreen"></iframe>
   </div>
-</body>
-</html>
+  <a href="https://www.canva.com/design/DAGs8MfF7Mw/eUxHpxJkzVWf3mog3CDjOw/edit?utm_content=DAGs8MfF7Mw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" style="display:inline-block;background:#e87ca1;color:white;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:10px;">
+    ✏️ Fill This Mood Planner
+  </a>
+</section>
