@@ -5,49 +5,89 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ceeqwinn Story - Chapter 1</title>
 <style>
+  :root {
+    --brand-gradient: linear-gradient(90deg, red, magenta, gold);
+    --light-bg: white;
+    --light-text: black;
+    --light-paragraph: #f5f5f5;
+    --dark-bg: black;
+    --dark-text: white;
+    --dark-paragraph: rgba(255,255,255,0.05);
+  }
+
   body {
-    background-color: black;
-    color: white;
     font-family: Arial, sans-serif;
     line-height: 1.6;
     margin: 0;
+    background-color: var(--light-bg);
+    color: var(--light-text);
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
+  body.dark {
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
+  }
+
   header {
     text-align: center;
     padding: 1em;
-    background: linear-gradient(90deg, red, magenta, gold);
+    background: var(--brand-gradient);
     color: white;
     font-size: 1.5em;
     font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
   }
+
   .controls {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin: 1em;
+    flex-wrap: wrap;
   }
-  button, select {
+  button {
     padding: 8px 12px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s ease, background 0.3s ease;
   }
-  .lang-select { background: magenta; color: white; }
+  button:hover {
+    transform: scale(1.05);
+  }
+  .lang-btn { background: magenta; color: white; }
   .maximize-btn { background: gold; color: black; }
   .login-btn { background: red; color: white; }
+  .theme-btn { background: silver; color: black; }
+
   .paragraph {
-    background-color: rgba(255,255,255,0.05);
+    background-color: var(--light-paragraph);
     padding: 1em;
     border-radius: 10px;
-    margin: 1em;
+    margin: 1em auto;
     position: relative;
-    transition: all 0.3s ease;
+    max-width: 800px;
+    transition: background-color 0.4s ease, font-size 0.3s ease;
+    animation: fadeIn 0.6s ease;
   }
+  body.dark .paragraph {
+    background-color: var(--dark-paragraph);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   .comment-box {
     margin-top: 0.5em;
     padding: 0.5em;
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(0,0,0,0.05);
     border-radius: 6px;
+  }
+  body.dark .comment-box {
+    background-color: rgba(255,255,255,0.1);
   }
   .comment-input {
     width: 80%;
@@ -62,7 +102,7 @@
   }
   .tooltip {
     position: absolute;
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.95);
     color: black;
     padding: 5px;
     border-radius: 5px;
@@ -77,18 +117,15 @@
 <header>🌟 Ceeqwinn Story - Chapter 1</header>
 
 <div class="controls">
-  <select id="languageSelect" class="lang-select">
-    <option value="en">English</option>
-    <option value="fr">French</option>
-    <option value="xx">3rd Language</option>
-  </select>
+  <button id="langDecrease" class="lang-btn">−</button>
+  <span id="currentLang">English</span>
+  <button id="langIncrease" class="lang-btn">+</button>
   <button id="maximizeBtn" class="maximize-btn">Maximize Text</button>
   <button id="loginBtn" class="login-btn">Login with Google</button>
+  <button id="themeToggle" class="theme-btn">Dark Mode</button>
 </div>
 
 <div id="story"></div>
-
-<!-- Tooltip -->
 <div id="tooltip" class="tooltip"></div>
 
 <script type="module">
@@ -96,7 +133,6 @@
   import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
   import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  // Firebase setup
   const firebaseConfig = {
     apiKey: "AIzaSyBWfXYyGYW5ZuvXNQLu9oYL0hDLsnW9w-4",
     authDomain: "alteborne-story.firebaseapp.com",
@@ -112,9 +148,6 @@
   const db = getFirestore(app);
   let currentUser = null;
 
-  // ======================
-  // CHAPTER TEXT STORAGE
-  // ======================
   const chapters = {
     en: [
       "Once upon a time, in the city of Alteborne...",
@@ -129,16 +162,14 @@
       "3rd language version of second paragraph..."
     ]
   };
-  // ======================
-  // INSERT YOUR STORY:
-  // - Replace text in chapters.en for English
-  // - chapters.fr for French
-  // - chapters.xx for your third language
-  // Add as many paragraphs as you want in each array
-  // ======================
 
-  // Load story paragraphs into DOM
+  const languages = Object.keys(chapters);
+  let currentLangIndex = 0;
+
   function loadStory(lang) {
+    document.getElementById("currentLang").textContent =
+      lang === "en" ? "English" : lang === "fr" ? "French" : "3rd Language";
+    localStorage.setItem("preferredLang", lang);
     const storyContainer = document.getElementById("story");
     storyContainer.innerHTML = "";
     chapters[lang].forEach((para, idx) => {
@@ -158,7 +189,6 @@
     });
   }
 
-  // Comment system
   function setupComments(paragraphDiv, paraId) {
     const input = paragraphDiv.querySelector(".comment-input");
     const postBtn = paragraphDiv.querySelector(".comment-button");
@@ -194,7 +224,6 @@
     });
   }
 
-  // Google login
   document.getElementById("loginBtn").addEventListener("click", async () => {
     const provider = new GoogleAuthProvider();
     try {
@@ -206,12 +235,16 @@
     }
   });
 
-  // Language switcher
-  document.getElementById("languageSelect").addEventListener("change", (e) => {
-    loadStory(e.target.value);
+  document.getElementById("langIncrease").addEventListener("click", () => {
+    currentLangIndex = (currentLangIndex + 1) % languages.length;
+    loadStory(languages[currentLangIndex]);
   });
 
-  // Maximize/minimize
+  document.getElementById("langDecrease").addEventListener("click", () => {
+    currentLangIndex = (currentLangIndex - 1 + languages.length) % languages.length;
+    loadStory(languages[currentLangIndex]);
+  });
+
   let maximized = false;
   document.getElementById("maximizeBtn").addEventListener("click", () => {
     document.querySelectorAll(".paragraph").forEach(div => {
@@ -220,24 +253,26 @@
     maximized = !maximized;
   });
 
-  // Tooltip
-  const tooltip = document.getElementById("tooltip");
-  document.body.addEventListener("mouseover", (e) => {
-    if (e.target.classList.contains("comment-button")) {
-      tooltip.textContent = "Post your thoughts here!";
-      tooltip.style.display = "block";
-      tooltip.style.left = e.pageX + "px";
-      tooltip.style.top = e.pageY + "px";
-    }
-  });
-  document.body.addEventListener("mouseout", () => {
-    tooltip.style.display = "none";
+  const themeToggle = document.getElementById("themeToggle");
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    const dark = document.body.classList.contains("dark");
+    themeToggle.textContent = dark ? "Light Mode" : "Dark Mode";
+    localStorage.setItem("theme", dark ? "dark" : "light");
   });
 
-  // Initial load with English
-  loadStory("en");
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark");
+    themeToggle.textContent = "Light Mode";
+  }
+
+  const savedLang = localStorage.getItem("preferredLang");
+  if (savedLang && languages.includes(savedLang)) {
+    currentLangIndex = languages.indexOf(savedLang);
+  }
+
+  loadStory(languages[currentLangIndex]);
 </script>
-
 </body>
 </html>
-
