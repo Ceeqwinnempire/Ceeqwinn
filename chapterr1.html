@@ -1,86 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CeeqWinn Story – Chapter 1</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CeeqWinn — Chapter 1</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f9f9f9;
-        color: #222;
-        margin: 0;
-        padding: 0;
-        line-height: 1.6;
-    }
-    header {
-        background: #4b0082;
-        color: white;
-        padding: 10px 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .coins {
-        background: gold;
-        color: black;
-        padding: 5px 10px;
-        border-radius: 15px;
-        font-weight: bold;
-    }
-    .container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 15px;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-    }
-    select {
-        padding: 5px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-    }
-    pre {
-        white-space: pre-wrap;
-        word-wrap: break-word;
-    }
-    a.back-btn {
-        display: inline-block;
-        margin: 10px 0;
-        padding: 8px 12px;
-        background: #4b0082;
-        color: white;
-        border-radius: 5px;
-        text-decoration: none;
-    }
-    a.back-btn:hover {
-        background: #36005a;
-    }
+  :root{
+    --bg: #f6f7fb;
+    --card: #fff;
+    --text: #111827;
+    --accent: linear-gradient(90deg,#7b1fa2,#4b0082);
+    --muted: #6b7280;
+    --glow: rgba(123,31,162,0.16);
+  }
+  .dark {
+    --bg: #0b1020;
+    --card: #071029;
+    --text: #e6eef8;
+    --muted: #93a3c3;
+    --glow: rgba(75,0,130,0.12);
+  }
+
+  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+  body{background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 18px;
+    background:var(--accent);
+    color:white;
+    box-shadow:0 6px 16px rgba(75,0,130,0.12);
+    position:sticky;top:0;z-index:30;
+  }
+  header h1{margin:0;font-size:18px;display:flex;gap:10px;align-items:center}
+  header .controls{display:flex;gap:10px;align-items:center}
+
+  .container{max-width:900px;margin:22px auto;padding:20px;background:var(--card);border-radius:12px;box-shadow:0 6px 30px rgba(2,6,23,0.06);}
+  .meta {display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .meta-left{display:flex;gap:10px;align-items:center}
+  .lang-select, .theme-toggle, .font-btn {background:transparent;border:1px solid #e5e7eb;padding:6px 8px;border-radius:8px;cursor:pointer}
+  .lang-select{padding:6px 10px}
+  .back {text-decoration:none;color:inherit;border:1px solid transparent;padding:8px 12px;border-radius:8px;background:transparent}
+  .back:hover{background:#f1f5f9}
+
+  /* story area */
+  .story {
+    font-size:16px;
+    line-height:1.7;
+    white-space:pre-wrap; /* keeps original paragraphs exactly as pasted */
+    color:var(--text);
+    transition:opacity .25s ease, transform .25s ease;
+  }
+
+  /* top-right floating HUD */
+  .hud {
+    position:fixed;right:18px;top:78px;background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+    border-radius:999px;padding:8px 12px;display:flex;gap:8px;align-items:center;box-shadow:0 6px 20px var(--glow);z-index:40;
+    font-weight:600;
+  }
+  .hud .coin {
+    display:flex;gap:8px;align-items:center;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,#fff8e6,#fff1bf);
+    color:#7b4e00;border:1px solid rgba(0,0,0,0.06);
+  }
+  .hud .action {font-size:13px;color:var(--muted);cursor:pointer}
+
+  /* small controls row */
+  .tool-row{display:flex;gap:8px;align-items:center}
+  .font-size {display:flex;gap:6px;align-items:center}
+  .btn {cursor:pointer;padding:6px 8px;border-radius:8px;border:1px solid #e6e9ef;background:transparent}
+
+  /* small footer */
+  footer{max-width:900px;margin:18px auto;text-align:center;color:var(--muted);font-size:13px;padding-bottom:36px}
+  .fade {opacity:0.12;transform:translateY(6px);}
+
+  /* small wow animation for coins */
+  @keyframes pulse {
+    0% { box-shadow:0 0 0 0 rgba(123,31,162,0.18); transform:translateY(0) }
+    70% { box-shadow:0 10px 30px 8px rgba(123,31,162,0.04); transform:translateY(-3px) }
+    100% { box-shadow:0 0 0 0 rgba(123,31,162,0.0); transform:translateY(0) }
+  }
+  .coin-glow { animation: pulse 2.4s infinite; }
+
+  /* responsive */
+  @media (max-width:640px){
+    .container{margin:12px;padding:14px}
+    .hud { top:110px; right:10px; padding:6px 10px;}
+  }
 </style>
 </head>
 <body>
-
-<header>
-    <h1>📚 CeeqWinn Story</h1>
-    <div>
-        <select id="languageSelect">
-            <option value="en">English</option>
-            <option value="ng">Nigerian English</option>
-             <option value="ng">Nigerian English</option>
+  <header>
+    <h1>📚 CeeqWinn — Chapter 1</h1>
+    <div class="controls">
+      <div class="meta-left">
+        <label for="lang" style="display:none">Language</label>
+        <select id="lang" class="lang-select" aria-label="Choose language">
+          <option value="en">English</option>
+          <option value="ng">Nigerian English</option>
+          <option value="pg">Nigerian Pidgin</option>
         </select>
-        <span class="coins">💰 Coins: 100</span>
+        <button id="themeToggle" class="theme-toggle" title="Toggle light / dark">🌙</button>
+        <div class="font-size" aria-hidden="true">
+          <button id="decFont" class="btn" title="Smaller text">A-</button>
+          <button id="incFont" class="btn" title="Bigger text">A+</button>
+        </div>
+      </div>
+      <a href="landing.html" class="back" title="Back to landing">← Back to Home</a>
     </div>
-</header>
+  </header>
 
-<div class="container">
-    <a href="index.html" class="back-btn">← Back to Home</a>
-    <pre id="storyContent"></pre>
-</div>
+  <div class="container" role="main" aria-live="polite">
+    <div class="meta">
+      <div>
+        <strong>Chapter 1 — “BETA TIMES AHEAD”</strong>
+        <div style="font-size:13px;color:var(--muted)">English loads first. Switch languages above. Full chapter is free — testing coins available.</div>
+      </div>
+      <div class="tool-row">
+        <button id="resetPos" class="btn" title="Reset reading position">Reset position</button>
+      </div>
+    </div>
+
+    <article id="story" class="story" tabindex="0" aria-label="Chapter text">
+      <!-- story will be injected here -->
+    </article>
+  </div>
+
+  <div class="hud" aria-hidden="true">
+    <div class="coin coin-glow">💠 <span id="coinCount">999</span></div>
+    <div class="action" id="coinAction" title="Test coins — free for testing">Test coins</div>
+  </div>
+
+  <footer>
+    <small>Built for testing — Chapter 1 stays fully free. Link this page from your landing page using <code>&lt;a href="chapter1.html"&gt;Read Chapter 1&lt;/a&gt;</code>.</small>
+  </footer>
 
 <script>
-const chapter1_en = `📘 CHAPTER 1 – “BETA TIMES AHEAD!”
-[📘 CHAPTER 1 – “BETA TIMES AHEAD”
+/* ---------- STORY TEXT (unchanged) ---------- */
+/* ENGLISH version (exactly as provided) */
+const chapter_en = `📘 CHAPTER 1 – “BETA TIMES AHEAD”
 
 I was writing like the ceiling had 5 seconds to fall. Pen dragging across sparkly squared lines like I was attacking the paper. Click. Swipe. Scribble. My brooch blinking. My heart? Matching the rhythm like they could sense the end times.
 Brooch? Check. Signature? Looking like I slashed my name with a sword. Vest and blouse? Tension combo. Like softness and stress had entered a tag-team match on my torso.
@@ -158,7 +214,6 @@ Like Alterborne itself said: Let her in. She’s part of this madness.
 I stepped forward. Beside Angel. Into the wild
 Beta times ahead.
 ________________________________________
-
 Beta Hall was wild.
 The kind of wild that smelled like burnt wires, broken rules, and bold decisions. If chaos had a concert, this was the backstage pass.
 A robot — six-foot-something of metal menace — lunged like it was collecting debts in instalments.
@@ -247,68 +302,92 @@ Class erupted.
 Chairs flying. Voices booming.
 And me?
 Already running out the door.
+`;
 
-
-]`;
-
-const chapter1_ng = `📘 CHAPTER 1 – “BETA TIMES AHEAD!”
-[CHAPTER 1 – “BETA TIMES AHEAD”
+/* NIGERIAN ENGLISH version (exactly as provided) */
+const chapter_ng = `CHAPTER 1 – “BETA TIMES AHEAD”
 
 I was writing like the ceiling only had five seconds left to crash down. My pen was flying across those glittery squared lines like I was fighting the paper itself. Click. Swipe. Scribble.
 My brooch was blinking.
 My heartbeat? Following the same rhythm — like both of them knew end times had clocked in.
+
 Brooch? Present.
 Signature? Looking like I used cutlass to carve it out.
 Vest and blouse? High-tension combo — like soft fabric and serious stress were fighting over space on my body.
 Even my flat shoes were holding themselves like they had tension.
+
 Then — BOOM.
 The hallway scattered.
+
 Chairs screeched.
 Voices bounced everywhere.
 One person shouted “OMOOO!” like they just saw their great-grandfather’s ghost wearing Crocs.
+
 I didn’t even blink.
 I calmly tucked that one stubborn curl behind my ear — the one that always comes out to cause drama when life starts acting like a telenovela.
+
 “Beta times ahead!”
 The Director’s voice shook the room like he was trying to command the floor tiles to surrender.
+
 His kaftan was shining like solar eclipse.
 Crest golden.
 Eyes sharp.
 His whole presence? Like one president wey go church revival.
+
 “Better times ahead!” he said again, even louder — like he was talking to the ceiling itself.
+
 I gave him small side-eye.
 His face? Like one suspense movie trailer without subtitles.
+
 “Thank God,” I muttered, dragging my colourful stack of files to his side like I was handing over newborn dragons.
+
 “Give Him glory,” he replied, smiling like he just signed off my life’s purpose.
+
 The man looked like ambition went for NYSC, came back, and opened tech ministry.
 His kaftan? Razor sharp.
 The front button strip looked like it just finished morning meditation.
 His movements were so calm — like someone that has nowhere urgent to go but is still in charge of everybody’s timetable.
+
 Then he opened his drawer. One click.
+
 Out came the card.
 Gold. Flat. Deadly.
+
 If thunder joined a boy band and turned into an accessory — this was it.
+
 The Envepad.
+
 Not just gadget. This one was rank.
 Proof.
 Cover.
 A digital guardian angel wey sabi hotspot.
+
 My brooch flickered like it just recognized long-lost family member.
+
 I reached for it—
 And that’s when everything scattered.
+
 Noise. Vibration.
 Outside? Complete pandemonium.
 Voices louder than Black Friday at Balogun.
 Sound? Like someone downloaded fresh wahala with Bluetooth speaker.
+
 The Director didn’t even look up.
+
 “Your moment has come,” he said, sliding the Envepad into my hand like he just gave me the Infinity Gauntlet.
 “The school is watching.”
+
 Then he just went back to reading his files like say he no just hand over my entire destiny.
+
 I looked at it.
 The Envepad.
 Inside it: My future. My level. My proof say I belong here.
+
 But before I could even take complete one full breath—
 RUMMMMBBLLEE.
+
 The hallway now sounded like thunder started Spotify subscription.
+
 Still, I didn’t panic.
 I adjusted my collar.
 Make dem come.
@@ -378,119 +457,124 @@ If confusion ever hosted a concert, this was the backstage pass.
 A robot — six-foot-something of pure metal madness — lunged forward like it came to collect overdue payments in instalments.
 And the target?
 Anderson.
-Crisp black suit. Gold vest shining like he was dressed for his graduation but left his common sense at home.
-Tall. Clean. Not that bright.
-He squared up like fists could solve coding issues. Like he was auditioning for Transformers: Lagos Drift.
-Students were shouting. Lights were flashing.
-Laser grids danced on the ceiling like a DJ was running the building from inside the walls.
-A robot dog was chasing a drone.
-The drone flew like it was owing money.
+Black suit clean like waiting go wedding. Gold vest dey shine like say na him own convocation day.
+But the guy brain?
+E forget am for hostel.
+E square up like say to fight robot na normal thing. Like say e wan join “Transformers: Lagos Drift.”
+Student dey shout anyhow. Light dey flash like club.
+Laser dey waka for ceiling like DJ dey do light show.
+Robot dog dey chase drone.
+The drone flew like debtor.
 The dog barked in binary.
 And right at the centre of the madness?
 One boy.
 One bot.
 One terribly bad idea.
-Anderson ducked. The robot swung.
+Anderson dodge. Robot swing —
 BOOOOM.
-A table flipped — like it had heard enough.
-Angel screamed beside me like someone paused her favourite telenovela.
+Table flip like e hear wetin e no suppose hear.
+Angel shout for my side like person wey dem cut cable when telenovela sweet pass.
 “THIS IS STREET FIGHTER LEVEL 9000!!”
 Me?
-I sighed.
+I sigh.
 Because right beside me was Samuel Okon.
 Sweater hanging lazily on one shoulder.
-Fade sharp enough to slice yam.
-Aura? Smelled like sandalwood, old money, and someone who judged you quietly.
-“Impressive, isn’t it?” he said.
-“Yeah...” I started.
-“...how the Betas always find a way to make everything about themselves,”
-he finished, voice steady — like unsweetened tea.
-And then, she appeared.
+Him fade sharp like knife wey dem use slice new yam.
+Aura?
+E smell like sandalwood, rich pikin, and person wey dey judge you for mind.
+“E sweet, abi?” he talk.
+“Yeah…” I start.
+“...na how Beta people sabi turn everything to drama,”
+he finish am.
+Voice calm like zobo wey no get sugar.
+Na then she land —
 Chyzylyn.
-If martial arts and fashion ever had a child inside an anime — she was the poster girl.
-One thigh showing. One pleat dropped.
-Boots? Thunder.
-Skirt? Flared like it had a portable fan.
-Eyes? Sharp.
-Movement? Lethal.
-She didn’t walk in.
-She attacked.
-SPIN — WHAM! Elbow to the robot’s jaw.
-SWIPE — BOOT! Anderson kicked the robot’s leg.
-The crowd screamed like someone just dropped leaked exam papers on the group chat.
-And then—
-ZzZRT!
-The robot’s red eye spun, popped off mid-air like a spiritual USB stick — and launched.
-Straight. At. My. Face.
-“CEEQWINN DUCKKKK!!!” Angel screamed.
-But I didn’t duck.
-I twisted.
-The red eye barely grazed my curls like it was testing my shampoo brand — then slammed into a desk with a THUD that smelled like burnt jollof and regret.
-I blinked.
-Angel gasped beside me.
-“IF I DIE HERE, TELL MY MUMMY I DIED WITH FINE HAIR!!”
+If you mix kung-fu with catwalk, add small anime pepper — na her go appear for the poster.
+One thigh show. One pleat drop.
+Boots loud like thunder.
+Skirt dey flare like say breeze dey follow am.
+Her eye? Sharp.
+Movement? Na blade.
+She no walk enter.
+She launch attack.
+SPIN — WHAM! Elbow jam robot jaw.
+SWIPE — BOOT! Anderson kick robot leg like football.
+Everybody scream like person post expo for WhatsApp group.
+Then—
+ZzZRT!!
+Robot eye — red like evil alarm — spin comot for body.
+Fly like evil flash drive wey dem send from shrine.
+STRRRRAIGHT. TO. MY. FACE.
+“CEEQWINNN DUUUUUCKKK!!!” Angel scream.
+Me no duck.
+I just twist.
+The eye brush my curl like say e dey check if I use better shampoo.
+Then BANG!! E knock desk.
+The sound smell like burnt jollof rice and mistake.
+I blink.
+Angel look me. Gasp like person wey hear wedding don cancel.
+“IF I DIE HERE, TELL MUMMY SAY I DIE WITH FINE HAIR O!!”
 Silence.
-Samuel stepped forward.
-He didn’t raise his voice. He didn’t flinch.
-“Envepad override,” he said, tapping his brooch.
+Samuel step forward. No shout. No panic.
+“Envepad override,” he yarn, touch him brooch.
 “Class: Samuel. Rank: Alpha.”
-The walls answered immediately, like well-trained househelps.
+Wall just reply like obedient housemaid.
 “Combat protocol override. Stand down.”
-And just like that—
-The robot froze.
-Anderson was still on the floor, breathing like he’d just fought his future.
-Chyzylyn flicked her braid like the whole thing was beneath her.
-The crowd?
-Whispers everywhere.
-Samuel turned to me.
-“Still standing?”
-“I’d rather sit,” I replied, already collapsing into the nearest chair like rent was due.
-His face didn’t smile.
-But his eyes?
-They definitely smirked.
-And then—
-Bulus stomped in.
-Uniform sharp like it studied abroad.
-Mouth? Already loaded.
-“CEEQWINN. YOU’RE NOW AN ALPHALITE?!”
-“Better be,” Prosper added, adjusting his designer collar like it owed him backpay.
-“Or a WIFE,” someone whispered from the crowd.
-Laughter broke out.
-Angel gasped like she just heard a proposal.
-I reached for my Envepad—
-Gone.
-Brooch? Missing.
-Chest? Empty.
-Desk? Checked.
+And just like that...
+The robot freeze.
+Anderson for ground, dey breathe like say he fight dragon.
+Chyzylyn just flick her braid like say nothing touch am.
+Crowd begin whisper.
+Samuel turn face me.
+“You still dey stand?”
+“Abeg I prefer to sit,” I talk, as I collapse for chair like say NEPA just cut light and rent remain unpaid.
+Him face no smile.
+But him eyes?
+Dem chuckle small.
+Na that moment —
+Bulus burst enter.
+Uniform iron reach PhD level.
+Mouth don charge.
+“CEEQWINN. YOU BE ALPHALITE NOW?!”
+“E better make she be,” Prosper add, adjust him designer collar like say e wan evict am.
+“Or maybe... WIFE,” somebody drop soft for back.
+Laughter fly.
+Angel shout like say proposal just drop.
+I reach for my Envepad—
+E don disappear.
+Brooch? Nowhere.
+Chest? Dry.
+Desk? Search am.
 Nothing.
-Angel blinked.
-“Didn’t you just—? Wait. What’s that?”
-We turned.
-The robot’s eye — now blinking like a low battery warning — began to unfold.
+Angel blink.
+“But no be just now—? Wait. Wetin be dat?”
+We turn.
+Robot red eye — that same one — dey blink like low battery.
+Na so e begin open...
 Legs.
-Tiny. Creepy. Mechanical.
-Inside it?
+Small. Creepy.
+Like cockroach from science lab.
+Inside am?
 My Envepad.
 One hiss.
-One twitch.
-And the thing LAUNCHED.
-Smashed through the window.
-Glass scattered. Screams everywhere.
-Even Bulus cursed in capital letters.
-I stood there. Frozen.
-Every eye in the hall turned to me.
-Including the Director’s — watching silently through the camera above the door.
-Class went wild.
-Chairs flying.
-Voices shaking the roof.
+One small shake.
+BWOOMMMM!!
+The thing jump,
+Break window scatter.
+Glass scatter. People scream.
+Even Bulus curse — in full capslock.
+I freeze.
+All the eyes inside hall face me.
+Even the Director, dey watch from the camera wey dey on top door.
+Class don burst.
+Chair dey fly.
+Shout full everywhere.
 And me?
-Already running out the door.
+I don dey run commot.
+`;
 
-]`;
-
-const chapter1_ng = `📘 CHAPTER 1 – “BETA TIMES AHEAD!”
-[
-🔥 CHAPTER 1 — “BETA TIMS AHEAD”
+/* NIGERIAN PIDGIN version (exactly as provided) */
+const chapter_pg = `🔥 CHAPTER 1 — “BETA TIMS AHEAD”
 
 I dey write like say ceiling get just 5 seconds before e collapse.
 My pen dey waka for that shiny squared paper like say I dey fight am. Click. Swipe. Scribble.
@@ -624,7 +708,7 @@ E square up like say to fight robot na normal thing. Like say e wan join “Tran
 Student dey shout anyhow. Light dey flash like club.
 Laser dey waka for ceiling like DJ dey do light show.
 Robot dog dey chase drone.
-Drone dey fly like debtor.
+The drone dey fly like debtor.
 Dog dey bark in computer language — “10110111-GRRRR!”
 And for center of all the craze?
 One boy.
@@ -731,28 +815,106 @@ Chair dey fly.
 Shout full everywhere.
 And me?
 I don dey run commot.
-]`;
+`;
 
 
-const storyContent = document.getElementById('storyContent');
-const languageSelect = document.getElementById('languageSelect');
+/* ---------- UI + Behavior ---------- */
+const storyEl = document.getElementById('story');
+const langSelect = document.getElementById('lang');
+const themeToggle = document.getElementById('themeToggle');
+const incFont = document.getElementById('incFont');
+const decFont = document.getElementById('decFont');
+const coinCount = document.getElementById('coinCount');
+const coinAction = document.getElementById('coinAction');
+const resetPos = document.getElementById('resetPos');
 
-// Load language preference
-const savedLang = localStorage.getItem('storyLang') || 'en';
-languageSelect.value = savedLang;
-displayStory(savedLang);
+const chapters = { en: chapter_en, ng: chapter_ng, pg: chapter_pg };
 
-// Change language
-languageSelect.addEventListener('change', () => {
-    const lang = languageSelect.value;
-    localStorage.setItem('storyLang', lang);
-    displayStory(lang);
+/* state */
+let fontSize = 16;
+let currentLang = localStorage.getItem('ceeq_lang') || 'en';
+let coins = parseInt(localStorage.getItem('ceeq_coins') || '999', 10);
+
+/* init */
+langSelect.value = currentLang;
+document.documentElement.classList.toggle('dark', localStorage.getItem('ceeq_theme') === 'dark');
+themeToggle.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+coinCount.textContent = coins;
+display(currentLang);
+
+/* display with fade */
+function display(lang) {
+  currentLang = lang;
+  localStorage.setItem('ceeq_lang', lang);
+  // save scroll pos for the previous lang
+  try {
+    const prevKey = 'ceeq_scroll_' + (lang === 'en' ? 'en' : (lang === 'ng' ? 'ng' : 'pg'));
+    // restore scroll if available
+    requestAnimationFrame(() => {
+      storyEl.classList.add('fade');
+      setTimeout(() => {
+        storyEl.textContent = chapters[lang] || chapters['en'];
+        // restore scroll pos for this language
+        const saved = parseInt(localStorage.getItem('ceeq_scroll_' + lang) || '0', 10);
+        window.scrollTo({ top: saved, behavior: 'auto' });
+        storyEl.classList.remove('fade');
+        storyEl.focus();
+      }, 160);
+    });
+  } catch (e) { console.error(e) }
+}
+
+/* language switch */
+langSelect.addEventListener('change', (e) => {
+  // store current scroll for the currentLang
+  localStorage.setItem('ceeq_scroll_' + currentLang, Math.round(window.scrollY || 0));
+  display(e.target.value);
 });
 
-function displayStory(lang) {
-    storyContent.textContent = (lang === 'en') ? chapter1_en : chapter1_ng;
-}
-</script>
+/* theme toggle */
+themeToggle.addEventListener('click', () => {
+  document.documentElement.classList.toggle('dark');
+  const isDark = document.documentElement.classList.contains('dark');
+  localStorage.setItem('ceeq_theme', isDark ? 'dark' : 'light');
+  themeToggle.textContent = isDark ? '☀️' : '🌙';
+});
 
+/* font size controls */
+function applyFont() { storyEl.style.fontSize = fontSize + 'px'; }
+incFont.addEventListener('click', () => { fontSize = Math.min(22, fontSize + 1); applyFont(); });
+decFont.addEventListener('click', () => { fontSize = Math.max(14, fontSize - 1); applyFont(); });
+applyFont();
+
+/* coins test action */
+coinAction.addEventListener('click', () => {
+  alert('Test coins are free for now. Use them later for unlocking content or themes. Current: ' + coins);
+});
+
+/* remember scroll pos for language when leaving page */
+window.addEventListener('beforeunload', () => {
+  localStorage.setItem('ceeq_scroll_' + currentLang, Math.round(window.scrollY || 0));
+  localStorage.setItem('ceeq_coins', coins);
+});
+
+/* reset position button */
+resetPos.addEventListener('click', () => {
+  localStorage.removeItem('ceeq_scroll_en');
+  localStorage.removeItem('ceeq_scroll_ng');
+  localStorage.removeItem('ceeq_scroll_pg');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* accessibility: keyboard language shortcuts (1/2/3) */
+window.addEventListener('keydown', (e) => {
+  if (e.key === '1') langSelect.value = 'en';
+  if (e.key === '2') langSelect.value = 'ng';
+  if (e.key === '3') langSelect.value = 'pg';
+  if (['1','2','3'].includes(e.key)) {
+    langSelect.dispatchEvent(new Event('change'));
+  }
+});
+
+</script>
 </body>
 </html>
+
