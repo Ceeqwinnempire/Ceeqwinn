@@ -101,9 +101,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebas
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-/* ==== PASTE YOUR FIREBASE CONFIG HERE ==== */
 const firebaseConfig = {
-  // your firebase config here
+  /* === PASTE YOUR FIREBASE CONFIG OBJECT HERE ===
+     Example:
+     apiKey: "...",
+     authDomain: "...",
+     projectId: "...",
+     storageBucket: "...",
+     messagingSenderId: "...",
+     appId: "...",
+  */
 };
 
 let app, auth, db;
@@ -112,44 +119,31 @@ try {
   auth = getAuth(app);
   db = getFirestore(app);
 } catch(e){
-  console.warn("Firebase not configured. Comments disabled.");
+  console.warn("Firebase not configured. Paste your firebaseConfig in the code to enable comments.");
 }
 
-/* =======================
-   PASTE YOUR STORY HERE
-   =======================
-   Paste your whole chapter text here as a **single string**.
-   Use **two newlines** to separate paragraphs.
+const LANG_TEXT_EN = `PASTE YOUR FULL ENGLISH CHAPTER TEXT HERE.
 
-   Example:
+You may paste the entire chapter in one block.
 
-   This is paragraph one.
+Separate paragraphs by a blank line (press ENTER twice).
 
-   This is paragraph two.
+Example:
 
-   This is paragraph three, can even have
-   multiple lines in a paragraph.
+This is paragraph one.
 
-*/
-const STORY_TEXT_EN = `
-This is your first paragraph.
-
-This is your second paragraph. Paste your story here.
-
-Remember to keep two line breaks between paragraphs.
-
-You can even have multiple lines
-inside a single paragraph.
+This is paragraph two.
 `;
 
-/* For demo purposes, dummy other languages */
-const STORY_TEXT_FR = `Ceci est un texte d'exemple en français.
+const LANG_TEXT_FR = `PASTE YOUR FULL FRENCH CHAPTER TEXT HERE.
 
-Voici un deuxième paragraphe en français.`;
+(This is the French version placeholder.)
+`;
 
-const STORY_TEXT_XX = `This is a placeholder for third language.
+const LANG_TEXT_XX = `PASTE YOUR FULL THIRD-LANGUAGE CHAPTER TEXT HERE.
 
-Add your text similarly.`;
+(This is the 3rd language placeholder.)
+`;
 
 const LANG_KEYS = ['en','fr','xx'];
 const LANG_MAP = { en: 'EN', fr: 'FR', xx: 'XX' };
@@ -157,24 +151,19 @@ let langIndex = 0;
 let fontScale = 1;
 let currentUser = null;
 
-/* Helper: split big text block into paragraphs */
-function splitToParagraphs(textBlock) {
-  return textBlock.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+function splitToParagraphs(block){
+  return block.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
 }
 
-/* Escape HTML special chars */
-function escapeHtml(s) {
+function escapeHtml(s){
   return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 }
 
-/* Render paragraphs for current language */
-function renderLang(langKey) {
+function renderLang(langKey){
   const main = document.getElementById('main');
   main.innerHTML = '';
-
-  const textBlock = langKey === 'en' ? STORY_TEXT_EN : langKey === 'fr' ? STORY_TEXT_FR : STORY_TEXT_XX;
+  const textBlock = langKey === 'en' ? LANG_TEXT_EN : langKey === 'fr' ? LANG_TEXT_FR : LANG_TEXT_XX;
   const paras = splitToParagraphs(textBlock);
-
   paras.forEach((p, idx) => {
     const paraId = `${langKey}-p${idx+1}`;
     const card = document.createElement('article');
@@ -189,7 +178,7 @@ function renderLang(langKey) {
       <ul class="comment-list" style="margin-top:8px;"></ul>
     `;
     main.appendChild(card);
-    setTimeout(() => card.classList.add('visible'), 40 * idx);
+    setTimeout(()=>card.classList.add('visible'), 40*idx);
     if(db) setupParagraphComments(card, paraId);
   });
 
@@ -197,17 +186,16 @@ function renderLang(langKey) {
   localStorage.setItem('ceeq_lang', langKey);
 }
 
-/* Comments setup per paragraph */
-function setupParagraphComments(cardEl, paraId) {
+function setupParagraphComments(cardEl, paraId){
   const input = cardEl.querySelector('.comment-input');
   const btn = cardEl.querySelector('.post-btn');
   const list = cardEl.querySelector('.comment-list');
 
-  btn.addEventListener('click', async () => {
-    if (!auth) { alert('Comments require Firebase config.'); return; }
-    if (!currentUser) { alert('Please log in to comment.'); return; }
+  btn.addEventListener('click', async ()=> {
+    if(!auth){ alert('Comments require Firebase config.'); return; }
+    if(!currentUser){ alert('Please log in to comment.'); return; }
     const text = input.value.trim();
-    if (!text) return;
+    if(!text) return;
     await addDoc(collection(db, 'comments'), {
       paragraph: paraId,
       text,
@@ -217,12 +205,12 @@ function setupParagraphComments(cardEl, paraId) {
     input.value = '';
   });
 
-  const q = query(collection(db, 'comments'), orderBy('ts', 'desc'));
+  const q = query(collection(db,'comments'), orderBy('ts','desc'));
   onSnapshot(q, snap => {
     list.innerHTML = '';
     snap.forEach(doc => {
       const d = doc.data();
-      if (d.paragraph === paraId) {
+      if(d.paragraph === paraId){
         const li = document.createElement('li');
         li.style.padding = '6px 0';
         li.style.borderBottom = '1px dashed rgba(0,0,0,0.06)';
@@ -234,11 +222,10 @@ function setupParagraphComments(cardEl, paraId) {
   });
 }
 
-/* All comments feed */
-function initAllCommentsFeed() {
+function initAllCommentsFeed(){
   const target = document.getElementById('allCommentsList');
-  if (!db) { target.innerText = 'Comments are disabled until you add Firebase config.'; return; }
-  const q = query(collection(db, 'comments'), orderBy('ts', 'desc'));
+  if(!db){ target.innerText = 'Comments are disabled until you add Firebase config.'; return; }
+  const q = query(collection(db,'comments'), orderBy('ts','desc'));
   onSnapshot(q, snap => {
     target.innerHTML = '';
     snap.forEach(doc => {
@@ -250,24 +237,23 @@ function initAllCommentsFeed() {
                         <strong style="color:${getAccentColor()}">${escapeHtml(d.user)}</strong>: ${escapeHtml(d.text)}`;
       target.appendChild(wrap);
     });
-    if (!snap.size) target.innerText = 'No comments yet — start the conversation!';
+    if(!snap.size) target.innerText = 'No comments yet — start the conversation!';
   });
 }
 
-/* Accent color depending on theme */
-function getAccentColor() {
+function getAccentColor(){
   return document.body.classList.contains('dark') ? '#FFC857' : '#D7263D';
 }
 
-/* Auth flow */
-if (typeof auth !== 'undefined') {
-  document.getElementById('loginBtn').addEventListener('click', async () => {
+// Auth flow
+if(typeof auth !== 'undefined'){
+  document.getElementById('loginBtn').addEventListener('click', async ()=> {
     const provider = new GoogleAuthProvider();
     try {
       const res = await signInWithPopup(auth, provider);
       currentUser = res.user;
       alert(`Welcome, ${currentUser.displayName || currentUser.email}!`);
-    } catch (err) {
+    } catch(err){
       console.error(err);
       alert('Login failed.');
     }
@@ -275,23 +261,30 @@ if (typeof auth !== 'undefined') {
   onAuthStateChanged(auth, u => { currentUser = u; });
 }
 
-/* UI controls */
+// UI controls
+
+function updateFontSize(){
+  document.querySelectorAll('.paragraph').forEach(p => p.style.fontSize = fontScale + 'em');
+}
+
 document.getElementById('langPlus').addEventListener('click', () => {
   langIndex = (langIndex + 1) % LANG_KEYS.length;
   renderLang(LANG_KEYS[langIndex]);
+  updateFontSize();
 });
 document.getElementById('langMinus').addEventListener('click', () => {
   langIndex = (langIndex - 1 + LANG_KEYS.length) % LANG_KEYS.length;
   renderLang(LANG_KEYS[langIndex]);
+  updateFontSize();
 });
 
 document.getElementById('fontInc').addEventListener('click', () => {
   fontScale = Math.min(1.6, fontScale + 0.1);
-  document.querySelectorAll('.paragraph').forEach(p => p.style.fontSize = fontScale + 'em');
+  updateFontSize();
 });
 document.getElementById('fontDec').addEventListener('click', () => {
   fontScale = Math.max(0.8, fontScale - 0.1);
-  document.querySelectorAll('.paragraph').forEach(p => p.style.fontSize = fontScale + 'em');
+  updateFontSize();
 });
 
 document.getElementById('themeToggle').addEventListener('click', () => {
@@ -299,43 +292,44 @@ document.getElementById('themeToggle').addEventListener('click', () => {
   const dark = document.body.classList.contains('dark');
   document.getElementById('themeToggle').textContent = dark ? '☀️ Light' : '🌙 Dark';
   localStorage.setItem('ceeq_theme', dark ? 'dark' : 'light');
+  // recolor comment user names after theme change
   document.querySelectorAll('.comment-list strong').forEach(s => s.style.color = getAccentColor());
 });
 
-/* Load saved theme & language */
+// Load saved preferences
 const savedTheme = localStorage.getItem('ceeq_theme');
-if (savedTheme === 'dark') {
+if(savedTheme === 'dark'){
   document.body.classList.add('dark');
   document.getElementById('themeToggle').textContent = '☀️ Light';
 }
 const savedLang = localStorage.getItem('ceeq_lang');
-if (savedLang && LANG_KEYS.includes(savedLang)) {
+if(savedLang && LANG_KEYS.includes(savedLang)){
   langIndex = LANG_KEYS.indexOf(savedLang);
 }
 
-/* Initial render */
 renderLang(LANG_KEYS[langIndex]);
-if (typeof db !== 'undefined') initAllCommentsFeed();
+updateFontSize();
 
-/* Hints */
-function showHints() {
+if(typeof db !== 'undefined') initAllCommentsFeed();
+
+function showHints(){
   const hints = [
-    { sel: '#langPlus', text: 'Switch language +', offsetX: 40, offsetY: -10 },
-    { sel: '#langMinus', text: 'Switch language −', offsetX: -40, offsetY: -10 },
-    { sel: '#fontInc', text: 'Increase text', offsetX: 40, offsetY: -10 },
-    { sel: '#fontDec', text: 'Decrease text', offsetX: 40, offsetY: -10 },
-    { sel: '#loginBtn', text: 'Log in to comment', offsetX: 0, offsetY: -60 },
-    { sel: '#themeToggle', text: 'Toggle dark mode', offsetX: 0, offsetY: -60 }
+    {sel:'#langPlus', text:'Switch language +', offsetX:40, offsetY:-10},
+    {sel:'#langMinus', text:'Switch language −', offsetX:-40, offsetY:-10},
+    {sel:'#fontInc', text:'Increase text', offsetX:40, offsetY:-10},
+    {sel:'#fontDec', text:'Decrease text', offsetX:40, offsetY:-10},
+    {sel:'#loginBtn', text:'Log in to comment', offsetX:0, offsetY:-60},
+    {sel:'#themeToggle', text:'Toggle dark mode', offsetX:0, offsetY:-60}
   ];
   const container = document.getElementById('hints');
   let delay = 0;
-  hints.forEach(h => {
+  hints.forEach(h=>{
     const target = document.querySelector(h.sel);
-    if (!target) return;
+    if(!target) return;
     const rect = target.getBoundingClientRect();
     const arrow = document.createElement('div');
     arrow.className = 'hint-arrow';
-    arrow.style.left = (rect.left + window.scrollX + rect.width / 2 + h.offsetX) + 'px';
+    arrow.style.left = (rect.left + window.scrollX + rect.width/2 + h.offsetX) + 'px';
     arrow.style.top = (rect.top + window.scrollY + h.offsetY) + 'px';
     arrow.innerHTML = `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" style="filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))">
       <path d="M12 2v14" stroke="${getAccentColor()}" stroke-width="2.2" stroke-linecap="round"/>
@@ -343,14 +337,29 @@ function showHints() {
     </svg>`;
     const tip = document.createElement('div');
     tip.className = 'hint-tip';
-    tip.style.left = (rect.left + window.scrollX + rect.width / 2 + h.offsetX + 50) + 'px';
+    tip.style.left = (rect.left + window.scrollX + rect.width/2 + h.offsetX + 50) + 'px';
     tip.style.top = (rect.top + window.scrollY + h.offsetY - 10) + 'px';
     tip.textContent = h.text;
-    container.appendChild(arrow);
-    container.appendChild(tip);
-    setTimeout(() => {
-      arrow.style.opacity = 1; arrow.style.transform = 'scale(1)'; tip.classList.add('show');
-    }, delay + 100);
+    container.appendChild(arrow); container.appendChild(tip);
+    setTimeout(()=>{
+      arrow.style.opacity=1; 
+      arrow.style.transform='scale(1)'; 
+      tip.classList.add('show');
+    }, delay+100);
     delay += 600;
   });
- 
+  setTimeout(()=>{ container.innerHTML=''; }, 7000);
+}
+
+if(!sessionStorage.getItem('hintsShown')){
+  showHints(); 
+  sessionStorage.setItem('hintsShown','1');
+}
+
+document.addEventListener('click', ()=>{ 
+  document.querySelectorAll('.comment-list strong').forEach(s => s.style.color = getAccentColor()); 
+});
+</script>
+</body>
+</html>
+
