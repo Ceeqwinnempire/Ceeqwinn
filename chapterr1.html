@@ -1,278 +1,356 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ceeqwinn Story - Chapter 1</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ceeqwinn — Chapter 1 (Interactive)</title>
 <style>
-  :root {
-    --brand-gradient: linear-gradient(90deg, red, magenta, gold);
-    --light-bg: white;
-    --light-text: black;
-    --light-paragraph: #f5f5f5;
-    --dark-bg: black;
-    --dark-text: white;
-    --dark-paragraph: rgba(255,255,255,0.05);
+  :root{
+    --grad: linear-gradient(90deg, #D7263D, #FF2D95, #FFC857, #C0C0C0);
+    --red:#D7263D; --mag:#FF2D95; --gold:#FFC857; --silver:#C0C0C0;
+    --light-bg:#ffffff; --light-text:#0b0b0b;
+    --dark-bg:#0b0f14; --dark-text:#e9f1ff;
+    --card-light:#f6f7f8; --card-dark: rgba(255,255,255,0.04);
   }
+  html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;}
+  body{background:var(--light-bg);color:var(--light-text);transition:background .35s,color .35s;}
+  body.dark{background:var(--dark-bg);color:var(--dark-text);}
 
-  body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    background-color: var(--light-bg);
-    color: var(--light-text);
-    transition: background-color 0.4s ease, color 0.4s ease;
+  header{
+    background:var(--grad); color:#fff; padding:18px 12px; text-align:center;
+    box-shadow:0 8px 30px rgba(0,0,0,0.12);
   }
-  body.dark {
-    background-color: var(--dark-bg);
-    color: var(--dark-text);
-  }
+  header h1{margin:0;font-size:20px;letter-spacing:0.6px}
+  .controls{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;padding:14px}
+  .btn{border:0;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,0.06);transition:transform .15s,box-shadow .15s}
+  .btn:active{transform:translateY(2px)}
+  .lang-btn{background:var(--mag);color:white}
+  .font-btn{background:var(--gold);color:#111}
+  .login-btn{background:var(--red);color:#fff}
+  .theme-btn{background:var(--silver);color:#111}
 
-  header {
-    text-align: center;
-    padding: 1em;
-    background: var(--brand-gradient);
-    color: white;
-    font-size: 1.5em;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  }
+  main{max-width:980px;margin:18px auto;padding:0 14px;}
 
-  .controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 1em;
-    flex-wrap: wrap;
+  /* paragraph cards */
+  .paragraph{
+    background:var(--card-light); border-radius:12px; padding:16px; margin:18px 0;
+    transition:background .35s, transform .25s, box-shadow .25s;
+    box-shadow:0 6px 18px rgba(10,10,10,0.04);
   }
-  button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: transform 0.2s ease, background 0.3s ease;
-  }
-  button:hover {
-    transform: scale(1.05);
-  }
-  .lang-btn { background: magenta; color: white; }
-  .maximize-btn { background: gold; color: black; }
-  .login-btn { background: red; color: white; }
-  .theme-btn { background: silver; color: black; }
+  body.dark .paragraph{background:var(--card-dark); box-shadow:none}
 
-  .paragraph {
-    background-color: var(--light-paragraph);
-    padding: 1em;
-    border-radius: 10px;
-    margin: 1em auto;
-    position: relative;
-    max-width: 800px;
-    transition: background-color 0.4s ease, font-size 0.3s ease;
-    animation: fadeIn 0.6s ease;
-  }
-  body.dark .paragraph {
-    background-color: var(--dark-paragraph);
-  }
+  .paragraph p{margin:0 0 8px 0; white-space:pre-wrap; line-height:1.7}
+  .comment-box{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .comment-input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)}
+  body.dark .comment-input{border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:inherit}
+  .post-btn{background:var(--gold);border-radius:8px;padding:8px 12px;border:none;font-weight:700;cursor:pointer; animation:postPulse 3s infinite;}
+  @keyframes postPulse{0%{transform:translateY(0)}50%{transform:translateY(-3px)}100%{transform:translateY(0)}}
 
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  /* all comments feed */
+  .all-comments{background:rgba(0,0,0,0.03);padding:14px;border-radius:12px;margin:20px 0}
+  body.dark .all-comments{background:rgba(255,255,255,0.02)}
 
-  .comment-box {
-    margin-top: 0.5em;
-    padding: 0.5em;
-    background-color: rgba(0,0,0,0.05);
-    border-radius: 6px;
-  }
-  body.dark .comment-box {
-    background-color: rgba(255,255,255,0.1);
-  }
-  .comment-input {
-    width: 80%;
-    padding: 5px;
-  }
-  .comment-button {
-    padding: 5px 10px;
-    background: gold;
-    color: black;
-    border: none;
-    cursor: pointer;
-  }
-  .tooltip {
-    position: absolute;
-    background: rgba(255,255,255,0.95);
-    color: black;
-    padding: 5px;
-    border-radius: 5px;
-    font-size: 0.8em;
-    display: none;
-    z-index: 10;
-  }
+  /* tooltip & arrows */
+  .hint-arrow{position:fixed;z-index:999;pointer-events:none;opacity:0;transform:scale(.95);}
+  .hint-tip{position:fixed;background:linear-gradient(90deg,#fff,#fff);color:#111;padding:8px 10px;border-radius:8px;border-left:4px solid var(--mag);font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,0.12);opacity:0;transform:translateY(6px)}
+  .show{animation:hintPop .6s forwards}
+  @keyframes hintPop{to{opacity:1;transform:translateY(0) scale(1)}}
+
+  /* fade/slide for paragraphs */
+  .fade-in{opacity:0;transform:translateY(8px);transition:opacity .45s ease, transform .45s ease}
+  .fade-in.visible{opacity:1;transform:none}
+
+  /* small responsive */
+  @media (max-width:640px){ .controls{padding:10px;gap:8px} .paragraph{padding:12px} .comment-input{padding:6px} }
 </style>
 </head>
 <body>
 
-<header>🌟 Ceeqwinn Story - Chapter 1</header>
+<header>
+  <h1>🌟 Ceeqwinn — Chapter 1</h1>
+</header>
 
-<div class="controls">
-  <button id="langDecrease" class="lang-btn">−</button>
-  <span id="currentLang">English</span>
-  <button id="langIncrease" class="lang-btn">+</button>
-  <button id="maximizeBtn" class="maximize-btn">Maximize Text</button>
-  <button id="loginBtn" class="login-btn">Login with Google</button>
-  <button id="themeToggle" class="theme-btn">Dark Mode</button>
+<div class="controls" role="toolbar" aria-label="Reader controls">
+  <button id="langMinus" class="btn lang-btn">−</button>
+  <div id="langLabel" style="display:flex;align-items:center;gap:8px;font-weight:800">Language: <span id="langName">EN</span></div>
+  <button id="langPlus" class="btn lang-btn">+</button>
+
+  <button id="fontInc" class="btn font-btn">A+</button>
+  <button id="fontDec" class="btn font-btn">A-</button>
+
+  <button id="themeToggle" class="btn theme-btn">🌙 Dark</button>
+  <button id="loginBtn" class="btn login-btn">Log in (Google)</button>
 </div>
 
-<div id="story"></div>
-<div id="tooltip" class="tooltip"></div>
+<main id="main">
+  <!-- paragraphs inserted here -->
+</main>
+
+<section style="max-width:980px;margin:6px auto;padding:0 14px;">
+  <div id="allComments" class="all-comments">
+    <h3>💬 All comments</h3>
+    <div id="allCommentsList">No comments yet — be the first to react!</div>
+  </div>
+</section>
+
+<!-- animated arrows & tips (created dynamically) -->
+<div id="hints"></div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+/* ======================
+   CONFIG — PASTE FIREBASE CONFIG HERE
+   ======================
+   Replace the firebaseConfig object with your project's config
+   (from Firebase Console → Project settings → Your apps → firebaseConfig)
+*/
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBWfXYyGYW5ZuvXNQLu9oYL0hDLsnW9w-4",
-    authDomain: "alteborne-story.firebaseapp.com",
-    projectId: "alteborne-story",
-    storageBucket: "alteborne-story.firebasestorage.app",
-    messagingSenderId: "696537547705",
-    appId: "1:696537547705:web:1f8d65f7d194cb631fec68",
-    measurementId: "G-9BXCG8LLDQ"
-  };
+const firebaseConfig = {
+  /* === PASTE YOUR FIREBASE CONFIG OBJECT HERE ===
+     Example:
+     apiKey: "...",
+     authDomain: "...",
+     projectId: "...",
+     storageBucket: "...",
+     messagingSenderId: "...",
+     appId: "...",
+  */
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  let currentUser = null;
+/* Initialize Firebase (will throw if not configured) */
+let app, auth, db;
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getFirestore(app);
+} catch(e){
+  console.warn("Firebase not configured. Paste your firebaseConfig in the code to enable comments.");
+}
 
-  const chapters = {
-    en: [
-      "HELLO WORLD! MISS ME?",
-      "The streets were alive with markets, colors, and whispers of mystery..."
-    ],
-    fr: [
-      "Il était une fois, dans la ville d'Alteborne...",
-      "Les rues étaient animées de marchés, de couleurs et de murmures mystérieux..."
-    ],
-    xx: [
-      "3rd language version of first paragraph...",
-      "3rd language version of second paragraph..."
-    ]
-  };
+/* ======================
+   STORY TEXT — PASTE YOUR WHOLE CHAPTERS HERE
+   (one big block per language). Keep blank lines between paragraphs.
+   Replace the example placeholder text with your full chapter.
+   ====================== */
+const LANG_TEXT_EN = `PASTE YOUR FULL ENGLISH CHAPTER TEXT HERE.
+You may paste the entire chapter in one block.
+Separate paragraphs by a blank line (press ENTER twice).
 
-  const languages = Object.keys(chapters);
-  let currentLangIndex = 0;
+Example:
 
-  function loadStory(lang) {
-    document.getElementById("currentLang").textContent =
-      lang === "en" ? "English" : lang === "fr" ? "French" : "3rd Language";
-    localStorage.setItem("preferredLang", lang);
-    const storyContainer = document.getElementById("story");
-    storyContainer.innerHTML = "";
-    chapters[lang].forEach((para, idx) => {
-      const pDiv = document.createElement("div");
-      pDiv.className = "paragraph";
-      pDiv.dataset.paragraph = `${lang}-p${idx+1}`;
-      pDiv.innerHTML = `
-        <p>${para}</p>
-        <div class="comment-box">
-          <input class="comment-input" placeholder="Write a comment..." />
-          <button class="comment-button">Post</button>
-          <ul class="comment-list"></ul>
-        </div>
-      `;
-      storyContainer.appendChild(pDiv);
-      setupComments(pDiv, `${lang}-p${idx+1}`);
+This is paragraph one.
+
+This is paragraph two.
+`;
+
+const LANG_TEXT_FR = `PASTE YOUR FULL FRENCH CHAPTER TEXT HERE.
+
+(This is the French version placeholder.)
+`;
+
+const LANG_TEXT_XX = `PASTE YOUR FULL THIRD-LANGUAGE CHAPTER TEXT HERE.
+
+(This is the 3rd language placeholder.)
+`;
+
+/* ======================
+   END OF EDITABLE SECTION — nothing below needs editing normally
+   ====================== */
+
+const LANG_KEYS = ['en','fr','xx'];
+const LANG_MAP = { en: 'EN', fr: 'FR', xx: 'XX' };
+let langIndex = 0;
+let fontScale = 1;
+let currentUser = null;
+
+/* helper: turn block text into paragraphs by blank-line split */
+function splitToParagraphs(block){
+  return block.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+}
+
+/* render story paragraphs for current language */
+function renderLang(langKey){
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+  const textBlock = langKey === 'en' ? LANG_TEXT_EN : langKey === 'fr' ? LANG_TEXT_FR : LANG_TEXT_XX;
+  const paras = splitToParagraphs(textBlock);
+  paras.forEach((p, idx) => {
+    const paraId = `${langKey}-p${idx+1}`;
+    const card = document.createElement('article');
+    card.className = 'paragraph fade-in';
+    card.dataset.paragraph = paraId;
+    card.innerHTML = `
+      <p>${escapeHtml(p)}</p>
+      <div class="comment-box">
+        <input class="comment-input" placeholder="Write a comment..." aria-label="Comment input for paragraph ${idx+1}" />
+        <button class="post-btn post-btn-style">Post</button>
+      </div>
+      <ul class="comment-list" style="margin-top:8px;"></ul>
+    `;
+    main.appendChild(card);
+    // small delay to trigger staggered reveal
+    setTimeout(()=>card.classList.add('visible'), 40*idx);
+    if(db) setupParagraphComments(card, paraId);
+  });
+
+  // update saved lang and label
+  document.getElementById('langName').textContent = LANG_MAP[langKey] || langKey.toUpperCase();
+  localStorage.setItem('ceeq_lang', langKey);
+}
+
+/* escape to avoid accidental HTML injection from pasted text */
+function escapeHtml(s){ return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* comments: listen to Firestore and post */
+function setupParagraphComments(cardEl, paraId){
+  const input = cardEl.querySelector('.comment-input');
+  const btn = cardEl.querySelector('.post-btn');
+  const list = cardEl.querySelector('.comment-list');
+
+  btn.addEventListener('click', async ()=>{
+    if(!auth){ alert('Comments require Firebase config.'); return; }
+    if(!currentUser){ alert('Please log in to comment.'); return; }
+    const text = input.value.trim();
+    if(!text) return;
+    await addDoc(collection(db, 'comments'), {
+      paragraph: paraId,
+      text,
+      user: currentUser.displayName || currentUser.email || 'Anon',
+      ts: serverTimestamp()
     });
-  }
+    input.value = '';
+  });
 
-  function setupComments(paragraphDiv, paraId) {
-    const input = paragraphDiv.querySelector(".comment-input");
-    const postBtn = paragraphDiv.querySelector(".comment-button");
-    const list = paragraphDiv.querySelector(".comment-list");
-
-    postBtn.addEventListener("click", async () => {
-      if (!currentUser) {
-        alert("Please log in to comment!");
-        return;
+  // local listener updates list for this paragraph
+  const q = query(collection(db,'comments'), orderBy('ts','desc'));
+  onSnapshot(q, snap => {
+    list.innerHTML = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      if(d.paragraph === paraId){
+        const li = document.createElement('li');
+        li.style.padding = '6px 0';
+        li.style.borderBottom = '1px dashed rgba(0,0,0,0.06)';
+        li.style.listStyle = 'none';
+        li.innerHTML = `<strong style="color:${getAccentColor()}">${escapeHtml(d.user)}</strong>: ${escapeHtml(d.text)}`;
+        list.appendChild(li);
       }
-      if (input.value.trim()) {
-        await addDoc(collection(db, "comments"), {
-          text: input.value.trim(),
-          paragraph: paraId,
-          user: currentUser.displayName,
-          timestamp: new Date()
-        });
-        input.value = "";
-      }
     });
+  });
+}
 
-    const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
-    onSnapshot(q, snapshot => {
-      list.innerHTML = "";
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        if (data.paragraph === paraId) {
-          const li = document.createElement("li");
-          li.textContent = `${data.user}: ${data.text}`;
-          list.appendChild(li);
-        }
-      });
+/* All comments feed (combined) */
+function initAllCommentsFeed(){
+  const target = document.getElementById('allCommentsList');
+  if(!db){ target.innerText = 'Comments are disabled until you add Firebase config.'; return; }
+  const q = query(collection(db,'comments'), orderBy('ts','desc'));
+  onSnapshot(q, snap => {
+    target.innerHTML = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      const wrap = document.createElement('div');
+      wrap.style.padding = '8px 0';
+      wrap.style.borderBottom = '1px solid rgba(0,0,0,0.04)';
+      wrap.innerHTML = `<small style="color:var(--mag);font-weight:700">${escapeHtml(d.paragraph)}</small><br>
+                        <strong style="color:${getAccentColor()}">${escapeHtml(d.user)}</strong>: ${escapeHtml(d.text)}`;
+      target.appendChild(wrap);
     });
-  }
+    if(!snap.size) target.innerText = 'No comments yet — start the conversation!';
+  });
+}
 
-  document.getElementById("loginBtn").addEventListener("click", async () => {
+/* simple accent color based on current theme */
+function getAccentColor(){ return document.body.classList.contains('dark') ? '#FFC857' : '#D7263D'; }
+
+/* Auth flow */
+if(typeof auth !== 'undefined'){
+  document.getElementById('loginBtn').addEventListener('click', async ()=>{
     const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(auth, provider);
-      currentUser = result.user;
-      alert(`Welcome, ${currentUser.displayName}!`);
-    } catch (error) {
-      console.error("Login error:", error);
-    }
+      const res = await signInWithPopup(auth, provider);
+      currentUser = res.user;
+      alert(`Welcome, ${currentUser.displayName || currentUser.email}!`);
+    } catch(err){ console.error(err); alert('Login failed.'); }
   });
+  onAuthStateChanged(auth, u=>{ currentUser = u; });
+}
 
-  document.getElementById("langIncrease").addEventListener("click", () => {
-    currentLangIndex = (currentLangIndex + 1) % languages.length;
-    loadStory(languages[currentLangIndex]);
+/* UI controls */
+document.getElementById('langPlus').addEventListener('click', ()=>{ langIndex = (langIndex+1)%LANG_KEYS.length; renderLang(LANG_KEYS[langIndex]); });
+document.getElementById('langMinus').addEventListener('click', ()=>{ langIndex = (langIndex-1+LANG_KEYS.length)%LANG_KEYS.length; renderLang(LANG_KEYS[langIndex]); });
+
+document.getElementById('fontInc').addEventListener('click', ()=> {
+  fontScale = Math.min(1.6, fontScale + 0.1);
+  document.querySelectorAll('.paragraph').forEach(p => p.style.fontSize = fontScale + 'em');
+});
+document.getElementById('fontDec').addEventListener('click', ()=> {
+  fontScale = Math.max(0.8, fontScale - 0.1);
+  document.querySelectorAll('.paragraph').forEach(p => p.style.fontSize = fontScale + 'em');
+});
+
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  document.body.classList.toggle('dark');
+  const dark = document.body.classList.contains('dark');
+  document.getElementById('themeToggle').textContent = dark ? '☀️ Light' : '🌙 Dark';
+  localStorage.setItem('ceeq_theme', dark ? 'dark' : 'light');
+  // recolor comment user names after theme change
+  document.querySelectorAll('.comment-list strong').forEach(s => s.style.color = getAccentColor());
+});
+
+/* initial theme & language from localStorage */
+const savedTheme = localStorage.getItem('ceeq_theme');
+if(savedTheme === 'dark'){ document.body.classList.add('dark'); document.getElementById('themeToggle').textContent='☀️ Light';}
+const savedLang = localStorage.getItem('ceeq_lang');
+if(savedLang && LANG_KEYS.includes(savedLang)){ langIndex = LANG_KEYS.indexOf(savedLang); }
+
+/* initial render */
+renderLang(LANG_KEYS[langIndex]);
+if(typeof db !== 'undefined') initAllCommentsFeed();
+
+/* === HINTS & ARROWS: animate small arrows pointing to controls on first visit === */
+function showHints(){
+  const hints = [
+    {sel:'#langPlus', text:'Switch language +', offsetX:40, offsetY:-10},
+    {sel:'#langMinus', text:'Switch language −', offsetX:-40, offsetY:-10},
+    {sel:'#fontInc', text:'Increase text', offsetX:40, offsetY:-10},
+    {sel:'#fontDec', text:'Decrease text', offsetX:40, offsetY:-10},
+    {sel:'#loginBtn', text:'Log in to comment', offsetX:0, offsetY:-60},
+    {sel:'#themeToggle', text:'Toggle dark mode', offsetX:0, offsetY:-60}
+  ];
+  const container = document.getElementById('hints');
+  let delay = 0;
+  hints.forEach(h=>{
+    const target = document.querySelector(h.sel);
+    if(!target) return;
+    const rect = target.getBoundingClientRect();
+    const arrow = document.createElement('div');
+    arrow.className = 'hint-arrow';
+    arrow.style.left = (rect.left + window.scrollX + rect.width/2 + h.offsetX) + 'px';
+    arrow.style.top = (rect.top + window.scrollY + h.offsetY) + 'px';
+    arrow.innerHTML = `<svg width="44" height="44" viewBox="0 0 24 24" fill="none" style="filter:drop-shadow(0 8px 20px rgba(0,0,0,0.15))">
+      <path d="M12 2v14" stroke="${getAccentColor()}" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M6 8l6-6 6 6" stroke="${getAccentColor()}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+    const tip = document.createElement('div');
+    tip.className = 'hint-tip';
+    tip.style.left = (rect.left + window.scrollX + rect.width/2 + h.offsetX + 50) + 'px';
+    tip.style.top = (rect.top + window.scrollY + h.offsetY - 10) + 'px';
+    tip.textContent = h.text;
+    container.appendChild(arrow); container.appendChild(tip);
+    setTimeout(()=>{ arrow.style.opacity=1; arrow.style.transform='scale(1)'; tip.classList.add('show'); }, delay+100);
+    delay += 600;
   });
+  // remove after 7s
+  setTimeout(()=>{ container.innerHTML=''; }, 7000);
+}
+/* only show hints once per session */
+if(!sessionStorage.getItem('hintsShown')){ showHints(); sessionStorage.setItem('hintsShown','1'); }
 
-  document.getElementById("langDecrease").addEventListener("click", () => {
-    currentLangIndex = (currentLangIndex - 1 + languages.length) % languages.length;
-    loadStory(languages[currentLangIndex]);
-  });
+/* utility: recolor existing strongs */
+document.addEventListener('click', ()=>{ document.querySelectorAll('.comment-list strong').forEach(s => s.style.color = getAccentColor()); });
 
-  let maximized = false;
-  document.getElementById("maximizeBtn").addEventListener("click", () => {
-    document.querySelectorAll(".paragraph").forEach(div => {
-      div.style.fontSize = maximized ? "1em" : "1.4em";
-    });
-    maximized = !maximized;
-  });
-
-  const themeToggle = document.getElementById("themeToggle");
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-    const dark = document.body.classList.contains("dark");
-    themeToggle.textContent = dark ? "Light Mode" : "Dark Mode";
-    localStorage.setItem("theme", dark ? "dark" : "light");
-  });
-
-  const savedTheme = localStorage.getItem("theme");
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark");
-    themeToggle.textContent = "Light Mode";
-  }
-
-  const savedLang = localStorage.getItem("preferredLang");
-  if (savedLang && languages.includes(savedLang)) {
-    currentLangIndex = languages.indexOf(savedLang);
-  }
-
-  loadStory(languages[currentLangIndex]);
 </script>
 </body>
 </html>
