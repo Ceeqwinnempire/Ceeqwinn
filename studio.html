@@ -2,107 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Ceeqwinn Image Studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ceeqwinn Image Studio</title>
 
-  <link rel="stylesheet" href="studio.css" />
+  <!-- LINK CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <div class="page">
 
-    <!-- HERO -->
-  <section class="hero">
+  <main class="centered-page">
+
     <h1>Ceeqwinn Image Studio</h1>
-    <p>
-      A soft-power prompt atelier for girls who want beautiful AI images
-      without guessing.
-    </p>
-  </section>
+    <p>Build beautiful prompts. Generate freely.</p>
 
-  <!-- EXPLORE / FYP -->
-  <section class="explore">
-    <h2>Explore</h2>
+    <input type="text" placeholder="Describe your character..." />
 
-    <div class="explore-track">
-      <div class="explore-card" onclick="loadPreset(0)">
-        <img src="https://picsum.photos/500/700?random=1" />
-        <span>Soft Power Princess</span>
-      </div>
+    <button>Generate Image</button>
 
-      <div class="explore-card" onclick="loadPreset(1)">
-        <img src="https://picsum.photos/500/700?random=2" />
-        <span>Faceless Luxury Muse</span>
-      </div>
-
-      <div class="explore-card" onclick="loadPreset(2)">
-        <img src="https://picsum.photos/500/700?random=3" />
-        <span>Quiet Tech Queen</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROMPT ATELIER -->
-  <section class="atelier">
-    <h2>Build Your Prompt</h2>
-
-    <div class="field">
-      <label>Archetype</label>
-      <select id="archetype">
-        <option>Princess</option>
-        <option>Queen</option>
-        <option>Muse</option>
-        <option>Soft Villain</option>
-      </select>
+    <div class="image-box">
+      <p>Generated image will appear here</p>
     </div>
 
-    <div class="field">
-      <label>Career Fantasy</label>
-      <select id="career">
-        <option>Fashion Designer</option>
-        <option>Lawyer</option>
-        <option>Tech Founder</option>
-        <option>Creative Director</option>
-      </select>
-    </div>
+  </main>
 
-    <div class="field">
-      <label>Mood</label>
-      <select id="mood">
-        <option>Soft power</option>
-        <option>Quiet confidence</option>
-        <option>Luxury calm</option>
-        <option>Mysterious elegance</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Visual Style</label>
-      <select id="style">
-        <option>Editorial fashion photography</option>
-        <option>Dreamy cinematic lighting</option>
-        <option>Clean studio portrait</option>
-        <option>Soft glow aesthetic</option>
-      </select>
-    </div>
-
-    <button onclick="generatePrompt()">Generate Prompt</button>
-
-    <textarea id="output" placeholder="Your prompt will appear here..."></textarea>
-
-    <a
-      class="generate-link"
-      href="https://perchance.org/ai-character-generator"
-      target="_blank"
-    >
-      Generate Image (Free AI Tool)
-    </a>
-  </section>
-
-  <footer>
-    <p>© Ceeqwinn • Soft Hustle • Prompt-led power</p>
-  </footer>
-
-  <script src="studio.js"></script>
-      </div>
 </body>
 </html>
+
