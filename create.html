@@ -81,6 +81,59 @@
 
     <section class="feed">
 
+      <section class="builder">
+
+  <h2>Build Your Prompt</h2>
+
+  <select id="baseStyle" onchange="buildPrompt()">
+    <option value="">Base Style</option>
+    <option>editorial fashion portrait</option>
+    <option>soft luxury aesthetic</option>
+    <option>cinematic character portrait</option>
+  </select>
+
+  <select id="archetype" onchange="buildPrompt()">
+    <option value="">Archetype</option>
+    <option>faceless luxury woman</option>
+    <option>princess energy professional</option>
+    <option>soft villain muse</option>
+  </select>
+
+  <select id="mood" onchange="buildPrompt()">
+    <option value="">Mood</option>
+    <option>calm confidence</option>
+    <option>dreamy and elegant</option>
+    <option>quiet power</option>
+  </select>
+
+  <select id="lighting" onchange="buildPrompt()">
+    <option value="">Lighting</option>
+    <option>soft studio lighting</option>
+    <option>natural window light</option>
+    <option>cinematic low contrast light</option>
+  </select>
+
+  <select id="camera" onchange="buildPrompt()">
+    <option value="">Camera</option>
+    <option>85mm portrait</option>
+    <option>medium shot</option>
+    <option>fashion editorial framing</option>
+  </select>
+
+  <select id="detail" onchange="buildPrompt()">
+    <option value="">Detail Level</option>
+    <option>high detail, clean composition</option>
+    <option>minimal background, refined texture</option>
+    <option>ultra clean, magazine quality</option>
+  </select>
+
+  <div class="output">
+    <p id="promptOutput"></p>
+    <button onclick="copyPrompt()">Copy Prompt</button>
+  </div>
+
+</section>
+
       <article class="card">
         <img src="https://i.postimg.cc/rFQ2nvcs/2D-cartoon-Disney-character-di-(8).jpg" alt="Editorial portrait">
       </article>
