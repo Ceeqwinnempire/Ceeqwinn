@@ -77,25 +77,3 @@ body {
   opacity: 0.8;
 }
 
-/* Image Rail – Horizontal FYP */
-
-.image-rail {
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-}
-
-.rail-track {
-  display: inline-flex;
-  gap: 12px;
-  padding: 16px;
-}
-
-.rail-track img {
-  height: 220px;       /* controls size */
-  width: auto;         /* allows different widths */
-  border-radius: 16px;
-  flex-shrink: 0;      /* CRITICAL: prevents stacking */
-}
-
