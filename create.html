@@ -1,2 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <title>Ceeqwinn Image Studio</title> <!-- Minimal, fast-loading font --> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet"> <link rel="stylesheet" href="studio.css" /> </head> <body> <main class="app"> <!-- Header --> <header class="header"> <h1>Ceeqwinn Image Studio</h1> <p class="tagline">Clarity-driven prompts for soft, powerful visuals</p> </header> <!-- FYP Feed --> <section class="feed"> <!-- Card --> <article class="card"> <img src="https://i.postimg.cc/rfq2nvcs/2D-cartoon-Disney-character-di-(8).jpg" alt="Editorial portrait" loading="lazy"> </article> <article class="card"> <img src="https://i.postimg.cc/gkNbSfd0/2D-cartoon-Disney-character-di-(6).jpg" alt="Fashion image" loading="lazy"> <p class="caption">Faceless Luxury · Studio Light</p> </article> <article class="card"> <img src="images/sample3.jpg" alt="Creative portrait" loading="lazy"> <p class="caption">Princess × Career · Modern Grace</p> </article> </section> </main> </body> </html>
+  <title>Ceeqwinn Image Studio</title>
+
+  <!-- Fonts kept but safe -->
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,600|Inter:300,400" rel="stylesheet">
+
+  <style>
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #ffffff;
+      font-family: Inter, Arial, sans-serif;
+      color: #111;
+    }
+
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .feed {
+      width: 100%;
+    }
+
+    .card {
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .card img {
+      width: 100%;
+      height: auto; /* VERY IMPORTANT */
+      display: block;
+      border-radius: 8px;
+    }
+
+    .caption {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #444;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <header class="header">
+      <h1>Ceeqwinn Image Studio</h1>
+      <p class="tagline">Clarity-driven prompts for soft, powerful visuals</p>
+    </header>
+
+    <section class="feed">
+
+      <article class="card">
+        <img src="https://i.postimg.cc/rFQ2nvcs/2D-cartoon-Disney-character-di-(8).jpg" alt="Editorial portrait">
+      </article>
+
+      <article class="card">
+        <img src="https://i.postimg.cc/gkNbSfd0/2D-cartoon-Disney-character-di-(6).jpg" alt="Fashion image">
+        <p class="caption">Faceless Luxury · Studio Light</p>
+      </article>
+
+    </section>
+
+  </main>
+
+</body>
+</html>
+
