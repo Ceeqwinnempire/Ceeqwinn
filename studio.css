@@ -76,3 +76,31 @@ body {
   font-size: 0.85rem;
   opacity: 0.8;
 }
+
+/* Image Rail – Horizontal FYP */
+
+.image-rail {
+  overflow-x: auto;
+  padding: 16px 0;
+  margin-bottom: 32px;
+}
+
+.rail-track {
+  display: flex;
+  gap: 16px;
+  padding-left: 16px;
+}
+
+.rail-card {
+  flex: 0 0 75%;
+  max-width: 75%;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.rail-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
