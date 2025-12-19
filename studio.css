@@ -81,26 +81,21 @@ body {
 
 .image-rail {
   overflow-x: auto;
-  padding: 16px 0;
-  margin-bottom: 32px;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
 }
 
 .rail-track {
-  display: flex;
-  gap: 16px;
-  padding-left: 16px;
+  display: inline-flex;
+  gap: 12px;
+  padding: 16px;
 }
 
-.rail-card {
-  flex: 0 0 75%;
-  max-width: 75%;
+.rail-track img {
+  height: 220px;       /* controls size */
+  width: auto;         /* allows different widths */
   border-radius: 16px;
-  overflow: hidden;
-}
-
-.rail-card img {
-  width: 100%;
-  height: auto;
-  display: block;
+  flex-shrink: 0;      /* CRITICAL: prevents stacking */
 }
 
