@@ -1,0 +1,69 @@
+/* Reset for clean consistency */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base */
+body {
+  font-family: 'Inter', sans-serif;
+  background: #f7f7f5;
+  color: #111;
+}
+
+/* Centered App Wrapper */
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.tagline {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* Feed */
+.feed {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+/* Card */
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  display: block;
+}
+
+/* Caption */
+.caption {
+  padding: 12px;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
