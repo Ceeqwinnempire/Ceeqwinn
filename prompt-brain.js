@@ -101,7 +101,49 @@ function addSentence(sentence) {
 
 function compilePrompt() {
   const output = document.getElementById("promptOutput");
-  output.textContent = sentenceStack.join(", ");
+
+  let subject = [];
+  let action = [];
+  let scene = [];
+  let outfit = [];
+
+  sentenceStack.forEach(sentence => {
+    const s = sentence.toLowerCase();
+
+    // SUBJECT
+    if (s.includes("girl")) subject.push("young woman");
+    if (s.includes("woman")) subject.push("woman");
+    if (s.includes("man")) subject.push("man");
+
+    // ACTION
+    if (s.includes("dance")) action.push("dancing, dynamic motion");
+    if (s.includes("stand")) action.push("standing confidently");
+    if (s.includes("walk")) action.push("walking gracefully");
+
+    // SCENE
+    if (s.includes("rain")) scene.push("dancing in the rain, rain-soaked atmosphere");
+    if (s.includes("office")) scene.push("modern office setting");
+    if (s.includes("street")) scene.push("urban street environment");
+
+    // OUTFIT
+    if (s.includes("hat")) outfit.push("wearing a hat");
+    if (s.includes("purple")) outfit.push("purple color accents");
+    if (s.includes("frilly")) outfit.push("frilly texture detail");
+  });
+
+  const finalPrompt = [
+    ...new Set(subject),
+    ...new Set(action),
+    ...new Set(scene),
+    ...new Set(outfit),
+    "cinematic lighting",
+    "high detail",
+    "clean composition"
+  ].join(", ");
+
+  output.textContent = finalPrompt;
+}
+
 }
 
 function copyPrompt() {
