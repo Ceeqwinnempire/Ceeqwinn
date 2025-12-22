@@ -80,3 +80,31 @@ function compilePrompt() {
 
   return parts.join(", ") + ". " + negativePrompt;
 }
+// Stores all user sentences
+let sentenceStack = [];
+
+// Listen for Enter key
+const input = document.getElementById("sentenceInput");
+
+input.addEventListener("keydown", function (e) {
+  if (e.key === "Enter" && input.value.trim() !== "") {
+    e.preventDefault();
+    addSentence(input.value.trim());
+    input.value = "";
+  }
+});
+
+function addSentence(sentence) {
+  sentenceStack.push(sentence);
+  compilePrompt();
+}
+
+function compilePrompt() {
+  const output = document.getElementById("promptOutput");
+  output.textContent = sentenceStack.join(", ");
+}
+
+function copyPrompt() {
+  const text = document.getElementById("promptOutput").textContent;
+  navigator.clipboard.writeText(text);
+}
