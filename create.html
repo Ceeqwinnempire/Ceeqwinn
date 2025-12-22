@@ -1,166 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <title>Ceeqwinn Image Studio</title>
-
-  <!-- Fonts kept but safe -->
-  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,600|Inter:300,400" rel="stylesheet">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ceeqwinn Prompt Brain</title>
   <style>
-    /* RESET */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      background: #ffffff;
-      font-family: Inter, Arial, sans-serif;
-      color: #111;
+      font-family: system-ui, sans-serif;
+      background: #0f0f14;
+      color: #fff;
+      padding: 20px;
     }
 
-    .app {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 16px;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .header h1 {
-      font-family: "Playfair Display", serif;
-      font-size: 24px;
-      margin-bottom: 6px;
-    }
-
-    .tagline {
-      font-size: 14px;
-      color: #666;
-    }
-
-    .feed {
-      width: 100%;
-    }
-
-    .card {
-      width: 100%;
-      margin-bottom: 24px;
-    }
-
-    .card img {
-      width: 100%;
-      height: auto; /* VERY IMPORTANT */
-      display: block;
+    input, button {
+      padding: 12px;
       border-radius: 8px;
+      border: none;
+      font-size: 16px;
     }
 
-    .caption {
-      margin-top: 8px;
-      font-size: 13px;
-      color: #444;
-      text-align: center;
+    input {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    button {
+      margin: 5px 5px 5px 0;
+      cursor: pointer;
+    }
+
+    #sentenceBoard {
+      margin-top: 15px;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    .sentenceItem {
+      background: #1c1c26;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #promptOutput {
+      margin-top: 20px;
+      background: #1a1a22;
+      padding: 15px;
+      border-radius: 10px;
+      min-height: 60px;
     }
   </style>
 </head>
 
 <body>
 
-  <main class="app">
+  <h2>Ceeqwinn Prompt Brain</h2>
 
-    <header class="header">
-      <h1>Ceeqwinn Image Studio</h1>
-      <p class="tagline">Clarity-driven prompts for soft, powerful visuals</p>
-    </header>
+  <input
+    id="sentenceInput"
+    type="text"
+    placeholder="Type a sentence and press Enter or Generate"
+  />
 
-    <section class="feed">
+  <button onclick="handleGenerate()">Generate</button>
+  <button onclick="deleteLastSentence()">Undo</button>
+  <button onclick="resetPrompt()">Reset</button>
+  <button onclick="copyPrompt()">Copy Prompt</button>
 
-      <section class="builder">
-        <input
-  type="text"
-  id="sentenceInput"
-  placeholder="Type exactly what you want to see… then press Enter"
-  style="
-    width: 100%;
-    padding: 12px;
-    margin: 12px 0;
-    font-size: 14px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-  "
-/>
+  <div id="sentenceBoard"></div>
 
+  <div id="promptOutput"></div>
 
-  <h2>Build Your Prompt</h2>
-
-  <select id="baseStyle" onchange="buildPrompt()">
-    <option value="">Base Style</option>
-    <option>editorial fashion portrait</option>
-    <option>soft luxury aesthetic</option>
-    <option>cinematic character portrait</option>
-  </select>
-
-  <select id="archetype" onchange="buildPrompt()">
-    <option value="">Archetype</option>
-    <option>faceless luxury woman</option>
-    <option>princess energy professional</option>
-    <option>soft villain muse</option>
-  </select>
-
-  <select id="mood" onchange="buildPrompt()">
-    <option value="">Mood</option>
-    <option>calm confidence</option>
-    <option>dreamy and elegant</option>
-    <option>quiet power</option>
-  </select>
-
-  <select id="lighting" onchange="buildPrompt()">
-    <option value="">Lighting</option>
-    <option>soft studio lighting</option>
-    <option>natural window light</option>
-    <option>cinematic low contrast light</option>
-  </select>
-
-  <select id="camera" onchange="buildPrompt()">
-    <option value="">Camera</option>
-    <option>85mm portrait</option>
-    <option>medium shot</option>
-    <option>fashion editorial framing</option>
-  </select>
-
-  <select id="detail" onchange="buildPrompt()">
-    <option value="">Detail Level</option>
-    <option>high detail, clean composition</option>
-    <option>minimal background, refined texture</option>
-    <option>ultra clean, magazine quality</option>
-  </select>
-
-  <div class="output">
-    <p id="promptOutput"></p>
-    <button onclick="copyPrompt()">Copy Prompt</button>
-  </div>
-
-</section>
-
-      <article class="card">
-        <img src="https://i.postimg.cc/rFQ2nvcs/2D-cartoon-Disney-character-di-(8).jpg" alt="Editorial portrait">
-      </article>
-
-      <article class="card">
-        <img src="https://i.postimg.cc/gkNbSfd0/2D-cartoon-Disney-character-di-(6).jpg" alt="Fashion image">
-        <p class="caption">Faceless Luxury • Studio Light</p>
-      </article>
-
-    </section>
-
-  </main>
-  
-<script src="prompt-brain.js"></script>
+  <script src="brain.js"></script>
 </body>
 </html>
