@@ -60,6 +60,31 @@ function copyPrompt() {
 // 🧠 V2 SEMANTIC GROUNDWORK (SAFE ZONE)
 // ================================
 
+/* 
+  ⚠️ SAFE TO EDIT ZONE
+  This is where intelligence grows.
+*/
+
+function normalizeText(text) {
+  return text
+    .toLowerCase()
+    .replace(/aht/g, "hat")
+    .replace(/frilld/g, "frilled")
+    .replace(/studed/g, "studded")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function extractAfter(sentence, keywords) {
+  for (const key of keywords) {
+    const index = sentence.indexOf(key);
+    if (index !== -1) {
+      return sentence.slice(index + key.length).trim();
+    }
+  }
+  return null;
+}
+
 function parseScene(sentences) {
   const scene = {
     subject: null,
@@ -72,8 +97,8 @@ function parseScene(sentences) {
     }
   };
 
-  sentences.forEach(sentence => {
-    const s = sentence.toLowerCase();
+  sentences.forEach(raw => {
+    const s = normalizeText(raw);
 
     // SUBJECT
     if (!scene.subject && (s.includes("girl") || s.includes("woman"))) {
@@ -84,16 +109,19 @@ function parseScene(sentences) {
     if (s.includes("walking")) scene.actions.push("walking gracefully");
     if (s.includes("standing")) scene.actions.push("standing confidently");
 
-    // WEARABLES
-    if (s.includes("hat")) scene.wearables.push("purple frilled hat");
-    if (s.includes("boots")) scene.wearables.push("diamond-studded boots");
+    // WEARABLES (dynamic)
+    const worn = extractAfter(s, ["wearing", "dressed in", "clothed in"]);
+    if (worn) scene.wearables.push(worn);
 
     // CARRIED OBJECTS
-    if (s.includes("umbrella")) scene.carried.push("umbrella");
+    const carried = extractAfter(s, ["carrying", "holding"]);
+    if (carried) scene.carried.push(carried);
 
     // ENVIRONMENT
     if (s.includes("rain")) scene.environment.atmosphere.push("cinematic rain");
-    if (s.includes("rock")) scene.environment.surfaces.push("rock");
+
+    const surface = extractAfter(s, ["standing on"]);
+    if (surface) scene.environment.surfaces.push(surface);
   });
 
   return scene;
@@ -113,6 +141,7 @@ function buildPromptFromScene(scene) {
 
   return parts.join(", ");
 }
+
 
 // ================================
 // 🎼 V2 BRIDGE (SAFE REPLACEMENT)
