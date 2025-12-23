@@ -4,12 +4,13 @@
 
 let sentenceStack = [];
 
-const NEGATIVE_PROMPT =  `deformed body, extra limbs, extra fingers, distorted face, missing limbs,
+const NEGATIVE_PROMPT = `
+deformed body, extra limbs, extra fingers, distorted face, missing limbs,
 fused hands, double head, blurry skin, long neck, broken joints,
 warped anatomy, watermark, text, logo, grain, frame, distortion,
 cartoonish face, 3D plastic skin, dull lighting, messy background,
 low quality, cropped, bad anatomy, duplicate limbs, blurred details,
-out of frame bad anatomy, distortion, extra limbs, low quality, watermark, oversharpening
+out of frame, oversharpening
 `.replace(/\s+/g, " ").trim();
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -55,24 +56,10 @@ function renderSentenceLog() {
 }
 
 function copyPrompt() {
-  const output = document.getElementById("promptOutput");
-  const visible = output.textContent;
+  const visible = document.getElementById("promptOutput").textContent;
   if (!visible) return;
 
-  const full = visible + ". " + NEGATIVE_PROMPT;
-
-  navigator.clipboard.writeText(full).then(() => {
-    const original = output.textContent;
-    output.textContent = "Copied ✓";
-
-    setTimeout(() => {
-      output.textContent = original;
-    }, 1500);
-  });
-}
-
-
-  const full = visible + ". " + NEGATIVE_PROMPT;
+  const full = visible + ". Negative prompt: " + NEGATIVE_PROMPT;
   navigator.clipboard.writeText(full);
 }
 
@@ -80,25 +67,26 @@ function copyPrompt() {
 // 🧠 V2 SEMANTIC GROUNDWORK (SAFE ZONE)
 // ================================
 
-// ================================
-// 🧠 V2 SEMANTIC GROUNDWORK (SAFE ZONE)
-// ================================
-
-/*
-  ⚠️ SAFE TO EDIT ZONE
-  This layer translates human language → prompt meaning.
-*/
-
 function normalizeText(text) {
   return text
     .toLowerCase()
     .replace(/twrilling/g, "twirling")
     .replace(/frilld/g, "frilled")
     .replace(/aht/g, "hat")
+    .replace(/glden/g, "golden")
     .replace(/lottey/g, "lottery")
     .replace(/calmning/g, "calming")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function extractPhrase(sentence, triggers) {
+  for (const trigger of triggers) {
+    if (sentence.includes(trigger)) {
+      return sentence.split(trigger)[1]?.trim();
+    }
+  }
+  return null;
 }
 
 function parseScene(sentences) {
@@ -129,26 +117,26 @@ function parseScene(sentences) {
     if (s.includes("twirling")) scene.actions.push("twirling fluidly");
     if (s.includes("smiling")) scene.actions.push("gentle smile");
 
-    // WEARABLES (human phrasing)
-    if (s.includes("wearing")) {
-      scene.wearables.push(s.split("wearing")[1].trim());
-    }
+    // WEARABLES
+    const worn = extractPhrase(s, ["wearing", "dressed in", "clothed in"]);
+    if (worn) scene.wearables.push(worn);
 
     // CARRIED OBJECTS
-    if (s.includes("holding")) {
-      scene.carried.push(s.split("holding")[1].trim());
-    }
+    const held = extractPhrase(s, ["holding", "carrying"]);
+    if (held) scene.carried.push(held);
 
     // ENVIRONMENT
     if (s.includes("rain")) scene.environment.atmosphere.push("cinematic rain");
     if (s.includes("desert")) scene.environment.setting.push("vast desert landscape");
-    if (s.includes("flowers")) scene.environment.setting.push("blooming flowers");
+    if (s.includes("rock")) scene.environment.setting.push("standing on a rock");
 
-    // MOOD & AURA (meaning, not keywords)
-    if (s.includes("calm")) scene.mood.push("calm atmosphere");
-    if (s.includes("fantastic")) scene.mood.push("fantastical tone");
-    if (s.includes("power")) scene.aura.push("aura of power");
+    // MOOD
+    if (s.includes("calm")) scene.mood.push("calm, serene mood");
+    if (s.includes("fantastic")) scene.mood.push("fantastical, dreamlike tone");
     if (s.includes("lottery") || s.includes("won")) scene.mood.push("victorious joy");
+
+    // AURA
+    if (s.includes("power")) scene.aura.push("strong aura of power");
   });
 
   return scene;
@@ -171,8 +159,6 @@ function buildPromptFromScene(scene) {
   return parts.join(", ");
 }
 
-
-
 // ================================
 // 🎼 V2 BRIDGE (SAFE REPLACEMENT)
 // ================================
@@ -180,6 +166,5 @@ function buildPromptFromScene(scene) {
 function compilePrompt() {
   const scene = parseScene(sentenceStack);
   const visiblePrompt = buildPromptFromScene(scene);
-
   document.getElementById("promptOutput").textContent = visiblePrompt;
 }
