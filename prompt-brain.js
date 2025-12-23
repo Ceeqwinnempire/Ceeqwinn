@@ -9,7 +9,7 @@ fused hands, double head, blurry skin, long neck, broken joints,
 warped anatomy, watermark, text, logo, grain, frame, distortion,
 cartoonish face, 3D plastic skin, dull lighting, messy background,
 low quality, cropped, bad anatomy, duplicate limbs, blurred details,
-out of frame
+out of frame bad anatomy, distortion, extra limbs, low quality, watermark, oversharpening
 `.replace(/\s+/g, " ").trim();
 "bad anatomy, distortion, extra limbs, low quality, watermark, oversharpening";
 
