@@ -4,8 +4,7 @@
 
 let sentenceStack = [];
 
-const NEGATIVE_PROMPT =  `
-deformed body, extra limbs, extra fingers, distorted face, missing limbs,
+const NEGATIVE_PROMPT =  `deformed body, extra limbs, extra fingers, distorted face, missing limbs,
 fused hands, double head, blurry skin, long neck, broken joints,
 warped anatomy, watermark, text, logo, grain, frame, distortion,
 cartoonish face, 3D plastic skin, dull lighting, messy background,
