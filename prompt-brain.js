@@ -4,8 +4,7 @@
 
 let sentenceStack = [];
 
-const NEGATIVE_PROMPT = "distortion, extra limbs, low quality, watermark, oversharpening
-  ";
+const NEGATIVE_PROMPT = "⚠️ Negative Prompt: deformed body, extra limbs, extra fingers, distorted face, missing limbs, fused hands, double head, blurry skin, long neck, broken joints, warped anatomy, watermark, text, logo, grain, frame, distortion, cartoonish face, 3D plastic skin, dull lighting, messy background, low quality, cropped, bad anatomy, duplicate limbs, blurred details, out of frame.ge Generation)  negative prompt: deformed body, extra limbs, extra fingers, distorted face, missing limbs, fused hands, double head, blurry skin, long neck, broken joints, warped anatomy, watermark, text, logo, grain, frame, distortion, cartoonish face, 3D plastic skin, dull lighting, messy background, low quality, cropped, bad anatomy, duplicate limbs, blurred details, out of frame. distortion, extra limbs, low quality, watermark, oversharpening";
 
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("sentenceInput");
