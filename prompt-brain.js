@@ -1,7 +1,10 @@
+// ================================
+// 🔒 V1 CORE — DO NOT MODIFY
+// ================================
+
 let sentenceStack = [];
 
-const NEGATIVE_PROMPT =
-  "bad anatomy, distortion, extra limbs, low quality, watermark, oversharpening";
+const NEGATIVE_PROMPT = "bad anatomy, distortion, extra limbs, low quality, watermark, oversharpening";
 
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("sentenceInput");
@@ -45,53 +48,79 @@ function renderSentenceLog() {
   log.innerHTML = sentenceStack.map((s, i) => `${i + 1}. ${s}`).join("<br>");
 }
 
-function compilePrompt() {
-  let subject = [];
-  let action = [];
-  let scene = [];
-  let outfit = [];
-
-  sentenceStack.forEach(sentence => {
-    const s = sentence.toLowerCase();
-
-    if (s.includes("girl")) subject.push("young woman");
-    if (s.includes("woman")) subject.push("woman");
-    if (s.includes("man")) subject.push("man");
-
-    if (s.includes("dance")) action.push("dancing, dynamic motion");
-    if (s.includes("stand")) action.push("standing confidently");
-    if (s.includes("walk")) action.push("walking gracefully");
-
-    if (s.includes("rain")) scene.push("rainy atmosphere, cinematic rain");
-    if (s.includes("office")) scene.push("modern office setting");
-    if (s.includes("street")) scene.push("urban street environment");
-
-    if (s.includes("hat")) outfit.push("wearing a hat");
-    if (s.includes("purple")) outfit.push("purple accents");
-    if (s.includes("frilly")) outfit.push("frilled fabric texture");
-    if (s.includes("soaked") || s.includes("wet"))
-      outfit.push("wet fabric, rain-soaked clothing");
-    if (s.includes("diamond") || s.includes("sparkling"))
-      scene.push("sparkling raindrops, jewel-like highlights");
-  });
-
-  const visiblePrompt = [
-    ...new Set(subject),
-    ...new Set(action),
-    ...new Set(scene),
-    ...new Set(outfit),
-    "cinematic lighting",
-    "high detail",
-    "clean composition"
-  ].join(", ");
-
-  document.getElementById("promptOutput").textContent = visiblePrompt;
-}
-
 function copyPrompt() {
   const visible = document.getElementById("promptOutput").textContent;
   if (!visible) return;
 
   const full = visible + ". " + NEGATIVE_PROMPT;
   navigator.clipboard.writeText(full);
+}
+
+// ================================
+// 🧠 V2 SEMANTIC GROUNDWORK (SAFE ZONE)
+// ================================
+
+function parseScene(sentences) {
+  const scene = {
+    subject: null,
+    actions: [],
+    wearables: [],
+    carried: [],
+    environment: {
+      atmosphere: [],
+      surfaces: []
+    }
+  };
+
+  sentences.forEach(sentence => {
+    const s = sentence.toLowerCase();
+
+    // SUBJECT
+    if (!scene.subject && (s.includes("girl") || s.includes("woman"))) {
+      scene.subject = "young woman";
+    }
+
+    // ACTIONS
+    if (s.includes("walking")) scene.actions.push("walking gracefully");
+    if (s.includes("standing")) scene.actions.push("standing confidently");
+
+    // WEARABLES
+    if (s.includes("hat")) scene.wearables.push("purple frilled hat");
+    if (s.includes("boots")) scene.wearables.push("diamond-studded boots");
+
+    // CARRIED OBJECTS
+    if (s.includes("umbrella")) scene.carried.push("umbrella");
+
+    // ENVIRONMENT
+    if (s.includes("rain")) scene.environment.atmosphere.push("cinematic rain");
+    if (s.includes("rock")) scene.environment.surfaces.push("rock");
+  });
+
+  return scene;
+}
+
+function buildPromptFromScene(scene) {
+  const parts = [];
+
+  if (scene.subject) parts.push(scene.subject);
+  if (scene.actions.length) parts.push(scene.actions.join(", "));
+  if (scene.environment.atmosphere.length) parts.push(scene.environment.atmosphere.join(", "));
+  if (scene.environment.surfaces.length) parts.push("standing on " + scene.environment.surfaces.join(", "));
+  if (scene.wearables.length) parts.push("wearing " + scene.wearables.join(" and "));
+  if (scene.carried.length) parts.push("carrying " + scene.carried.join(" and "));
+
+  parts.push("cinematic lighting", "high detail", "clean composition");
+
+  return parts.join(", ");
+}
+
+// ================================
+// 🎼 V2 BRIDGE (SAFE REPLACEMENT)
+// ================================
+
+function compilePrompt() {
+  const scene = parseScene(sentenceStack);
+  const visiblePrompt = buildPromptFromScene(scene);
+
+  document.getElementById("promptOutput").textContent = visiblePrompt;
 }
