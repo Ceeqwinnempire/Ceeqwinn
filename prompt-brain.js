@@ -55,8 +55,22 @@ function renderSentenceLog() {
 }
 
 function copyPrompt() {
-  const visible = document.getElementById("promptOutput").textContent;
+  const output = document.getElementById("promptOutput");
+  const visible = output.textContent;
   if (!visible) return;
+
+  const full = visible + ". " + NEGATIVE_PROMPT;
+
+  navigator.clipboard.writeText(full).then(() => {
+    const original = output.textContent;
+    output.textContent = "Copied ✓";
+
+    setTimeout(() => {
+      output.textContent = original;
+    }, 1500);
+  });
+}
+
 
   const full = visible + ". " + NEGATIVE_PROMPT;
   navigator.clipboard.writeText(full);
