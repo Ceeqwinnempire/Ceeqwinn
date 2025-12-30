@@ -1,5 +1,6 @@
 /* ============================= */
-/* RESET */
+/* RESET
+   Ensures consistent spacing */
 /* ============================= */
 * {
   margin: 0;
@@ -8,7 +9,7 @@
 }
 
 /* ============================= */
-/* BASE */
+/* BASE BODY STYLING */
 /* ============================= */
 body {
   font-family: 'Inter', sans-serif;
@@ -17,16 +18,21 @@ body {
 }
 
 /* ============================= */
-/* APP WRAPPER */
+/* APP WRAPPER
+   Centers everything */
 /* ============================= */
 .app {
   max-width: 720px;
   margin: 0 auto;
   padding: 32px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* ============================= */
-/* HEADER */
+/* HEADER / BRAND */
 /* ============================= */
 .header {
   text-align: center;
@@ -37,6 +43,7 @@ body {
   font-family: 'Playfair Display', serif;
   font-size: 2rem;
   font-weight: 600;
+  margin-bottom: 8px;
 }
 
 .tagline {
@@ -45,106 +52,53 @@ body {
 }
 
 /* ============================= */
-/* FEED */
+/* FEED STACK */
 /* ============================= */
 .feed {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 28px;
 }
 
 /* ============================= */
-/* BUILDER */
-/* ============================= */
-.builder {
-  width: 100%;
-}
-
-.builder h2 {
-  margin-bottom: 12px;
-}
-
-.builder input {
-  width: 100%;
-  padding: 12px;
-  font-size: 15px;
-  margin-bottom: 8px;
-}
-
-.builder-actions button {
-  padding: 10px 14px;
-  font-size: 14px;
-  margin-right: 6px;
-  margin-bottom: 12px;
-}
-
-/* ============================= */
-/* SENTENCE LOG */
-/* ============================= */
-.sentence-log-wrapper {
-  max-height: 160px;
-  overflow: hidden;
-  margin-bottom: 12px;
-}
-
-.sentence-log {
-  max-height: 160px;
-  overflow-y: auto;
-  padding-right: 6px;
-  font-size: 0.8rem;
-  line-height: 1.4;
-  color: #555;
-}
-
-.sentence-log::-webkit-scrollbar {
-  width: 6px;
-}
-
-.sentence-log::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.25);
-  border-radius: 4px;
-}
-
-/* ============================= */
-/* OUTPUT */
-/* ============================= */
-.output {
-  background: #f4f4f4;
-  padding: 14px;
-  border-radius: 8px;
-}
-
-.output button {
-  margin-top: 8px;
-  padding: 10px 14px;
-}
-
-/* ============================= */
-/* IMAGE CARDS */
+/* IMAGE CARD */
 /* ============================= */
 .card {
   width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 88vh;
+
   background: #111;
   border-radius: 18px;
-  padding: 12px;
+  overflow: hidden;
 
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
+/* ============================= */
+/* IMAGE BEHAVIOR
+   Creates the "peek" effect */
+/* ============================= */
 .card img {
   width: 100%;
+  height: auto;
   max-height: 70vh;
   object-fit: contain;
-  border-radius: 10px;
+  display: block;
+
+  border-radius: 8px;
   background: #f5f5f5;
 }
 
+/* ============================= */
+/* CAPTION */
+/* ============================= */
 .caption {
-  margin-top: 10px;
+  padding: 12px;
   font-size: 0.85rem;
   opacity: 0.8;
-  text-align: center;
 }
+
