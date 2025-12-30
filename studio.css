@@ -107,20 +107,19 @@ body {
    Scrollable prompt history */
 /* ============================= */
 
-#sentencelog {
-  max-height: 160px;      /* limits height */
-  overflow-y: auto;       /* enables vertical scroll */
-  padding-right: 6px;     /* scrollbar spacing */
+#sentenceLog {
+  max-height: 160px;
+  overflow-y: auto;
+  padding-right: 6px;
   margin-top: 8px;
 
   font-size: 0.8rem;
   line-height: 1.4;
   color: #555;
 
-  scrollbar-width: thin; /* Firefox */
+  scrollbar-width: thin;
 }
 
-/* WebKit scrollbar styling */
 #sentenceLog::-webkit-scrollbar {
   width: 6px;
 }
