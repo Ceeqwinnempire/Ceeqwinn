@@ -1,11 +1,24 @@
 // ================================
 // 🔒 V1 CORE — DO NOT MODIFY
+// Purpose:
+// - Stores raw user sentences
+// - Holds the permanent negative prompt
+// - Handles input + stack control
 // ================================
 
+// Stores every sentence the user adds (in order)
 let sentenceStack = [];
 
+// Permanent negative prompt (always appended during packaging)
 const NEGATIVE_PROMPT =
   "⚠️ Negative Prompt: deformed body, extra limbs, extra fingers, watermark, distorted face, missing limbs, fused hands, double head, blurry skin, long neck, broken joints, warped anatomy, watermark, text, logo, grain, frame, distortion, cartoonish face, 3D plastic skin, dull lighting, messy background, low quality, cropped, bad anatomy, duplicate limbs, blurred details, out of frame generation, distortion, extra limbs, low quality, watermark, oversharpening";
+
+// ================================
+// 🧠 INPUT LISTENER (KEYBOARD)
+// Purpose:
+// - Captures Enter key
+// - Pushes sentence into stack
+// ================================
 
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("sentenceInput");
@@ -19,6 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// ================================
+// ➕ SENTENCE ADDERS
+// Purpose:
+// - Add sentence via button or keyboard
+// ================================
+
 function addSentenceFromButton() {
   const input = document.getElementById("sentenceInput");
   addSentence(input.value);
@@ -27,10 +46,21 @@ function addSentenceFromButton() {
 
 function addSentence(sentence) {
   if (!sentence.trim()) return;
+
+  // Push raw sentence into memory
   sentenceStack.push(sentence.trim());
+
+  // Rebuild prompt + refresh UI
   compilePrompt();
   renderSentenceLog();
 }
+
+// ================================
+// ⏪ STACK CONTROL
+// Purpose:
+// - Undo last sentence
+// - Reset entire prompt
+// ================================
 
 function deleteLastSentence() {
   sentenceStack.pop();
@@ -44,6 +74,12 @@ function resetPrompt() {
   document.getElementById("sentenceLog").textContent = "";
 }
 
+// ================================
+// 📜 SENTENCE LOG RENDERER
+// Purpose:
+// - Displays sentence history in UI
+// ================================
+
 function renderSentenceLog() {
   const log = document.getElementById("sentenceLog");
   log.innerHTML = sentenceStack
@@ -53,15 +89,19 @@ function renderSentenceLog() {
 
 // ================================
 // 📦 COPY / PACKAGE PROMPT (MOBILE SAFE)
+// Purpose:
+// - Packages visible prompt + negatives
+// - Copies safely on mobile & desktop
 // ================================
 
 function copyPrompt() {
   const visible = document.getElementById("promptOutput").textContent;
   if (!visible) return;
 
+  // Final packaged prompt
   const full = visible + ". " + NEGATIVE_PROMPT;
 
-  // Mobile-safe clipboard copy
+  // Mobile-safe clipboard method
   const textarea = document.createElement("textarea");
   textarea.value = full;
   textarea.setAttribute("readonly", "");
@@ -83,8 +123,13 @@ function copyPrompt() {
 
 // ================================
 // 🧠 V2 SEMANTIC ENGINE — FINAL
+// Purpose:
+// - Classifies sentences
+// - Organizes prompt meaning
+// - Enables harmony + structure
 // ================================
 
+// Keyword map for semantic classification
 const SEMANTIC_MAP = {
   subject: ["girl", "woman", "girls", "women"],
   action: ["walking", "standing", "twirling", "smiling", "running"],
@@ -93,6 +138,14 @@ const SEMANTIC_MAP = {
   environment: ["rain", "desert", "forest", "moon", "mountain", "sky"],
   mood: ["calm", "power", "fantastic", "soft", "dark", "victorious"]
 };
+
+// ================================
+// ✨ NORMALIZATION LAYER
+// Purpose:
+// - Corrects spelling
+// - Cleans spacing
+// - Prepares text for logic
+// ================================
 
 function normalizeText(text) {
   return text
@@ -105,12 +158,24 @@ function normalizeText(text) {
     .trim();
 }
 
+// ================================
+// 🏷️ SENTENCE CLASSIFIER
+// Purpose:
+// - Determines what a sentence represents
+// ================================
+
 function classifySentence(sentence) {
   for (const [type, keywords] of Object.entries(SEMANTIC_MAP)) {
     if (keywords.some(k => sentence.includes(k))) return type;
   }
   return "descriptive";
 }
+
+// ================================
+// 🎭 SCENE PARSER
+// Purpose:
+// - Converts raw sentences into structured scene data
+// ================================
 
 function parseScene(sentences) {
   const scene = {
@@ -167,6 +232,12 @@ function parseScene(sentences) {
   return scene;
 }
 
+// ================================
+// 🧵 PROMPT COMPOSER
+// Purpose:
+// - Orders scene data into a clean prompt
+// ================================
+
 function buildPromptFromScene(scene) {
   return [
     scene.subject,
@@ -190,6 +261,8 @@ function buildPromptFromScene(scene) {
 
 // ================================
 // 🎼 V2 BRIDGE (SAFE)
+// Purpose:
+// - Connects sentence stack → semantic engine → UI
 // ================================
 
 function compilePrompt() {
