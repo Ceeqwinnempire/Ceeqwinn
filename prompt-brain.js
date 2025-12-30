@@ -119,7 +119,17 @@ function copyPrompt() {
   }
 
   document.body.removeChild(textarea);
-}
+    // --- V1 PACKAGE FEEDBACK ANIMATION ---
+  const output = document.querySelector(".output");
+  if (output) {
+    output.classList.remove("packaged");
+    void output.offsetWidth; // force reflow
+    output.classList.add("packaged");
+
+    setTimeout(() => {
+      output.classList.remove("packaged");
+    }, 1500);
+  }
 
 // ================================
 // 🧠 V2 SEMANTIC ENGINE — FINAL
