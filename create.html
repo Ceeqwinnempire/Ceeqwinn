@@ -1,133 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ceeqwinn Image Studio</title>
 
   <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,600|Inter:300,400" rel="stylesheet">
 
   <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
-      font-family: Inter, sans-serif;
     }
 
     body {
-      background: #f6f6f6;
-      padding: 20px;
-    }
-
-    .studio {
-      max-width: 520px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-    }
-
-    h1 {
-      font-family: "Playfair Display", serif;
-      font-size: 22px;
-      margin-bottom: 12px;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 90px;
-      padding: 10px;
-      font-size: 13px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      resize: vertical;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 8px 14px;
-      font-size: 13px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      background: #111;
-      color: #fff;
-    }
-
-    button.secondary {
-      background: #e6e6e6;
+      background: #ffffff;
+      font-family: Inter, Arial, sans-serif;
       color: #111;
     }
 
-    /* ================================
-       ✅ ITEM 1: Sentence log scrolling
-       ================================ */
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .feed {
+      width: 100%;
+    }
+
+    .builder h2 {
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .builder input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .builder button {
+      padding: 10px;
+      margin: 4px 4px 12px 0;
+      font-size: 14px;
+    }
+
+    .output {
+      background: #f4f4f4;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
     .sentence-log {
       font-size: 12px;
       color: #555;
       margin-bottom: 12px;
-
-      max-height: 140px;
-      overflow-y: auto;
-      overflow-x: hidden;
-      scroll-behavior: smooth;
-      padding-right: 6px;
     }
 
-    .sentence-log::-webkit-scrollbar {
-      width: 5px;
+    .card {
+      width: 100%;
+      margin-bottom: 24px;
     }
 
-    .sentence-log::-webkit-scrollbar-thumb {
-      background: rgba(0,0,0,0.25);
-      border-radius: 4px;
+    .card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
     }
 
-    /* ================================
-       ✅ ITEM 4: Packaged notice
-       ================================ */
-    .packaged-notice {
-      opacity: 0;
-      transform: translateY(6px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-      font-size: 12px;
+    .caption {
+      margin-top: 8px;
+      font-size: 13px;
       color: #444;
-      margin-top: 6px;
-    }
-
-    .packaged-notice.show {
-      opacity: 1;
-      transform: translateY(0);
+      text-align: center;
     }
   </style>
 </head>
 
 <body>
-  <div class="studio">
+
+<main class="app">
+
+  <header class="header">
     <h1>Ceeqwinn Image Studio</h1>
+    <p class="tagline">Clarity-driven prompts for soft, powerful visuals</p>
+  </header>
 
-    <!-- Sentence history -->
-    <div id="sentenceLog" class="sentence-log"></div>
+  <section class="feed">
 
-    <!-- Input -->
-    <textarea id="sentenceInput" placeholder="Add a sentence to the prompt..."></textarea>
+    <section class="builder">
+      <h2>Build Your Prompt</h2>
 
-    <!-- Controls -->
-    <button onclick="addSentenceFromButton()">Insert</button>
-    <br />
+      <input
+        id="sentenceInput"
+        type="text"
+        placeholder="Type a sentence and press Enter or Generate"
+      >
 
-    <button class="secondary" onclick="packagePrompt()">Package Prompt</button>
+      <button onclick="addSentenceFromButton()">Generate</button>
+      <button onclick="deleteLastSentence()">Undo</button>
+      <button onclick="resetPrompt()">Reset</button>
 
-    <!-- ✅ ITEM 4: Soft confirmation -->
-    <div id="packagedNotice" class="packaged-notice">
-      Prompt Packaged ✓
-    </div>
+      <div class="sentence-log" id="sentenceLog"></div>
 
-    <!-- Output -->
-    <textarea id="finalPrompt" placeholder="Your compiled prompt will appear here..."></textarea>
-  </div>
+      <div class="output">
+        <p id="promptOutput"></p>
+        <button onclick="copyPrompt()">Copy Prompt</button>
+      </div>
+    </section>
 
-  <!-- 🔒 CORE LOGIC FILE -->
-  <script src="prompt-brain.js"></script>
+    <article class="card">
+      <img src="https://i.postimg.cc/rFQ2nvcs/2D-cartoon-Disney-character-di-(8).jpg">
+    </article>
+
+    <article class="card">
+      <img src="https://i.postimg.cc/gkNbSfd0/2D-cartoon-Disney-character-di-(6).jpg">
+      <p class="caption">Faceless Luxury • Studio Light</p>
+    </article>
+
+  </section>
+
+</main>
+
+<script src="prompt-brain.js"></script>
 </body>
 </html>
