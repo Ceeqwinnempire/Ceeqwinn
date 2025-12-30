@@ -101,3 +101,31 @@ body {
   font-size: 0.85rem;
   opacity: 0.8;
 }
+
+/* ============================= */
+/* SENTENCE LOG
+   Scrollable prompt history */
+/* ============================= */
+
+.sentence-log {
+  max-height: 160px;      /* limits height */
+  overflow-y: auto;       /* enables vertical scroll */
+  padding-right: 6px;     /* scrollbar spacing */
+  margin-top: 8px;
+
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: #555;
+
+  scrollbar-width: thin; /* Firefox */
+}
+
+/* WebKit scrollbar styling */
+.sentence-log::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sentence-log::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+}
