@@ -4,7 +4,8 @@
 
 let sentenceStack = [];
 
-const NEGATIVE_PROMPT = "⚠️ Negative Prompt: deformed body, extra limbs, extra fingers, watermark, distorted face, missing limbs, fused hands, double head, blurry skin, long neck, broken joints, warped anatomy, watermark, text, logo, grain, frame, distortion, cartoonish face, 3D plastic skin, dull lighting, messy background, low quality, cropped, bad anatomy, duplicate limbs, blurred details, out of frame generation, deformed body, extra limbs, extra fingers, distorted face, missing limbs, fused hands, double head, blurry skin, long neck, broken joints, warped anatomy, watermark, text, logo, grain, frame, distortion, cartoonish face, 3D plastic skin, dull lighting, messy background, low quality, cropped, bad anatomy, duplicate limbs, blurred details, out of frame. distortion, extra limbs, low quality, watermark, oversharpening";
+const NEGATIVE_PROMPT =
+  "⚠️ Negative Prompt: deformed body, extra limbs, extra fingers, watermark, distorted face, missing limbs, fused hands, double head, blurry skin, long neck, broken joints, warped anatomy, watermark, text, logo, grain, frame, distortion, cartoonish face, 3D plastic skin, dull lighting, messy background, low quality, cropped, bad anatomy, duplicate limbs, blurred details, out of frame generation, distortion, extra limbs, low quality, watermark, oversharpening";
 
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("sentenceInput");
@@ -45,15 +46,39 @@ function resetPrompt() {
 
 function renderSentenceLog() {
   const log = document.getElementById("sentenceLog");
-  log.innerHTML = sentenceStack.map((s, i) => `${i + 1}. ${s}`).join("<br>");
+  log.innerHTML = sentenceStack
+    .map((s, i) => `${i + 1}. ${s}`)
+    .join("<br>");
 }
+
+// ================================
+// 📦 COPY / PACKAGE PROMPT (MOBILE SAFE)
+// ================================
 
 function copyPrompt() {
   const visible = document.getElementById("promptOutput").textContent;
   if (!visible) return;
 
   const full = visible + ". " + NEGATIVE_PROMPT;
-  navigator.clipboard.writeText(full);
+
+  // Mobile-safe clipboard copy
+  const textarea = document.createElement("textarea");
+  textarea.value = full;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "absolute";
+  textarea.style.left = "-9999px";
+
+  document.body.appendChild(textarea);
+  textarea.select();
+  textarea.setSelectionRange(0, textarea.value.length);
+
+  try {
+    document.execCommand("copy");
+  } catch (err) {
+    console.warn("Copy failed", err);
+  }
+
+  document.body.removeChild(textarea);
 }
 
 // ================================
@@ -66,7 +91,7 @@ const SEMANTIC_MAP = {
   wear: ["wearing", "dressed in", "clad in"],
   carry: ["holding", "carrying"],
   environment: ["rain", "desert", "forest", "moon", "mountain", "sky"],
-  mood: ["calm", "power", "fantastic", "soft", "dark", "victorious"],
+  mood: ["calm", "power", "fantastic", "soft", "dark", "victorious"]
 };
 
 function normalizeText(text) {
@@ -104,9 +129,10 @@ function parseScene(sentences) {
 
     switch (type) {
       case "subject":
-        scene.subject = s.includes("girls") || s.includes("women")
-          ? "group of young women"
-          : "young woman";
+        scene.subject =
+          s.includes("girls") || s.includes("women")
+            ? "group of young women"
+            : "young woman";
         break;
 
       case "action":
@@ -114,11 +140,15 @@ function parseScene(sentences) {
         break;
 
       case "wear":
-        scene.wearables.push(s.replace(/wearing|dressed in|clad in/, "").trim());
+        scene.wearables.push(
+          s.replace(/wearing|dressed in|clad in/, "").trim()
+        );
         break;
 
       case "carry":
-        scene.carried.push(s.replace(/holding|carrying/, "").trim());
+        scene.carried.push(
+          s.replace(/holding|carrying/, "").trim()
+        );
         break;
 
       case "environment":
@@ -142,24 +172,28 @@ function buildPromptFromScene(scene) {
     scene.subject,
     scene.actions.join(", "),
     scene.environment.join(", "),
-    scene.wearables.length ? "wearing " + scene.wearables.join(" and ") : "",
-    scene.carried.length ? "carrying " + scene.carried.join(" and ") : "",
+    scene.wearables.length
+      ? "wearing " + scene.wearables.join(" and ")
+      : "",
+    scene.carried.length
+      ? "carrying " + scene.carried.join(" and ")
+      : "",
     scene.mood.join(", "),
     scene.descriptive.join(", "),
     "cinematic lighting",
     "high detail",
     "clean composition"
-  ].filter(Boolean).join(", ");
+  ]
+    .filter(Boolean)
+    .join(", ");
 }
 
 // ================================
-// 🎼 V2 BRIDGE (SAFE REPLACEMENT)
+// 🎼 V2 BRIDGE (SAFE)
 // ================================
 
 function compilePrompt() {
   const scene = parseScene(sentenceStack);
   const visiblePrompt = buildPromptFromScene(scene);
-
   document.getElementById("promptOutput").textContent = visiblePrompt;
 }
-
