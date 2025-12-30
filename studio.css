@@ -129,8 +129,7 @@ body {
   border-radius: 4px;
 }
 /* ============================= */
-/* SENTENCE LOG WRAPPER
-   Defines scroll boundary */
+/* SENTENCE LOG (FINAL V1) */
 /* ============================= */
 
 .sentence-log-wrapper {
@@ -140,7 +139,6 @@ body {
   margin-top: 8px;
 }
 
-/* Inner scroll */
 .sentence-log {
   max-height: 160px;
   overflow-y: auto;
@@ -149,4 +147,15 @@ body {
   font-size: 0.8rem;
   line-height: 1.4;
   color: #555;
+
+  scrollbar-width: thin;
+}
+
+.sentence-log::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sentence-log::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
 }
