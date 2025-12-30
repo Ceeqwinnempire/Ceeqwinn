@@ -1,72 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- ===============================
+       DOCUMENT METADATA
+       =============================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ceeqwinn Image Studio</title>
 
-  <!-- Fonts -->
+  <!-- ===============================
+       FONTS
+       =============================== -->
   <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,600|Inter:300,400" rel="stylesheet">
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css" />
+  <!-- ===============================
+       INLINE STYLES (V1)
+       This controls layout + visuals only
+       =============================== -->
+  <style>
+
+    /* ---------- GLOBAL RESET ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ---------- PAGE BASE ---------- */
+    body {
+      background: #ffffff;
+      font-family: Inter, Arial, sans-serif;
+      color: #111;
+    }
+
+    /* ---------- APP CONTAINER ---------- */
+    /* Centers the app and controls width */
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* ---------- HEADER SECTION ---------- */
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* ---------- MAIN FEED WRAPPER ---------- */
+    /* Holds builder + image cards */
+    .feed {
+      width: 100%;
+    }
+
+    /* ---------- PROMPT BUILDER ---------- */
+    .builder h2 {
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    /* Sentence input field */
+    .builder input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    /* Builder action buttons */
+    .builder button {
+      padding: 10px;
+      margin: 4px 4px 12px 0;
+      font-size: 14px;
+    }
+
+    /* ---------- SENTENCE LOG ---------- */
+    /* Displays entered sentences */
+    .sentence-log {
+      font-size: 12px;
+      color: #555;
+      margin-bottom: 12px;
+    }
+
+    /* ---------- PROMPT OUTPUT ---------- */
+    /* Where compiled prompt appears */
+    .output {
+      background: #f4f4f4;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    /* ---------- IMAGE CARDS ---------- */
+    /* Visual inspiration / examples */
+    .card {
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+    }
+
+    .caption {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #444;
+      text-align: center;
+    }
+
+  </style>
 </head>
 
 <body>
-  <main class="app">
 
-    <!-- Header -->
-    <header class="header">
-      <h1>Ceeqwinn Image Studio</h1>
-      <p class="tagline">Clarity-driven prompts for soft, powerful visuals</p>
-    </header>
+<!-- ===============================
+     APP ROOT
+     Everything visible lives inside here
+     =============================== -->
+<main class="app">
 
-    <!-- Feed -->
-    <section class="feed">
+  <!-- ---------- BRAND HEADER ---------- -->
+  <header class="header">
+    <h1>Ceeqwinn Image Studio</h1>
+    <p class="tagline">Clarity-driven prompts for soft, powerful visuals</p>
+  </header>
 
-      <!-- Prompt Builder -->
-      <section class="builder">
-        <h2>Build Your Prompt</h2>
+  <!-- ===============================
+       MAIN CONTENT FEED
+       =============================== -->
+  <section class="feed">
 
-        <input
-          id="sentenceInput"
-          type="text"
-          placeholder="Type a sentence and press Enter or Generate"
-        />
+    <!-- ===============================
+         PROMPT BUILDER UI
+         (Connected to prompt-brain.js)
+         =============================== -->
+    <section class="builder">
+      <h2>Build Your Prompt</h2>
 
-        <div class="builder-actions">
-          <button onclick="addSentenceFromButton()">Generate</button>
-          <button onclick="deleteLastSentence()">Undo</button>
-          <button onclick="resetPrompt()">Reset</button>
-        </div>
+      <!-- Sentence input -->
+      <input
+        id="sentenceInput"
+        type="text"
+        placeholder="Type a sentence and press Enter or Generate"
+      >
 
-        <!-- Sentence Log -->
-        <div class="sentence-log-wrapper">
-          <div class="sentence-log" id="sentenceLog"></div>
-        </div>
+      <!-- Builder controls -->
+      <button onclick="addSentenceFromButton()">Generate</button>
+      <button onclick="deleteLastSentence()">Undo</button>
+      <button onclick="resetPrompt()">Reset</button>
 
-        <!-- Output -->
-        <div class="output">
-          <p id="promptOutput"></p>
-          <button onclick="copyPrompt()">Package Prompt</button>
-        </div>
-      </section>
+      <!-- Sentence history display -->
+      <div class="sentence-log" id="sentenceLog"></div>
 
-      <!-- Image Cards -->
-      <article class="card">
-        <img src="https://i.postimg.cc/rFQ2nvcs/2D-cartoon-Disney-character-di-(8).jpg" />
-      </article>
+      <!-- Compiled prompt output -->
+      <div class="output">
+        <p id="promptOutput"></p>
 
-      <article class="card">
-        <img src="https://i.postimg.cc/gkNbSfd0/2D-cartoon-Disney-character-di-(6).jpg" />
-        <p class="caption">Faceless Luxury • Studio Light</p>
-      </article>
-
+        <!-- Action button (will be renamed later) -->
+        <button onclick="copyPrompt()">Copy Prompt</button>
+      </div>
     </section>
-  </main>
 
-  <!-- JS (UNCHANGED) -->
-  <script src="prompt-brain.js"></script>
+    <!-- ===============================
+         IMAGE EXAMPLES / FEED CARDS
+         =============================== -->
+    <article class="card">
+      <img src="https://i.postimg.cc/rFQ2nvcs/2D-cartoon-Disney-character-di-(8).jpg">
+    </article>
+
+    <article class="card">
+      <img src="https://i.postimg.cc/gkNbSfd0/2D-cartoon-Disney-character-di-(6).jpg">
+      <p class="caption">Faceless Luxury • Studio Light</p>
+    </article>
+
+  </section>
+
+</main>
+
+<!-- ===============================
+     PROMPT ENGINE (LOGIC ONLY)
+     =============================== -->
+<script src="prompt-brain.js"></script>
+
 </body>
 </html>
-
