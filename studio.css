@@ -78,10 +78,6 @@ body {
   justify-content: center;
 }
 
-/* ============================= */
-/* IMAGE BEHAVIOR
-   Creates the "peek" effect */
-/* ============================= */
 .card img {
   width: 100%;
   height: auto;
@@ -93,11 +89,120 @@ body {
   background: #f5f5f5;
 }
 
-/* ============================= */
-/* CAPTION */
-/* ============================= */
 .caption {
   padding: 12px;
   font-size: 0.85rem;
   opacity: 0.8;
+  text-align: center;
+}
+
+/* ============================= */
+/* BUILDER / INPUT */
+/* ============================= */
+.builder {
+  width: 100%;
+}
+
+.builder h2 {
+  margin-bottom: 12px;
+}
+
+.builder input {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.builder button {
+  padding: 10px 14px;
+  font-size: 14px;
+  margin-right: 6px;
+  margin-bottom: 12px;
+}
+
+/* ============================= */
+/* SENTENCE LOG SCROLLING */
+/* ============================= */
+.sentence-log-wrapper {
+  max-height: 160px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.sentence-log {
+  max-height: 160px;
+  overflow-y: auto;
+  padding-right: 6px;
+
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: #555;
+
+  scroll-behavior: smooth;
+}
+
+.sentence-log::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sentence-log::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.25);
+  border-radius: 4px;
+}
+
+/* ============================= */
+/* OUTPUT AREA + ANIMATION */
+/* ============================= */
+.output {
+  width: 100%;
+  background: #f4f4f4;
+  padding: 14px;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.output button {
+  margin-top: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+/* Prompt packaged animation */
+.output.packaged {
+  animation: promptPackaged 1.5s ease forwards;
+}
+
+@keyframes promptPackaged {
+  0% { opacity: 0; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* ============================= */
+/* MOBILE ADJUSTMENTS */
+/* ============================= */
+@media (max-width: 480px) {
+  .app {
+    padding: 16px;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .tagline {
+    font-size: 0.8rem;
+  }
+
+  .builder input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .builder button {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
 }
