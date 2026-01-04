@@ -79,7 +79,7 @@ function compilePrompt() {
 // ================================
 // 📦 COPY / PACKAGE PROMPT (STABLE)
 // ================================
-function PackagePrompt() {
+function packagePrompt() {
   const visible = document.getElementById("promptOutput").textContent;
   if (!visible) return;
 
