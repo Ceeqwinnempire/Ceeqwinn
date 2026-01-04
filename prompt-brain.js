@@ -1,3 +1,4 @@
+
 // ================================
 // 🔒 CORE STATE (STABLE)
 // ================================
@@ -93,8 +94,31 @@ function packagePrompt() {
   document.body.appendChild(textarea);
   textarea.select();
 
-  try { document.execCommand("copy"); } catch (err) { console.warn(err); }
+  try {
+  document.execCommand("copy");
+  showPackageStatus();
+} catch (err) {
+  console.warn(err);
+}
 
   document.body.removeChild(textarea);
 }
+// ================================
+// ✨ PACKAGE FEEDBACK (V1 UX FIX)
+// ================================
+function showPackageStatus() {
+  let status = document.getElementById("packageStatus");
 
+  if (!status) {
+    status = document.createElement("div");
+    status.id = "packageStatus";
+    status.textContent = "Prompt packaged ✓";
+    document.body.appendChild(status);
+  }
+
+  status.classList.add("visible");
+
+  setTimeout(() => {
+    status.classList.remove("visible");
+  }, 1500);
+}
