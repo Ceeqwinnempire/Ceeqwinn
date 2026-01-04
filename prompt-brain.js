@@ -83,55 +83,66 @@ output.textContent = sentenceStack.join(", ");
 // 📦 COPY / PACKAGE PROMPT (STABLE)
 // ================================
 function packagePrompt() {
-const outputEl = document.getElementById("promptOutput");
-if (!outputEl || !outputEl.textContent) return;
+  const outputEl = document.getElementById("promptOutput");
+  if (!outputEl || !outputEl.textContent.trim()) return;
 
+  const full = outputEl.textContent + ". " + NEGATIVE_PROMPT;
 
-const full = outputEl.textContent + ". " + NEGATIVE_PROMPT;
+  const textarea = document.createElement("textarea");
+  textarea.value = full;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "absolute";
+  textarea.style.left = "-9999px";
 
+  document.body.appendChild(textarea);
+  textarea.select();
 
-const textarea = document.createElement("textarea");
-textarea.value = full;
-textarea.setAttribute("readonly", "");
-textarea.style.position = "absolute";
-textarea.style.left = "-9999px";
+  try {
+    document.execCommand("copy");
+    showPackageStatus();
+  } catch (err) {
+    console.warn("Copy failed:", err);
+  }
 
-
-document.body.appendChild(textarea);
-textarea.select();
-
-
-try {
-document.execCommand("copy");
-showPackageStatus();
-} catch (err) {
-console.warn(err);
+  document.body.removeChild(textarea);
 }
-
-
-document.body.removeChild(textarea);
-}
-
 
 // ================================
-// ✨ PACKAGE FEEDBACK (V1 UX FIX)
+// ✨ PACKAGE FEEDBACK (CLEAN)
 // ================================
 function showPackageStatus() {
-let status = document.getElementById("packageStatus");
+  let status = document.getElementById("packageStatus");
 
+  if (!status) {
+    status = document.createElement("div");
+    status.id = "packageStatus";
+    status.textContent = "Prompt packaged ✓";
+    document.body.appendChild(status);
+  }
 
-if (!status) {
-status = document.createElement("div");
-status.id = "packageStatus";
-status.textContent = "Prompt packaged ✓";
-document.body.appendChild(status);
+  status.classList.add("visible");
+
+  setTimeout(() => {
+    status.classList.remove("visible");
+  }, 1500);
 }
 
+// ================================
+// ✨ MAGIC ADD BUTTON (CANONICAL)
+// ================================
+document.addEventListener("DOMContentLoaded", () => {
+  const magicBtn = document.getElementById("magicAddBtn");
 
-status.classList.add("visible");
+  if (!magicBtn) return;
+
+  magicBtn.addEventListener("click", () => {
+    const input = document.getElementById("sentenceInput");
+    if (!input || !input.value.trim()) return;
+
+    addSentence(input.value.trim());
+    input.value = "";
+  });
+});
 
 
-setTimeout(() => {
-status.classList.remove("visible");
-}, 1500);
-}
+
