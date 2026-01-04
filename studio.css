@@ -101,3 +101,31 @@ body {
   font-size: 0.85rem;
   opacity: 0.8;
 }
+/* ============================= */
+/* PACKAGE PROMPT FEEDBACK
+   Non-intrusive toast message */
+/* ============================= */
+#packageStatus {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: #111;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+
+  font-size: 0.8rem;
+  letter-spacing: 0.2px;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  z-index: 9999;
+}
+
+#packageStatus.visible {
+  opacity: 1;
+}
