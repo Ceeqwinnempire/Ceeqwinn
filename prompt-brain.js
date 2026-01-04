@@ -142,6 +142,19 @@ function copyPrompt() {
 
   document.body.removeChild(textarea);
 }
+// ================================
+// 🧩 V1 FALLBACK PROMPT COMPILER
+// Purpose:
+// - Prevent JS crashes
+// - Restore button functionality
+// ================================
+
+function compilePrompt() {
+  const output = document.getElementById("promptOutput");
+  if (!output) return;
+
+  output.textContent = sentenceStack.join(", ");
+}
 
 // ================================
 // 🧠 V2 SEMANTIC ENGINE — FINAL
