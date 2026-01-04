@@ -1,46 +1,16 @@
-
 // ================================
-// 🔒 V1 CORE — DO NOT MODIFY
-// Purpose:
-// - Stores raw user sentences
-// - Holds the permanent negative prompt
-// - Handles input + stack control
+// 🔒 CORE STATE (STABLE)
 // ================================
-
-// Stores every sentence the user adds (in order)
 let sentenceStack = [];
 
-// Permanent negative prompt (always appended during packaging)
 const NEGATIVE_PROMPT =
-  "⚠️ Negative Prompt: deformed body, extra limbs, extra fingers, watermark, distorted face, missing limbs, fused hands, double head, blurry skin, long neck, broken joints, warped anatomy, watermark, text, logo, grain, frame, distortion, cartoonish face, 3D plastic skin, dull lighting, messy background, low quality, cropped, bad anatomy, duplicate limbs, blurred details, out of frame generation, distortion, extra limbs, low quality, watermark, oversharpening";
+  "⚠️ Negative Prompt: deformed body, extra limbs, extra fingers, watermark, distorted face, missing limbs, fused hands, double head, blurry skin, long neck, broken joints, warped anatomy, text, logo, grain, frame, distortion, cartoonish face, 3D plastic skin, dull lighting, messy background, low quality, cropped, bad anatomy, duplicate limbs, blurred details, out of frame generation, oversharpening";
 
 // ================================
-// 🛡️ SAFETY HELPERS (V1.1)
-// Purpose:
-// - Prevent empty / duplicate pushes
-// - Centralize validation
+// 🧠 INPUT LISTENER (RESTORED)
 // ================================
-
-function isValidSentence(sentence) {
-  if (!sentence) return false;
-
-  const cleaned = sentence.trim();
-  if (cleaned.length < 3) return false;
-  if (sentenceStack.includes(cleaned)) return false;
-
-  return true;
-}
-
-// ================================
-// 🧠 INPUT LISTENER (KEYBOARD)
-// Purpose:
-// - Captures Enter key
-// - Pushes sentence into stack
-// ================================
-
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("sentenceInput");
-
   if (!input) return;
 
   input.addEventListener("keydown", e => {
@@ -54,38 +24,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ================================
 // ➕ SENTENCE ADDERS
-// Purpose:
-// - Add sentence via button or keyboard
 // ================================
-
 function addSentenceFromButton() {
   const input = document.getElementById("sentenceInput");
   if (!input) return;
-
   addSentence(input.value);
   input.value = "";
 }
 
 function addSentence(sentence) {
-  if (!isValidSentence(sentence)) return;
-
-  const cleaned = sentence.trim();
-  sentenceStack.push(cleaned);
-
+  if (!sentence || !sentence.trim()) return;
+  sentenceStack.push(sentence.trim());
   compilePrompt();
   renderSentenceLog();
 }
 
 // ================================
 // ⏪ STACK CONTROL
-// Purpose:
-// - Undo last sentence
-// - Reset entire prompt
 // ================================
-
 function deleteLastSentence() {
-  if (sentenceStack.length === 0) return;
-
   sentenceStack.pop();
   compilePrompt();
   renderSentenceLog();
@@ -98,32 +55,35 @@ function resetPrompt() {
 }
 
 // ================================
-// 📜 SENTENCE LOG RENDERER
-// Purpose:
-// - Displays sentence history in UI
+// 📜 SENTENCE LOG
 // ================================
-
 function renderSentenceLog() {
   const log = document.getElementById("sentenceLog");
-  log.innerHTML = sentenceStack
-    .map((s, i) => `${i + 1}. ${s}`)
-    .join("<br>");
+  if (!log) return;
+  log.innerHTML = sentenceStack.map((s, i) => `${i + 1}. ${s}`).join("<br>");
 }
-// ================================
-// 📦 COPY / PACKAGE PROMPT (MOBILE SAFE)
-// Purpose:
-// - Packages visible prompt + negatives
-// - Copies safely on mobile & desktop
-// ================================
 
+// ================================
+// 🧩 PROMPT COMPILER (V1 FIX)
+// Purpose:
+// - Prevents JS crash
+// - Restores sentence adding
+// - Displays assembled prompt
+// ================================
+function compilePrompt() {
+  const output = document.getElementById("promptOutput");
+  if (!output) return;
+  output.textContent = sentenceStack.join(", ");
+}
+
+// ================================
+// 📦 COPY / PACKAGE PROMPT (STABLE)
+// ================================
 function copyPrompt() {
   const visible = document.getElementById("promptOutput").textContent;
   if (!visible) return;
 
-  // Final packaged prompt
   const full = visible + ". " + NEGATIVE_PROMPT;
-
-  // Mobile-safe clipboard method
   const textarea = document.createElement("textarea");
   textarea.value = full;
   textarea.setAttribute("readonly", "");
@@ -132,39 +92,9 @@ function copyPrompt() {
 
   document.body.appendChild(textarea);
   textarea.select();
-  textarea.setSelectionRange(0, textarea.value.length);
 
-  try {
-    document.execCommand("copy");
-  } catch (err) {
-    console.warn("Copy failed", err);
-  }
+  try { document.execCommand("copy"); } catch (err) { console.warn(err); }
 
   document.body.removeChild(textarea);
 }
-// ================================
-// 🧩 V1 FALLBACK PROMPT COMPILER
-// Purpose:
-// - Prevent JS crashes
-// - Restore button functionality
-// ================================
-
-function compilePrompt() {
-  const output = document.getElementById("promptOutput");
-  if (!output) return;
-
-  output.textContent = sentenceStack.join(", ");
-}
-
-// ================================
-// 🧠 V2 SEMANTIC ENGINE — FINAL
-// Purpose:
-// - Classifies sentences
-// - Organizes prompt meaning
-// - Enables harmony + structure
-// ================================
-
-// Keyword map for semantic classification
-const SEMANTIC
-
 
