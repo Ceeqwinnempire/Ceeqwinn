@@ -101,19 +101,13 @@ body {
   font-size: 0.85rem;
   opacity: 0.8;
 }
-/* ============================= */
-/* APP WRAPPER ANCHOR */
-/* ============================= */
-.app {
-  position: relative; /* REQUIRED for absolute toast */
-}
 
 /* ============================= */
 /* FLOATING PACKAGE TOAST */
 /* ============================= */
 #packageStatus {
-  position: absolute;
-  top: 120px;                 /* adjust if you want it higher/lower */
+  position: fixed;
+  top: 120px; /* near the sentence canvas */
   left: 50%;
   transform: translate(-50%, -10px);
 
@@ -142,4 +136,3 @@ body {
   opacity: 1;
   transform: translate(-50%, 0);
 }
-
