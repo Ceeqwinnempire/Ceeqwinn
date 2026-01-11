@@ -14,34 +14,28 @@
   <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,600|Inter:300,400" rel="stylesheet">
 
   <!-- ===============================
-       INLINE STYLES (V1)
-       This controls layout + visuals only
+       INLINE STYLES (UNCHANGED)
+       Layout + visuals ONLY
        =============================== -->
   <style>
-
-    /* ---------- GLOBAL RESET ---------- */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-    /* ---------- PAGE BASE ---------- */
     body {
       background: #ffffff;
       font-family: Inter, Arial, sans-serif;
       color: #111;
     }
 
-    /* ---------- APP CONTAINER ---------- */
-    /* Centers the app and controls width */
     .app {
       max-width: 480px;
       margin: 0 auto;
       padding: 16px;
     }
 
-    /* ---------- HEADER SECTION ---------- */
     .header {
       text-align: center;
       margin-bottom: 24px;
@@ -58,19 +52,15 @@
       color: #666;
     }
 
-    /* ---------- MAIN FEED WRAPPER ---------- */
-    /* Holds builder + image cards */
     .feed {
       width: 100%;
     }
 
-    /* ---------- PROMPT BUILDER ---------- */
     .builder h2 {
       margin-bottom: 12px;
       font-size: 18px;
     }
 
-    /* Sentence input field */
     .builder input {
       width: 100%;
       padding: 12px;
@@ -78,23 +68,18 @@
       font-size: 15px;
     }
 
-    /* Builder action buttons */
     .builder button {
       padding: 10px;
       margin: 4px 4px 12px 0;
       font-size: 14px;
     }
 
-    /* ---------- SENTENCE LOG ---------- */
-    /* Displays entered sentences */
     .sentence-log {
       font-size: 12px;
       color: #555;
       margin-bottom: 12px;
     }
 
-    /* ---------- PROMPT OUTPUT ---------- */
-    /* Where compiled prompt appears */
     .output {
       background: #f4f4f4;
       padding: 12px;
@@ -102,8 +87,6 @@
       font-size: 14px;
     }
 
-    /* ---------- IMAGE CARDS ---------- */
-    /* Visual inspiration / examples */
     .card {
       width: 100%;
       margin-bottom: 24px;
@@ -122,63 +105,45 @@
       color: #444;
       text-align: center;
     }
-
   </style>
 </head>
 
 <body>
-  
-<!-- ===============================
-     APP ROOT
-     Everything visible lives inside here
-     =============================== -->
+
 <main class="app">
 
-  <!-- ---------- BRAND HEADER ---------- -->
+  <!-- HEADER -->
   <header class="header">
     <h1>Ceeqwinn Image Studio</h1>
     <p class="tagline">Clarity-driven prompts for soft, powerful visuals</p>
   </header>
 
-  <!-- ===============================
-       MAIN CONTENT FEED
-       =============================== -->
+  <!-- MAIN FEED -->
   <section class="feed">
 
-    <!-- ===============================
-         PROMPT BUILDER UI
-         (Connected to prompt-brain.js)
-         =============================== -->
+    <!-- PROMPT BUILDER -->
     <section class="builder">
       <h2>Build Your Prompt</h2>
 
-      <!-- Sentence input -->
       <input
         id="sentenceInput"
         type="text"
         placeholder="Type a sentence and press Enter or Generate"
       >
 
-      <!-- Builder controls -->
-      <button onclick="addSentenceFromButton()">Add Sentence</button>
+      <button onclick="addSentenceFromButton()">Generate</button>
       <button onclick="deleteLastSentence()">Undo</button>
       <button onclick="resetPrompt()">Reset</button>
 
-      <!-- Sentence history display -->
       <div class="sentence-log" id="sentenceLog"></div>
 
-      <!-- Compiled prompt output -->
       <div class="output">
         <p id="promptOutput"></p>
-
-        <!-- Action button (will be renamed later) -->
         <button onclick="packagePrompt()">Package Prompt</button>
       </div>
     </section>
 
-    <!-- ===============================
-         IMAGE EXAMPLES / FEED CARDS
-         =============================== -->
+    <!-- IMAGE FEED -->
     <article class="card">
       <img src="https://i.postimg.cc/rFQ2nvcs/2D-cartoon-Disney-character-di-(8).jpg">
     </article>
@@ -192,10 +157,9 @@
 
 </main>
 
-<!-- ===============================
-     PROMPT ENGINE (LOGIC ONLY)
-     =============================== -->
+<!-- LOGIC ONLY -->
 <script src="prompt-brain.js"></script>
 
 </body>
 </html>
+
