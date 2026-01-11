@@ -103,13 +103,28 @@ body {
 }
 
 /* ============================= */
+/* APP WRAPPER (ANCHOR) */
+/* ============================= */
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: relative; /* 🔒 anchor for toast */
+}
+
+/* ============================= */
 /* FLOATING PACKAGE TOAST */
 /* ============================= */
 #packageStatus {
-  position: fixed;
-  top: 20vh;
+  position: absolute;          /* ← scoped to .app */
+  top: 120px;                  /* near sentence canvas */
   left: 50%;
-  transform: translate(-50%, -10px);
+  transform: translateX(-50%) translateY(-10px);
 
   padding: 12px 24px;
   border-radius: 999px;
@@ -119,7 +134,7 @@ body {
 
   opacity: 0;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 10;
 
   transition:
     opacity 0.35s ease,
@@ -128,5 +143,5 @@ body {
 
 #packageStatus.visible {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translateX(-50%) translateY(0);
 }
