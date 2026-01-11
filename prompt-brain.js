@@ -108,7 +108,7 @@ function packagePrompt() {
 }
 
 // ================================
-// ✨ PACKAGE FEEDBACK (CLEAN)
+// ✨ PACKAGE FEEDBACK (FLOATING • CANON)
 // ================================
 function showPackageStatus() {
   let status = document.getElementById("packageStatus");
@@ -117,14 +117,30 @@ function showPackageStatus() {
     status = document.createElement("div");
     status.id = "packageStatus";
     status.textContent = "Prompt packaged ✓";
-    document.body.appendChild(status);
+
+    // 🔒 Anchor to app, not page bottom
+    const app = document.querySelector(".app") || document.body;
+    app.appendChild(status);
   }
 
+  // Reset animation state
+  status.classList.remove("visible");
+  void status.offsetWidth; // force reflow
+
+  // Show toast
   status.classList.add("visible");
 
+  // Fade out
   setTimeout(() => {
     status.classList.remove("visible");
   }, 1500);
+
+  // Remove from DOM completely
+  setTimeout(() => {
+    if (status.parentNode) {
+      status.parentNode.removeChild(status);
+    }
+  }, 1900);
 }
 
 // ================================
