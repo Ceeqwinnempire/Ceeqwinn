@@ -118,8 +118,9 @@ function showPackageStatus() {
     status.id = "packageStatus";
     status.textContent = "Prompt packaged ✓";
 
-    // ✅ Anchor to viewport, not layout
-    document.body.appendChild(status);
+    // 🔒 Anchor to app, not page bottom
+    const app = document.querySelector(".app") || document.body;
+    app.appendChild(status);
   }
 
   // Reset animation state
@@ -129,10 +130,17 @@ function showPackageStatus() {
   // Show toast
   status.classList.add("visible");
 
-  // Hide after 1.5 seconds
+  // Fade out
   setTimeout(() => {
     status.classList.remove("visible");
   }, 1500);
+
+  // Remove from DOM completely
+  setTimeout(() => {
+    if (status.parentNode) {
+      status.parentNode.removeChild(status);
+    }
+  }, 1900);
 }
 
 // ================================
