@@ -1,0 +1,64 @@
+<!-- ========================= -->
+<!-- 🌐 STORY PAGE (HTML FILE) -->
+<!-- ========================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 🔗 LINK TO CSS -->
+  <link rel="stylesheet" href="story.css">
+
+  <title>Story Reader</title>
+</head>
+
+<body>
+
+  <!-- 🌌 PARTICLE LAYER -->
+  <div class="particles"></div>
+
+  <!-- 🎭 FRAME (CURTAINS + TOP LIGHT) -->
+  <div class="frame">
+    <div class="curtain left"></div>
+    <div class="curtain right"></div>
+    <div class="chandelier"></div>
+  </div>
+
+  <!-- 📖 MAIN READING AREA -->
+  <div class="reader" id="reader">
+
+    <div class="content">
+
+      <h1>Chapter One</h1>
+
+      <!-- ✍️ YOU WILL WRITE YOUR STORY HERE -->
+      <p>This is where your story text goes.</p>
+
+      <!-- ⚠️ THIS LINE CREATES SCROLL (DON'T DELETE YET) -->
+      <p style="height:2000px;"></p>
+
+    </div>
+
+  </div>
+
+  <!-- 💎 CRYSTAL SCROLL INDICATOR -->
+  <div class="crystal">
+    <div class="crystal-fill" id="crystalFill"></div>
+  </div>
+
+  <!-- 📱 BOTTOM DOCK -->
+  <div class="dock">
+    <button>Home</button>
+    <button>Back</button>
+    <button onclick="toggleMode()">Mode</button>
+    <button>Install</button>
+    <button>Hall</button>
+  </div>
+
+  <!-- 🔗 LINK TO JS -->
+  <script src="story.js"></script>
+
+</body>
+</html>
