@@ -1,102 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceeqwinn Immersive Story Site</title>
-    <meta name="theme-color" content="#f8f0e0">
-    <link rel="manifest" href="/manifest.webmanifest">
-    <style>
-        /* Base CSS Variables */
-        :root {
-            /* Base Colors */
-            --cream: #f8f0e0;
-            --sand: #e8dcc5;
-            --antique-gold: #d4b98a;
-            --warm-beige: #e0d0b8;
-            --muted-ruby: #b76e79;
-            --soft-amber: #e6c35c;
-            --warm-brown: #5d4037;
-            
-            /* Gradients */
-            --sky-gradient: linear-gradient(to bottom, #ffd8a9, #ffb347, #ff9d6c);
-            --night-gradient: linear-gradient(to bottom, #3a1c71, #d76d77, #ffaf7b);
-            --dramatic-gradient: linear-gradient(to bottom, #ff9d6c, #ff6b6b, #b76e79);
-            
-            /* Opacities */
-            --panel-opacity: 0.9;
-            --glow-opacity: 0.3;
-            
-            /* Sizing */
-            --max-read-width: 700px;
-            --curtain-overlap: 4%;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Story Theater</title>
+
+  <!-- LINK TO CSS FILE -->
+  <link rel="stylesheet" href="story.css">
 </head>
+
 <body>
-    <!-- Root Stage Layer (Fixed) -->
-    <div class="stage-layer">
-        <div class="sky-gradient"></div>
-        <div class="particle-layer"></div>
+
+  <!-- 🌍 MAIN WORLD CONTAINER -->
+  <div class="world">
+
+    <!-- 📖 LEFT SIDE: STORY PAGE -->
+    <div class="story-page">
+
+      <div class="panel story-panel">
+        <h1>Chapter One</h1>
+        <p>
+          The golden world awakens as the ink of destiny begins to flow across the parchment sky...
+        </p>
+      </div>
+
     </div>
-    
-    <!-- Architectural Frame (Fixed) -->
-    <div class="frame">
-        <div class="chandelier"></div>
-        <div class="curtain left-curtain"></div>
-        <div class="curtain right-curtain"></div>
-        <div class="wall-embossing left-embossing"></div>
-        <div class="wall-embossing right-embossing"></div>
+
+    <!-- 💬 RIGHT SIDE: HALL (CHAT SPACE) -->
+    <div class="hall-page">
+
+      <div class="panel hall-panel">
+        <h2>The Hall</h2>
+
+        <div class="chat-box">
+          <div class="chat-bubble">Welcome to the Hall...</div>
+          <div class="chat-bubble">The story is alive here.</div>
+        </div>
+
+      </div>
+
     </div>
-    
-    <!-- Reading Column (Primary Scroll Area) -->
-    <div class="reading-column">
-        <div class="story-content">
-            <!-- Story content will be loaded here -->
-        </div>
-        
-        <!-- Integrated Crystal Scroll Indicator -->
-        <div class="crystal-scroll-indicator">
-            <div class="crystal-bar"></div>
-            <div class="crystal-shimmer"></div>
-        </div>
-    </div>
-    
-    <!-- Utility Floor Dock (Fixed Bottom) -->
-    <div class="utility-dock">
-        <button class="dock-item" data-action="home">Home</button>
-        <button class="dock-item" data-action="back">Back</button>
-        <button class="dock-item" data-action="settings">Settings</button>
-        <button class="dock-item" data-action="install">Install</button>
-        <button class="dock-item" data-action="hall">Hall</button>
-    </div>
-    
-    <!-- Hall / Chat Panel -->
-    <div class="hall-panel">
-        <div class="hall-header">
-            <h3>The Hall</h3>
-            <button class="close-hall">×</button>
-        </div>
-        <div class="hall-content">
-            <!-- Chat messages will be loaded here -->
-        </div>
-        <div class="message-input">
-            <input type="text" placeholder="Type a message...">
-            <button>Send</button>
-        </div>
-    </div>
-    
-    <!-- Ambient Mode Toggle -->
-    <button class="ambient-toggle" title="Toggle ambient mode">💎</button>
-    
-    <script>
-        // Core JavaScript functionality
-        // Service Worker registration
-        // Ambient mode handling
-        // Reading flow memory
-        // Scroll indicator
-        // Stillness detection
-        // PWA installation
-    </script>
+
+  </div>
+
 </body>
 </html>
