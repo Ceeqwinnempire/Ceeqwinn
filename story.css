@@ -1,254 +1,99 @@
-/* Base Layout */
+/* =========================
+   🌅 GLOBAL WORLD SETTINGS
+========================= */
+
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Georgia', serif;
-    color: #2b2b2b;
-    background-color: var(--cream);
-    overflow: hidden;
-    height: 100vh;
-    position: relative;
+  margin: 0;
+  font-family: Georgia, serif;
+  overflow: hidden;
 }
 
-/* Root Stage Layer */
-.stage-layer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    overflow: hidden;
+/* 🌍 MAIN SPLIT SCREEN */
+.world {
+  display: flex;
+  height: 100vh;
 }
 
-.sky-gradient {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: var(--sky-gradient);
-    transition: background 300ms ease-in-out;
+/* =========================
+   📖 LEFT SIDE: STORY WORLD
+========================= */
+
+.story-page {
+  flex: 1;
+  padding: 20px;
+
+  /* warm parchment sky */
+  background: linear-gradient(
+    180deg,
+    #f3e2c6,
+    #e7c79a
+  );
 }
 
-.particle-layer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0.3;
-    transition: opacity 300ms ease-in-out;
+/* =========================
+   💬 RIGHT SIDE: HALL WORLD
+========================= */
+
+.hall-page {
+  flex: 1;
+  padding: 20px;
+
+  background: radial-gradient(
+    circle at top,
+    #f6e2bf,
+    #e3c08b
+  );
 }
 
-/* Architectural Frame */
-.frame {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
+/* =========================
+   🏛️ SHARED PANEL STYLE
+========================= */
+
+.panel {
+  background: #f6ecd8;
+  border: 2px solid #d4af37;
+  border-radius: 16px;
+
+  padding: 20px;
+
+  box-shadow:
+    0 10px 30px rgba(70, 45, 20, 0.25),
+    inset 0 0 12px rgba(255, 255, 255, 0.4);
 }
 
-.curtain {
-    position: fixed;
-    top: 0;
-    height: 100%;
-    width: var(--curtain-overlap);
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="1000"><path d="M0,0 Q50,100 100,0" fill="var(--muted-ruby)"/></svg>') repeat;
-    opacity: 0.3;
-    transition: opacity 200ms ease-in-out;
+/* =========================
+   📖 STORY PANEL TEXT
+========================= */
+
+.story-panel h1 {
+  margin-top: 0;
+  color: #6b4e1f;
 }
 
-.left-curtain {
-    left: 0;
-    transform-origin: left;
+.story-panel p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #4a3515;
 }
 
-.right-curtain {
-    right: 0;
-    transform-origin: right;
-    transform: scaleX(-1);
+/* =========================
+   💬 CHAT AREA
+========================= */
+
+.chat-box {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.chandelier {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 200px;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><radialGradient id="glow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%"><stop offset="0%" stop-color="var(--soft-amber)" stop-opacity="0.8"/><stop offset="100%" stop-color="var(--antique-gold)" stop-opacity="0.3"/></radialGradient><circle cx="50" cy="50" r="40" fill="url(%23glow)"/></svg>') center/contain no-repeat;
-    filter: blur(2px);
-    opacity: 0.7;
-    transition: opacity 300ms ease-in-out;
-}
+/* CHAT BUBBLES */
+.chat-bubble {
+  background: #fff3dd;
+  border: 1px solid #d4af37;
+  padding: 10px 12px;
+  border-radius: 12px;
 
-/* Reading Column */
-.reading-column {
-    position: relative;
-    max-width: var(--max-read-width);
-    margin: 0 auto;
-    padding: 80px 40px 120px;
-    background: rgba(var(--cream-rgb), var(--panel-opacity));
-    backdrop-filter: blur(10px);
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    line-height: 1.7;
-    z-index: 2;
-    overflow-y: auto;
-    height: calc(100vh - 200px);
-    scroll-behavior: smooth;
-}
-
-/* Crystal Scroll Indicator */
-.crystal-scroll-indicator {
-    position: absolute;
-    top: 80px;
-    right: 20px;
-    width: 8px;
-    height: calc(100% - 100px);
-    background: rgba(180, 110, 100, 0.2);
-    border-radius: 4px;
-    overflow: hidden;
-    z-index: 3;
-}
-
-.crystal-bar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 30%;
-    background: var(--muted-ruby);
-    transform-origin: bottom;
-    transform: scaleY(0);
-    transition: transform 300ms ease-in-out;
-}
-
-.crystal-shimmer {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 20px;
-    background: linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0) 100%);
-    opacity: 0;
-    animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-    0% { opacity: 0; transform: translateY(-100%); }
-    50% { opacity: 0.7; }
-    100% { opacity: 0; transform: translateY(500%); }
-}
-
-/* Utility Dock */
-.utility-dock {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 20px;
-    background: rgba(230, 195, 92, 0.2);
-    backdrop-filter: blur(5px);
-    padding: 12px 24px;
-    border-radius: 50px;
-    border: 1px solid rgba(180, 110, 100, 0.2);
-    z-index: 10;
-}
-
-.dock-item {
-    background: none;
-    border: none;
-    color: var(--warm-brown);
-    font-size: 14px;
-    cursor: pointer;
-    padding: 8px 16px;
-    border-radius: 30px;
-    transition: all 200ms ease-in-out;
-}
-
-.dock-item:hover {
-    background: rgba(230, 195, 92, 0.3);
-    box-shadow: 0 0 10px rgba(230, 195, 92, 0.3);
-}
-
-/* Hall Panel */
-.hall-panel {
-    position: fixed;
-    bottom: -100%;
-    width: 90%;
-    max-width: 500px;
-    background: rgba(248, 240, 224, 0.95);
-    backdrop-filter: blur(10px);
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.1);
-    transition: transform 400ms ease-in-out;
-    z-index: 20;
-}
-
-.hall-panel.active {
-    transform: translateY(-100%);
-}
-
-/* Ambient Toggle */
-.ambient-toggle {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: rgba(212, 184, 138, 0.5);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(180, 110, 100, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: var(--warm-brown);
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    z-index: 15;
-    transition: all 200ms ease-in-out;
-}
-
-.ambient-toggle:hover {
-    transform: scale(1.1);
-    background: rgba(230, 195, 92, 0.6);
-}
-
-/* Typography */
-.story-content {
-    font-size: 18px;
-    text-align: justify;
-    hyphens: auto;
-}
-
-.story-content h2 {
-    color: var(--warm-brown);
-    border-bottom: 1px solid var(--antique-gold);
-    padding-bottom: 10px;
-    font-weight: normal;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .reading-column {
-        padding: 60px 20px 100px;
-        height: calc(100vh - 160px);
-    }
-    
-    .curtain {
-        width: 8%;
-    }
-    
-    .chandelier {
-        width: 120px;
-        height: 120px;
-    }
+  box-shadow: 0 6px 18px rgba(70, 45, 20, 0.2);
+  color: #4a3515;
 }
