@@ -273,9 +273,28 @@ body {
 
 <body>
 
-<!-- CURTAINS -->
-<div class="curtain left"></div>
-<div class="curtain right"></div>
+.curtain {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+
+  /* 🔥 CORE FIX: responsive width instead of fixed px */
+  width: clamp(28px, 6vw, 90px);
+
+  z-index: 5;
+  pointer-events: none;
+
+  background: linear-gradient(to right, #C45C00, #8B4513);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.curtain.left {
+  left: 0;
+}
+
+.curtain.right {
+  right: 0;
+}
 
 <!-- HEADER -->
 <div class="header">
