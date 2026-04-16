@@ -1,136 +1,134 @@
-/* ============================= */
-/* RESET
-   Ensures consistent spacing */
-/* ============================= */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root{
+  --gold:#D4AF37;
+  --dark:#3E2723;
+
+  --glow:0.5;
+  --romance:0.4;
+  --fantasy:0.3;
+  --horror:0.1;
 }
 
-/* ============================= */
-/* BASE BODY STYLING */
-/* ============================= */
-body {
-  font-family: 'Inter', sans-serif;
-  background: #f7f7f5;
-  color: #111;
+/* 🌅 BACKGROUND */
+body{
+  margin:0;
+  font-family: 'Georgia', serif;
+  overflow:hidden;
 }
 
-/* ============================= */
-/* APP WRAPPER
-   Centers everything */
-/* ============================= */
-.app {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 32px 20px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative; /* REQUIRED for positioning toast near canvas */
+.bg{
+  position:fixed;
+  inset:0;
+  background: radial-gradient(circle at center,
+    rgba(255,220,150,var(--glow)),
+    #E6B566
+  );
+  transition:2s ease;
 }
 
-/* ============================= */
-/* HEADER / BRAND */
-/* ============================= */
-.header {
-  text-align: center;
-  margin-bottom: 32px;
+/* ✨ PARTICLES (LIGHTWEIGHT CSS ONLY) */
+.particles::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image: radial-gradient(circle, white 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity:0.2;
+  animation: float 6s infinite linear;
 }
 
-.header h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 8px;
+@keyframes float{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-20px)}
 }
 
-.tagline {
-  font-size: 0.9rem;
-  opacity: 0.7;
+/* 🎭 CURTAINS */
+.curtain{
+  position:fixed;
+  top:0;
+  width:22%;
+  height:100%;
+  background:#C45C00;
+  z-index:5;
+  opacity:0.9;
+  transition:2s ease;
 }
 
-/* ============================= */
-/* FEED STACK */
-/* ============================= */
-.feed {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
+.curtain.left{left:0;}
+.curtain.right{right:0;}
+
+/* 🧠 APP */
+.app{
+  position:relative;
+  z-index:10;
+  padding:16px;
+  height:100vh;
 }
 
-/* ============================= */
-/* IMAGE CARD */
-/* ============================= */
-.card {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  max-height: 88vh;
-
-  background: #111;
-  border-radius: 18px;
-  overflow: hidden;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* 🧭 HEADER */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  color:var(--gold);
 }
 
-/* ============================= */
-/* IMAGE BEHAVIOR
-   Creates the "peek" effect */
-/* ============================= */
-.card img {
-  width: 100%;
-  height: auto;
-  max-height: 70vh;
-  object-fit: contain;
-  display: block;
-
-  border-radius: 8px;
-  background: #f5f5f5;
+/* 📖 STORY */
+.scene{
+  position:absolute;
+  top:70px;
+  bottom:140px;
+  left:16%;
+  right:16%;
+  overflow:auto;
 }
 
-/* ============================= */
-/* CAPTION */
-/* ============================= */
-.caption {
-  padding: 12px;
-  font-size: 0.85rem;
-  opacity: 0.8;
+.story-card{
+  background:#F9F5EB;
+  padding:20px;
+  border:2px solid var(--gold);
 }
 
-/* ============================= */
-/* FLOATING PACKAGE TOAST — FINAL */
-/* ============================= */
-#packageStatus {
-  position: absolute;       /* now relative to .app wrapper */
-  top: 160px;               /* adjust to be near the canvas */
-  left: 50%;
-  transform: translateX(-50%) translateY(-10px);
+/* 💬 HALL */
+.hidden{display:none;}
 
-  padding: 12px 24px;
-  border-radius: 999px;
+.msg{
+  background:#fff;
+  border-left:3px solid var(--gold);
+  margin:10px 0;
+  padding:10px;
+}
 
-  font-family: Inter, system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
+/* ⌨️ INPUT */
+.inputBar{
+  position:fixed;
+  bottom:80px;
+  left:10px;
+  right:10px;
+  display:flex;
+}
 
-  background: rgba(20, 20, 20, 0.92);
-  color: white;
+.inputBar input{
+  flex:1;
+  padding:10px;
+}
 
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28);
+/* 🔥 CTA */
+.cta{
+  position:fixed;
+  bottom:40px;
+  left:10px;
+  right:10px;
+  background:linear-gradient(#C45C00,#8B4513);
+  color:white;
+}
 
-  opacity: 0;
-  pointer-events: none;
-  z-index: 9999;
-
-  transition:
-    opacity 0.35s ease,
-    transform 0.35s ease;
+/* 📱 NAV */
+.bottomNav{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  display:flex;
+  justify-content:space-around;
+  padding:10px;
 }
 
 #packageStatus.visible {
