@@ -1,358 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Ceeqwinn Immersive Story Site</title>
-
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
-<style>
-
-/* =========================
-   DESIGN TOKENS (GLOBAL SYSTEM)
-========================= */
-:root {
-  --gold: #D4AF37;
-  --gold-dark: #B8860B;
-
-  --cream: #F8E9C9;
-  --gold-bg: #E6B566;
-  --paper: #F9F5EB;
-
-  --brown-dark: #3E2723;
-  --brown-mid: #5D4037;
-
-  --icon-bg: #A67C52;
-
-  --shadow: rgba(60,30,10,0.25);
-}
-
-/* =========================
-   BASE LAYOUT
-========================= */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: "Inter", sans-serif;
-  background: linear-gradient(to bottom, var(--cream), var(--gold-bg));
-  height: 100vh;
-  overflow: hidden;
-  color: var(--brown-dark);
-}
-
-/* =========================
-   FLOATING SPARKLES SYSTEM
-========================= */
-.sparkle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: rgba(255,255,255,0.8);
-  border-radius: 50%;
-  animation: float 6s infinite ease-in-out;
-  opacity: 0.6;
-}
-
-@keyframes float {
-  0% { transform: translateY(0); opacity: 0.2; }
-  50% { opacity: 0.8; }
-  100% { transform: translateY(-40px); opacity: 0; }
-}
-
-/* =========================
-   CURTAINS SYSTEM
-========================= */
-.curtain {
-  position: fixed;
-  top: 0;
-  height: 100vh;
-  width: 120px;
-  z-index: 5;
-  background: linear-gradient(to right, #C45C00, #8B4513);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-.curtain.left { left: 0; }
-.curtain.right { right: 0; width: 140px; }
-
-/* =========================
-   TOP HEADER
-========================= */
-.header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  padding: 14px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 10;
-}
-
-/* Title */
-.title {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 20px;
-  color: var(--gold);
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  flex: 1;
-  text-align: center;
-}
-
-/* Icon buttons */
-.icon-row {
-  display: flex;
-  gap: 10px;
-}
-
-.icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--icon-bg);
-  border: 1px solid var(--gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--gold);
-  font-size: 14px;
-}
-
-/* =========================
-   MAIN CONTENT WRAPPER
-========================= */
-.container {
-  position: relative;
-  padding: 80px 140px 120px 140px;
-  height: 100vh;
-}
-/* =========================
-   STORY PANEL (LEFT MODE)
-========================= */
-.story-panel {
-  background: var(--paper);
-  border: 2px solid var(--gold);
-  border-radius: 6px;
-  padding: 25px 30px;
-  box-shadow: 0 10px 25px var(--shadow);
-  font-family: "Cormorant Garamond", serif;
-  line-height: 1.6;
-}
-
-.story-panel h2 {
-  color: var(--gold);
-  margin-bottom: 12px;
-}
-
-/* Meta row */
-.meta {
-  margin-top: 15px;
-  font-size: 13px;
-  font-family: "Inter", sans-serif;
-  color: var(--brown-mid);
-}
-
-/* =========================
-   CHAT SYSTEM (RIGHT MODE)
-========================= */
-.chat {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.bubble {
-  background: var(--paper);
-  border-left: 3px solid var(--gold);
-  padding: 10px 12px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-
-.username {
-  color: var(--gold);
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.message {
-  color: var(--brown-dark);
-  font-size: 14px;
-  margin-top: 2px;
-}
-
-/* =========================
-   INPUT AREA
-========================= */
-.input-area {
-  position: fixed;
-  bottom: 70px;
-  left: 140px;
-  right: 140px;
-  display: flex;
-  gap: 10px;
-}
-
-.input-area input {
-  flex: 1;
-  padding: 12px;
-  border-radius: 20px;
-  border: 1px solid var(--gold);
-  background: rgba(255,255,255,0.8);
-}
-
-.send {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--gold);
-  border: none;
-  cursor: pointer;
-}
-
-/* =========================
-   CTA BUTTON
-========================= */
-.cta {
-  position: fixed;
-  bottom: 15px;
-  left: 140px;
-  right: 140px;
-  padding: 14px;
-  text-align: center;
-  background: linear-gradient(to right, #C45C00, #8B4513);
-  color: var(--paper);
-  border: 2px solid var(--gold);
-  border-radius: 10px;
-  font-weight: 600;
-}
-
-/* =========================
-   BOTTOM NAV
-========================= */
-.nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  padding: 10px;
-  display: flex;
-  justify-content: space-around;
-  background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(10px);
-  z-index: 10;
-}
-
-.nav div {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--icon-bg);
-  border: 1px solid var(--gold);
-}
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ceeqwinn Immersive Story Site</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 
 <body>
 
-<!-- CURTAINS -->
+<!-- 🌫️ BACKGROUND LAYER -->
+<div class="bg"></div>
+<div class="particles"></div>
+
+<!-- 🎭 CURTAINS -->
 <div class="curtain left"></div>
 <div class="curtain right"></div>
 
-<!-- HEADER -->
-<div class="header">
+<!-- 🧠 APP -->
+<div class="app">
 
-  <div class="icon-row">
-    <div class="icon">🏠</div>
-    <div class="icon">🔍</div>
-  </div>
+  <!-- 🧭 HEADER -->
+  <header class="topbar">
+    <div class="title">Ceeqwinn Immersive Story Site</div>
 
-  <div class="title">Ceeqwinn Immersive Story Site</div>
+    <div class="icons">
+      <span>🏠</span>
+      <span>🔍</span>
+      <span>👤</span>
+      <span>⚙️</span>
+    </div>
+  </header>
 
-  <div class="icon-row">
-    <div class="icon">👤</div>
-    <div class="icon">⚙️</div>
-  </div>
+  <!-- 📖 STORY SCENE -->
+  <main class="scene story" id="storyScene">
 
-</div>
+    <article class="story-card">
 
-<!-- MAIN -->
-<div class="container">
+      <h1>The Quiet Sunset</h1>
 
-  <!-- STORY PANEL -->
-  <div class="story-panel">
+      <p>
+        The sun hung low in the sky, casting a golden glow over the countryside...
+      </p>
 
-    <h2>The Golden Escape</h2>
+      <div class="meta">
+        DiaryDoodles · 15m ago · Reply · See in Hall
+      </div>
 
-    <p>
-      The sun hung low in the sky, casting a golden glow over the countryside as Ellie and Max stepped into the open.
-      A warm breeze carried laughter from a nearby garden party.
-    </p>
+    </article>
 
-    <p style="margin-top:10px; font-style: italic;">
-      “How about we crash the party?” Ellie grinned.
-    </p>
+  </main>
 
-    <div class="meta">
-      DiaryDoodles · 15m ago · Reply · See in Hall
+  <!-- 💬 HALL SCENE -->
+  <main class="scene hall hidden" id="hallScene">
+
+    <div class="chat">
+
+      <div class="msg">
+        <span class="user">DiaryDoodles</span>
+        <p>They better grab some cake for me!</p>
+      </div>
+
+      <div class="msg">
+        <span class="user">SillyScript</span>
+        <p>Dessert heist? I’m in 😭</p>
+      </div>
+
     </div>
 
+  </main>
+
+  <!-- ⌨️ INPUT -->
+  <div class="inputBar">
+    <input placeholder="Type a message..." />
+    <button>➤</button>
   </div>
 
-  <!-- CHAT (for Hall mode visual readiness) -->
-  <div class="chat" style="margin-top:30px;">
+  <!-- 🔥 CTA -->
+  <button class="cta">
+    Join the Hall of Voices
+  </button>
 
-    <div class="bubble">
-      <div class="username">SillyScript</div>
-      <div class="message">Dessert heist? I'm in 😭🍰</div>
-    </div>
-
-    <div class="bubble">
-      <div class="username">RadiantSmiles</div>
-      <div class="message">Save me a slice!!</div>
-    </div>
-
-  </div>
+  <!-- 📱 NAV -->
+  <nav class="bottomNav">
+    <span>🏠</span>
+    <span>⬅️</span>
+    <span>⚙️</span>
+    <span>●</span>
+  </nav>
 
 </div>
 
-<!-- INPUT -->
-<div class="input-area">
-  <input placeholder="Type a message..." />
-  <button class="send">➤</button>
-</div>
-
-<!-- CTA -->
-<div class="cta">
-  Join the Hall of Voices — Step into the discussion
-</div>
-
-<!-- NAV -->
-<div class="nav">
-  <div></div>
-  <div></div>
-  <div></div>
-  <div></div>
-</div>
-
-<!-- SPARKLES -->
-<script>
-for(let i=0;i<25;i++){
-  let s = document.createElement("div");
-  s.className = "sparkle";
-  s.style.left = Math.random()*100 + "vw";
-  s.style.top = Math.random()*100 + "vh";
-  s.style.animationDuration = (3 + Math.random()*4) + "s";
-  document.body.appendChild(s);
-}
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
