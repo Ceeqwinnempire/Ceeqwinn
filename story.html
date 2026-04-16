@@ -2,340 +2,357 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ceeqwinn Immersive Story Site</title>
 
-  <title>Ceeqwinn Immersive Story Site</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-  <!-- =========================
-       FONTS (STYLE ONLY)
-  ========================== -->
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
 
-  <!-- =========================
-       CSS (VISUAL DESIGN)
-  ========================== -->
-  <style>
+/* =========================
+   DESIGN TOKENS (GLOBAL SYSTEM)
+========================= */
+:root {
+  --gold: #D4AF37;
+  --gold-dark: #B8860B;
 
-    /* =========================
-       BASIC THEME COLORS
-    ========================== */
-    :root {
-      --gold: #D4AF37;
-      --gold-light: #FFD700;
-      --bg-top: #FFB74D;
-      --bg-bottom: #FF8A65;
-      --text: #3E2723;
-      --card: rgba(255,255,255,0.75);
-    }
+  --cream: #F8E9C9;
+  --gold-bg: #E6B566;
+  --paper: #F9F5EB;
 
-    /* =========================
-       RESET
-    ========================== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  --brown-dark: #3E2723;
+  --brown-mid: #5D4037;
 
-    body {
-      font-family: "Inter", sans-serif;
-      background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
-      min-height: 100vh;
-      color: var(--text);
-      overflow-x: hidden;
-    }
+  --icon-bg: #A67C52;
 
-    /* =========================
-       TOP NAVIGATION BAR
-    ========================== */
-    .topbar {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      padding: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(255,255,255,0.3);
-      backdrop-filter: blur(10px);
-      z-index: 10;
-    }
+  --shadow: rgba(60,30,10,0.25);
+}
 
-    .title {
-      font-family: "Cormorant Garamond", serif;
-      font-size: 18px;
-      color: var(--gold);
-      text-align: center;
-      flex: 1;
-    }
+/* =========================
+   BASE LAYOUT
+========================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    .icons {
-      color: var(--gold);
-      font-size: 14px;
-    }
+body {
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(to bottom, var(--cream), var(--gold-bg));
+  height: 100vh;
+  overflow: hidden;
+  color: var(--brown-dark);
+}
 
-    /* =========================
-       MAIN CONTENT AREA
-    ========================== */
-    .container {
-      padding: 90px 16px 120px;
-    }
+/* =========================
+   FLOATING SPARKLES SYSTEM
+========================= */
+.sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 50%;
+  animation: float 6s infinite ease-in-out;
+  opacity: 0.6;
+}
 
-    /* =========================
-       STORY + CHAT SCENES
-    ========================== */
-    .scene {
-      display: none;
-    }
+@keyframes float {
+  0% { transform: translateY(0); opacity: 0.2; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(-40px); opacity: 0; }
+}
 
-    .scene.active {
-      display: block;
-    }
+/* =========================
+   CURTAINS SYSTEM
+========================= */
+.curtain {
+  position: fixed;
+  top: 0;
+  height: 100vh;
+  width: 120px;
+  z-index: 5;
+  background: linear-gradient(to right, #C45C00, #8B4513);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
 
-    /* =========================
-       STORY CARD (LEFT SCREEN)
-    ========================== */
-    .story-card {
-      background: var(--card);
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-      position: relative;
-    }
+.curtain.left { left: 0; }
+.curtain.right { right: 0; width: 140px; }
 
-    .story-card h2 {
-      font-family: "Cormorant Garamond", serif;
-      color: var(--gold);
-      margin-bottom: 10px;
-    }
+/* =========================
+   TOP HEADER
+========================= */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
 
-    .story-card p {
-      line-height: 1.6;
-      font-size: 14px;
-    }
+/* Title */
+.title {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 20px;
+  color: var(--gold);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  flex: 1;
+  text-align: center;
+}
 
-    .meta {
-      margin-top: 12px;
-      font-size: 12px;
-      display: flex;
-      justify-content: space-between;
-      opacity: 0.8;
-    }
+/* Icon buttons */
+.icon-row {
+  display: flex;
+  gap: 10px;
+}
 
-    /* =========================
-       BUTTONS
-    ========================== */
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
+.icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--icon-bg);
+  border: 1px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 14px;
+}
 
-    .btn {
-      flex: 1;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid var(--gold);
-      background: transparent;
-      cursor: pointer;
-    }
+/* =========================
+   MAIN CONTENT WRAPPER
+========================= */
+.container {
+  position: relative;
+  padding: 80px 140px 120px 140px;
+  height: 100vh;
+}
 
-    .btn:hover {
-      background: var(--gold-light);
-    }
+/* =========================
+   STORY PANEL (LEFT MODE)
+========================= */
+.story-panel {
+  background: var(--paper);
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+  padding: 25px 30px;
+  box-shadow: 0 10px 25px var(--shadow);
+  font-family: "Cormorant Garamond", serif;
+  line-height: 1.6;
+}
 
-    /* =========================
-       CHAT SCENE (RIGHT SCREEN)
-    ========================== */
-    .chat {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+.story-panel h2 {
+  color: var(--gold);
+  margin-bottom: 12px;
+}
 
-    .bubble {
-      background: rgba(255,255,255,0.85);
-      border-left: 3px solid var(--gold);
-      padding: 10px;
-      border-radius: 10px;
-    }
+/* Meta row */
+.meta {
+  margin-top: 15px;
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+  color: var(--brown-mid);
+}
 
-    .name {
-      font-size: 12px;
-      color: var(--gold);
-      font-weight: bold;
-    }
+/* =========================
+   CHAT SYSTEM (RIGHT MODE)
+========================= */
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-    .msg {
-      font-size: 13px;
-    }
+.bubble {
+  background: var(--paper);
+  border-left: 3px solid var(--gold);
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
 
-    /* =========================
-       INPUT AREA
-    ========================== */
-    .input-area {
-      position: fixed;
-      bottom: 70px;
-      left: 16px;
-      right: 16px;
-      display: flex;
-      gap: 10px;
-    }
+.username {
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 13px;
+}
 
-    .input-area input {
-      flex: 1;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--gold);
-      outline: none;
-    }
+.message {
+  color: var(--brown-dark);
+  font-size: 14px;
+  margin-top: 2px;
+}
 
-    .send {
-      padding: 12px;
-      border-radius: 10px;
-      background: var(--gold);
-      border: none;
-      cursor: pointer;
-    }
+/* =========================
+   INPUT AREA
+========================= */
+.input-area {
+  position: fixed;
+  bottom: 70px;
+  left: 140px;
+  right: 140px;
+  display: flex;
+  gap: 10px;
+}
 
-    /* =========================
-       BOTTOM NAVIGATION
-    ========================== */
-    .nav {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      padding: 12px;
-      display: flex;
-      justify-content: space-around;
-      background: rgba(255,255,255,0.3);
-      backdrop-filter: blur(10px);
-    }
+.input-area input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 20px;
+  border: 1px solid var(--gold);
+  background: rgba(255,255,255,0.8);
+}
 
-    .nav button {
-      background: none;
-      border: none;
-      color: var(--gold);
-      cursor: pointer;
-    }
+.send {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: none;
+  cursor: pointer;
+}
 
-  </style>
+/* =========================
+   CTA BUTTON
+========================= */
+.cta {
+  position: fixed;
+  bottom: 15px;
+  left: 140px;
+  right: 140px;
+  padding: 14px;
+  text-align: center;
+  background: linear-gradient(to right, #C45C00, #8B4513);
+  color: var(--paper);
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* =========================
+   BOTTOM NAV
+========================= */
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(10px);
+  z-index: 10;
+}
+
+.nav div {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--icon-bg);
+  border: 1px solid var(--gold);
+}
+
+</style>
 </head>
 
 <body>
 
-<!-- =========================
-     TOP BAR (HEADER)
-========================= -->
-<div class="topbar">
-  <div class="icons">🏠 🔍 ✉️</div>
+<!-- CURTAINS -->
+<div class="curtain left"></div>
+<div class="curtain right"></div>
+
+<!-- HEADER -->
+<div class="header">
+
+  <div class="icon-row">
+    <div class="icon">🏠</div>
+    <div class="icon">🔍</div>
+  </div>
+
   <div class="title">Ceeqwinn Immersive Story Site</div>
-  <div class="icons">⚙️</div>
+
+  <div class="icon-row">
+    <div class="icon">👤</div>
+    <div class="icon">⚙️</div>
+  </div>
+
 </div>
 
-<!-- =========================
-     MAIN CONTENT
-========================= -->
+<!-- MAIN -->
 <div class="container">
 
-  <!-- =========================
-       STORY SCENE (READING MODE)
-  ========================== -->
-  <div id="story" class="scene active">
+  <!-- STORY PANEL -->
+  <div class="story-panel">
 
-    <div class="story-card">
+    <h2>The Golden Escape</h2>
 
-      <h2>The Golden Escape</h2>
+    <p>
+      The sun hung low in the sky, casting a golden glow over the countryside as Ellie and Max stepped into the open.
+      A warm breeze carried laughter from a nearby garden party.
+    </p>
 
-      <p>
-        The sun hung low, casting a golden glow over the countryside as Ellie and Max stepped into the open.
-        A warm breeze carried laughter from a distant garden party.
-      </p>
+    <p style="margin-top:10px; font-style: italic;">
+      “How about we crash the party?” Ellie grinned.
+    </p>
 
-      <p style="margin-top:10px; font-style: italic;">
-        “How about we crash the party?” Ellie grinned.
-      </p>
-
-      <div class="meta">
-        <span>@DiaryDoodles</span>
-        <span>15m ago</span>
-      </div>
-
-      <!-- Buttons that switch to chat -->
-      <div class="btn-row">
-        <button class="btn" onclick="showScene('hall')">Reply</button>
-        <button class="btn" onclick="showScene('hall')">See in Hall</button>
-      </div>
-
+    <div class="meta">
+      DiaryDoodles · 15m ago · Reply · See in Hall
     </div>
 
   </div>
 
-  <!-- =========================
-       CHAT SCENE (HALL MODE)
-  ========================== -->
-  <div id="hall" class="scene">
+  <!-- CHAT (for Hall mode visual readiness) -->
+  <div class="chat" style="margin-top:30px;">
 
-    <div class="chat">
+    <div class="bubble">
+      <div class="username">SillyScript</div>
+      <div class="message">Dessert heist? I'm in 😭🍰</div>
+    </div>
 
-      <div class="bubble">
-        <div class="name">DiaryDoodles</div>
-        <div class="msg">They better grab some cake for me 🎂</div>
-      </div>
-
-      <div class="bubble">
-        <div class="name">SillyScript</div>
-        <div class="msg">Dessert heist? I'm in 🍰</div>
-      </div>
-
-      <div class="bubble">
-        <div class="name">RadiantSmiles</div>
-        <div class="msg">Don’t eat it all 😭</div>
-      </div>
-
+    <div class="bubble">
+      <div class="username">RadiantSmiles</div>
+      <div class="message">Save me a slice!!</div>
     </div>
 
   </div>
 
 </div>
 
-<!-- =========================
-     INPUT BOX (CHAT ONLY FEEL)
-========================= -->
+<!-- INPUT -->
 <div class="input-area">
   <input placeholder="Type a message..." />
   <button class="send">➤</button>
 </div>
 
-<!-- =========================
-     BOTTOM NAVIGATION
-========================= -->
-<div class="nav">
-  <button onclick="showScene('story')">Home</button>
-  <button onclick="showScene('story')">Back</button>
-  <button>Settings</button>
+<!-- CTA -->
+<div class="cta">
+  Join the Hall of Voices — Step into the discussion
 </div>
 
-<!-- =========================
-     JAVASCRIPT (INTERACTION ONLY)
-========================= -->
+<!-- NAV -->
+<div class="nav">
+  <div></div>
+  <div></div>
+  <div></div>
+  <div></div>
+</div>
+
+<!-- SPARKLES -->
 <script>
-
-  /* =========================
-     SWITCH BETWEEN STORY & CHAT
-  ========================== */
-  function showScene(sceneId) {
-
-    // hide all scenes
-    document.querySelectorAll('.scene').forEach(scene => {
-      scene.classList.remove('active');
-    });
-
-    // show selected scene
-    document.getElementById(sceneId).classList.add('active');
-  }
-
+for(let i=0;i<25;i++){
+  let s = document.createElement("div");
+  s.className = "sparkle";
+  s.style.left = Math.random()*100 + "vw";
+  s.style.top = Math.random()*100 + "vh";
+  s.style.animationDuration = (3 + Math.random()*4) + "s";
+  document.body.appendChild(s);
+}
 </script>
 
 </body>
