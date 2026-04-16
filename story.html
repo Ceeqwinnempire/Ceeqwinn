@@ -129,7 +129,16 @@ body {
    MAIN CONTENT WRAPPER
 ========================= */
 .container {
-  padding: 80px 140px 120px 140px;
+  position: relative;
+  height: 100vh;
+
+  display: grid;
+  grid-template-columns: 60px 1fr 60px;
+
+  padding-top: 80px;
+  padding-bottom: 120px;
+
+  max-width: 100%;
 }
 /* =========================
    STORY PANEL (LEFT MODE)
