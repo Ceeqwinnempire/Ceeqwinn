@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -28,13 +29,19 @@
 body {
   font-family: 'Lato', sans-serif;
   overflow-x: hidden;
+
+  background: linear-gradient(
+    #f6c28b,
+    #ebaE73,
+    #d18a5c
+  );
 }
 
-/* ===== ROOT STAGE ===== */
 .stage {
   position: fixed;
   inset: 0;
-  z-index: -2;
+  z-index: -1;
+  pointer-events: none;
 
   background:
     radial-gradient(circle at center, rgba(255,220,160,0.4), transparent 60%),
@@ -43,7 +50,6 @@ body {
   transition: background 0.4s ease;
 }
 
-/* PARTICLES */
 .particle {
   position: fixed;
   width: 3px;
@@ -59,7 +65,6 @@ body {
   to { transform: translateY(-10vh); }
 }
 
-/* ===== CURTAINS ===== */
 .curtain {
   position: fixed;
   top: 0;
@@ -72,7 +77,6 @@ body {
 .curtain.left { left: 0; }
 .curtain.right { right: 0; }
 
-/* ===== READING COLUMN ===== */
 .main {
   position: relative;
   z-index: 3;
@@ -105,7 +109,6 @@ body {
   margin-bottom: 10px;
 }
 
-/* ===== CRYSTAL SCROLL ===== */
 .crystal {
   position: fixed;
   right: 10px;
@@ -124,7 +127,6 @@ body {
   transition: height 0.2s ease;
 }
 
-/* ===== CHAT PANEL ===== */
 .hall {
   position: fixed;
   bottom: -100%;
@@ -155,7 +157,6 @@ body {
   border-left: 4px solid var(--gold);
 }
 
-/* ===== BOTTOM DOCK ===== */
 .dock {
   position: fixed;
   bottom: 0;
@@ -174,7 +175,6 @@ body {
   font-size: 16px;
 }
 
-/* PARTICLES */
 .particle {
   position: fixed;
   width: 3px;
@@ -184,22 +184,19 @@ body {
   opacity: 0.5;
   animation: float linear infinite;
 }
-
 </style>
+
 </head>
 
 <body>
 
 <div class="stage"></div>
-
 <div class="curtain left"></div>
 <div class="curtain right"></div>
 
 <div class="main">
   <div class="header">Ceeqwinn Immersive Story</div>
-
   <div class="nav">🏠 🔔 ✉️ 🔍</div>
-
   <div class="panel" id="story">
     The sun hung low in the sky, casting a golden glow across the countryside...
   </div>
@@ -224,7 +221,6 @@ body {
 </div>
 
 <script>
-
 for (let i=0;i<25;i++){
   let p=document.createElement('div');
   p.className='particle';
@@ -256,9 +252,7 @@ function updateAtmosphere(){
 }
 
 updateAtmosphere();
-
 </script>
 
 </body>
 </html>
-
