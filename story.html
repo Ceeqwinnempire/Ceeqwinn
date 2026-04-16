@@ -16,7 +16,6 @@
   --bg3: #d18a5c;
   --text: #2b2b2b;
 
-  /* Genre weights */
   --romance: 0.2;
   --fantasy: 0.3;
   --drama: 0.2;
@@ -65,33 +64,20 @@ body {
   position: fixed;
   top: 0;
   height: 100%;
-
   width: clamp(18px, 6vw, 80px);
-
   background: linear-gradient(#8c5a2b, #d4a373);
   z-index: 2;
 }
 
-.curtain.left {
-  left: 0;
-}
+.curtain.left { left: 0; }
+.curtain.right { right: 0; }
 
-.curtain.right {
-  right: 0;
-}
-
-@media (max-width: 480px) {
-  .curtain {
-    width: 24px;
-  }
-}
 /* ===== READING COLUMN ===== */
 .main {
   position: relative;
   z-index: 3;
   max-width: 720px;
   margin: auto;
-
   padding-left: clamp(16px, 6vw, 90px);
   padding-right: clamp(16px, 6vw, 90px);
   padding-top: 16px;
@@ -99,10 +85,7 @@ body {
 
 .panel {
   backdrop-filter: blur(10px);
-  background: linear-gradient(
-    rgba(245,230,204,0.88),
-    rgba(245,230,204,0.82)
-  );
+  background: rgba(245,230,204,0.9);
   border-radius: 18px;
   padding: 20px;
   color: var(--text);
@@ -191,6 +174,17 @@ body {
   font-size: 16px;
 }
 
+/* PARTICLES */
+.particle {
+  position: fixed;
+  width: 3px;
+  height: 3px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: float linear infinite;
+}
+
 </style>
 </head>
 
@@ -231,7 +225,6 @@ body {
 
 <script>
 
-/* PARTICLES */
 for (let i=0;i<25;i++){
   let p=document.createElement('div');
   p.className='particle';
@@ -240,19 +233,16 @@ for (let i=0;i<25;i++){
   document.body.appendChild(p);
 }
 
-/* SCROLL CRYSTAL */
 window.addEventListener('scroll', ()=>{
   let h = document.documentElement.scrollHeight - window.innerHeight;
   let sc = (window.scrollY / h) * 100;
   document.getElementById('crystalFill').style.height = sc + '%';
 });
 
-/* HALL */
 function toggleHall(){
   document.getElementById('hall').classList.toggle('open');
 }
 
-/* GENRE ENGINE */
 function updateAtmosphere(){
   let romance = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--romance'));
   let horror = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--horror'));
