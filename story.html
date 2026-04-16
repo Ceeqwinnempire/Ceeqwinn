@@ -1,46 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Story Theater</title>
 
-  <!-- LINK TO CSS FILE -->
-  <link rel="stylesheet" href="story.css">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Ceeqwinn Immersive Story Site</title>
+
+  <!-- =========================
+       FONTS (STYLE ONLY)
+  ========================== -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <!-- =========================
+       CSS (VISUAL DESIGN)
+  ========================== -->
+  <style>
+
+    /* =========================
+       BASIC THEME COLORS
+    ========================== */
+    :root {
+      --gold: #D4AF37;
+      --gold-light: #FFD700;
+      --bg-top: #FFB74D;
+      --bg-bottom: #FF8A65;
+      --text: #3E2723;
+      --card: rgba(255,255,255,0.75);
+    }
+
+    /* =========================
+       RESET
+    ========================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom));
+      min-height: 100vh;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* =========================
+       TOP NAVIGATION BAR
+    ========================== */
+    .topbar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 18px;
+      color: var(--gold);
+      text-align: center;
+      flex: 1;
+    }
+
+    .icons {
+      color: var(--gold);
+      font-size: 14px;
+    }
+
+    /* =========================
+       MAIN CONTENT AREA
+    ========================== */
+    .container {
+      padding: 90px 16px 120px;
+    }
+
+    /* =========================
+       STORY + CHAT SCENES
+    ========================== */
+    .scene {
+      display: none;
+    }
+
+    .scene.active {
+      display: block;
+    }
+
+    /* =========================
+       STORY CARD (LEFT SCREEN)
+    ========================== */
+    .story-card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    .story-card h2 {
+      font-family: "Cormorant Garamond", serif;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .story-card p {
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .meta {
+      margin-top: 12px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      opacity: 0.8;
+    }
+
+    /* =========================
+       BUTTONS
+    ========================== */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--gold);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: var(--gold-light);
+    }
+
+    /* =========================
+       CHAT SCENE (RIGHT SCREEN)
+    ========================== */
+    .chat {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bubble {
+      background: rgba(255,255,255,0.85);
+      border-left: 3px solid var(--gold);
+      padding: 10px;
+      border-radius: 10px;
+    }
+
+    .name {
+      font-size: 12px;
+      color: var(--gold);
+      font-weight: bold;
+    }
+
+    .msg {
+      font-size: 13px;
+    }
+
+    /* =========================
+       INPUT AREA
+    ========================== */
+    .input-area {
+      position: fixed;
+      bottom: 70px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--gold);
+      outline: none;
+    }
+
+    .send {
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--gold);
+      border: none;
+      cursor: pointer;
+    }
+
+    /* =========================
+       BOTTOM NAVIGATION
+    ========================== */
+    .nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      padding: 12px;
+      display: flex;
+      justify-content: space-around;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .nav button {
+      background: none;
+      border: none;
+      color: var(--gold);
+      cursor: pointer;
+    }
+
+  </style>
 </head>
 
 <body>
 
-  <!-- 🌍 MAIN WORLD CONTAINER -->
-  <div class="world">
+<!-- =========================
+     TOP BAR (HEADER)
+========================= -->
+<div class="topbar">
+  <div class="icons">🏠 🔍 ✉️</div>
+  <div class="title">Ceeqwinn Immersive Story Site</div>
+  <div class="icons">⚙️</div>
+</div>
 
-    <!-- 📖 LEFT SIDE: STORY PAGE -->
-    <div class="story-page">
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+<div class="container">
 
-      <div class="panel story-panel">
-        <h1>Chapter One</h1>
-        <p>
-          The golden world awakens as the ink of destiny begins to flow across the parchment sky...
-        </p>
+  <!-- =========================
+       STORY SCENE (READING MODE)
+  ========================== -->
+  <div id="story" class="scene active">
+
+    <div class="story-card">
+
+      <h2>The Golden Escape</h2>
+
+      <p>
+        The sun hung low, casting a golden glow over the countryside as Ellie and Max stepped into the open.
+        A warm breeze carried laughter from a distant garden party.
+      </p>
+
+      <p style="margin-top:10px; font-style: italic;">
+        “How about we crash the party?” Ellie grinned.
+      </p>
+
+      <div class="meta">
+        <span>@DiaryDoodles</span>
+        <span>15m ago</span>
       </div>
 
-    </div>
-
-    <!-- 💬 RIGHT SIDE: HALL (CHAT SPACE) -->
-    <div class="hall-page">
-
-      <div class="panel hall-panel">
-        <h2>The Hall</h2>
-
-        <div class="chat-box">
-          <div class="chat-bubble">Welcome to the Hall...</div>
-          <div class="chat-bubble">The story is alive here.</div>
-        </div>
-
+      <!-- Buttons that switch to chat -->
+      <div class="btn-row">
+        <button class="btn" onclick="showScene('hall')">Reply</button>
+        <button class="btn" onclick="showScene('hall')">See in Hall</button>
       </div>
 
     </div>
 
   </div>
+
+  <!-- =========================
+       CHAT SCENE (HALL MODE)
+  ========================== -->
+  <div id="hall" class="scene">
+
+    <div class="chat">
+
+      <div class="bubble">
+        <div class="name">DiaryDoodles</div>
+        <div class="msg">They better grab some cake for me 🎂</div>
+      </div>
+
+      <div class="bubble">
+        <div class="name">SillyScript</div>
+        <div class="msg">Dessert heist? I'm in 🍰</div>
+      </div>
+
+      <div class="bubble">
+        <div class="name">RadiantSmiles</div>
+        <div class="msg">Don’t eat it all 😭</div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- =========================
+     INPUT BOX (CHAT ONLY FEEL)
+========================= -->
+<div class="input-area">
+  <input placeholder="Type a message..." />
+  <button class="send">➤</button>
+</div>
+
+<!-- =========================
+     BOTTOM NAVIGATION
+========================= -->
+<div class="nav">
+  <button onclick="showScene('story')">Home</button>
+  <button onclick="showScene('story')">Back</button>
+  <button>Settings</button>
+</div>
+
+<!-- =========================
+     JAVASCRIPT (INTERACTION ONLY)
+========================= -->
+<script>
+
+  /* =========================
+     SWITCH BETWEEN STORY & CHAT
+  ========================== */
+  function showScene(sceneId) {
+
+    // hide all scenes
+    document.querySelectorAll('.scene').forEach(scene => {
+      scene.classList.remove('active');
+    });
+
+    // show selected scene
+    document.getElementById(sceneId).classList.add('active');
+  }
+
+</script>
 
 </body>
 </html>
