@@ -1,0 +1,80 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "uploads"
+public_folder: "/uploads"
+
+collections:
+
+  - name: "stories"
+    label: "📖 Stories"
+    folder: "content/stories"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Cover Image", name: "cover", widget: "image", required: false }
+      - { label: "Series", name: "series", widget: "string", required: false }
+      - { label: "Chapter Number", name: "chapter", widget: "number", value_type: "int", required: false }
+      - { label: "Description", name: "description", widget: "text", required: false }
+      - { label: "Story", name: "body", widget: "markdown" }
+
+  - name: "articles"
+    label: "📰 Articles"
+    folder: "content/articles"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Cover Image", name: "cover", widget: "image", required: false }
+      - { label: "Category", name: "category", widget: "string", required: false }
+      - { label: "Excerpt", name: "excerpt", widget: "text", required: false }
+      - { label: "Article", name: "body", widget: "markdown" }
+
+  - name: "fashion"
+    label: "👗 Fashion"
+    folder: "content/fashion"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Cover Image", name: "cover", widget: "image", required: false }
+      - { label: "Description", name: "description", widget: "text", required: false }
+      - { label: "Content", name: "body", widget: "markdown" }
+
+  - name: "media"
+    label: "🎬 Media & Uploads"
+    folder: "content/media"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Media Type", name: "media_type", widget: "select", options: ["Image", "Video", "Audio", "Downloadable File"] }
+      - { label: "File", name: "file", widget: "file", required: false }
+      - { label: "Cover Image", name: "cover", widget: "image", required: false }
+      - { label: "Description", name: "description", widget: "text", required: false }
+
+  - name: "custom_pages"
+    label: "🧩 Custom Pages & Experiences"
+    folder: "content/pages"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Page Name", name: "title", widget: "string" }
+      - { label: "Page Type", name: "page_type", widget: "select", options: ["Game", "Tool", "Planner", "Interactive Experience", "Other"] }
+      - { label: "Cover Image", name: "cover", widget: "image", required: false }
+      - { label: "Description", name: "description", widget: "text", required: false }
+      - { label: "Page URL", name: "url", widget: "string" }
+      - { label: "Featured", name: "featured", widget: "boolean", default: false }
+
+  - name: "site_pages"
+    label: "📄 Site Pages"
+    files:
+      - label: "Homepage"
+        name: "homepage"
+        file: "content/pages/homepage.md"
+        fields:
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Description", name: "description", widget: "text", required: false }
+          - { label: "Content", name: "body", widget: "markdown" }
