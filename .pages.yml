@@ -1,0 +1,15 @@
+content:
+  - name: articles
+    label: Articles
+    type: collection
+    path: content/articles
+    filename: "{primary}.md"
+
+    fields:
+      - name: title
+        label: Title
+        type: string
+
+      - name: body
+        label: Article
+        type: rich-text
