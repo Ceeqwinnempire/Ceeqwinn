@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<title>Article</title>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+
+body{
+font-family:Arial,sans-serif;
+max-width:800px;
+margin:40px auto;
+padding:20px;
+line-height:1.8;
+}
+
+img{
+max-width:100%;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="content">
+Loading...
+</div>
+
+<script>
+
+const params=new URLSearchParams(window.location.search);
+
+const file=params.get("file");
+
+fetch(`content/articles/${file}.md`)
+.then(r=>r.text())
+.then(md=>{
+
+document.getElementById("content").innerHTML=
+marked.parse(md);
+
+});
+
+</script>
+
+</body>
+</html>
