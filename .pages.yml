@@ -1,3 +1,7 @@
+media:
+  input: content/images
+  output: /content/images
+
 content:
   - name: articles
     label: Articles
