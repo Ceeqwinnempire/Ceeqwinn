@@ -17,3 +17,5 @@ content:
       - name: body
         label: Article
         type: rich-text
+        options:
+          media: true
