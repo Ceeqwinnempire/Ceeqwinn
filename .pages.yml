@@ -1,6 +1,8 @@
 media:
-  input: content/images
-  output: /content/images
+  - name: images
+    label: Images
+    input: content/images
+    output: /content/images
 
 content:
   - name: articles
@@ -14,8 +16,12 @@ content:
         label: Title
         type: string
 
+      - name: cover
+        label: Cover Image
+        type: image
+        options:
+          media: images
+
       - name: body
         label: Article
         type: rich-text
-        options:
-          media: true
