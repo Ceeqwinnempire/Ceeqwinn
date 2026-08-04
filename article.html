@@ -19,7 +19,11 @@ line-height:1.8;
 }
 
 img{
+width:100%;
 max-width:100%;
+display:block;
+margin:0 auto 25px;
+border-radius:12px;
 }
 
 </style>
@@ -34,17 +38,55 @@ Loading...
 
 <script>
 
-const params=new URLSearchParams(window.location.search);
-
-const file=params.get("file");
+const params = new URLSearchParams(window.location.search);
+const file = params.get("file");
 
 fetch(`content/articles/${file}.md`)
-.then(r=>r.text())
-.then(md=>{
+.then(r => r.text())
+.then(md => {
 
-document.getElementById("content").innerHTML=
-marked.parse(md);
+    let title = "";
+    let cover = "";
+    let body = md;
 
+    // Check for YAML front matter
+    if(md.startsWith("---")){
+
+        const end = md.indexOf("---",3);
+
+        if(end !== -1){
+
+            const frontMatter = md.substring(3,end).trim();
+
+            body = md.substring(end+3).trim();
+
+            frontMatter.split("\n").forEach(line=>{
+
+                if(line.startsWith("title:")){
+                    title = line.replace("title:","").trim();
+                }
+
+                if(line.startsWith("cover:")){
+                    cover = line.replace("cover:","").trim();
+                }
+
+            });
+
+        }
+
+    }
+
+    document.getElementById("content").innerHTML = `
+        ${cover ? `<img src="${cover}" alt="${title}">` : ""}
+        ${title ? `<h1>${title}</h1>` : ""}
+        ${marked.parse(body)}
+    `;
+
+})
+.catch(err => {
+    document.getElementById("content").innerHTML =
+    "<h2>Article not found.</h2>";
+    console.error(err);
 });
 
 </script>
