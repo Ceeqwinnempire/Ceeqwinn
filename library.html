@@ -38,7 +38,30 @@ a:hover{
 
 <div id="articles"></div>
 
-<script src="library.js"></script>
+<script>
+
+const articles=[
+
+{
+title:"Welcome to CEEQWINN",
+slug:"welcome-to-ceeqwinn"
+}
+
+];
+
+const container=document.getElementById("articles");
+
+articles.forEach(article=>{
+
+container.innerHTML+=`
+<a href="article.html?file=${article.slug}">
+${article.title}
+</a>
+`;
+
+});
+
+</script>
 
 </body>
 </html>
