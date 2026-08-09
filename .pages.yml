@@ -1,4 +1,3 @@
-```yaml
 media:
   - name: images
     label: Images
@@ -26,6 +25,4 @@ content:
       - name: body
         label: Article
         type: rich-text
-        options:
-          media: images
-```
+
