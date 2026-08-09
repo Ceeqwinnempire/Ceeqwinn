@@ -1,10 +1,17 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>CEEQWINN Library</title>
 
 <style>
+
 body{
     font-family:Arial,sans-serif;
     max-width:800px;
@@ -16,52 +23,110 @@ h1{
     margin-bottom:30px;
 }
 
-a{
+#articles{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.article-link{
     display:block;
     padding:12px;
-    margin-bottom:10px;
     text-decoration:none;
     border:1px solid #ddd;
     border-radius:8px;
     color:#111;
+    background:#fff;
 }
 
-a:hover{
+.article-link:hover{
     background:#f5f5f5;
 }
+
+.message{
+    color:#666;
+}
+
 </style>
 
 </head>
+
 <body>
 
 <h1>Library</h1>
 
-<div id="articles"></div>
+<div id="articles">
+
+    <p class="message">Loading articles...</p>
+
+</div>
 
 <script>
 
-const articles=[
+const container = document.getElementById("articles");
 
-{
-title:"Welcome to CEEQWINN",
-slug:"welcome-to-ceeqwinn"
-}
+fetch("content/articles/index.json")
 
-];
+    .then(response => {
 
-const container=document.getElementById("articles");
+        if(!response.ok){
 
-articles.forEach(article=>{
+            throw new Error(
+                "Could not load the article library."
+            );
 
-container.innerHTML+=`
-<a href="article.html?file=${article.slug}">
-${article.title}
-</a>
-`;
+        }
 
-});
+        return response.json();
+
+    })
+
+    .then(articles => {
+
+        container.innerHTML = "";
+
+        if(!articles.length){
+
+            container.innerHTML =
+                '<p class="message">No articles yet.</p>';
+
+            return;
+
+        }
+
+        articles.forEach(article => {
+
+            const link = document.createElement("a");
+
+            link.className = "article-link";
+
+            link.href =
+                "admin/article.html?file=" +
+                encodeURIComponent(article.slug);
+
+            link.textContent = article.title;
+
+            container.appendChild(link);
+
+        });
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        container.innerHTML =
+            '<p class="message">' +
+            'The library could not be loaded.' +
+            '</p>';
+
+    });
 
 </script>
 
 </body>
+
 </html>
+```
+
