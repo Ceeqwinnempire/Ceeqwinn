@@ -1,16 +1,22 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>CEEQWINN Reader</title>
 
 <style>
+
 body{
     max-width:800px;
     margin:auto;
     padding:40px 20px;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
     line-height:1.8;
     background:#fafafa;
     color:#222;
@@ -21,15 +27,26 @@ h1{
     margin-bottom:20px;
 }
 
+#content{
+    overflow-wrap:break-word;
+}
+
 #content img{
     max-width:100%;
+    height:auto;
     border-radius:12px;
     margin:20px 0;
 }
 
-#content{
-    white-space:pre-wrap;
+#content h2,
+#content h3{
+    margin-top:30px;
 }
+
+#status{
+    color:#666;
+}
+
 </style>
 
 </head>
@@ -38,43 +55,133 @@ h1{
 
 <h1 id="title">Loading...</h1>
 
+<div id="status">
+    Loading article...
+</div>
+
 <div id="content"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
 <script>
+
 const params = new URLSearchParams(location.search);
 
 const file = params.get("file");
 
-fetch("content/articles/" + file + ".md")
-.then(r=>r.text())
-.then(text=>{
+const titleElement =
+    document.getElementById("title");
 
-const lines=text.split("\n");
+const statusElement =
+    document.getElementById("status");
 
-let title="";
+const contentElement =
+    document.getElementById("content");
 
-let body=[];
 
-for(const line of lines){
+if(!file){
 
-if(line.startsWith("title")){
+    titleElement.textContent =
+        "Article not found";
 
-title=line.replace("title","").replace(":","").trim();
+    statusElement.textContent =
+        "No article was selected.";
 
 }else{
 
-body.push(line);
+    const safeSlug =
+        file.replace(/[^a-zA-Z0-9_-]/g, "");
+
+    fetch(
+        "../content/articles/" +
+        safeSlug +
+        ".md"
+    )
+
+    .then(response => {
+
+        if(!response.ok){
+
+            throw new Error(
+                "Article could not be found."
+            );
+
+        }
+
+        return response.text();
+
+    })
+
+    .then(text => {
+
+        let markdown = text;
+
+        let articleTitle = safeSlug;
+
+        const frontMatterMatch =
+            text.match(
+                /^---\s*([\s\S]*?)\s*---\s*/
+            );
+
+
+        if(frontMatterMatch){
+
+            const frontMatter =
+                frontMatterMatch[1];
+
+            const titleMatch =
+                frontMatter.match(
+                    /^title:\s*[\"']?(.*?)[\"']?\s*$/m
+                );
+
+
+            if(titleMatch){
+
+                articleTitle =
+                    titleMatch[1].trim();
+
+            }
+
+
+            markdown =
+                text.replace(
+                    /^---\s*[\s\S]*?\s*---\s*/,
+                    ""
+                );
+
+        }
+
+
+        titleElement.textContent =
+            articleTitle;
+
+
+        contentElement.innerHTML =
+            marked.parse(markdown);
+
+
+        statusElement.textContent = "";
+
+    })
+
+    .catch(error => {
+
+        console.error(error);
+
+        titleElement.textContent =
+            "Unable to load article";
+
+        statusElement.textContent =
+            "The article could not be loaded.";
+
+    });
 
 }
 
-}
-
-document.getElementById("title").textContent=title;
-
-document.getElementById("content").textContent=body.join("\n");
-
-});
 </script>
 
 </body>
+
 </html>
+```
+
