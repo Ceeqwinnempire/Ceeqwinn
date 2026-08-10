@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,6 +29,7 @@ h1{
 
 #content{
     overflow-wrap:break-word;
+    word-wrap:break-word;
 }
 
 /* INLINE IMAGES + GIFS */
@@ -63,6 +65,7 @@ h1{
 
 #content a{
     overflow-wrap:break-word;
+    word-wrap:break-word;
 }
 
 #content a.download{
@@ -124,194 +127,725 @@ h1{
 
 <div id="content"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<!--
+========================================================
+OLDER, MORE COMPATIBLE MARKED VERSION
+========================================================
+
+Marked 0.3.19 uses the older:
+    marked(markdown)
+
+syntax rather than:
+    marked.parse(markdown)
+
+This avoids depending on newer JavaScript features.
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
+
 
 <script>
 
-const params =
-    new URLSearchParams(location.search);
+/*
+========================================================
+CEEQWINN READER
+OLDER-BROWSER COMPATIBLE VERSION
+========================================================
+*/
 
-const file =
-    params.get("file");
 
-const titleElement =
+/*
+--------------------------------------------------------
+READ ?file= FROM THE ADDRESS BAR
+
+We do NOT use URLSearchParams because older Chrome
+versions may not support it.
+--------------------------------------------------------
+*/
+
+function getFileFromURL(){
+
+    var search =
+        window.location.search;
+
+    if(!search){
+        return null;
+    }
+
+    search =
+        search.substring(1);
+
+    var pieces =
+        search.split("&");
+
+    var i;
+    var pair;
+    var key;
+    var value;
+
+    for(i = 0; i < pieces.length; i++){
+
+        pair =
+            pieces[i].split("=");
+
+        key =
+            pair[0];
+
+        if(key === "file"){
+
+            value =
+                pair.length > 1
+                ? pair.slice(1).join("=")
+                : "";
+
+            try{
+
+                return decodeURIComponent(
+                    value
+                );
+
+            }catch(error){
+
+                return value;
+
+            }
+
+        }
+
+    }
+
+    return null;
+}
+
+
+/*
+--------------------------------------------------------
+GET ARTICLE SLUG
+--------------------------------------------------------
+*/
+
+var file =
+    getFileFromURL();
+
+
+/*
+--------------------------------------------------------
+PAGE ELEMENTS
+--------------------------------------------------------
+*/
+
+var titleElement =
     document.getElementById("title");
 
-const statusElement =
+var statusElement =
     document.getElementById("status");
 
-const contentElement =
+var contentElement =
     document.getElementById("content");
 
 
+/*
+--------------------------------------------------------
+NO ARTICLE SELECTED
+--------------------------------------------------------
+*/
+
 if(!file){
 
-    titleElement.textContent =
+    titleElement.innerHTML =
         "Article not found";
 
-    statusElement.textContent =
+    statusElement.innerHTML =
         "No article was selected.";
 
 }else{
 
-    const safeSlug =
-        file.replace(/[^a-zA-Z0-9_-]/g, "");
 
-    fetch(
+    /*
+    ----------------------------------------------------
+    CLEAN ARTICLE SLUG
+    ----------------------------------------------------
+    */
+
+    var safeSlug =
+        file.replace(
+            /[^a-zA-Z0-9_-]/g,
+            ""
+        );
+
+
+    /*
+    ----------------------------------------------------
+    ARTICLE FILE
+    ----------------------------------------------------
+
+    article.html is located in:
+
+        /admin/article.html
+
+    So:
+
+        ../content/articles/
+
+    points to:
+
+        /content/articles/
+    ----------------------------------------------------
+    */
+
+    var articleURL =
         "../content/articles/" +
         safeSlug +
-        ".md"
-    )
-
-    .then(response => {
-
-        if(!response.ok){
-
-            throw new Error(
-                "Article could not be found."
-            );
-
-        }
-
-        return response.text();
-
-    })
-
-    .then(text => {
-
-        let markdown = text;
-
-        let articleTitle = safeSlug;
-
-        const frontMatterMatch =
-            text.match(
-                /^---\s*([\s\S]*?)\s*---\s*/
-            );
+        ".md";
 
 
-        if(frontMatterMatch){
+    /*
+    ----------------------------------------------------
+    LOAD ARTICLE WITH XMLHttpRequest
 
-            const frontMatter =
-                frontMatterMatch[1];
+    XMLHttpRequest is supported much farther back
+    than fetch().
+    ----------------------------------------------------
+    */
 
-            const titleMatch =
-                frontMatter.match(
-                    /^title:\s*[\"']?(.*?)[\"']?\s*$/m
-                );
-
-
-            if(titleMatch){
-
-                articleTitle =
-                    titleMatch[1].trim();
-
-            }
+    var request =
+        new XMLHttpRequest();
 
 
-            markdown =
-                text.replace(
-                    /^---\s*[\s\S]*?\s*---\s*/,
-                    ""
-                );
+    /*
+    Some older browsers can be picky about the
+    Markdown MIME type.
 
-        }
+    overrideMimeType is used when available so the
+    response is treated as plain text.
+    */
+
+    if(
+        request.overrideMimeType
+    ){
+
+        request.overrideMimeType(
+            "text/plain"
+        );
+
+    }
 
 
-        titleElement.textContent =
-            articleTitle;
+    request.open(
+        "GET",
+        articleURL,
+        true
+    );
 
 
-        contentElement.innerHTML =
-            marked.parse(markdown);
+    /*
+    ----------------------------------------------------
+    REQUEST FINISHED
+    ----------------------------------------------------
+    */
 
-
-        /*
-         * Make downloadable files open
-         * safely in a new browser context.
-         */
-
-        const links =
-            contentElement.querySelectorAll("a");
-
-        links.forEach(link => {
-
-            const href =
-                link.getAttribute("href");
-
-            if(!href) return;
-
-            const lower =
-                href.toLowerCase();
+    request.onreadystatechange =
+        function(){
 
             if(
-                lower.endsWith(".pdf") ||
-                lower.endsWith(".zip") ||
-                lower.endsWith(".doc") ||
-                lower.endsWith(".docx") ||
-                lower.endsWith(".txt")
+                request.readyState !== 4
             ){
 
-                link.classList.add("download");
+                return;
 
-                link.setAttribute(
-                    "download",
-                    ""
+            }
+
+
+            /*
+            ------------------------------------------------
+            SUCCESS
+
+            status 200 = normal success
+
+            status 0 can occur with some older browsers
+            when loading a same-origin local/static file.
+            ------------------------------------------------
+            */
+
+            if(
+                request.status === 200 ||
+                request.status === 0
+            ){
+
+                if(
+                    request.responseText
+                ){
+
+                    renderArticle(
+                        request.responseText
+                    );
+
+                }else{
+
+                    showError(
+                        "The article is empty."
+                    );
+
+                }
+
+            }else{
+
+                showError(
+                    "The article could not be loaded."
                 );
 
             }
 
-        });
+        };
+
+
+    /*
+    ----------------------------------------------------
+    NETWORK ERROR
+    ----------------------------------------------------
+    */
+
+    request.onerror =
+        function(){
+
+            showError(
+                "The article could not be loaded."
+            );
+
+        };
+
+
+    /*
+    ----------------------------------------------------
+    SEND REQUEST
+    ----------------------------------------------------
+    */
+
+    try{
+
+        request.send(null);
+
+    }catch(error){
+
+        showError(
+            "The article could not be loaded."
+        );
+
+    }
+
+}
+
+
+/*
+========================================================
+RENDER ARTICLE
+========================================================
+*/
+
+function renderArticle(text){
+
+    var markdown =
+        text;
+
+    var articleTitle =
+        safeSlug;
+
+
+    /*
+    ----------------------------------------------------
+    FIND FRONT MATTER
+    ----------------------------------------------------
+    */
+
+    var frontMatterMatch =
+        text.match(
+            /^---\s*([\s\S]*?)\s*---\s*/
+        );
+
+
+    if(frontMatterMatch){
+
+        var frontMatter =
+            frontMatterMatch[1];
 
 
         /*
-         * Add controls to videos
-         * if they are present in the content.
-         */
+        ------------------------------------------------
+        GET TITLE
+        ------------------------------------------------
+        */
 
-        const videos =
-            contentElement.querySelectorAll("video");
+        var titleMatch =
+            frontMatter.match(
+                /^title:\s*["']?(.*?)["']?\s*$/m
+            );
 
-        videos.forEach(video => {
 
-            video.controls = true;
+        if(titleMatch){
 
-            video.preload = "metadata";
+            articleTitle =
+                titleMatch[1];
 
-        });
+            articleTitle =
+                articleTitle.replace(
+                    /^["']|["']$/g,
+                    ""
+                );
+
+            articleTitle =
+                articleTitle.replace(
+                    /^\s+|\s+$/g,
+                    ""
+                );
+
+        }
 
 
         /*
-         * Add controls to audio
-         * if they are present in the content.
-         */
+        ------------------------------------------------
+        REMOVE FRONT MATTER
+        ------------------------------------------------
+        */
 
-        const audios =
-            contentElement.querySelectorAll("audio");
+        markdown =
+            text.replace(
+                /^---\s*[\s\S]*?\s*---\s*/,
+                ""
+            );
 
-        audios.forEach(audio => {
-
-            audio.controls = true;
-
-            audio.preload = "metadata";
-
-        });
+    }
 
 
-        statusElement.textContent = "";
+    /*
+    ----------------------------------------------------
+    DISPLAY TITLE
+    ----------------------------------------------------
+    */
 
-    })
+    titleElement.innerHTML =
+        escapeHTML(
+            articleTitle
+        );
 
-    .catch(error => {
 
-        console.error(error);
+    /*
+    ----------------------------------------------------
+    MARKDOWN → HTML
+    ----------------------------------------------------
 
-        titleElement.textContent =
-            "Unable to load article";
+    IMPORTANT:
 
-        statusElement.textContent =
-            "The article could not be loaded.";
+    Marked 0.3.19 uses:
 
-    });
+        marked(markdown)
+
+    NOT:
+
+        marked.parse(markdown)
+    ----------------------------------------------------
+    */
+
+    try{
+
+        contentElement.innerHTML =
+            marked(
+                markdown
+            );
+
+    }catch(error){
+
+        showError(
+            "The article could not be displayed."
+        );
+
+        return;
+
+    }
+
+
+    /*
+    ----------------------------------------------------
+    DOWNLOAD LINKS
+    ----------------------------------------------------
+    */
+
+    setupDownloadLinks();
+
+
+    /*
+    ----------------------------------------------------
+    VIDEO CONTROLS
+    ----------------------------------------------------
+    */
+
+    setupVideos();
+
+
+    /*
+    ----------------------------------------------------
+    AUDIO CONTROLS
+    ----------------------------------------------------
+    */
+
+    setupAudio();
+
+
+    /*
+    ----------------------------------------------------
+    REMOVE LOADING MESSAGE
+    ----------------------------------------------------
+    */
+
+    statusElement.innerHTML = "";
+
+}
+
+
+/*
+========================================================
+DOWNLOAD LINKS
+========================================================
+*/
+
+function setupDownloadLinks(){
+
+    var links =
+        contentElement.getElementsByTagName(
+            "a"
+        );
+
+    var i;
+    var link;
+    var href;
+    var lower;
+
+
+    for(
+        i = 0;
+        i < links.length;
+        i++
+    ){
+
+        link =
+            links[i];
+
+        href =
+            link.getAttribute(
+                "href"
+            );
+
+
+        if(!href){
+
+            continue;
+
+        }
+
+
+        lower =
+            href.toLowerCase();
+
+
+        if(
+            endsWith(lower, ".pdf") ||
+            endsWith(lower, ".zip") ||
+            endsWith(lower, ".doc") ||
+            endsWith(lower, ".docx") ||
+            endsWith(lower, ".txt")
+        ){
+
+            addClass(
+                link,
+                "download"
+            );
+
+            link.setAttribute(
+                "download",
+                ""
+            );
+
+        }
+
+    }
+
+}
+
+
+/*
+========================================================
+VIDEO CONTROLS
+========================================================
+*/
+
+function setupVideos(){
+
+    var videos =
+        contentElement.getElementsByTagName(
+            "video"
+        );
+
+    var i;
+
+
+    for(
+        i = 0;
+        i < videos.length;
+        i++
+    ){
+
+        videos[i].controls =
+            true;
+
+        videos[i].setAttribute(
+            "preload",
+            "metadata"
+        );
+
+    }
+
+}
+
+
+/*
+========================================================
+AUDIO CONTROLS
+========================================================
+*/
+
+function setupAudio(){
+
+    var audios =
+        contentElement.getElementsByTagName(
+            "audio"
+        );
+
+    var i;
+
+
+    for(
+        i = 0;
+        i < audios.length;
+        i++
+    ){
+
+        audios[i].controls =
+            true;
+
+        audios[i].setAttribute(
+            "preload",
+            "metadata"
+        );
+
+    }
+
+}
+
+
+/*
+========================================================
+ERROR MESSAGE
+========================================================
+*/
+
+function showError(message){
+
+    titleElement.innerHTML =
+        "Unable to load article";
+
+    statusElement.innerHTML =
+        message;
+
+}
+
+
+/*
+========================================================
+OLD-BROWSER endsWith() REPLACEMENT
+========================================================
+*/
+
+function endsWith(
+    text,
+    ending
+){
+
+    return (
+        text.indexOf(
+            ending,
+            text.length - ending.length
+        ) !== -1
+    );
+
+}
+
+
+/*
+========================================================
+OLD-BROWSER CLASS ADDER
+========================================================
+*/
+
+function addClass(
+    element,
+    className
+){
+
+    var current =
+        element.className;
+
+
+    if(
+        (
+            " " +
+            current +
+            " "
+        ).indexOf(
+            " " +
+            className +
+            " "
+        ) === -1
+    ){
+
+        element.className =
+            current
+            ? current + " " + className
+            : className;
+
+    }
+
+}
+
+
+/*
+========================================================
+BASIC HTML ESCAPING
+========================================================
+*/
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 
 }
 
@@ -320,3 +854,5 @@ if(!file){
 </body>
 
 </html>
+```
+
