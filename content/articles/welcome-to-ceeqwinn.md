@@ -1,8 +1,11 @@
 ---
 title: Welcome to CEEQWINN
-cover: /content/images/A_beautiful_young_woman_full_b-2.jpeg
 ---
-A beautiful young woman, full body portrait, standing confidently and smiling warmly. She has a shoulder-length afro ponytail filled with soft, defined curls, creating a voluminous and elegant natural hairstyle. She is raising one hand in a cheerful peace sign gesture while looking directly at the viewer with a bright, friendly expression.
+A beautiful young woman, full body portrait, standing confidently and smiling warmly. She has a shoulder-length afro ponytail filled with soft, defined curls, creating a voluminous and elegant natural hairstyle. 
+
+![A_beautiful_18-year-old_young_ (16).jpeg](</content/images/A_beautiful_18-year-old_young_ (16).jpeg>)
+
+She is raising one hand in a cheerful peace sign gesture while looking directly at the viewer with a bright, friendly expression.
 
 ![Luxurious_royal_theatre_curtai (1).jpeg](</content/images/Luxurious_royal_theatre_curtai (1).jpeg>)
 
