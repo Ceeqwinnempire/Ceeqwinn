@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -125,572 +124,194 @@ h1{
 
 <div id="content"></div>
 
-
-<!--
-    Older, more compatible version of Marked.
-    This is intentionally used instead of the newest
-    version so older Android browsers have a better chance
-    of rendering the article.
--->
-<script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
 <script>
 
-/*
-========================================================
-CEEQWINN ARTICLE READER
-Legacy-browser-compatible version
-========================================================
-*/
+const params =
+    new URLSearchParams(location.search);
 
+const file =
+    params.get("file");
 
-/*
---------------------------------------------------------
-GET ?file= FROM THE URL
-
-We do not use URLSearchParams because older Android
-browsers may not support it.
---------------------------------------------------------
-*/
-
-function getQueryParameter(name){
-
-    var query =
-        window.location.search.substring(1);
-
-    var parts =
-        query.split("&");
-
-    var i;
-    var pair;
-    var key;
-    var value;
-
-    for(i = 0; i < parts.length; i++){
-
-        if(!parts[i]){
-            continue;
-        }
-
-        pair =
-            parts[i].split("=");
-
-        key =
-            decodeURIComponent(pair[0]);
-
-        if(key === name){
-
-            value =
-                pair.length > 1
-                ? pair.slice(1).join("=")
-                : "";
-
-            return decodeURIComponent(value);
-
-        }
-
-    }
-
-    return null;
-}
-
-
-/*
---------------------------------------------------------
-GET ARTICLE FILE
---------------------------------------------------------
-*/
-
-var file =
-    getQueryParameter("file");
-
-
-/*
---------------------------------------------------------
-PAGE ELEMENTS
---------------------------------------------------------
-*/
-
-var titleElement =
+const titleElement =
     document.getElementById("title");
 
-var statusElement =
+const statusElement =
     document.getElementById("status");
 
-var contentElement =
+const contentElement =
     document.getElementById("content");
 
 
-/*
---------------------------------------------------------
-NO ARTICLE SELECTED
---------------------------------------------------------
-*/
-
 if(!file){
 
-    titleElement.innerHTML =
+    titleElement.textContent =
         "Article not found";
 
-    statusElement.innerHTML =
+    statusElement.textContent =
         "No article was selected.";
 
 }else{
 
-
-    /*
-    ----------------------------------------------------
-    SECURITY: ONLY ALLOW SIMPLE ARTICLE SLUGS
-    ----------------------------------------------------
-    */
-
-    var safeSlug =
+    const safeSlug =
         file.replace(/[^a-zA-Z0-9_-]/g, "");
 
-
-    /*
-    ----------------------------------------------------
-    ARTICLE LOCATION
-    ----------------------------------------------------
-
-    article.html is inside /admin/
-
-    ../content/articles/
-    therefore points to:
-
-    /content/articles/
-    ----------------------------------------------------
-    */
-
-    var articleURL =
+    fetch(
         "../content/articles/" +
         safeSlug +
-        ".md";
+        ".md"
+    )
+
+    .then(response => {
+
+        if(!response.ok){
+
+            throw new Error(
+                "Article could not be found."
+            );
+
+        }
+
+        return response.text();
+
+    })
+
+    .then(text => {
+
+        let markdown = text;
+
+        let articleTitle = safeSlug;
+
+        const frontMatterMatch =
+            text.match(
+                /^---\s*([\s\S]*?)\s*---\s*/
+            );
 
 
-    /*
-    ----------------------------------------------------
-    USE XMLHttpRequest INSTEAD OF FETCH
+        if(frontMatterMatch){
 
-    XMLHttpRequest works on much older browsers,
-    including older Android browser versions.
-    ----------------------------------------------------
-    */
+            const frontMatter =
+                frontMatterMatch[1];
 
-    var request =
-        new XMLHttpRequest();
-
-
-    request.open(
-        "GET",
-        articleURL,
-        true
-    );
-
-
-    /*
-    ----------------------------------------------------
-    ARTICLE LOADED
-    ----------------------------------------------------
-    */
-
-    request.onreadystatechange = function(){
-
-        if(
-            request.readyState === 4
-        ){
-
-            if(
-                request.status === 200 ||
-                request.status === 0
-            ){
-
-                renderArticle(
-                    request.responseText
+            const titleMatch =
+                frontMatter.match(
+                    /^title:\s*[\"']?(.*?)[\"']?\s*$/m
                 );
 
-            }else{
 
-                showError(
-                    "The article could not be loaded."
+            if(titleMatch){
+
+                articleTitle =
+                    titleMatch[1].trim();
+
+            }
+
+
+            markdown =
+                text.replace(
+                    /^---\s*[\s\S]*?\s*---\s*/,
+                    ""
+                );
+
+        }
+
+
+        titleElement.textContent =
+            articleTitle;
+
+
+        contentElement.innerHTML =
+            marked.parse(markdown);
+
+
+        /*
+         * Make downloadable files open
+         * safely in a new browser context.
+         */
+
+        const links =
+            contentElement.querySelectorAll("a");
+
+        links.forEach(link => {
+
+            const href =
+                link.getAttribute("href");
+
+            if(!href) return;
+
+            const lower =
+                href.toLowerCase();
+
+            if(
+                lower.endsWith(".pdf") ||
+                lower.endsWith(".zip") ||
+                lower.endsWith(".doc") ||
+                lower.endsWith(".docx") ||
+                lower.endsWith(".txt")
+            ){
+
+                link.classList.add("download");
+
+                link.setAttribute(
+                    "download",
+                    ""
                 );
 
             }
 
-        }
-
-    };
-
-
-    /*
-    ----------------------------------------------------
-    NETWORK ERROR
-    ----------------------------------------------------
-    */
-
-    request.onerror = function(){
-
-        showError(
-            "The article could not be loaded."
-        );
-
-    };
-
-
-    /*
-    ----------------------------------------------------
-    START REQUEST
-    ----------------------------------------------------
-    */
-
-    try{
-
-        request.send(null);
-
-    }catch(error){
-
-        showError(
-            "The article could not be loaded."
-        );
-
-    }
-
-}
-
-
-/*
-========================================================
-RENDER ARTICLE
-========================================================
-*/
-
-function renderArticle(text){
-
-    var markdown =
-        text;
-
-    var articleTitle =
-        safeSlug;
-
-
-    /*
-    ----------------------------------------------------
-    FRONT MATTER
-    ----------------------------------------------------
-    */
-
-    var frontMatterMatch =
-        text.match(
-            /^---\s*([\s\S]*?)\s*---\s*/
-        );
-
-
-    if(frontMatterMatch){
-
-        var frontMatter =
-            frontMatterMatch[1];
+        });
 
 
         /*
-        ------------------------------------------------
-        GET TITLE
-        ------------------------------------------------
-        */
+         * Add controls to videos
+         * if they are present in the content.
+         */
 
-        var titleMatch =
-            frontMatter.match(
-                /^title:\s*["']?(.*?)["']?\s*$/m
-            );
+        const videos =
+            contentElement.querySelectorAll("video");
 
+        videos.forEach(video => {
 
-        if(titleMatch){
+            video.controls = true;
 
-            articleTitle =
-                titleMatch[1].replace(
-                    /^["']|["']$/g,
-                    ""
-                ).replace(
-                    /^\s+|\s+$/g,
-                    ""
-                );
+            video.preload = "metadata";
 
-        }
+        });
 
 
         /*
-        ------------------------------------------------
-        REMOVE FRONT MATTER FROM ARTICLE BODY
-        ------------------------------------------------
-        */
+         * Add controls to audio
+         * if they are present in the content.
+         */
 
-        markdown =
-            text.replace(
-                /^---\s*[\s\S]*?\s*---\s*/,
-                ""
-            );
+        const audios =
+            contentElement.querySelectorAll("audio");
 
-    }
+        audios.forEach(audio => {
 
+            audio.controls = true;
 
-    /*
-    ----------------------------------------------------
-    SET ARTICLE TITLE
-    ----------------------------------------------------
-    */
+            audio.preload = "metadata";
 
-    titleElement.innerHTML =
-        escapeHTML(articleTitle);
+        });
 
 
-    /*
-    ----------------------------------------------------
-    RENDER MARKDOWN
-    ----------------------------------------------------
-    */
+        statusElement.textContent = "";
 
-    try{
+    })
 
-        contentElement.innerHTML =
-            marked(markdown);
+    .catch(error => {
 
-    }catch(error){
+        console.error(error);
 
-        showError(
-            "The article could not be displayed."
-        );
+        titleElement.textContent =
+            "Unable to load article";
 
-        return;
+        statusElement.textContent =
+            "The article could not be loaded.";
 
-    }
-
-
-    /*
-    ----------------------------------------------------
-    DOWNLOAD LINKS
-    ----------------------------------------------------
-    */
-
-    setupDownloadLinks();
-
-
-    /*
-    ----------------------------------------------------
-    VIDEO CONTROLS
-    ----------------------------------------------------
-    */
-
-    setupVideos();
-
-
-    /*
-    ----------------------------------------------------
-    AUDIO CONTROLS
-    ----------------------------------------------------
-    */
-
-    setupAudio();
-
-
-    /*
-    ----------------------------------------------------
-    CLEAR LOADING MESSAGE
-    ----------------------------------------------------
-    */
-
-    statusElement.innerHTML = "";
-
-}
-
-
-/*
-========================================================
-DOWNLOAD LINKS
-========================================================
-*/
-
-function setupDownloadLinks(){
-
-    var links =
-        contentElement.getElementsByTagName("a");
-
-    var i;
-    var link;
-    var href;
-    var lower;
-
-
-    for(i = 0; i < links.length; i++){
-
-        link =
-            links[i];
-
-        href =
-            link.getAttribute("href");
-
-
-        if(!href){
-            continue;
-        }
-
-
-        lower =
-            href.toLowerCase();
-
-
-        if(
-            endsWith(lower, ".pdf") ||
-            endsWith(lower, ".zip") ||
-            endsWith(lower, ".doc") ||
-            endsWith(lower, ".docx") ||
-            endsWith(lower, ".txt")
-        ){
-
-            addClass(
-                link,
-                "download"
-            );
-
-            link.setAttribute(
-                "download",
-                ""
-            );
-
-        }
-
-    }
-
-}
-
-
-/*
-========================================================
-VIDEO CONTROLS
-========================================================
-*/
-
-function setupVideos(){
-
-    var videos =
-        contentElement.getElementsByTagName("video");
-
-    var i;
-
-    for(i = 0; i < videos.length; i++){
-
-        videos[i].controls = true;
-
-        videos[i].setAttribute(
-            "preload",
-            "metadata"
-        );
-
-    }
-
-}
-
-
-/*
-========================================================
-AUDIO CONTROLS
-========================================================
-*/
-
-function setupAudio(){
-
-    var audios =
-        contentElement.getElementsByTagName("audio");
-
-    var i;
-
-    for(i = 0; i < audios.length; i++){
-
-        audios[i].controls = true;
-
-        audios[i].setAttribute(
-            "preload",
-            "metadata"
-        );
-
-    }
-
-}
-
-
-/*
-========================================================
-ERROR HANDLER
-========================================================
-*/
-
-function showError(message){
-
-    titleElement.innerHTML =
-        "Unable to load article";
-
-    statusElement.innerHTML =
-        message;
-
-}
-
-
-/*
-========================================================
-HELPER: ENDS WITH
-========================================================
-*/
-
-function endsWith(text, ending){
-
-    return text.indexOf(
-        ending,
-        text.length - ending.length
-    ) !== -1;
-
-}
-
-
-/*
-========================================================
-HELPER: ADD CLASS
-========================================================
-*/
-
-function addClass(element, className){
-
-    if(
-        (" " + element.className + " ")
-        .indexOf(
-            " " + className + " "
-        ) === -1
-    ){
-
-        element.className +=
-            (
-                element.className
-                ? " "
-                : ""
-            ) + className;
-
-    }
-
-}
-
-
-/*
-========================================================
-HELPER: BASIC HTML ESCAPING
-========================================================
-*/
-
-function escapeHTML(text){
-
-    return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    });
 
 }
 
@@ -699,5 +320,3 @@ function escapeHTML(text){
 </body>
 
 </html>
-```
-
