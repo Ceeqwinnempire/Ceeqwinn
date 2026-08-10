@@ -1,9 +1,14 @@
-```yaml
 media:
   - name: images
     label: Images
     input: content/images
     output: /content/images
+    extensions:
+      - jpg
+      - jpeg
+      - png
+      - webp
+      - gif
 
 content:
   - name: articles
@@ -28,5 +33,10 @@ content:
         type: rich-text
         options:
           media: images
-```
-
+          extensions:
+            - jpg
+            - jpeg
+            - png
+            - webp
+            - gif
+          switcher: true
