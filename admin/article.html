@@ -129,6 +129,1035 @@ h1{
 
 
 <!--
+Older-compatible Marked version.
+-->
+<script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
+
+
+<script>
+
+/*
+========================================================
+CEEQWINN ARTICLE READER
+Compatibility + inline media path protection
+========================================================
+*/
+
+
+/*
+--------------------------------------------------------
+READ ?file= FROM THE URL
+--------------------------------------------------------
+*/
+
+function getFileFromURL(){
+
+    var search =
+        window.location.search;
+
+    if(!search){
+        return null;
+    }
+
+    search =
+        search.substring(1);
+
+    var pieces =
+        search.split("&");
+
+    var i;
+    var pair;
+    var key;
+    var value;
+
+    for(i = 0; i < pieces.length; i++){
+
+        pair =
+            pieces[i].split("=");
+
+        key =
+            pair[0];
+
+        if(key === "file"){
+
+            value =
+                pair.length > 1
+                ? pair.slice(1).join("=")
+                : "";
+
+            try{
+
+                return decodeURIComponent(
+                    value
+                );
+
+            }catch(error){
+
+                return value;
+
+            }
+
+        }
+
+    }
+
+    return null;
+}
+
+
+var file =
+    getFileFromURL();
+
+
+var titleElement =
+    document.getElementById("title");
+
+var statusElement =
+    document.getElementById("status");
+
+var contentElement =
+    document.getElementById("content");
+
+
+/*
+========================================================
+NO ARTICLE
+========================================================
+*/
+
+if(!file){
+
+    titleElement.innerHTML =
+        "Article not found";
+
+    statusElement.innerHTML =
+        "No article was selected.";
+
+}else{
+
+
+    /*
+    ----------------------------------------------------
+    CLEAN SLUG
+    ----------------------------------------------------
+    */
+
+    var safeSlug =
+        file.replace(
+            /[^a-zA-Z0-9_-]/g,
+            ""
+        );
+
+
+    /*
+    ----------------------------------------------------
+    ARTICLE LOCATION
+    ----------------------------------------------------
+    */
+
+    var articleURL =
+        "../content/articles/" +
+        safeSlug +
+        ".md";
+
+
+    /*
+    ----------------------------------------------------
+    OLD-BROWSER REQUEST
+    ----------------------------------------------------
+    */
+
+    var request =
+        new XMLHttpRequest();
+
+
+    if(
+        request.overrideMimeType
+    ){
+
+        request.overrideMimeType(
+            "text/plain"
+        );
+
+    }
+
+
+    request.open(
+        "GET",
+        articleURL,
+        true
+    );
+
+
+    request.onreadystatechange =
+        function(){
+
+            if(
+                request.readyState !== 4
+            ){
+
+                return;
+
+            }
+
+
+            if(
+                request.status === 200 ||
+                request.status === 0
+            ){
+
+                renderArticle(
+                    request.responseText
+                );
+
+            }else{
+
+                showError(
+                    "The article could not be loaded."
+                );
+
+            }
+
+        };
+
+
+    request.onerror =
+        function(){
+
+            showError(
+                "The article could not be loaded."
+            );
+
+        };
+
+
+    try{
+
+        request.send(null);
+
+    }catch(error){
+
+        showError(
+            "The article could not be loaded."
+        );
+
+    }
+
+}
+
+
+/*
+========================================================
+RENDER ARTICLE
+========================================================
+*/
+
+function renderArticle(text){
+
+    var markdown =
+        text;
+
+    var articleTitle =
+        safeSlug;
+
+
+    /*
+    ----------------------------------------------------
+    FRONT MATTER
+    ----------------------------------------------------
+    */
+
+    var frontMatterMatch =
+        text.match(
+            /^---\s*([\s\S]*?)\s*---\s*/
+        );
+
+
+    if(frontMatterMatch){
+
+        var frontMatter =
+            frontMatterMatch[1];
+
+
+        var titleMatch =
+            frontMatter.match(
+                /^title:\s*["']?(.*?)["']?\s*$/m
+            );
+
+
+        if(titleMatch){
+
+            articleTitle =
+                titleMatch[1];
+
+            articleTitle =
+                articleTitle.replace(
+                    /^["']|["']$/g,
+                    ""
+                );
+
+            articleTitle =
+                articleTitle.replace(
+                    /^\s+|\s+$/g,
+                    ""
+                );
+
+        }
+
+
+        markdown =
+            text.replace(
+                /^---\s*[\s\S]*?\s*---\s*/,
+                ""
+            );
+
+    }
+
+
+    titleElement.innerHTML =
+        escapeHTML(
+            articleTitle
+        );
+
+
+    /*
+    ----------------------------------------------------
+    MARKDOWN → HTML
+    ----------------------------------------------------
+    */
+
+    try{
+
+        contentElement.innerHTML =
+            marked(
+                markdown
+            );
+
+    }catch(error){
+
+        showError(
+            "The article could not be displayed."
+        );
+
+        return;
+
+    }
+
+
+    /*
+    ====================================================
+    IMPORTANT:
+    FIX INLINE MEDIA PATHS
+    ====================================================
+    */
+
+    fixMediaPaths();
+
+
+    setupDownloadLinks();
+
+    setupVideos();
+
+    setupAudio();
+
+
+    statusElement.innerHTML = "";
+
+}
+
+
+/*
+========================================================
+FIX IMAGE / VIDEO / AUDIO PATHS
+========================================================
+
+Pages CMS stores our media under:
+
+    /content/images/
+
+The article is being displayed from:
+
+    /admin/article.html
+
+So we make sure relative media paths do NOT
+accidentally become:
+
+    /admin/content/images/
+
+Instead they become:
+
+    /content/images/
+
+This is especially important for older browsers.
+========================================================
+*/
+
+function fixMediaPaths(){
+
+    /*
+    ----------------------------------------------------
+    IMAGES
+    ----------------------------------------------------
+    */
+
+    var images =
+        contentElement.getElementsByTagName(
+            "img"
+        );
+
+    var i;
+    var src;
+
+
+    for(
+        i = 0;
+        i < images.length;
+        i++
+    ){
+
+        src =
+            images[i].getAttribute(
+                "src"
+            );
+
+
+        if(!src){
+            continue;
+        }
+
+
+        images[i].setAttribute(
+            "src",
+            fixMediaURL(src)
+        );
+
+    }
+
+
+    /*
+    ----------------------------------------------------
+    VIDEO SOURCES
+    ----------------------------------------------------
+    */
+
+    var videos =
+        contentElement.getElementsByTagName(
+            "video"
+        );
+
+
+    for(
+        i = 0;
+        i < videos.length;
+        i++
+    ){
+
+        src =
+            videos[i].getAttribute(
+                "src"
+            );
+
+
+        if(src){
+
+            videos[i].setAttribute(
+                "src",
+                fixMediaURL(src)
+            );
+
+        }
+
+    }
+
+
+    /*
+    ----------------------------------------------------
+    AUDIO SOURCES
+    ----------------------------------------------------
+    */
+
+    var audios =
+        contentElement.getElementsByTagName(
+            "audio"
+        );
+
+
+    for(
+        i = 0;
+        i < audios.length;
+        i++
+    ){
+
+        src =
+            audios[i].getAttribute(
+                "src"
+            );
+
+
+        if(src){
+
+            audios[i].setAttribute(
+                "src",
+                fixMediaURL(src)
+            );
+
+        }
+
+    }
+
+
+    /*
+    ----------------------------------------------------
+    SOURCE ELEMENTS
+    ----------------------------------------------------
+    */
+
+    var sources =
+        contentElement.getElementsByTagName(
+            "source"
+        );
+
+
+    for(
+        i = 0;
+        i < sources.length;
+        i++
+    ){
+
+        src =
+            sources[i].getAttribute(
+                "src"
+            );
+
+
+        if(src){
+
+            sources[i].setAttribute(
+                "src",
+                fixMediaURL(src)
+            );
+
+        }
+
+    }
+
+}
+
+
+/*
+========================================================
+NORMALIZE MEDIA URL
+========================================================
+*/
+
+function fixMediaURL(url){
+
+    if(!url){
+        return url;
+    }
+
+
+    /*
+    Already absolute:
+        https://...
+        http://...
+    */
+
+    if(
+        url.indexOf("http://") === 0 ||
+        url.indexOf("https://") === 0
+    ){
+
+        return url;
+
+    }
+
+
+    /*
+    Data URLs should remain untouched.
+    */
+
+    if(
+        url.indexOf("data:") === 0
+    ){
+
+        return url;
+
+    }
+
+
+    /*
+    Root-relative URL:
+
+        /content/images/test.jpg
+
+    Already correct.
+    */
+
+    if(
+        url.charAt(0) === "/"
+    ){
+
+        return url;
+
+    }
+
+
+    /*
+    Remove ./ if present.
+    */
+
+    while(
+        url.indexOf("./") === 0
+    ){
+
+        url =
+            url.substring(2);
+
+    }
+
+
+    /*
+    If Pages CMS gives:
+
+        content/images/test.jpg
+
+    make it:
+
+        /content/images/test.jpg
+    */
+
+    if(
+        url.indexOf(
+            "content/"
+        ) === 0
+    ){
+
+        return "/" + url;
+
+    }
+
+
+    /*
+    If the Markdown renderer gives us:
+
+        ../content/images/test.jpg
+
+    normalize it.
+    */
+
+    while(
+        url.indexOf("../") === 0
+    ){
+
+        url =
+            url.substring(3);
+
+    }
+
+
+    if(
+        url.indexOf(
+            "content/"
+        ) === 0
+    ){
+
+        return "/" + url;
+
+    }
+
+
+    /*
+    Otherwise leave the URL alone.
+    */
+
+    return url;
+
+}
+
+
+/*
+========================================================
+DOWNLOAD LINKS
+========================================================
+*/
+
+function setupDownloadLinks(){
+
+    var links =
+        contentElement.getElementsByTagName(
+            "a"
+        );
+
+    var i;
+    var link;
+    var href;
+    var lower;
+
+
+    for(
+        i = 0;
+        i < links.length;
+        i++
+    ){
+
+        link =
+            links[i];
+
+        href =
+            link.getAttribute(
+                "href"
+            );
+
+
+        if(!href){
+            continue;
+        }
+
+
+        lower =
+            href.toLowerCase();
+
+
+        if(
+            endsWith(lower, ".pdf") ||
+            endsWith(lower, ".zip") ||
+            endsWith(lower, ".doc") ||
+            endsWith(lower, ".docx") ||
+            endsWith(lower, ".txt")
+        ){
+
+            addClass(
+                link,
+                "download"
+            );
+
+            link.setAttribute(
+                "download",
+                ""
+            );
+
+        }
+
+    }
+
+}
+
+
+/*
+========================================================
+VIDEO CONTROLS
+========================================================
+*/
+
+function setupVideos(){
+
+    var videos =
+        contentElement.getElementsByTagName(
+            "video"
+        );
+
+    var i;
+
+
+    for(
+        i = 0;
+        i < videos.length;
+        i++
+    ){
+
+        videos[i].controls =
+            true;
+
+        videos[i].setAttribute(
+            "preload",
+            "metadata"
+        );
+
+    }
+
+}
+
+
+/*
+========================================================
+AUDIO CONTROLS
+========================================================
+*/
+
+function setupAudio(){
+
+    var audios =
+        contentElement.getElementsByTagName(
+            "audio"
+        );
+
+    var i;
+
+
+    for(
+        i = 0;
+        i < audios.length;
+        i++
+    ){
+
+        audios[i].controls =
+            true;
+
+        audios[i].setAttribute(
+            "preload",
+            "metadata"
+        );
+
+    }
+
+}
+
+
+/*
+========================================================
+ERROR
+========================================================
+*/
+
+function showError(message){
+
+    titleElement.innerHTML =
+        "Unable to load article";
+
+    statusElement.innerHTML =
+        message;
+
+}
+
+
+/*
+========================================================
+ENDS WITH
+========================================================
+*/
+
+function endsWith(
+    text,
+    ending
+){
+
+    return (
+        text.indexOf(
+            ending,
+            text.length - ending.length
+        ) !== -1
+    );
+
+}
+
+
+/*
+========================================================
+ADD CLASS
+========================================================
+*/
+
+function addClass(
+    element,
+    className
+){
+
+    var current =
+        element.className;
+
+
+    if(
+        (
+            " " +
+            current +
+            " "
+        ).indexOf(
+            " " +
+            className +
+            " "
+        ) === -1
+    ){
+
+        element.className =
+            current
+            ? current + " " + className
+            : className;
+
+    }
+
+}
+
+
+/*
+========================================================
+ESCAPE TITLE
+========================================================
+*/
+
+function escapeHTML(text){
+
+    return String(text)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+</script>
+
+</body>
+
+</html>
+```
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CEEQWINN Reader</title>
+
+<style>
+
+body{
+    max-width:800px;
+    margin:auto;
+    padding:40px 20px;
+    font-family:Arial,sans-serif;
+    line-height:1.8;
+    background:#fafafa;
+    color:#222;
+}
+
+h1{
+    font-size:2.2rem;
+    margin-bottom:20px;
+}
+
+#content{
+    overflow-wrap:break-word;
+    word-wrap:break-word;
+}
+
+/* INLINE IMAGES + GIFS */
+
+#content img{
+    display:block;
+    max-width:100%;
+    height:auto;
+    margin:24px auto;
+    border-radius:12px;
+}
+
+/* VIDEO */
+
+#content video{
+    display:block;
+    width:100%;
+    max-width:100%;
+    height:auto;
+    margin:24px auto;
+    border-radius:12px;
+}
+
+/* AUDIO */
+
+#content audio{
+    display:block;
+    width:100%;
+    margin:24px 0;
+}
+
+/* DOWNLOAD LINKS */
+
+#content a{
+    overflow-wrap:break-word;
+    word-wrap:break-word;
+}
+
+#content a.download{
+    display:inline-block;
+    margin:20px 0;
+    padding:12px 18px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+/* HEADINGS */
+
+#content h2,
+#content h3{
+    margin-top:30px;
+}
+
+/* BLOCKQUOTES */
+
+#content blockquote{
+    margin:24px 0;
+    padding:10px 20px;
+    border-left:4px solid #999;
+    background:#f0f0f0;
+}
+
+/* TABLES */
+
+#content table{
+    width:100%;
+    border-collapse:collapse;
+    margin:24px 0;
+}
+
+#content th,
+#content td{
+    padding:10px;
+    border:1px solid #ccc;
+}
+
+/* STATUS */
+
+#status{
+    color:#666;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 id="title">Loading...</h1>
+
+<div id="status">
+    Loading article...
+</div>
+
+<div id="content"></div>
+
+
+<!--
 ========================================================
 OLDER, MORE COMPATIBLE MARKED VERSION
 ========================================================
