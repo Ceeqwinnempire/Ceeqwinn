@@ -5,7 +5,6 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>CEEQWINN Reader</title>
@@ -28,11 +27,8 @@ h1{
 }
 
 #content{
-    overflow-wrap:break-word;
     word-wrap:break-word;
 }
-
-/* INLINE IMAGES + GIFS */
 
 #content img{
     display:block;
@@ -42,18 +38,12 @@ h1{
     border-radius:12px;
 }
 
-/* VIDEO */
-
 #content video{
     display:block;
     width:100%;
     max-width:100%;
-    height:auto;
     margin:24px auto;
-    border-radius:12px;
 }
-
-/* AUDIO */
 
 #content audio{
     display:block;
@@ -61,30 +51,10 @@ h1{
     margin:24px 0;
 }
 
-/* DOWNLOAD LINKS */
-
-#content a{
-    overflow-wrap:break-word;
-    word-wrap:break-word;
-}
-
-#content a.download{
-    display:inline-block;
-    margin:20px 0;
-    padding:12px 18px;
-    border-radius:10px;
-    text-decoration:none;
-    font-weight:bold;
-}
-
-/* HEADINGS */
-
 #content h2,
 #content h3{
     margin-top:30px;
 }
-
-/* BLOCKQUOTES */
 
 #content blockquote{
     margin:24px 0;
@@ -92,8 +62,6 @@ h1{
     border-left:4px solid #999;
     background:#f0f0f0;
 }
-
-/* TABLES */
 
 #content table{
     width:100%;
@@ -107,8 +75,6 @@ h1{
     border:1px solid #ccc;
 }
 
-/* STATUS */
-
 #status{
     color:#666;
 }
@@ -121,1760 +87,184 @@ h1{
 
 <h1 id="title">Loading...</h1>
 
-<div id="status">
-    Loading article...
-</div>
+<div id="status">Loading article...</div>
 
 <div id="content"></div>
 
-
-<!--
-Older-compatible Marked version.
--->
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
-
 
 <script>
 
-/*
-========================================================
-CEEQWINN ARTICLE READER
-Compatibility + inline media path protection
-========================================================
-*/
+var search = window.location.search;
+var file = "";
 
+if(search){
 
-/*
---------------------------------------------------------
-READ ?file= FROM THE URL
---------------------------------------------------------
-*/
+    file = search
+        .replace(/^\?/, "")
+        .split("&")[0]
+        .replace(/^file=/, "");
 
-function getFileFromURL(){
+    try{
+        file = decodeURIComponent(file);
+    }catch(e){}
 
-    var search =
-        window.location.search;
-
-    if(!search){
-        return null;
-    }
-
-    search =
-        search.substring(1);
-
-    var pieces =
-        search.split("&");
-
-    var i;
-    var pair;
-    var key;
-    var value;
-
-    for(i = 0; i < pieces.length; i++){
-
-        pair =
-            pieces[i].split("=");
-
-        key =
-            pair[0];
-
-        if(key === "file"){
-
-            value =
-                pair.length > 1
-                ? pair.slice(1).join("=")
-                : "";
-
-            try{
-
-                return decodeURIComponent(
-                    value
-                );
-
-            }catch(error){
-
-                return value;
-
-            }
-
-        }
-
-    }
-
-    return null;
 }
 
-
-var file =
-    getFileFromURL();
-
-
-var titleElement =
-    document.getElementById("title");
-
-var statusElement =
-    document.getElementById("status");
-
-var contentElement =
-    document.getElementById("content");
-
-
-/*
-========================================================
-NO ARTICLE
-========================================================
-*/
+var title = document.getElementById("title");
+var status = document.getElementById("status");
+var content = document.getElementById("content");
 
 if(!file){
 
-    titleElement.innerHTML =
-        "Article not found";
-
-    statusElement.innerHTML =
-        "No article was selected.";
+    title.innerHTML = "Article not found";
+    status.innerHTML = "No article was selected.";
 
 }else{
 
+    file = file.replace(/[^a-zA-Z0-9_-]/g,"");
 
-    /*
-    ----------------------------------------------------
-    CLEAN SLUG
-    ----------------------------------------------------
-    */
+    var xhr = new XMLHttpRequest();
 
-    var safeSlug =
-        file.replace(
-            /[^a-zA-Z0-9_-]/g,
-            ""
-        );
-
-
-    /*
-    ----------------------------------------------------
-    ARTICLE LOCATION
-    ----------------------------------------------------
-    */
-
-    var articleURL =
-        "../content/articles/" +
-        safeSlug +
-        ".md";
-
-
-    /*
-    ----------------------------------------------------
-    OLD-BROWSER REQUEST
-    ----------------------------------------------------
-    */
-
-    var request =
-        new XMLHttpRequest();
-
-
-    if(
-        request.overrideMimeType
-    ){
-
-        request.overrideMimeType(
-            "text/plain"
-        );
-
-    }
-
-
-    request.open(
+    xhr.open(
         "GET",
-        articleURL,
+        "../content/articles/" + file + ".md",
         true
     );
 
+    xhr.onreadystatechange = function(){
 
-    request.onreadystatechange =
-        function(){
+        if(xhr.readyState !== 4){
+            return;
+        }
 
-            if(
-                request.readyState !== 4
-            ){
+        if(xhr.status !== 200 && xhr.status !== 0){
 
-                return;
-
-            }
-
-
-            if(
-                request.status === 200 ||
-                request.status === 0
-            ){
-
-                renderArticle(
-                    request.responseText
-                );
-
-            }else{
-
-                showError(
-                    "The article could not be loaded."
-                );
-
-            }
-
-        };
-
-
-    request.onerror =
-        function(){
-
-            showError(
-                "The article could not be loaded."
-            );
-
-        };
-
-
-    try{
-
-        request.send(null);
-
-    }catch(error){
-
-        showError(
-            "The article could not be loaded."
-        );
-
-    }
-
-}
-
-
-/*
-========================================================
-RENDER ARTICLE
-========================================================
-*/
-
-function renderArticle(text){
-
-    var markdown =
-        text;
-
-    var articleTitle =
-        safeSlug;
-
-
-    /*
-    ----------------------------------------------------
-    FRONT MATTER
-    ----------------------------------------------------
-    */
-
-    var frontMatterMatch =
-        text.match(
-            /^---\s*([\s\S]*?)\s*---\s*/
-        );
-
-
-    if(frontMatterMatch){
-
-        var frontMatter =
-            frontMatterMatch[1];
-
-
-        var titleMatch =
-            frontMatter.match(
-                /^title:\s*["']?(.*?)["']?\s*$/m
-            );
-
-
-        if(titleMatch){
-
-            articleTitle =
-                titleMatch[1];
-
-            articleTitle =
-                articleTitle.replace(
-                    /^["']|["']$/g,
-                    ""
-                );
-
-            articleTitle =
-                articleTitle.replace(
-                    /^\s+|\s+$/g,
-                    ""
-                );
+            title.innerHTML = "Unable to load article";
+            status.innerHTML = "The article could not be loaded.";
+            return;
 
         }
 
+        var text = xhr.responseText;
+        var markdown = text;
+        var articleTitle = file;
 
-        markdown =
-            text.replace(
+        var front = text.match(
+            /^---\s*([\s\S]*?)\s*---\s*/
+        );
+
+        if(front){
+
+            var titleMatch = front[1].match(
+                /^title:\s*["']?(.*?)["']?\s*$/m
+            );
+
+            if(titleMatch){
+                articleTitle = titleMatch[1];
+            }
+
+            markdown = text.replace(
                 /^---\s*[\s\S]*?\s*---\s*/,
                 ""
             );
 
-    }
-
-
-    titleElement.innerHTML =
-        escapeHTML(
-            articleTitle
-        );
-
-
-    /*
-    ----------------------------------------------------
-    MARKDOWN → HTML
-    ----------------------------------------------------
-    */
-
-    try{
-
-        contentElement.innerHTML =
-            marked(
-                markdown
-            );
-
-    }catch(error){
-
-        showError(
-            "The article could not be displayed."
-        );
-
-        return;
-
-    }
-
-
-    /*
-    ====================================================
-    IMPORTANT:
-    FIX INLINE MEDIA PATHS
-    ====================================================
-    */
-
-    fixMediaPaths();
-
-
-    setupDownloadLinks();
-
-    setupVideos();
-
-    setupAudio();
-
-
-    statusElement.innerHTML = "";
-
-}
-
-
-/*
-========================================================
-FIX IMAGE / VIDEO / AUDIO PATHS
-========================================================
-
-Pages CMS stores our media under:
-
-    /content/images/
-
-The article is being displayed from:
-
-    /admin/article.html
-
-So we make sure relative media paths do NOT
-accidentally become:
-
-    /admin/content/images/
-
-Instead they become:
-
-    /content/images/
-
-This is especially important for older browsers.
-========================================================
-*/
-
-function fixMediaPaths(){
-
-    /*
-    ----------------------------------------------------
-    IMAGES
-    ----------------------------------------------------
-    */
-
-    var images =
-        contentElement.getElementsByTagName(
-            "img"
-        );
-
-    var i;
-    var src;
-
-
-    for(
-        i = 0;
-        i < images.length;
-        i++
-    ){
-
-        src =
-            images[i].getAttribute(
-                "src"
-            );
-
-
-        if(!src){
-            continue;
         }
 
+        title.innerHTML = articleTitle;
 
-        images[i].setAttribute(
-            "src",
-            fixMediaURL(src)
-        );
-
-    }
-
-
-    /*
-    ----------------------------------------------------
-    VIDEO SOURCES
-    ----------------------------------------------------
-    */
-
-    var videos =
-        contentElement.getElementsByTagName(
-            "video"
-        );
-
-
-    for(
-        i = 0;
-        i < videos.length;
-        i++
-    ){
-
-        src =
-            videos[i].getAttribute(
-                "src"
-            );
-
-
-        if(src){
-
-            videos[i].setAttribute(
-                "src",
-                fixMediaURL(src)
-            );
-
-        }
-
-    }
-
-
-    /*
-    ----------------------------------------------------
-    AUDIO SOURCES
-    ----------------------------------------------------
-    */
-
-    var audios =
-        contentElement.getElementsByTagName(
-            "audio"
-        );
-
-
-    for(
-        i = 0;
-        i < audios.length;
-        i++
-    ){
-
-        src =
-            audios[i].getAttribute(
-                "src"
-            );
-
-
-        if(src){
-
-            audios[i].setAttribute(
-                "src",
-                fixMediaURL(src)
-            );
-
-        }
-
-    }
-
-
-    /*
-    ----------------------------------------------------
-    SOURCE ELEMENTS
-    ----------------------------------------------------
-    */
-
-    var sources =
-        contentElement.getElementsByTagName(
-            "source"
-        );
-
-
-    for(
-        i = 0;
-        i < sources.length;
-        i++
-    ){
-
-        src =
-            sources[i].getAttribute(
-                "src"
-            );
-
-
-        if(src){
-
-            sources[i].setAttribute(
-                "src",
-                fixMediaURL(src)
-            );
-
-        }
-
-    }
-
-}
-
-
-/*
-========================================================
-NORMALIZE MEDIA URL
-========================================================
-*/
-
-function fixMediaURL(url){
-
-    if(!url){
-        return url;
-    }
-
-
-    /*
-    Already absolute:
-        https://...
-        http://...
-    */
-
-    if(
-        url.indexOf("http://") === 0 ||
-        url.indexOf("https://") === 0
-    ){
-
-        return url;
-
-    }
-
-
-    /*
-    Data URLs should remain untouched.
-    */
-
-    if(
-        url.indexOf("data:") === 0
-    ){
-
-        return url;
-
-    }
-
-
-    /*
-    Root-relative URL:
-
-        /content/images/test.jpg
-
-    Already correct.
-    */
-
-    if(
-        url.charAt(0) === "/"
-    ){
-
-        return url;
-
-    }
-
-
-    /*
-    Remove ./ if present.
-    */
-
-    while(
-        url.indexOf("./") === 0
-    ){
-
-        url =
-            url.substring(2);
-
-    }
-
-
-    /*
-    If Pages CMS gives:
-
-        content/images/test.jpg
-
-    make it:
-
-        /content/images/test.jpg
-    */
-
-    if(
-        url.indexOf(
-            "content/"
-        ) === 0
-    ){
-
-        return "/" + url;
-
-    }
-
-
-    /*
-    If the Markdown renderer gives us:
-
-        ../content/images/test.jpg
-
-    normalize it.
-    */
-
-    while(
-        url.indexOf("../") === 0
-    ){
-
-        url =
-            url.substring(3);
-
-    }
-
-
-    if(
-        url.indexOf(
-            "content/"
-        ) === 0
-    ){
-
-        return "/" + url;
-
-    }
-
-
-    /*
-    Otherwise leave the URL alone.
-    */
-
-    return url;
-
-}
-
-
-/*
-========================================================
-DOWNLOAD LINKS
-========================================================
-*/
-
-function setupDownloadLinks(){
-
-    var links =
-        contentElement.getElementsByTagName(
-            "a"
-        );
-
-    var i;
-    var link;
-    var href;
-    var lower;
-
-
-    for(
-        i = 0;
-        i < links.length;
-        i++
-    ){
-
-        link =
-            links[i];
-
-        href =
-            link.getAttribute(
-                "href"
-            );
-
-
-        if(!href){
-            continue;
-        }
-
-
-        lower =
-            href.toLowerCase();
-
-
-        if(
-            endsWith(lower, ".pdf") ||
-            endsWith(lower, ".zip") ||
-            endsWith(lower, ".doc") ||
-            endsWith(lower, ".docx") ||
-            endsWith(lower, ".txt")
-        ){
-
-            addClass(
-                link,
-                "download"
-            );
-
-            link.setAttribute(
-                "download",
-                ""
-            );
-
-        }
-
-    }
-
-}
-
-
-/*
-========================================================
-VIDEO CONTROLS
-========================================================
-*/
-
-function setupVideos(){
-
-    var videos =
-        contentElement.getElementsByTagName(
-            "video"
-        );
-
-    var i;
-
-
-    for(
-        i = 0;
-        i < videos.length;
-        i++
-    ){
-
-        videos[i].controls =
-            true;
-
-        videos[i].setAttribute(
-            "preload",
-            "metadata"
-        );
-
-    }
-
-}
-
-
-/*
-========================================================
-AUDIO CONTROLS
-========================================================
-*/
-
-function setupAudio(){
-
-    var audios =
-        contentElement.getElementsByTagName(
-            "audio"
-        );
-
-    var i;
-
-
-    for(
-        i = 0;
-        i < audios.length;
-        i++
-    ){
-
-        audios[i].controls =
-            true;
-
-        audios[i].setAttribute(
-            "preload",
-            "metadata"
-        );
-
-    }
-
-}
-
-
-/*
-========================================================
-ERROR
-========================================================
-*/
-
-function showError(message){
-
-    titleElement.innerHTML =
-        "Unable to load article";
-
-    statusElement.innerHTML =
-        message;
-
-}
-
-
-/*
-========================================================
-ENDS WITH
-========================================================
-*/
-
-function endsWith(
-    text,
-    ending
-){
-
-    return (
-        text.indexOf(
-            ending,
-            text.length - ending.length
-        ) !== -1
-    );
-
-}
-
-
-/*
-========================================================
-ADD CLASS
-========================================================
-*/
-
-function addClass(
-    element,
-    className
-){
-
-    var current =
-        element.className;
-
-
-    if(
-        (
-            " " +
-            current +
-            " "
-        ).indexOf(
-            " " +
-            className +
-            " "
-        ) === -1
-    ){
-
-        element.className =
-            current
-            ? current + " " + className
-            : className;
-
-    }
-
-}
-
-
-/*
-========================================================
-ESCAPE TITLE
-========================================================
-*/
-
-function escapeHTML(text){
-
-    return String(text)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-
-}
-
-</script>
-
-</body>
-
-</html>
-```
-```html
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>CEEQWINN Reader</title>
-
-<style>
-
-body{
-    max-width:800px;
-    margin:auto;
-    padding:40px 20px;
-    font-family:Arial,sans-serif;
-    line-height:1.8;
-    background:#fafafa;
-    color:#222;
-}
-
-h1{
-    font-size:2.2rem;
-    margin-bottom:20px;
-}
-
-#content{
-    overflow-wrap:break-word;
-    word-wrap:break-word;
-}
-
-/* INLINE IMAGES + GIFS */
-
-#content img{
-    display:block;
-    max-width:100%;
-    height:auto;
-    margin:24px auto;
-    border-radius:12px;
-}
-
-/* VIDEO */
-
-#content video{
-    display:block;
-    width:100%;
-    max-width:100%;
-    height:auto;
-    margin:24px auto;
-    border-radius:12px;
-}
-
-/* AUDIO */
-
-#content audio{
-    display:block;
-    width:100%;
-    margin:24px 0;
-}
-
-/* DOWNLOAD LINKS */
-
-#content a{
-    overflow-wrap:break-word;
-    word-wrap:break-word;
-}
-
-#content a.download{
-    display:inline-block;
-    margin:20px 0;
-    padding:12px 18px;
-    border-radius:10px;
-    text-decoration:none;
-    font-weight:bold;
-}
-
-/* HEADINGS */
-
-#content h2,
-#content h3{
-    margin-top:30px;
-}
-
-/* BLOCKQUOTES */
-
-#content blockquote{
-    margin:24px 0;
-    padding:10px 20px;
-    border-left:4px solid #999;
-    background:#f0f0f0;
-}
-
-/* TABLES */
-
-#content table{
-    width:100%;
-    border-collapse:collapse;
-    margin:24px 0;
-}
-
-#content th,
-#content td{
-    padding:10px;
-    border:1px solid #ccc;
-}
-
-/* STATUS */
-
-#status{
-    color:#666;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<h1 id="title">Loading...</h1>
-
-<div id="status">
-    Loading article...
-</div>
-
-<div id="content"></div>
-
-
-<!--
-========================================================
-OLDER, MORE COMPATIBLE MARKED VERSION
-========================================================
-
-Marked 0.3.19 uses the older:
-    marked(markdown)
-
-syntax rather than:
-    marked.parse(markdown)
-
-This avoids depending on newer JavaScript features.
--->
-
-<script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
-
-
-<script>
-
-/*
-========================================================
-CEEQWINN READER
-OLDER-BROWSER COMPATIBLE VERSION
-========================================================
-*/
-
-
-/*
---------------------------------------------------------
-READ ?file= FROM THE ADDRESS BAR
-
-We do NOT use URLSearchParams because older Chrome
-versions may not support it.
---------------------------------------------------------
-*/
-
-function getFileFromURL(){
-
-    var search =
-        window.location.search;
-
-    if(!search){
-        return null;
-    }
-
-    search =
-        search.substring(1);
-
-    var pieces =
-        search.split("&");
-
-    var i;
-    var pair;
-    var key;
-    var value;
-
-    for(i = 0; i < pieces.length; i++){
-
-        pair =
-            pieces[i].split("=");
-
-        key =
-            pair[0];
-
-        if(key === "file"){
-
-            value =
-                pair.length > 1
-                ? pair.slice(1).join("=")
-                : "";
-
-            try{
-
-                return decodeURIComponent(
-                    value
-                );
-
-            }catch(error){
-
-                return value;
-
-            }
-
-        }
-
-    }
-
-    return null;
-}
-
-
-/*
---------------------------------------------------------
-GET ARTICLE SLUG
---------------------------------------------------------
-*/
-
-var file =
-    getFileFromURL();
-
-
-/*
---------------------------------------------------------
-PAGE ELEMENTS
---------------------------------------------------------
-*/
-
-var titleElement =
-    document.getElementById("title");
-
-var statusElement =
-    document.getElementById("status");
-
-var contentElement =
-    document.getElementById("content");
-
-
-/*
---------------------------------------------------------
-NO ARTICLE SELECTED
---------------------------------------------------------
-*/
-
-if(!file){
-
-    titleElement.innerHTML =
-        "Article not found";
-
-    statusElement.innerHTML =
-        "No article was selected.";
-
-}else{
-
-
-    /*
-    ----------------------------------------------------
-    CLEAN ARTICLE SLUG
-    ----------------------------------------------------
-    */
-
-    var safeSlug =
-        file.replace(
-            /[^a-zA-Z0-9_-]/g,
-            ""
-        );
-
-
-    /*
-    ----------------------------------------------------
-    ARTICLE FILE
-    ----------------------------------------------------
-
-    article.html is located in:
-
-        /admin/article.html
-
-    So:
-
-        ../content/articles/
-
-    points to:
-
-        /content/articles/
-    ----------------------------------------------------
-    */
-
-    var articleURL =
-        "../content/articles/" +
-        safeSlug +
-        ".md";
-
-
-    /*
-    ----------------------------------------------------
-    LOAD ARTICLE WITH XMLHttpRequest
-
-    XMLHttpRequest is supported much farther back
-    than fetch().
-    ----------------------------------------------------
-    */
-
-    var request =
-        new XMLHttpRequest();
-
-
-    /*
-    Some older browsers can be picky about the
-    Markdown MIME type.
-
-    overrideMimeType is used when available so the
-    response is treated as plain text.
-    */
-
-    if(
-        request.overrideMimeType
-    ){
-
-        request.overrideMimeType(
-            "text/plain"
-        );
-
-    }
-
-
-    request.open(
-        "GET",
-        articleURL,
-        true
-    );
-
-
-    /*
-    ----------------------------------------------------
-    REQUEST FINISHED
-    ----------------------------------------------------
-    */
-
-    request.onreadystatechange =
-        function(){
-
-            if(
-                request.readyState !== 4
-            ){
-
-                return;
-
-            }
-
-
-            /*
-            ------------------------------------------------
-            SUCCESS
-
-            status 200 = normal success
-
-            status 0 can occur with some older browsers
-            when loading a same-origin local/static file.
-            ------------------------------------------------
-            */
-
-            if(
-                request.status === 200 ||
-                request.status === 0
-            ){
-
-                if(
-                    request.responseText
-                ){
-
-                    renderArticle(
-                        request.responseText
-                    );
-
-                }else{
-
-                    showError(
-                        "The article is empty."
-                    );
-
-                }
-
-            }else{
-
-                showError(
-                    "The article could not be loaded."
-                );
-
-            }
-
-        };
-
-
-    /*
-    ----------------------------------------------------
-    NETWORK ERROR
-    ----------------------------------------------------
-    */
-
-    request.onerror =
-        function(){
-
-            showError(
-                "The article could not be loaded."
-            );
-
-        };
-
-
-    /*
-    ----------------------------------------------------
-    SEND REQUEST
-    ----------------------------------------------------
-    */
-
-    try{
-
-        request.send(null);
-
-    }catch(error){
-
-        showError(
-            "The article could not be loaded."
-        );
-
-    }
-
-}
-
-
-/*
-========================================================
-RENDER ARTICLE
-========================================================
-*/
-
-function renderArticle(text){
-
-    var markdown =
-        text;
-
-    var articleTitle =
-        safeSlug;
-
-
-    /*
-    ----------------------------------------------------
-    FIND FRONT MATTER
-    ----------------------------------------------------
-    */
-
-    var frontMatterMatch =
-        text.match(
-            /^---\s*([\s\S]*?)\s*---\s*/
-        );
-
-
-    if(frontMatterMatch){
-
-        var frontMatter =
-            frontMatterMatch[1];
-
+        content.innerHTML = marked(markdown);
 
         /*
-        ------------------------------------------------
-        GET TITLE
-        ------------------------------------------------
+        Fix media paths
         */
 
-        var titleMatch =
-            frontMatter.match(
-                /^title:\s*["']?(.*?)["']?\s*$/m
-            );
+        var images = content.getElementsByTagName("img");
+        var videos = content.getElementsByTagName("video");
+        var audios = content.getElementsByTagName("audio");
 
+        var i;
+        var src;
 
-        if(titleMatch){
+        for(i=0; i<images.length; i++){
 
-            articleTitle =
-                titleMatch[1];
+            src = images[i].getAttribute("src");
 
-            articleTitle =
-                articleTitle.replace(
-                    /^["']|["']$/g,
-                    ""
-                );
-
-            articleTitle =
-                articleTitle.replace(
-                    /^\s+|\s+$/g,
-                    ""
-                );
+            if(src){
+                images[i].src = mediaPath(src);
+            }
 
         }
 
+        for(i=0; i<videos.length; i++){
 
-        /*
-        ------------------------------------------------
-        REMOVE FRONT MATTER
-        ------------------------------------------------
-        */
+            src = videos[i].getAttribute("src");
 
-        markdown =
-            text.replace(
-                /^---\s*[\s\S]*?\s*---\s*/,
-                ""
-            );
+            if(src){
+                videos[i].src = mediaPath(src);
+            }
 
-    }
-
-
-    /*
-    ----------------------------------------------------
-    DISPLAY TITLE
-    ----------------------------------------------------
-    */
-
-    titleElement.innerHTML =
-        escapeHTML(
-            articleTitle
-        );
-
-
-    /*
-    ----------------------------------------------------
-    MARKDOWN → HTML
-    ----------------------------------------------------
-
-    IMPORTANT:
-
-    Marked 0.3.19 uses:
-
-        marked(markdown)
-
-    NOT:
-
-        marked.parse(markdown)
-    ----------------------------------------------------
-    */
-
-    try{
-
-        contentElement.innerHTML =
-            marked(
-                markdown
-            );
-
-    }catch(error){
-
-        showError(
-            "The article could not be displayed."
-        );
-
-        return;
-
-    }
-
-
-    /*
-    ----------------------------------------------------
-    DOWNLOAD LINKS
-    ----------------------------------------------------
-    */
-
-    setupDownloadLinks();
-
-
-    /*
-    ----------------------------------------------------
-    VIDEO CONTROLS
-    ----------------------------------------------------
-    */
-
-    setupVideos();
-
-
-    /*
-    ----------------------------------------------------
-    AUDIO CONTROLS
-    ----------------------------------------------------
-    */
-
-    setupAudio();
-
-
-    /*
-    ----------------------------------------------------
-    REMOVE LOADING MESSAGE
-    ----------------------------------------------------
-    */
-
-    statusElement.innerHTML = "";
-
-}
-
-
-/*
-========================================================
-DOWNLOAD LINKS
-========================================================
-*/
-
-function setupDownloadLinks(){
-
-    var links =
-        contentElement.getElementsByTagName(
-            "a"
-        );
-
-    var i;
-    var link;
-    var href;
-    var lower;
-
-
-    for(
-        i = 0;
-        i < links.length;
-        i++
-    ){
-
-        link =
-            links[i];
-
-        href =
-            link.getAttribute(
-                "href"
-            );
-
-
-        if(!href){
-
-            continue;
+            videos[i].controls = true;
 
         }
 
+        for(i=0; i<audios.length; i++){
 
-        lower =
-            href.toLowerCase();
+            src = audios[i].getAttribute("src");
 
+            if(src){
+                audios[i].src = mediaPath(src);
+            }
 
-        if(
-            endsWith(lower, ".pdf") ||
-            endsWith(lower, ".zip") ||
-            endsWith(lower, ".doc") ||
-            endsWith(lower, ".docx") ||
-            endsWith(lower, ".txt")
-        ){
-
-            addClass(
-                link,
-                "download"
-            );
-
-            link.setAttribute(
-                "download",
-                ""
-            );
+            audios[i].controls = true;
 
         }
 
-    }
+        status.innerHTML = "";
+
+    };
+
+    xhr.onerror = function(){
+
+        title.innerHTML = "Unable to load article";
+        status.innerHTML = "The article could not be loaded.";
+
+    };
+
+    xhr.send(null);
 
 }
 
 
 /*
-========================================================
-VIDEO CONTROLS
-========================================================
+Convert Pages CMS media paths
+into website-root paths.
 */
 
-function setupVideos(){
-
-    var videos =
-        contentElement.getElementsByTagName(
-            "video"
-        );
-
-    var i;
-
-
-    for(
-        i = 0;
-        i < videos.length;
-        i++
-    ){
-
-        videos[i].controls =
-            true;
-
-        videos[i].setAttribute(
-            "preload",
-            "metadata"
-        );
-
-    }
-
-}
-
-
-/*
-========================================================
-AUDIO CONTROLS
-========================================================
-*/
-
-function setupAudio(){
-
-    var audios =
-        contentElement.getElementsByTagName(
-            "audio"
-        );
-
-    var i;
-
-
-    for(
-        i = 0;
-        i < audios.length;
-        i++
-    ){
-
-        audios[i].controls =
-            true;
-
-        audios[i].setAttribute(
-            "preload",
-            "metadata"
-        );
-
-    }
-
-}
-
-
-/*
-========================================================
-ERROR MESSAGE
-========================================================
-*/
-
-function showError(message){
-
-    titleElement.innerHTML =
-        "Unable to load article";
-
-    statusElement.innerHTML =
-        message;
-
-}
-
-
-/*
-========================================================
-OLD-BROWSER endsWith() REPLACEMENT
-========================================================
-*/
-
-function endsWith(
-    text,
-    ending
-){
-
-    return (
-        text.indexOf(
-            ending,
-            text.length - ending.length
-        ) !== -1
-    );
-
-}
-
-
-/*
-========================================================
-OLD-BROWSER CLASS ADDER
-========================================================
-*/
-
-function addClass(
-    element,
-    className
-){
-
-    var current =
-        element.className;
-
+function mediaPath(src){
 
     if(
-        (
-            " " +
-            current +
-            " "
-        ).indexOf(
-            " " +
-            className +
-            " "
-        ) === -1
+        src.indexOf("http://") === 0 ||
+        src.indexOf("https://") === 0 ||
+        src.indexOf("data:") === 0 ||
+        src.charAt(0) === "/"
     ){
-
-        element.className =
-            current
-            ? current + " " + className
-            : className;
-
+        return src;
     }
 
-}
+    while(src.indexOf("../") === 0){
+        src = src.substring(3);
+    }
 
+    while(src.indexOf("./") === 0){
+        src = src.substring(2);
+    }
 
-/*
-========================================================
-BASIC HTML ESCAPING
-========================================================
-*/
+    if(src.indexOf("content/") === 0){
+        return "/" + src;
+    }
 
-function escapeHTML(text){
-
-    return String(text)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    return "/content/images/" + src;
 
 }
 
