@@ -1,3 +1,6 @@
+# `.pages.yml`
+
+```yaml
 media:
   - name: images
     label: Images
@@ -27,6 +30,12 @@ content:
         type: image
         options:
           media: images
+          extensions:
+            - jpg
+            - jpeg
+            - png
+            - webp
+            - gif
 
       - name: body
         label: Article
@@ -40,3 +49,5 @@ content:
             - webp
             - gif
           switcher: true
+```
+
