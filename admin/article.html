@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -173,10 +172,38 @@ if(!file){
 
         title.innerHTML = articleTitle;
 
+        /*
+        Normalize Pages CMS image links.
+
+        Pages CMS may save some image paths like:
+
+        ![image](</content/images/example (1).jpeg>)
+
+        Older versions of Marked can have trouble
+        parsing this form.
+
+        Convert it to:
+
+        ![image](/content/images/example (1).jpeg)
+        */
+
+        markdown = markdown.replace(
+            /\]\(<([^>]+)>\)/g,
+            "]($1)"
+        );
+
+        /*
+        Render the article text immediately.
+
+        Images are NOT waited for here.
+        */
+
         content.innerHTML = marked(markdown);
 
         /*
-        Fix media paths
+        Fix media paths and make images
+        as lightweight as possible for
+        browsers that support these hints.
         */
 
         var images = content.getElementsByTagName("img");
@@ -191,7 +218,24 @@ if(!file){
             src = images[i].getAttribute("src");
 
             if(src){
+
                 images[i].src = mediaPath(src);
+
+                /*
+                These are optional browser hints.
+                Older browsers simply ignore them.
+                */
+
+                images[i].setAttribute(
+                    "loading",
+                    "lazy"
+                );
+
+                images[i].setAttribute(
+                    "decoding",
+                    "async"
+                );
+
             }
 
         }
@@ -219,6 +263,14 @@ if(!file){
             audios[i].controls = true;
 
         }
+
+        /*
+        The Markdown has loaded and the article
+        is now visible.
+
+        Do NOT wait for images, GIFs, video,
+        or audio before clearing this message.
+        */
 
         status.innerHTML = "";
 
@@ -273,5 +325,3 @@ function mediaPath(src){
 </body>
 
 </html>
-```
-
