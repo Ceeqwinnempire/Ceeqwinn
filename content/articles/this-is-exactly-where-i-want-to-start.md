@@ -13,6 +13,10 @@ Step 6 — Only
 
  AFTER 
 
+![IMG_1614278676128I.jpg](/content/images/IMG_1614278676128I.jpg)
+
+![painterly_anime_artwork_A_beau (1).jpeg](</content/images/painterly_anime_artwork_A_beau (1).jpeg>)
+
 ![young_woman_rainy_atmosphere_c.jpeg](/content/images/young_woman_rainy_atmosphere_c.jpeg)
 
 ![cinematic_character_portrait_p.jpeg](/content/images/cinematic_character_portrait_p.jpeg)
