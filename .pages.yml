@@ -1,6 +1,7 @@
-# `.pages.yml`
+settings:
+  content:
+    merge: true
 
-```yaml
 media:
   - name: images
     label: Images
@@ -12,6 +13,46 @@ media:
       - png
       - webp
       - gif
+    categories:
+      - image
+
+  - name: videos
+    label: Videos
+    input: content/videos
+    output: /content/videos
+    extensions:
+      - mp4
+      - webm
+      - mov
+      - m4v
+    categories:
+      - video
+
+  - name: audio
+    label: Audio
+    input: content/audio
+    output: /content/audio
+    extensions:
+      - mp3
+      - wav
+      - ogg
+      - m4a
+      - aac
+    categories:
+      - audio
+
+  - name: files
+    label: Files
+    input: content/files
+    output: /content/files
+    extensions:
+      - pdf
+      - zip
+      - epub
+      - doc
+      - docx
+    categories:
+      - document
 
 content:
   - name: articles
@@ -37,6 +78,47 @@ content:
             - webp
             - gif
 
+      - name: credits
+        label: Credits
+        type: text
+
+      - name: video
+        label: Video
+        type: file
+        options:
+          media: videos
+          extensions:
+            - mp4
+            - webm
+            - mov
+            - m4v
+
+      - name: audio
+        label: Audio
+        type: file
+        options:
+          media: audio
+          extensions:
+            - mp3
+            - wav
+            - ogg
+            - m4a
+            - aac
+
+      - name: downloads
+        label: Downloads
+        type: file
+        options:
+          media: files
+          extensions:
+            - pdf
+            - zip
+            - epub
+            - doc
+            - docx
+          multiple:
+            max: 10
+
       - name: body
         label: Article
         type: rich-text
@@ -49,5 +131,3 @@ content:
             - webp
             - gif
           switcher: true
-```
-
