@@ -15,11 +15,19 @@ Step 6 — Only
 
 ![cinematic_character_portrait_p (1).jpeg](</content/images/cinematic_character_portrait_p (1).jpeg>)
 
-the CMS 
+the 
+
+![Donald Duck Money GIF.gif](</content/images/Donald Duck Money GIF.gif>)
+
+CMS 
 
 ![Im Free Robin Williams GIF.gif](</content/images/Im Free Robin Williams GIF.gif>)
 
-saves everything
+saves 
+
+![Shocked Super Mario GIF by Universal Pictures.gif](</content/images/Shocked Super Mario GIF by Universal Pictures.gif>)
+
+everything
 
 ![Happy Despicable Me GIF.gif](</content/images/Happy Despicable Me GIF-1.gif>)
 
