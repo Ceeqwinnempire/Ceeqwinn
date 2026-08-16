@@ -13,11 +13,15 @@ Step 6 — Only
 
  AFTER 
 
+![young_woman_rainy_atmosphere_c.jpeg](/content/images/young_woman_rainy_atmosphere_c.jpeg)
+
 ![cinematic_character_portrait_p.jpeg](/content/images/cinematic_character_portrait_p.jpeg)
 
 ![cinematic_character_portrait_p (2).jpeg](</content/images/cinematic_character_portrait_p (2)-1.jpeg>)
 
 ![cinematic_character_portrait_p (1).jpeg](</content/images/cinematic_character_portrait_p (1).jpeg>)
+
+![young_woman_rainy_atmosphere_c (2).jpeg](</content/images/young_woman_rainy_atmosphere_c (2).jpeg>)
 
 the 
 
