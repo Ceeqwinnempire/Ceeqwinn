@@ -25,8 +25,22 @@ h1{
     margin-bottom:20px;
 }
 
+#cover{
+    display:none;
+    max-width:100%;
+    height:auto;
+    margin:0 auto 30px auto;
+    border-radius:12px;
+}
+
+#credits{
+    color:#666;
+    margin:0 0 25px 0;
+}
+
 #content{
     word-wrap:break-word;
+    overflow-wrap:break-word;
 }
 
 #content img{
@@ -47,7 +61,25 @@ h1{
 #content audio{
     display:block;
     width:100%;
+    max-width:100%;
     margin:24px 0;
+}
+
+#media{
+    margin-top:40px;
+}
+
+.media-title{
+    margin-top:35px;
+    margin-bottom:12px;
+}
+
+.media-box{
+    margin:20px 0;
+}
+
+.media-box a{
+    word-break:break-word;
 }
 
 #content h2,
@@ -78,17 +110,28 @@ h1{
     color:#666;
 }
 
+.error{
+    color:#777;
+    font-size:0.9rem;
+}
+
 </style>
 
 </head>
 
 <body>
 
+<img id="cover" alt="">
+
 <h1 id="title">Loading...</h1>
+
+<div id="credits"></div>
 
 <div id="status">Loading article...</div>
 
 <div id="content"></div>
+
+<div id="media"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
 
@@ -113,6 +156,9 @@ if(search){
 var title = document.getElementById("title");
 var status = document.getElementById("status");
 var content = document.getElementById("content");
+var cover = document.getElementById("cover");
+var credits = document.getElementById("credits");
+var media = document.getElementById("media");
 
 if(!file){
 
@@ -147,129 +193,76 @@ if(!file){
 
         var text = xhr.responseText;
         var markdown = text;
-        var articleTitle = file;
+        var frontData = parseFrontmatter(text);
+        var articleTitle = frontData.title || file;
 
-        var front = text.match(
-            /^---\s*([\s\S]*?)\s*---\s*/
-        );
+        /*
+        Set title immediately.
+        */
 
-        if(front){
+        title.innerHTML = escapeHtml(articleTitle);
 
-            var titleMatch = front[1].match(
-                /^title:\s*["']?(.*?)["']?\s*$/m
-            );
+        /*
+        Show cover if one exists.
+        */
 
-            if(titleMatch){
-                articleTitle = titleMatch[1];
-            }
+        if(frontData.cover){
 
-            markdown = text.replace(
-                /^---\s*[\s\S]*?\s*---\s*/,
-                ""
-            );
+            cover.src = mediaPath(frontData.cover);
+            cover.alt = articleTitle;
+            cover.style.display = "block";
+
+            prepareImage(cover);
+
+            cover.onerror = function(){
+
+                cover.style.display = "none";
+
+            };
 
         }
 
-        title.innerHTML = articleTitle;
-
         /*
-        Normalize Pages CMS image links.
-
-        Pages CMS may save some image paths like:
-
-        ![image](</content/images/example (1).jpeg>)
-
-        Older versions of Marked can have trouble
-        parsing this form.
-
-        Convert it to:
-
-        ![image](/content/images/example (1).jpeg)
+        Show credits if one exists.
         */
 
-        markdown = markdown.replace(
-            /\]\(<([^>]+)>\)/g,
-            "]($1)"
-        );
+        if(frontData.credits){
+
+            credits.innerHTML =
+                "<strong>Credits:</strong> " +
+                escapeHtml(frontData.credits);
+
+        }
 
         /*
-        Render the article text immediately.
+        Remove frontmatter before rendering the article body.
+        */
 
-        Images are NOT waited for here.
+        markdown = frontData.body;
+
+        /*
+        Render article text immediately.
         */
 
         content.innerHTML = marked(markdown);
 
         /*
-        Fix media paths and make images
-        as lightweight as possible for
-        browsers that support these hints.
+        Fix inline media paths.
         */
 
-        var images = content.getElementsByTagName("img");
-        var videos = content.getElementsByTagName("video");
-        var audios = content.getElementsByTagName("audio");
-
-        var i;
-        var src;
-
-        for(i=0; i<images.length; i++){
-
-            src = images[i].getAttribute("src");
-
-            if(src){
-
-                images[i].src = mediaPath(src);
-
-                /*
-                These are optional browser hints.
-                Older browsers simply ignore them.
-                */
-
-                images[i].setAttribute(
-                    "loading",
-                    "lazy"
-                );
-
-                images[i].setAttribute(
-                    "decoding",
-                    "async"
-                );
-
-            }
-
-        }
-
-        for(i=0; i<videos.length; i++){
-
-            src = videos[i].getAttribute("src");
-
-            if(src){
-                videos[i].src = mediaPath(src);
-            }
-
-            videos[i].controls = true;
-
-        }
-
-        for(i=0; i<audios.length; i++){
-
-            src = audios[i].getAttribute("src");
-
-            if(src){
-                audios[i].src = mediaPath(src);
-            }
-
-            audios[i].controls = true;
-
-        }
+        fixInlineImages();
+        fixInlineVideos();
+        fixInlineAudios();
 
         /*
-        The Markdown has loaded and the article
-        is now visible.
+        Render separate uploaded media after the article.
+        */
 
-        Do NOT wait for images, GIFs, video,
-        or audio before clearing this message.
+        renderExtraMedia(frontData);
+
+        /*
+        Markdown has loaded.
+        Images and other media continue independently.
         */
 
         status.innerHTML = "";
@@ -289,11 +282,345 @@ if(!file){
 
 
 /*
+Read YAML-style frontmatter.
+
+This intentionally handles the simple fields
+used by the CEEQWINN article system.
+*/
+
+function parseFrontmatter(text){
+
+    var result = {
+        title:"",
+        cover:"",
+        credits:"",
+        video:"",
+        audio:"",
+        downloads:[],
+        body:text
+    };
+
+    var match = text.match(
+        /^---\s*([\s\S]*?)\s*---\s*/
+    );
+
+    if(!match){
+        return result;
+    }
+
+    var front = match[1];
+    result.body = text.replace(
+        /^---\s*[\s\S]*?\s*---\s*/,
+        ""
+    );
+
+    var titleMatch = front.match(
+        /^title:\s*["']?(.*?)["']?\s*$/m
+    );
+
+    if(titleMatch){
+        result.title = cleanValue(titleMatch[1]);
+    }
+
+    var coverMatch = front.match(
+        /^cover:\s*["']?(.*?)["']?\s*$/m
+    );
+
+    if(coverMatch){
+        result.cover = cleanValue(coverMatch[1]);
+    }
+
+    var creditsMatch = front.match(
+        /^credits:\s*["']?(.*?)["']?\s*$/m
+    );
+
+    if(creditsMatch){
+        result.credits = cleanValue(creditsMatch[1]);
+    }
+
+    var videoMatch = front.match(
+        /^video:\s*["']?(.*?)["']?\s*$/m
+    );
+
+    if(videoMatch){
+        result.video = cleanValue(videoMatch[1]);
+    }
+
+    var audioMatch = front.match(
+        /^audio:\s*["']?(.*?)["']?\s*$/m
+    );
+
+    if(audioMatch){
+        result.audio = cleanValue(audioMatch[1]);
+    }
+
+    /*
+    Read downloads:
+      - /content/files/example.pdf
+      - /content/files/example2.pdf
+    */
+
+    var downloadsMatch = front.match(
+        /^downloads:\s*([\s\S]*?)(?=^[a-zA-Z0-9_-]+\s*:|$)/m
+    );
+
+    if(downloadsMatch){
+
+        var lines = downloadsMatch[1].split("\n");
+        var i;
+        var line;
+        var value;
+
+        for(i=0; i<lines.length; i++){
+
+            line = lines[i].replace(/^\s*-\s*/,"").trim();
+
+            if(line){
+
+                value = cleanValue(line);
+
+                if(value){
+                    result.downloads.push(value);
+                }
+
+            }
+
+        }
+
+    }
+
+    return result;
+
+}
+
+
+/*
+Remove simple YAML quotes.
+*/
+
+function cleanValue(value){
+
+    value = value.replace(/^\s+/,"");
+    value = value.replace(/\s+$/,"");
+
+    if(
+        value.length >= 2 &&
+        (
+            (
+                value.charAt(0) === '"' &&
+                value.charAt(value.length - 1) === '"'
+            )
+            ||
+            (
+                value.charAt(0) === "'" &&
+                value.charAt(value.length - 1) === "'"
+            )
+        )
+    ){
+
+        value = value.substring(
+            1,
+            value.length - 1
+        );
+
+    }
+
+    return value;
+
+}
+
+
+/*
+Fix inline images.
+
+This works on every image independently.
+*/
+
+function fixInlineImages(){
+
+    var images = content.getElementsByTagName("img");
+    var i;
+    var src;
+
+    for(i=0; i<images.length; i++){
+
+        src = images[i].getAttribute("src");
+
+        if(src){
+
+            images[i].src = mediaPath(src);
+
+            prepareImage(images[i]);
+
+            images[i].onerror = function(){
+
+                this.alt = "Image could not be loaded.";
+
+                this.style.opacity = "0.6";
+
+            };
+
+        }
+
+    }
+
+}
+
+
+/*
+Fix inline videos if the Markdown contains them.
+*/
+
+function fixInlineVideos(){
+
+    var videos = content.getElementsByTagName("video");
+    var i;
+    var src;
+
+    for(i=0; i<videos.length; i++){
+
+        src = videos[i].getAttribute("src");
+
+        if(src){
+            videos[i].src = mediaPath(src);
+        }
+
+        videos[i].controls = true;
+
+    }
+
+}
+
+
+/*
+Fix inline audio if the Markdown contains it.
+*/
+
+function fixInlineAudios(){
+
+    var audios = content.getElementsByTagName("audio");
+    var i;
+    var src;
+
+    for(i=0; i<audios.length; i++){
+
+        src = audios[i].getAttribute("src");
+
+        if(src){
+            audios[i].src = mediaPath(src);
+        }
+
+        audios[i].controls = true;
+
+    }
+
+}
+
+
+/*
+Render separate frontmatter media AFTER
+the article body.
+
+This prevents a giant media block from
+appearing before the article.
+*/
+
+function renderExtraMedia(data){
+
+    var html = "";
+
+    if(data.video){
+
+        html +=
+            '<div class="media-box">' +
+            '<h2 class="media-title">Video</h2>' +
+            '<video controls preload="metadata" width="100%">' +
+            '<source src="' +
+            escapeAttribute(mediaPath(data.video)) +
+            '">' +
+            'Your browser cannot play this video.' +
+            '</video>' +
+            '</div>';
+
+    }
+
+    if(data.audio){
+
+        html +=
+            '<div class="media-box">' +
+            '<h2 class="media-title">Audio</h2>' +
+            '<audio controls preload="metadata">' +
+            '<source src="' +
+            escapeAttribute(mediaPath(data.audio)) +
+            '">' +
+            'Your browser cannot play this audio.' +
+            '</audio>' +
+            '</div>';
+
+    }
+
+    if(data.downloads.length){
+
+        html +=
+            '<div class="media-box">' +
+            '<h2 class="media-title">Downloads</h2>';
+
+        var i;
+
+        for(i=0; i<data.downloads.length; i++){
+
+            html +=
+                '<p>' +
+                '<a href="' +
+                escapeAttribute(mediaPath(data.downloads[i])) +
+                '" download>' +
+                'Download file ' + (i + 1) +
+                '</a>' +
+                '</p>';
+
+        }
+
+        html += "</div>";
+
+    }
+
+    media.innerHTML = html;
+
+}
+
+
+/*
+Make images more friendly to slow connections
+where the browser supports these attributes.
+
+Older browsers simply ignore them.
+*/
+
+function prepareImage(image){
+
+    try{
+        image.setAttribute("loading","lazy");
+    }catch(e){}
+
+    try{
+        image.setAttribute("decoding","async");
+    }catch(e){}
+
+}
+
+
+/*
 Convert Pages CMS media paths
 into website-root paths.
 */
 
 function mediaPath(src){
+
+    if(!src){
+        return "";
+    }
+
+    src = src.replace(/^<|>$/g,"");
 
     if(
         src.indexOf("http://") === 0 ||
@@ -301,7 +628,9 @@ function mediaPath(src){
         src.indexOf("data:") === 0 ||
         src.charAt(0) === "/"
     ){
+
         return src;
+
     }
 
     while(src.indexOf("../") === 0){
@@ -317,6 +646,33 @@ function mediaPath(src){
     }
 
     return "/content/images/" + src;
+
+}
+
+
+/*
+Simple HTML escaping.
+*/
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
+
+}
+
+
+/*
+Attribute-safe escaping.
+*/
+
+function escapeAttribute(value){
+
+    return escapeHtml(value);
 
 }
 
