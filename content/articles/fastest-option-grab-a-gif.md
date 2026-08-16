@@ -7,6 +7,8 @@ audio: /content/audio/Neoni MACHINE(48k) (1).m4a
 downloads:
   - /content/files/wearing_freedom_11_to_where___-2.pdf
 ---
+![hello.jpg.jpeg](/content/images/hello.jpg.jpeg)
+
 ![editorial_fashion_portrait_pri (1).jpeg](</content/images/editorial_fashion_portrait_pri (1).jpeg>)
 
 ![cinematic_character_portrait_p (1).jpeg](</content/images/cinematic_character_portrait_p (1)-1.jpeg>)
