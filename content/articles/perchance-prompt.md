@@ -18,5 +18,5 @@ cover: /content/images/2D_cartoon_Disney_character_di (17).jpeg
 
 **Negative Prompt**
 
-> blurry, low quality, low resolution, cropped, bad anatomy, extra fingers, missing fingers, extra limbs, deformed face, distorted body, crossed eyes, duplicate person, watermark, logo, text, signature, oversaturated, poorly drawn hands, unrealistic proportions, messy background, noise, jpeg artifacts
+> blurry, low quality, low resolution, cropped, bad anatomy, extra fingers, missing fingers, extra limbs, deformed face, distorted body, crossed eyes, duplicate person, watermark, logo, text, signature, oversaturated, poorly drawn hands, unrealistic proportions, messy background, noise, jpeg artifacts.
 
