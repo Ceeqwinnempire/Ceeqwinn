@@ -65,6 +65,23 @@ h1{
     margin:24px 0;
 }
 
+#media{
+    margin-top:40px;
+}
+
+.media-title{
+    margin-top:35px;
+    margin-bottom:12px;
+}
+
+.media-box{
+    margin:20px 0;
+}
+
+.media-box a{
+    word-break:break-word;
+}
+
 #content h2,
 #content h3{
     margin-top:30px;
@@ -93,28 +110,9 @@ h1{
     color:#666;
 }
 
-#media{
-    margin-top:40px;
-}
-
-.media-title{
-    margin-top:35px;
-    margin-bottom:12px;
-}
-
-.media-box{
-    margin:20px 0;
-}
-
-.media-box a{
-    word-break:break-word;
-}
-
-.image-error{
+.error{
     color:#777;
     font-size:0.9rem;
-    text-align:center;
-    margin:20px 0;
 }
 
 </style>
@@ -134,7 +132,6 @@ h1{
 <div id="content"></div>
 
 <div id="media"></div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
 
@@ -162,7 +159,6 @@ var content = document.getElementById("content");
 var cover = document.getElementById("cover");
 var credits = document.getElementById("credits");
 var media = document.getElementById("media");
-
 
 if(!file){
 
@@ -196,21 +192,18 @@ if(!file){
         }
 
         var text = xhr.responseText;
-
+        var markdown = text;
         var frontData = parseFrontmatter(text);
-
         var articleTitle = frontData.title || file;
 
-
         /*
-        TITLE
+        Set title immediately.
         */
 
         title.innerHTML = escapeHtml(articleTitle);
 
-
         /*
-        COVER
+        Show cover if one exists.
         */
 
         if(frontData.cover){
@@ -229,9 +222,8 @@ if(!file){
 
         }
 
-
         /*
-        CREDITS
+        Show credits if one exists.
         */
 
         if(frontData.credits){
@@ -242,18 +234,11 @@ if(!file){
 
         }
 
-
         /*
-        IMPORTANT:
-
-        Normalize inline image URLs BEFORE
-        sending Markdown to Marked.
+        Remove frontmatter before rendering the article body.
         */
 
-        var markdown = normalizeInlineImages(
-            frontData.body
-        );
-
+        markdown = frontData.body;
 
         /*
         Render article text immediately.
@@ -261,34 +246,28 @@ if(!file){
 
         content.innerHTML = marked(markdown);
 
-
         /*
-        Process every resulting image.
+        Fix inline media paths.
         */
 
         fixInlineImages();
-
         fixInlineVideos();
-
         fixInlineAudios();
 
-
         /*
-        Separate uploaded media.
+        Render separate uploaded media after the article.
         */
 
         renderExtraMedia(frontData);
 
-
         /*
         Markdown has loaded.
-        Do not wait for images.
+        Images and other media continue independently.
         */
 
         status.innerHTML = "";
 
     };
-
 
     xhr.onerror = function(){
 
@@ -297,16 +276,16 @@ if(!file){
 
     };
 
-
     xhr.send(null);
 
 }
 
 
 /*
-==================================================
-FRONTMATTER
-==================================================
+Read YAML-style frontmatter.
+
+This intentionally handles the simple fields
+used by the CEEQWINN article system.
 */
 
 function parseFrontmatter(text){
@@ -330,12 +309,10 @@ function parseFrontmatter(text){
     }
 
     var front = match[1];
-
     result.body = text.replace(
         /^---\s*[\s\S]*?\s*---\s*/,
         ""
     );
-
 
     var titleMatch = front.match(
         /^title:\s*["']?(.*?)["']?\s*$/m
@@ -345,7 +322,6 @@ function parseFrontmatter(text){
         result.title = cleanValue(titleMatch[1]);
     }
 
-
     var coverMatch = front.match(
         /^cover:\s*["']?(.*?)["']?\s*$/m
     );
@@ -353,7 +329,6 @@ function parseFrontmatter(text){
     if(coverMatch){
         result.cover = cleanValue(coverMatch[1]);
     }
-
 
     var creditsMatch = front.match(
         /^credits:\s*["']?(.*?)["']?\s*$/m
@@ -363,7 +338,6 @@ function parseFrontmatter(text){
         result.credits = cleanValue(creditsMatch[1]);
     }
 
-
     var videoMatch = front.match(
         /^video:\s*["']?(.*?)["']?\s*$/m
     );
@@ -371,7 +345,6 @@ function parseFrontmatter(text){
     if(videoMatch){
         result.video = cleanValue(videoMatch[1]);
     }
-
 
     var audioMatch = front.match(
         /^audio:\s*["']?(.*?)["']?\s*$/m
@@ -381,9 +354,10 @@ function parseFrontmatter(text){
         result.audio = cleanValue(audioMatch[1]);
     }
 
-
     /*
-    DOWNLOADS
+    Read downloads:
+      - /content/files/example.pdf
+      - /content/files/example2.pdf
     */
 
     var downloadsMatch = front.match(
@@ -393,16 +367,13 @@ function parseFrontmatter(text){
     if(downloadsMatch){
 
         var lines = downloadsMatch[1].split("\n");
-
         var i;
         var line;
         var value;
 
         for(i=0; i<lines.length; i++){
 
-            line = lines[i]
-                .replace(/^\s*-\s*/,"")
-                .trim();
+            line = lines[i].replace(/^\s*-\s*/,"").trim();
 
             if(line){
 
@@ -424,9 +395,7 @@ function parseFrontmatter(text){
 
 
 /*
-==================================================
-CLEAN FRONTMATTER VALUES
-==================================================
+Remove simple YAML quotes.
 */
 
 function cleanValue(value){
@@ -462,127 +431,14 @@ function cleanValue(value){
 
 
 /*
-==================================================
-INLINE IMAGE NORMALIZATION
-==================================================
+Fix inline images.
 
-This runs BEFORE Marked.
-
-It handles Pages CMS forms such as:
-
-![image](/content/images/photo.jpg)
-
-and:
-
-![image](</content/images/photo (1).jpeg>)
-
-The second form is converted into a normal
-Markdown image URL before Marked sees it.
-*/
-
-function normalizeInlineImages(markdown){
-
-    var lines = markdown.split("\n");
-
-    var i;
-    var line;
-
-    for(i=0; i<lines.length; i++){
-
-        line = lines[i];
-
-        /*
-        Match Markdown image syntax where the
-        destination is wrapped in < >.
-        */
-
-        line = line.replace(
-            /(!\[[^\]]*\])\(\s*<([^>]*)>\s*\)/g,
-            function(match, label, src){
-
-                return label +
-                    "(" +
-                    cleanInlineImageURL(src) +
-                    ")";
-
-            }
-        );
-
-
-        lines[i] = line;
-
-    }
-
-    return lines.join("\n");
-
-}
-
-
-/*
-==================================================
-CLEAN INLINE IMAGE URL
-==================================================
-*/
-
-function cleanInlineImageURL(src){
-
-    src = String(src);
-
-    src = src.replace(
-        /^\s+|\s+$/g,
-        ""
-    );
-
-    /*
-    Remove accidental surrounding angle brackets.
-    */
-
-    src = src.replace(
-        /^<|>$/g,
-        ""
-    );
-
-    /*
-    Remove accidental quotes.
-    */
-
-    if(
-        src.length >= 2 &&
-        (
-            (
-                src.charAt(0) === '"' &&
-                src.charAt(src.length - 1) === '"'
-            )
-            ||
-            (
-                src.charAt(0) === "'" &&
-                src.charAt(src.length - 1) === "'"
-            )
-        )
-    ){
-
-        src = src.substring(
-            1,
-            src.length - 1
-        );
-
-    }
-
-    return mediaPath(src);
-
-}
-
-
-/*
-==================================================
-INLINE IMAGES
-==================================================
+This works on every image independently.
 */
 
 function fixInlineImages(){
 
     var images = content.getElementsByTagName("img");
-
     var i;
     var src;
 
@@ -590,31 +446,21 @@ function fixInlineImages(){
 
         src = images[i].getAttribute("src");
 
-        if(!src){
-            continue;
+        if(src){
+
+            images[i].src = mediaPath(src);
+
+            prepareImage(images[i]);
+
+            images[i].onerror = function(){
+
+                this.alt = "Image could not be loaded.";
+
+                this.style.opacity = "0.6";
+
+            };
+
         }
-
-        /*
-        Normalize again as a safety net.
-        */
-
-        src = mediaPath(src);
-
-        images[i].setAttribute(
-            "src",
-            src
-        );
-
-        prepareImage(images[i]);
-
-        /*
-        Every image gets its own handler.
-        */
-
-        images[i].onerror =
-            createImageErrorHandler(
-                images[i]
-            );
 
     }
 
@@ -622,66 +468,21 @@ function fixInlineImages(){
 
 
 /*
-==================================================
-IMAGE ERROR
-==================================================
-*/
-
-function createImageErrorHandler(image){
-
-    return function(){
-
-        var parent = image.parentNode;
-
-        if(!parent){
-            return;
-        }
-
-        var message =
-            document.createElement("div");
-
-        message.className =
-            "image-error";
-
-        message.innerHTML =
-            "Image could not be loaded.";
-
-        parent.insertBefore(
-            message,
-            image
-        );
-
-        image.style.display = "none";
-
-    };
-
-}
-
-
-/*
-==================================================
-INLINE VIDEO
-==================================================
+Fix inline videos if the Markdown contains them.
 */
 
 function fixInlineVideos(){
 
-    var videos =
-        content.getElementsByTagName("video");
-
+    var videos = content.getElementsByTagName("video");
     var i;
     var src;
 
     for(i=0; i<videos.length; i++){
 
-        src =
-            videos[i].getAttribute("src");
+        src = videos[i].getAttribute("src");
 
         if(src){
-
-            videos[i].src =
-                mediaPath(src);
-
+            videos[i].src = mediaPath(src);
         }
 
         videos[i].controls = true;
@@ -692,29 +493,21 @@ function fixInlineVideos(){
 
 
 /*
-==================================================
-INLINE AUDIO
-==================================================
+Fix inline audio if the Markdown contains it.
 */
 
 function fixInlineAudios(){
 
-    var audios =
-        content.getElementsByTagName("audio");
-
+    var audios = content.getElementsByTagName("audio");
     var i;
     var src;
 
     for(i=0; i<audios.length; i++){
 
-        src =
-            audios[i].getAttribute("src");
+        src = audios[i].getAttribute("src");
 
         if(src){
-
-            audios[i].src =
-                mediaPath(src);
-
+            audios[i].src = mediaPath(src);
         }
 
         audios[i].controls = true;
@@ -725,9 +518,11 @@ function fixInlineAudios(){
 
 
 /*
-==================================================
-EXTRA MEDIA
-==================================================
+Render separate frontmatter media AFTER
+the article body.
+
+This prevents a giant media block from
+appearing before the article.
 */
 
 function renderExtraMedia(data){
@@ -741,16 +536,13 @@ function renderExtraMedia(data){
             '<h2 class="media-title">Video</h2>' +
             '<video controls preload="metadata" width="100%">' +
             '<source src="' +
-            escapeAttribute(
-                mediaPath(data.video)
-            ) +
+            escapeAttribute(mediaPath(data.video)) +
             '">' +
             'Your browser cannot play this video.' +
             '</video>' +
             '</div>';
 
     }
-
 
     if(data.audio){
 
@@ -759,16 +551,13 @@ function renderExtraMedia(data){
             '<h2 class="media-title">Audio</h2>' +
             '<audio controls preload="metadata">' +
             '<source src="' +
-            escapeAttribute(
-                mediaPath(data.audio)
-            ) +
+            escapeAttribute(mediaPath(data.audio)) +
             '">' +
             'Your browser cannot play this audio.' +
             '</audio>' +
             '</div>';
 
     }
-
 
     if(data.downloads.length){
 
@@ -783,21 +572,17 @@ function renderExtraMedia(data){
             html +=
                 '<p>' +
                 '<a href="' +
-                escapeAttribute(
-                    mediaPath(data.downloads[i])
-                ) +
+                escapeAttribute(mediaPath(data.downloads[i])) +
                 '" download>' +
-                'Download file ' +
-                (i + 1) +
+                'Download file ' + (i + 1) +
                 '</a>' +
                 '</p>';
 
         }
 
-        html += '</div>';
+        html += "</div>";
 
     }
-
 
     media.innerHTML = html;
 
@@ -805,39 +590,28 @@ function renderExtraMedia(data){
 
 
 /*
-==================================================
-IMAGE PERFORMANCE
-==================================================
+Make images more friendly to slow connections
+where the browser supports these attributes.
+
+Older browsers simply ignore them.
 */
 
 function prepareImage(image){
 
     try{
-
-        image.setAttribute(
-            "loading",
-            "lazy"
-        );
-
+        image.setAttribute("loading","lazy");
     }catch(e){}
 
-
     try{
-
-        image.setAttribute(
-            "decoding",
-            "async"
-        );
-
+        image.setAttribute("decoding","async");
     }catch(e){}
 
 }
 
 
 /*
-==================================================
-MEDIA PATH
-==================================================
+Convert Pages CMS media paths
+into website-root paths.
 */
 
 function mediaPath(src){
@@ -846,152 +620,38 @@ function mediaPath(src){
         return "";
     }
 
-    src = String(src);
-
-    src = src.replace(
-        /^\s+|\s+$/g,
-        ""
-    );
-
-
-    /*
-    Remove surrounding < >.
-    */
-
-    while(
-        src.length > 1 &&
-        src.charAt(0) === "<" &&
-        src.charAt(src.length - 1) === ">"
-    ){
-
-        src = src.substring(
-            1,
-            src.length - 1
-        );
-
-        src = src.replace(
-            /^\s+|\s+$/g,
-            ""
-        );
-
-    }
-
-
-    /*
-    Remove quotes.
-    */
-
-    if(
-        src.length >= 2 &&
-        (
-            (
-                src.charAt(0) === '"' &&
-                src.charAt(src.length - 1) === '"'
-            )
-            ||
-            (
-                src.charAt(0) === "'" &&
-                src.charAt(src.length - 1) === "'"
-            )
-        )
-    ){
-
-        src = src.substring(
-            1,
-            src.length - 1
-        );
-
-    }
-
-
-    /*
-    Absolute web URL.
-    */
+    src = src.replace(/^<|>$/g,"");
 
     if(
         src.indexOf("http://") === 0 ||
         src.indexOf("https://") === 0 ||
-        src.indexOf("data:") === 0
+        src.indexOf("data:") === 0 ||
+        src.charAt(0) === "/"
     ){
-
-        return encodeURL(src);
-
-    }
-
-
-    /*
-    Remove relative prefixes.
-    */
-
-    while(src.indexOf("../") === 0){
-
-        src = src.substring(3);
-
-    }
-
-    while(src.indexOf("./") === 0){
-
-        src = src.substring(2);
-
-    }
-
-
-    /*
-    Already contains content/.
-    */
-
-    if(src.indexOf("/content/") === 0){
-
-        return encodeURL(src);
-
-    }
-
-
-    if(src.indexOf("content/") === 0){
-
-        return encodeURL(
-            "/" + src
-        );
-
-    }
-
-
-    /*
-    Plain filename.
-    */
-
-    return encodeURL(
-        "/content/images/" + src
-    );
-
-}
-
-
-/*
-==================================================
-SAFE URL ENCODING
-==================================================
-*/
-
-function encodeURL(src){
-
-    try{
-
-        return encodeURI(src);
-
-    }catch(e){
 
         return src;
 
     }
 
+    while(src.indexOf("../") === 0){
+        src = src.substring(3);
+    }
+
+    while(src.indexOf("./") === 0){
+        src = src.substring(2);
+    }
+
+    if(src.indexOf("content/") === 0){
+        return "/" + src;
+    }
+
+    return "/content/images/" + src;
+
 }
 
 
 /*
-==================================================
-HTML ESCAPING
-==================================================
+Simple HTML escaping.
 */
 
 function escapeHtml(value){
@@ -1007,9 +667,7 @@ function escapeHtml(value){
 
 
 /*
-==================================================
-ATTRIBUTE ESCAPING
-==================================================
+Attribute-safe escaping.
 */
 
 function escapeAttribute(value){
@@ -1023,3 +681,4 @@ function escapeAttribute(value){
 </body>
 
 </html>
+
