@@ -15,7 +15,11 @@ Step 6 — Only
 
 ![cinematic_character_portrait_p (1).jpeg](</content/images/cinematic_character_portrait_p (1).jpeg>)
 
-the CMS saves everything
+the CMS 
+
+![Im Free Robin Williams GIF.gif](</content/images/Im Free Robin Williams GIF.gif>)
+
+saves everything
 
 ![Happy Despicable Me GIF.gif](</content/images/Happy Despicable Me GIF-1.gif>)
 
