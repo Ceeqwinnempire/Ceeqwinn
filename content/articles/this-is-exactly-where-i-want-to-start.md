@@ -13,6 +13,10 @@ Step 6 — Only
 
  AFTER 
 
+![cinematic_character_portrait_p.jpeg](/content/images/cinematic_character_portrait_p.jpeg)
+
+![cinematic_character_portrait_p (2).jpeg](</content/images/cinematic_character_portrait_p (2)-1.jpeg>)
+
 ![cinematic_character_portrait_p (1).jpeg](</content/images/cinematic_character_portrait_p (1).jpeg>)
 
 the 
