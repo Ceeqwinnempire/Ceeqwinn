@@ -13,7 +13,11 @@ was a French animated television series originally broadcast from 1996 until 200
 
 ![image.png](/content/images/image-1.png)
 
- Its production had the participation of the National Center of Cinematography and the support of Région Poitou Charentes. [Wikipedia](https://en.wikipedia.org/wiki/Princesse_Sh%C3%A9h%C3%A9razade)
+ Its production had the participation of the National Center of Cinematography and the support of Région Poitou Charentes
+
+![Shocked Super Mario GIF by Universal Pictures.gif](blob:https:/app.pagescms.org/bf4a77e0-b60b-4e4e-866e-535cada59ffe)
+
+. [Wikipedia](https://en.wikipedia.org/wiki/Princesse_Sh%C3%A9h%C3%A9razade)
 
 ![images .jpg](</content/images/images .jpg>)
 
