@@ -9,7 +9,11 @@ Princesse Shéhérazade
 
 ![image.png](/content/images/image.png)
 
+![Donald Duck Money GIF.gif](</content/images/Donald Duck Money GIF-2.gif>)
+
 was a French animated television series originally broadcast from 1996 until 2000 on the French TV channel France 2. It was later retransmitted in 2008 on channel France 5.
+
+![Shocked Super Mario GIF by Universal Pictures.gif](</content/images/Shocked Super Mario GIF by Universal Pictures-6.gif>)
 
 ![image.png](/content/images/image-1.png)
 
