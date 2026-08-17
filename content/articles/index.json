@@ -1,46 +1,67 @@
 [
   {
+    "title": "Princesse Shéhérazade",
+    "slug": "Test/princesse-sheherazade",
+    "path": "Test/princesse-sheherazade"
+  },
+  {
     "title": "**CEEQWINN VOICE BIBLE**",
-    "slug": "ceeqwinn-voice-bible"
+    "slug": "ceeqwinn-voice-bible",
+    "path": "ceeqwinn-voice-bible"
+  },
+  {
+    "title": "Missing",
+    "slug": "certain URL formats work; certain URL formats don't./missing",
+    "path": "certain URL formats work; certain URL formats don't./missing"
   },
   {
     "title": "⚡ Fastest option: grab a GIF",
-    "slug": "fastest-option-grab-a-gif"
+    "slug": "fastest-option-grab-a-gif",
+    "path": "fastest-option-grab-a-gif"
   },
   {
     "title": "Image Test 2",
-    "slug": "image-test-2"
+    "slug": "image-test-2",
+    "path": "image-test-2"
   },
   {
     "title": "Image Test",
-    "slug": "image-test"
+    "slug": "image-test",
+    "path": "image-test"
   },
   {
     "title": "Pages CMS",
-    "slug": "pages-cms"
+    "slug": "pages-cms",
+    "path": "pages-cms"
   },
   {
     "title": "**Perchance Prompt**",
-    "slug": "perchance-prompt"
+    "slug": "perchance-prompt",
+    "path": "perchance-prompt"
   },
   {
     "title": "So why did the modern one seem to work?",
-    "slug": "so-why-did-the-modern-one-seem-to-work"
+    "slug": "so-why-did-the-modern-one-seem-to-work",
+    "path": "so-why-did-the-modern-one-seem-to-work"
   },
   {
     "title": "That's not what's happening.",
-    "slug": "thats-not-whats-happening"
+    "slug": "thats-not-whats-happening",
+    "path": "thats-not-whats-happening"
   },
   {
     "title": "That's why",
-    "slug": "thats-why"
+    "slug": "thats-why",
+    "path": "thats-why"
   },
   {
     "title": "This is exactly where I want to start.",
-    "slug": "this-is-exactly-where-i-want-to-start"
+    "slug": "this-is-exactly-where-i-want-to-start",
+    "path": "this-is-exactly-where-i-want-to-start"
   },
   {
     "title": "Welcome to CEEQWINN",
-    "slug": "welcome-to-ceeqwinn"
+    "slug": "welcome-to-ceeqwinn",
+    "path": "welcome-to-ceeqwinn"
   }
 ]
