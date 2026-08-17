@@ -1,15 +1,6 @@
 ---
 title: Princesse Shéhérazade
 cover: /content/images/images.webp
-credits: >-
-  
-  Wikipedia
-
-  https://en.wikipedia.org › wiki › Princesse_Shéhérazade
-
-  Princesse Shéhérazade (lit: Princess Sheherazade) was a French animated
-  television series originally broadcast from 1996 until 2000 on the French TV
-  channel ...Read more
 ---
 [7.5/10 · IMDb](https://www.imdb.com/title/tt5243998/)
 
