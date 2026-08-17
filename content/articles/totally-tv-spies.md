@@ -32,6 +32,8 @@ Join ***teenage spies Sam, Alex and Clover*** in loads of fun and exciting adven
 
 Episodes
 
+![Shocked Super Mario GIF by Universal Pictures.gif](blob:https:/app.pagescms.org/4fcf1311-e46a-4f4d-bf2b-ef0bc3df631e)
+
 [S07 E25 · Episode 25](https://www.google.com/search?sca_esv=63b230156fc05cdb&sxsrf=APpeQnu6V44KCgApMNcBiynHZM5_gcP00w:1786970676478&q=totally+spies!+season+7+episode+25&stick=H4sIAAAAAAAAAONgFuLUz9U3MKw0MjRV4tVP1zc0rEgzKjQtzjXTUslOttIvKQOi-IKi_PSixFyr1ILM4vyU1GKF8oz8nNSCxPTURaxKJfkliTk5lQrFBZmpxYoKxamJxfl5CuYKUMUKRqYAoQodkWcAAAA&sa=X&ved=2ahUKEwjNxZTD2KeWAxUxW0EAHeLQF5QQri56BAhNEAQ)
 
 ![Donald Duck Money GIF.gif](</content/images/Donald Duck Money GIF-1.gif>)
