@@ -2,7 +2,6 @@
 title: Princesse Shéhérazade
 cover: /content/images/images.webp
 credits: >-
-  
   Wikipedia
 
   https://en.wikipedia.org › wiki › Princesse_Shéhérazade
