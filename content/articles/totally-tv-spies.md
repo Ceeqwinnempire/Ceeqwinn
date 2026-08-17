@@ -12,7 +12,6 @@ cover: /content/images/download.webp
 
 Pe[ople also ask](https://youtu.be/-W5K12sCTuI)  
 
-
 [YouTube · Totally Spies!](https://www.youtube.com/@TotallySpiesChannel)
 
 [915K+ followers](https://www.youtube.com/@TotallySpiesChannel)
@@ -22,9 +21,6 @@ Join ***teenage spies Sam, Alex and Clover*** in loads of fun and exciting adven
 ![Totally spies from www.youtube.com](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHk0JOOJb9Bn8ixCCRvPN6tIcTezLwgzX_bkZY6gA&usqp=CAE&s)
 
 ### [Totally Spies!](https://en.wikipedia.org/wiki/Totally_Spies!)
-
-  
-
 
 [Wikipedia](https://en.wikipedia.org/wiki/Totally_Spies!)
 
@@ -37,6 +33,8 @@ Join ***teenage spies Sam, Alex and Clover*** in loads of fun and exciting adven
 Episodes
 
 [S07 E25 · Episode 25](https://www.google.com/search?sca_esv=63b230156fc05cdb&sxsrf=APpeQnu6V44KCgApMNcBiynHZM5_gcP00w:1786970676478&q=totally+spies!+season+7+episode+25&stick=H4sIAAAAAAAAAONgFuLUz9U3MKw0MjRV4tVP1zc0rEgzKjQtzjXTUslOttIvKQOi-IKi_PSixFyr1ILM4vyU1GKF8oz8nNSCxPTURaxKJfkliTk5lQrFBZmpxYoKxamJxfl5CuYKUMUKRqYAoQodkWcAAAA&sa=X&ved=2ahUKEwjNxZTD2KeWAxUxW0EAHeLQF5QQri56BAhNEAQ)
+
+![Donald Duck Money GIF.gif](</content/images/Donald Duck Money GIF-1.gif>)
 
 [2025-10-22](https://www.google.com/search?sca_esv=63b230156fc05cdb&sxsrf=APpeQnu6V44KCgApMNcBiynHZM5_gcP00w:1786970676478&q=totally+spies!+season+7+episode+25&stick=H4sIAAAAAAAAAONgFuLUz9U3MKw0MjRV4tVP1zc0rEgzKjQtzjXTUslOttIvKQOi-IKi_PSixFyr1ILM4vyU1GKF8oz8nNSCxPTURaxKJfkliTk5lQrFBZmpxYoKxamJxfl5CuYKUMUKRqYAoQodkWcAAAA&sa=X&ved=2ahUKEwjNxZTD2KeWAxUxW0EAHeLQF5QQri56BAhNEAQ)
 
@@ -58,4 +56,3 @@ Episodes
 
 ++[S07 E18 · Episode 18](https://www.google.com/search?sca_esv=63b230156fc05cdb&sxsrf=APpeQnu6V44KCgApMNcBiynHZM5_gcP00w:1786970676478&q=totally+spies!+season+7+episode+18&stick=H4sIAAAAAAAAAONgFuLUz9U3MKw0MjRV4tVP1zc0LE83NTJPKs7VUslOttIvKQOi-IKi_PSixFyr1ILM4vyU1GKF8oz8nNSCxPTURaxKJfkliTk5lQrFBZmpxYoKxamJxfl5CuYKUMUKhhYAo3gP32cAAAA&sa=X&ved=2ahUKEwjNxZTD2KeWAxUxW0EAHeLQF5QQri56BAhNEA4)++
 
-  
