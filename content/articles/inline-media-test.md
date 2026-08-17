@@ -12,6 +12,8 @@ Hello. This is text.
 
 Hello. This is text.
 
+![ChatGPT Image Feb 17, 2026, 01_45_55 PM - Copy.png](blob:https:/app.pagescms.org/e0bd4c6c-8149-4571-b0b1-bc65f9564441)
+
 ![Shocked Super Mario GIF by Universal Pictures.gif](</content/images/Shocked Super Mario GIF by Universal Pictures-7.gif>)
 
 Hello. This is text.
