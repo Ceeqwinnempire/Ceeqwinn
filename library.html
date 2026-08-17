@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,7 +42,14 @@ h1{
     background:#f5f5f5;
 }
 
-.message{
+.folder{
+    margin-top:25px;
+    margin-bottom:5px;
+    font-size:1.1rem;
+    font-weight:bold;
+}
+
+.error{
     color:#666;
 }
 
@@ -55,78 +61,153 @@ h1{
 
 <h1>Library</h1>
 
-<div id="articles">
-
-    <p class="message">Loading articles...</p>
-
-</div>
+<div id="articles"></div>
 
 <script>
 
-const container = document.getElementById("articles");
+var container = document.getElementById("articles");
 
-fetch("content/articles/index.json")
+var xhr = new XMLHttpRequest();
 
-    .then(response => {
+xhr.open(
+    "GET",
+    "content/articles/index.json",
+    true
+);
 
-        if(!response.ok){
+xhr.onreadystatechange = function(){
 
-            throw new Error(
-                "Could not load the article library."
-            );
+    if(xhr.readyState !== 4){
+        return;
+    }
 
-        }
-
-        return response.json();
-
-    })
-
-    .then(articles => {
-
-        container.innerHTML = "";
-
-        if(!articles.length){
-
-            container.innerHTML =
-                '<p class="message">No articles yet.</p>';
-
-            return;
-
-        }
-
-        articles.forEach(article => {
-
-            const link = document.createElement("a");
-
-            link.className = "article-link";
-
-            link.href =
-                "admin/article.html?file=" +
-                encodeURIComponent(article.slug);
-
-            link.textContent = article.title;
-
-            container.appendChild(link);
-
-        });
-
-    })
-
-    .catch(error => {
-
-        console.error(error);
+    if(xhr.status !== 200 && xhr.status !== 0){
 
         container.innerHTML =
-            '<p class="message">' +
+            '<p class="error">' +
             'The library could not be loaded.' +
             '</p>';
 
-    });
+        return;
+
+    }
+
+    var articles;
+
+    try{
+
+        articles = JSON.parse(xhr.responseText);
+
+    }catch(e){
+
+        container.innerHTML =
+            '<p class="error">' +
+            'The library data could not be read.' +
+            '</p>';
+
+        return;
+
+    }
+
+    container.innerHTML = "";
+
+    if(!articles || !articles.length){
+
+        container.innerHTML =
+            '<p class="error">No articles yet.</p>';
+
+        return;
+
+    }
+
+    var currentFolder = "";
+
+    var i;
+    var article;
+    var link;
+    var path;
+    var folder;
+
+    for(i=0; i<articles.length; i++){
+
+        article = articles[i];
+
+        path =
+            article.path ||
+            article.slug ||
+            "";
+
+        folder = getFolder(path);
+
+        if(folder !== currentFolder){
+
+            if(folder){
+
+                var heading =
+                    document.createElement("div");
+
+                heading.className = "folder";
+
+                heading.textContent = folder;
+
+                container.appendChild(heading);
+
+            }
+
+            currentFolder = folder;
+
+        }
+
+        link =
+            document.createElement("a");
+
+        link.className = "article-link";
+
+        link.href =
+            "admin/article.html?file=" +
+            encodeURIComponent(path);
+
+        link.textContent =
+            article.title ||
+            article.slug ||
+            path;
+
+        container.appendChild(link);
+
+    }
+
+};
+
+xhr.onerror = function(){
+
+    container.innerHTML =
+        '<p class="error">' +
+        'The library could not be loaded.' +
+        '</p>';
+
+};
+
+xhr.send(null);
+
+
+/*
+Find the folder portion of an article path.
+*/
+
+function getFolder(path){
+
+    var slash = path.lastIndexOf("/");
+
+    if(slash === -1){
+        return "";
+    }
+
+    return path.substring(0,slash);
+
+}
 
 </script>
 
 </body>
 
 </html>
-```
-
