@@ -8,7 +8,7 @@ downloads:
 ---
 Hello. This is text.
 
-![2D_cartoon_Disney_character_di (16).jpeg](blob:https:/app.pagescms.org/eb571b3c-7a3e-4a5a-8cd2-f0e75d3bdc1d)
+![breathtaking_alla_prima_oil_pa.jpg.jpeg](/content/images/breathtaking_alla_prima_oil_pa.jpg.jpeg)
 
 Hello. This is text.
 
