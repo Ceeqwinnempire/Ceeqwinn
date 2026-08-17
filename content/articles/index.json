@@ -30,6 +30,11 @@
     "path": "image-test"
   },
   {
+    "title": "INLINE MEDIA TEST",
+    "slug": "inline-media-test",
+    "path": "inline-media-test"
+  },
+  {
     "title": "Pages CMS",
     "slug": "pages-cms",
     "path": "pages-cms"
