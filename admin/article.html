@@ -127,7 +127,7 @@ h1{
 
 <div id="credits"></div>
 
-<div id="status">Loading article...</div>
+<div id="status"></div>
 
 <div id="content"></div>
 
@@ -167,125 +167,196 @@ if(!file){
 
 }else{
 
-    file = file.replace(/[^a-zA-Z0-9_-]/g,"");
+    file = cleanArticlePath(file);
 
-    var xhr = new XMLHttpRequest();
+    if(!file){
 
-    xhr.open(
-        "GET",
-        "../content/articles/" + file + ".md",
-        true
+        title.innerHTML = "Article not found";
+        status.innerHTML = "The article path is invalid.";
+
+    }else{
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open(
+            "GET",
+            articlePath(file),
+            true
+        );
+
+        xhr.onreadystatechange = function(){
+
+            if(xhr.readyState !== 4){
+                return;
+            }
+
+            if(xhr.status !== 200 && xhr.status !== 0){
+
+                title.innerHTML = "Unable to load article";
+                status.innerHTML =
+                    "The article could not be loaded.";
+
+                return;
+
+            }
+
+            var text = xhr.responseText;
+
+            var frontData =
+                parseFrontmatter(text);
+
+            var articleTitle =
+                frontData.title || getFileName(file);
+
+            title.innerHTML =
+                escapeHtml(articleTitle);
+
+            if(frontData.cover){
+
+                cover.src =
+                    mediaPath(frontData.cover);
+
+                cover.alt =
+                    articleTitle;
+
+                cover.style.display =
+                    "block";
+
+                prepareImage(cover);
+
+                cover.onerror = function(){
+
+                    cover.style.display =
+                        "none";
+
+                };
+
+            }
+
+            if(frontData.credits){
+
+                credits.innerHTML =
+                    "<strong>Credits:</strong> " +
+                    escapeHtml(frontData.credits);
+
+            }
+
+            content.innerHTML =
+                marked(frontData.body);
+
+            fixInlineImages();
+            fixInlineVideos();
+            fixInlineAudios();
+
+            renderExtraMedia(frontData);
+
+            status.innerHTML = "";
+
+        };
+
+        xhr.onerror = function(){
+
+            title.innerHTML =
+                "Unable to load article";
+
+            status.innerHTML =
+                "The article could not be loaded.";
+
+        };
+
+        xhr.send(null);
+
+    }
+
+}
+
+
+/*
+Keep folders and normal file names.
+
+Examples:
+
+Story.md
+My Folder/Story.md
+Books/Fantasy/My Story.md
+
+Unsafe ../ paths are rejected.
+*/
+
+function cleanArticlePath(path){
+
+    path = path.replace(/\\/g,"/");
+
+    path = path.replace(/^\/+/,"");
+
+    var parts =
+        path.split("/");
+
+    var clean = [];
+    var i;
+    var part;
+
+    for(i=0; i<parts.length; i++){
+
+        part =
+            parts[i].trim();
+
+        if(!part){
+            continue;
+        }
+
+        if(part === "." || part === ".."){
+            return "";
+        }
+
+        clean.push(part);
+
+    }
+
+    if(!clean.length){
+        return "";
+    }
+
+    return clean.join("/");
+
+}
+
+
+/*
+Build the Markdown article URL.
+
+Each folder and file name is encoded
+separately so spaces, parentheses and
+other normal file-name characters work.
+*/
+
+function articlePath(path){
+
+    var parts =
+        path.split("/");
+
+    var encoded = [];
+    var i;
+
+    for(i=0; i<parts.length; i++){
+
+        encoded.push(
+            encodeURIComponent(parts[i])
+        );
+
+    }
+
+    return (
+        "../content/articles/" +
+        encoded.join("/") +
+        ".md"
     );
-
-    xhr.onreadystatechange = function(){
-
-        if(xhr.readyState !== 4){
-            return;
-        }
-
-        if(xhr.status !== 200 && xhr.status !== 0){
-
-            title.innerHTML = "Unable to load article";
-            status.innerHTML = "The article could not be loaded.";
-            return;
-
-        }
-
-        var text = xhr.responseText;
-        var markdown = text;
-        var frontData = parseFrontmatter(text);
-        var articleTitle = frontData.title || file;
-
-        /*
-        Set title immediately.
-        */
-
-        title.innerHTML = escapeHtml(articleTitle);
-
-        /*
-        Show cover if one exists.
-        */
-
-        if(frontData.cover){
-
-            cover.src = mediaPath(frontData.cover);
-            cover.alt = articleTitle;
-            cover.style.display = "block";
-
-            prepareImage(cover);
-
-            cover.onerror = function(){
-
-                cover.style.display = "none";
-
-            };
-
-        }
-
-        /*
-        Show credits if one exists.
-        */
-
-        if(frontData.credits){
-
-            credits.innerHTML =
-                "<strong>Credits:</strong> " +
-                escapeHtml(frontData.credits);
-
-        }
-
-        /*
-        Remove frontmatter before rendering the article body.
-        */
-
-        markdown = frontData.body;
-
-        /*
-        Render article text immediately.
-        */
-
-        content.innerHTML = marked(markdown);
-
-        /*
-        Fix inline media paths.
-        */
-
-        fixInlineImages();
-        fixInlineVideos();
-        fixInlineAudios();
-
-        /*
-        Render separate uploaded media after the article.
-        */
-
-        renderExtraMedia(frontData);
-
-        /*
-        Markdown has loaded.
-        Images and other media continue independently.
-        */
-
-        status.innerHTML = "";
-
-    };
-
-    xhr.onerror = function(){
-
-        title.innerHTML = "Unable to load article";
-        status.innerHTML = "The article could not be loaded.";
-
-    };
-
-    xhr.send(null);
 
 }
 
 
 /*
 Read YAML-style frontmatter.
-
-This intentionally handles the simple fields
-used by the CEEQWINN article system.
 */
 
 function parseFrontmatter(text){
@@ -309,75 +380,88 @@ function parseFrontmatter(text){
     }
 
     var front = match[1];
-    result.body = text.replace(
-        /^---\s*[\s\S]*?\s*---\s*/,
-        ""
-    );
 
-    var titleMatch = front.match(
-        /^title:\s*["']?(.*?)["']?\s*$/m
-    );
+    result.body =
+        text.replace(
+            /^---\s*[\s\S]*?\s*---\s*/,
+            ""
+        );
+
+    var titleMatch =
+        front.match(
+            /^title:\s*["']?(.*?)["']?\s*$/m
+        );
 
     if(titleMatch){
-        result.title = cleanValue(titleMatch[1]);
+        result.title =
+            cleanValue(titleMatch[1]);
     }
 
-    var coverMatch = front.match(
-        /^cover:\s*["']?(.*?)["']?\s*$/m
-    );
+    var coverMatch =
+        front.match(
+            /^cover:\s*["']?(.*?)["']?\s*$/m
+        );
 
     if(coverMatch){
-        result.cover = cleanValue(coverMatch[1]);
+        result.cover =
+            cleanValue(coverMatch[1]);
     }
 
-    var creditsMatch = front.match(
-        /^credits:\s*["']?(.*?)["']?\s*$/m
-    );
+    var creditsMatch =
+        front.match(
+            /^credits:\s*["']?(.*?)["']?\s*$/m
+        );
 
     if(creditsMatch){
-        result.credits = cleanValue(creditsMatch[1]);
+        result.credits =
+            cleanValue(creditsMatch[1]);
     }
 
-    var videoMatch = front.match(
-        /^video:\s*["']?(.*?)["']?\s*$/m
-    );
+    var videoMatch =
+        front.match(
+            /^video:\s*["']?(.*?)["']?\s*$/m
+        );
 
     if(videoMatch){
-        result.video = cleanValue(videoMatch[1]);
+        result.video =
+            cleanValue(videoMatch[1]);
     }
 
-    var audioMatch = front.match(
-        /^audio:\s*["']?(.*?)["']?\s*$/m
-    );
+    var audioMatch =
+        front.match(
+            /^audio:\s*["']?(.*?)["']?\s*$/m
+        );
 
     if(audioMatch){
-        result.audio = cleanValue(audioMatch[1]);
+        result.audio =
+            cleanValue(audioMatch[1]);
     }
 
-    /*
-    Read downloads:
-      - /content/files/example.pdf
-      - /content/files/example2.pdf
-    */
-
-    var downloadsMatch = front.match(
-        /^downloads:\s*([\s\S]*?)(?=^[a-zA-Z0-9_-]+\s*:|$)/m
-    );
+    var downloadsMatch =
+        front.match(
+            /^downloads:\s*([\s\S]*?)(?=^[a-zA-Z0-9_-]+\s*:|$)/m
+        );
 
     if(downloadsMatch){
 
-        var lines = downloadsMatch[1].split("\n");
+        var lines =
+            downloadsMatch[1].split("\n");
+
         var i;
         var line;
         var value;
 
         for(i=0; i<lines.length; i++){
 
-            line = lines[i].replace(/^\s*-\s*/,"").trim();
+            line =
+                lines[i]
+                    .replace(/^\s*-\s*/,"")
+                    .trim();
 
             if(line){
 
-                value = cleanValue(line);
+                value =
+                    cleanValue(line);
 
                 if(value){
                     result.downloads.push(value);
@@ -400,28 +484,36 @@ Remove simple YAML quotes.
 
 function cleanValue(value){
 
-    value = value.replace(/^\s+/,"");
-    value = value.replace(/\s+$/,"");
+    value =
+        value.replace(/^\s+/,"");
+
+    value =
+        value.replace(/\s+$/,"");
 
     if(
         value.length >= 2 &&
         (
             (
                 value.charAt(0) === '"' &&
-                value.charAt(value.length - 1) === '"'
+                value.charAt(
+                    value.length - 1
+                ) === '"'
             )
             ||
             (
                 value.charAt(0) === "'" &&
-                value.charAt(value.length - 1) === "'"
+                value.charAt(
+                    value.length - 1
+                ) === "'"
             )
         )
     ){
 
-        value = value.substring(
-            1,
-            value.length - 1
-        );
+        value =
+            value.substring(
+                1,
+                value.length - 1
+            );
 
     }
 
@@ -432,33 +524,38 @@ function cleanValue(value){
 
 /*
 Fix inline images.
-
-This works on every image independently.
 */
 
 function fixInlineImages(){
 
-    var images = content.getElementsByTagName("img");
+    var images =
+        content.getElementsByTagName("img");
+
     var i;
     var src;
 
     for(i=0; i<images.length; i++){
 
-        src = images[i].getAttribute("src");
+        src =
+            images[i].getAttribute("src");
 
         if(src){
 
-            images[i].src = mediaPath(src);
+            images[i].src =
+                mediaPath(src);
 
             prepareImage(images[i]);
 
-            images[i].onerror = function(){
+            images[i].onerror =
+                function(){
 
-                this.alt = "Image could not be loaded.";
+                    this.alt =
+                        "Image could not be loaded.";
 
-                this.style.opacity = "0.6";
+                    this.style.opacity =
+                        "0.6";
 
-            };
+                };
 
         }
 
@@ -468,21 +565,25 @@ function fixInlineImages(){
 
 
 /*
-Fix inline videos if the Markdown contains them.
+Fix inline videos.
 */
 
 function fixInlineVideos(){
 
-    var videos = content.getElementsByTagName("video");
+    var videos =
+        content.getElementsByTagName("video");
+
     var i;
     var src;
 
     for(i=0; i<videos.length; i++){
 
-        src = videos[i].getAttribute("src");
+        src =
+            videos[i].getAttribute("src");
 
         if(src){
-            videos[i].src = mediaPath(src);
+            videos[i].src =
+                mediaPath(src);
         }
 
         videos[i].controls = true;
@@ -493,21 +594,25 @@ function fixInlineVideos(){
 
 
 /*
-Fix inline audio if the Markdown contains it.
+Fix inline audio.
 */
 
 function fixInlineAudios(){
 
-    var audios = content.getElementsByTagName("audio");
+    var audios =
+        content.getElementsByTagName("audio");
+
     var i;
     var src;
 
     for(i=0; i<audios.length; i++){
 
-        src = audios[i].getAttribute("src");
+        src =
+            audios[i].getAttribute("src");
 
         if(src){
-            audios[i].src = mediaPath(src);
+            audios[i].src =
+                mediaPath(src);
         }
 
         audios[i].controls = true;
@@ -518,11 +623,8 @@ function fixInlineAudios(){
 
 
 /*
-Render separate frontmatter media AFTER
-the article body.
-
-This prevents a giant media block from
-appearing before the article.
+Render uploaded media after
+the article.
 */
 
 function renderExtraMedia(data){
@@ -536,7 +638,9 @@ function renderExtraMedia(data){
             '<h2 class="media-title">Video</h2>' +
             '<video controls preload="metadata" width="100%">' +
             '<source src="' +
-            escapeAttribute(mediaPath(data.video)) +
+            escapeAttribute(
+                mediaPath(data.video)
+            ) +
             '">' +
             'Your browser cannot play this video.' +
             '</video>' +
@@ -551,7 +655,9 @@ function renderExtraMedia(data){
             '<h2 class="media-title">Audio</h2>' +
             '<audio controls preload="metadata">' +
             '<source src="' +
-            escapeAttribute(mediaPath(data.audio)) +
+            escapeAttribute(
+                mediaPath(data.audio)
+            ) +
             '">' +
             'Your browser cannot play this audio.' +
             '</audio>' +
@@ -572,15 +678,21 @@ function renderExtraMedia(data){
             html +=
                 '<p>' +
                 '<a href="' +
-                escapeAttribute(mediaPath(data.downloads[i])) +
+                escapeAttribute(
+                    mediaPath(
+                        data.downloads[i]
+                    )
+                ) +
                 '" download>' +
-                'Download file ' + (i + 1) +
+                'Download file ' +
+                (i + 1) +
                 '</a>' +
                 '</p>';
 
         }
 
-        html += "</div>";
+        html +=
+            '</div>';
 
     }
 
@@ -590,20 +702,23 @@ function renderExtraMedia(data){
 
 
 /*
-Make images more friendly to slow connections
-where the browser supports these attributes.
-
-Older browsers simply ignore them.
+Low-spec image handling.
 */
 
 function prepareImage(image){
 
     try{
-        image.setAttribute("loading","lazy");
+        image.setAttribute(
+            "loading",
+            "lazy"
+        );
     }catch(e){}
 
     try{
-        image.setAttribute("decoding","async");
+        image.setAttribute(
+            "decoding",
+            "async"
+        );
     }catch(e){}
 
 }
@@ -620,7 +735,8 @@ function mediaPath(src){
         return "";
     }
 
-    src = src.replace(/^<|>$/g,"");
+    src =
+        src.replace(/^<|>$/g,"");
 
     if(
         src.indexOf("http://") === 0 ||
@@ -634,15 +750,21 @@ function mediaPath(src){
     }
 
     while(src.indexOf("../") === 0){
-        src = src.substring(3);
+        src =
+            src.substring(3);
     }
 
     while(src.indexOf("./") === 0){
-        src = src.substring(2);
+        src =
+            src.substring(2);
     }
 
-    if(src.indexOf("content/") === 0){
+    if(
+        src.indexOf("content/") === 0
+    ){
+
         return "/" + src;
+
     }
 
     return "/content/images/" + src;
@@ -651,7 +773,23 @@ function mediaPath(src){
 
 
 /*
-Simple HTML escaping.
+Get file name for fallback title.
+*/
+
+function getFileName(path){
+
+    var parts =
+        path.split("/");
+
+    return parts[
+        parts.length - 1
+    ];
+
+}
+
+
+/*
+HTML escaping.
 */
 
 function escapeHtml(value){
@@ -679,6 +817,8 @@ function escapeAttribute(value){
 </script>
 
 </body>
+
+</html>
 
 </html>
 
