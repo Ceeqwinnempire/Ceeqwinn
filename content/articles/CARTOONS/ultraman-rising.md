@@ -16,6 +16,8 @@ shielding Tokyo from giant monsters as he becomes
 
 ![image.png](/content/images/image-4.png)
 
+ a legendary hero.
+
 ![ultraman-signature-move-ultraman.gif](/content/images/ultraman-signature-move-ultraman.gif)
 
  a legendary hero. [Here](https://youtu.be/TwXgOMDONK8?si=l_1383vQ0eX0AJTC)
