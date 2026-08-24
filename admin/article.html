@@ -115,6 +115,61 @@ h1{
     font-size:0.9rem;
 }
 
+
+/* =========================================================
+   INTERACTIVE STORY — MINIMAL MVP
+   ========================================================= */
+
+.story-choice{
+    margin:35px 0;
+    padding:20px 0;
+}
+
+.story-choice-title{
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.story-choice-button{
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    margin:12px 0;
+    padding:14px 16px;
+
+    font-family:Arial,sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    text-align:left;
+
+    background:#fff;
+    color:#222;
+
+    border:1px solid #ccc;
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.story-choice-button:hover{
+    background:#f2f2f2;
+}
+
+.story-choice-button:active{
+    background:#e8e8e8;
+}
+
+.story-choice-button:disabled{
+    cursor:default;
+    opacity:0.6;
+}
+
+.story-choice-status{
+    margin-top:12px;
+    color:#666;
+    font-size:0.9rem;
+}
+
 </style>
 
 </head>
@@ -130,6 +185,46 @@ h1{
 <div id="status"></div>
 
 <div id="content"></div>
+
+
+<!-- =========================================================
+     🔴🔴🔴 HILLTOP ADS — START
+     CEEQWINN MAIN BANNER
+     DO NOT REMOVE THIS SECTION DURING THE TEST
+     ========================================================= -->
+
+<script>
+
+(function(xbjc){
+
+var d = document,
+
+    s =
+d.createElement('script'),
+
+    l =
+d.scripts[d.scripts.length - 1];
+
+s.settings = xbjc || {};
+
+s.src =
+"\/\/juvenilechoice.com\/b.XuVYsWdhGelM0cY-WwcD\/Neomz9yu\/ZfUdlJkoPdTkc\/ztNVD\/Uo4\/N\/zCMdt\/N-zlMk0lNJTmgy3iNzwa";
+
+s.async = true;
+
+s.referrerPolicy = 'no-referrer-when-downgrade';
+
+l.parentNode.insertBefore(s, l);
+
+})({})
+
+</script>
+
+<!-- =========================================================
+     🔴🔴🔴 HILLTOP ADS — END
+     CEEQWINN MAIN BANNER
+     ========================================================= -->
+
 
 <div id="media"></div>
 
@@ -160,6 +255,58 @@ var cover = document.getElementById("cover");
 var credits = document.getElementById("credits");
 var media = document.getElementById("media");
 
+
+/* =========================================================
+   INTERACTIVE STORY MAP
+   =========================================================
+
+   This is the ONLY place where we currently tell the
+   reader where a choice should go.
+
+   Example:
+
+   choice-01 + A
+       -> choice-01-a.md
+
+   choice-01 + B
+       -> choice-01-b.md
+
+   choice-01 + C
+       -> choice-01-c.md
+
+   ========================================================= */
+
+var storyChoices = {
+
+    "choice-01": {
+
+        "A": "choice-01-a",
+        "B": "choice-01-b",
+        "C": "choice-01-c"
+
+    },
+
+    "choice-02": {
+
+        "A": "choice-02-a",
+        "B": "choice-02-b"
+
+    }
+
+};
+
+
+/* =========================================================
+   CURRENT STORY FILE
+   ========================================================= */
+
+var currentStoryFile = file;
+
+
+/* =========================================================
+   LOAD STORY
+   ========================================================= */
+
 if(!file){
 
     title.innerHTML = "Article not found";
@@ -167,94 +314,48 @@ if(!file){
 
 }else{
 
-    file = cleanArticlePath(file);
+    loadStory(file);
 
-    if(!file){
+}
+
+
+/* =========================================================
+   MAIN STORY LOADER
+   ========================================================= */
+
+function loadStory(storyFile){
+
+    storyFile = cleanArticlePath(storyFile);
+
+    if(!storyFile){
 
         title.innerHTML = "Article not found";
-        status.innerHTML = "The article path is invalid.";
+        status.innerHTML =
+            "The article path is invalid.";
 
-    }else{
+        return;
 
-        var xhr = new XMLHttpRequest();
+    }
 
-        xhr.open(
-            "GET",
-            articlePath(file),
-            true
-        );
+    currentStoryFile = storyFile;
 
-        xhr.onreadystatechange = function(){
+    status.innerHTML = "Loading...";
 
-            if(xhr.readyState !== 4){
-                return;
-            }
+    var xhr = new XMLHttpRequest();
 
-            if(xhr.status !== 200 && xhr.status !== 0){
+    xhr.open(
+        "GET",
+        articlePath(storyFile),
+        true
+    );
 
-                title.innerHTML = "Unable to load article";
-                status.innerHTML =
-                    "The article could not be loaded.";
+    xhr.onreadystatechange = function(){
 
-                return;
+        if(xhr.readyState !== 4){
+            return;
+        }
 
-            }
-
-            var text = xhr.responseText;
-
-            var frontData =
-                parseFrontmatter(text);
-
-            var articleTitle =
-                frontData.title || getFileName(file);
-
-            title.innerHTML =
-                escapeHtml(articleTitle);
-
-            if(frontData.cover){
-
-                cover.src =
-                    mediaPath(frontData.cover);
-
-                cover.alt =
-                    articleTitle;
-
-                cover.style.display =
-                    "block";
-
-                prepareImage(cover);
-
-                cover.onerror = function(){
-
-                    cover.style.display =
-                        "none";
-
-                };
-
-            }
-
-            if(frontData.credits){
-
-                credits.innerHTML =
-                    "<strong>Credits:</strong> " +
-                    escapeHtml(frontData.credits);
-
-            }
-
-            content.innerHTML =
-                marked(frontData.body);
-
-            fixInlineImages();
-            fixInlineVideos();
-            fixInlineAudios();
-
-            renderExtraMedia(frontData);
-
-            status.innerHTML = "";
-
-        };
-
-        xhr.onerror = function(){
+        if(xhr.status !== 200 && xhr.status !== 0){
 
             title.innerHTML =
                 "Unable to load article";
@@ -262,37 +363,479 @@ if(!file){
             status.innerHTML =
                 "The article could not be loaded.";
 
-        };
+            return;
 
-        xhr.send(null);
+        }
+
+        var text = xhr.responseText;
+
+        var frontData =
+            parseFrontmatter(text);
+
+        var articleTitle =
+            frontData.title || getFileName(storyFile);
+
+        title.innerHTML =
+            escapeHtml(articleTitle);
+
+
+        /* =================================================
+           COVER
+           ================================================= */
+
+        cover.style.display = "none";
+
+        if(frontData.cover){
+
+            cover.src =
+                mediaPath(frontData.cover);
+
+            cover.alt =
+                articleTitle;
+
+            cover.style.display =
+                "block";
+
+            prepareImage(cover);
+
+            cover.onerror = function(){
+
+                cover.style.display =
+                    "none";
+
+            };
+
+        }
+
+
+        /* =================================================
+           CREDITS
+           ================================================= */
+
+        credits.innerHTML = "";
+
+        if(frontData.credits){
+
+            credits.innerHTML =
+                "<strong>Credits:</strong> " +
+                escapeHtml(frontData.credits);
+
+        }
+
+
+        /* =================================================
+           RENDER MARKDOWN
+           ================================================= */
+
+        content.innerHTML =
+            marked(frontData.body);
+
+
+        /* =================================================
+           FIX NORMAL MEDIA
+           ================================================= */
+
+        fixInlineImages();
+        fixInlineVideos();
+        fixInlineAudios();
+
+        renderExtraMedia(frontData);
+
+
+        /* =================================================
+           FIND AND BUILD STORY CHOICES
+           ================================================= */
+
+        renderStoryChoices();
+
+
+        status.innerHTML = "";
+
+    };
+
+
+    xhr.onerror = function(){
+
+        title.innerHTML =
+            "Unable to load article";
+
+        status.innerHTML =
+            "The article could not be loaded.";
+
+    };
+
+
+    xhr.send(null);
+
+}
+
+
+/* =========================================================
+   FIND [CHOICE:choice-name]
+   ========================================================= */
+
+function renderStoryChoices(){
+
+    var textNodes = [];
+
+    collectTextNodes(content, textNodes);
+
+    var i;
+    var node;
+    var text;
+    var match;
+
+    for(i=0; i<textNodes.length; i++){
+
+        node = textNodes[i];
+
+        text = node.nodeValue;
+
+        match =
+            text.match(
+                /^\s*\[CHOICE:([a-zA-Z0-9_-]+)\]\s*$/
+            );
+
+        if(match){
+
+            createChoiceInterface(
+                node,
+                match[1]
+            );
+
+        }
 
     }
 
 }
 
 
-/*
-Keep folders and normal file names.
+/* =========================================================
+   FIND TEXT NODES
+   ========================================================= */
 
-Examples:
+function collectTextNodes(element, list){
 
-Story.md
-My Folder/Story.md
-Books/Fantasy/My Story.md
+    var i;
+    var child;
 
-Unsafe ../ paths are rejected.
-*/
+    for(i=0; i<element.childNodes.length; i++){
+
+        child =
+            element.childNodes[i];
+
+        if(child.nodeType === 3){
+
+            list.push(child);
+
+        }else if(child.nodeType === 1){
+
+            collectTextNodes(
+                child,
+                list
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE CHOICE BUTTONS
+   ========================================================= */
+
+function createChoiceInterface(
+    textNode,
+    choiceId
+){
+
+    var choices =
+        storyChoices[choiceId];
+
+    if(!choices){
+
+        textNode.nodeValue =
+            "[Choice not configured: " +
+            choiceId +
+            "]";
+
+        return;
+
+    }
+
+
+    var wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "story-choice";
+
+
+    var heading =
+        document.createElement("div");
+
+    heading.className =
+        "story-choice-title";
+
+    heading.innerHTML =
+        "What does Lexis do?";
+
+
+    wrapper.appendChild(heading);
+
+
+    var keys = [];
+
+    var key;
+
+    for(key in choices){
+
+        if(
+            choices.hasOwnProperty(key)
+        ){
+
+            keys.push(key);
+
+        }
+
+    }
+
+
+    var i;
+
+    for(i=0; i<keys.length; i++){
+
+        createChoiceButton(
+            wrapper,
+            choiceId,
+            keys[i],
+            choices[keys[i]]
+        );
+
+    }
+
+
+    var choiceStatus =
+        document.createElement("div");
+
+    choiceStatus.className =
+        "story-choice-status";
+
+    choiceStatus.id =
+        "choice-status-" + choiceId;
+
+    wrapper.appendChild(
+        choiceStatus
+    );
+
+
+    /*
+       Replace the original marker
+       with our choice interface.
+    */
+
+    var parent =
+        textNode.parentNode;
+
+    parent.replaceChild(
+        wrapper,
+        textNode
+    );
+
+}
+
+
+/* =========================================================
+   CREATE ONE BUTTON
+   ========================================================= */
+
+function createChoiceButton(
+    wrapper,
+    choiceId,
+    letter,
+    destination
+){
+
+    var button =
+        document.createElement("button");
+
+    button.type = "button";
+
+    button.className =
+        "story-choice-button";
+
+    button.innerHTML =
+        escapeHtml(
+            letter +
+            " — " +
+            getChoiceLabel(
+                choiceId,
+                letter
+            )
+        );
+
+
+    button.onclick = function(){
+
+        selectStoryChoice(
+            choiceId,
+            letter,
+            destination,
+            wrapper
+        );
+
+    };
+
+
+    wrapper.appendChild(button);
+
+}
+
+
+/* =========================================================
+   CHOICE WORDING
+   =========================================================
+
+   This is temporary test wording.
+
+   Later the story can supply its own
+   choice wording.
+
+   ========================================================= */
+
+function getChoiceLabel(
+    choiceId,
+    letter
+){
+
+    if(
+        choiceId === "choice-01"
+    ){
+
+        if(letter === "A"){
+            return "Accept the request.";
+        }
+
+        if(letter === "B"){
+            return "Reject it.";
+        }
+
+        if(letter === "C"){
+            return "Screenshot it and investigate first.";
+        }
+
+    }
+
+
+    if(
+        choiceId === "choice-02"
+    ){
+
+        if(letter === "A"){
+            return "Investigate the hidden compartment.";
+        }
+
+        if(letter === "B"){
+            return "Go to the Okoye residence.";
+        }
+
+    }
+
+
+    return "Continue.";
+
+}
+
+
+/* =========================================================
+   WHEN A CHOICE IS SELECTED
+   ========================================================= */
+
+function selectStoryChoice(
+    choiceId,
+    letter,
+    destination,
+    wrapper
+){
+
+    /*
+       Prevent double tapping.
+    */
+
+    var buttons =
+        wrapper.getElementsByTagName(
+            "button"
+        );
+
+    var i;
+
+    for(i=0; i<buttons.length; i++){
+
+        buttons[i].disabled = true;
+
+    }
+
+
+    /*
+       Save the choice.
+    */
+
+    try{
+
+        localStorage.setItem(
+            "ceeqwinn_" + choiceId,
+            letter
+        );
+
+    }catch(e){}
+
+
+    /*
+       Show a tiny transition message.
+    */
+
+    var choiceStatus =
+        document.getElementById(
+            "choice-status-" + choiceId
+        );
+
+    if(choiceStatus){
+
+        choiceStatus.innerHTML =
+            "Continuing...";
+
+    }
+
+
+    /*
+       Load the next story state
+       without reloading the webpage.
+    */
+
+    loadStory(destination);
+
+}
+
+
+/* =========================================================
+   KEEP FOLDERS AND NORMAL FILE NAMES
+   ========================================================= */
 
 function cleanArticlePath(path){
 
-    path = path.replace(/\\/g,"/");
+    path =
+        path.replace(/\\/g,"/");
 
-    path = path.replace(/^\/+/,"");
+    path =
+        path.replace(/^\/+/,"");
 
     var parts =
         path.split("/");
 
     var clean = [];
+
     var i;
     var part;
 
@@ -305,8 +848,13 @@ function cleanArticlePath(path){
             continue;
         }
 
-        if(part === "." || part === ".."){
+        if(
+            part === "." ||
+            part === ".."
+        ){
+
             return "";
+
         }
 
         clean.push(part);
@@ -315,6 +863,7 @@ function cleanArticlePath(path){
 
     if(!clean.length){
         return "";
+
     }
 
     return clean.join("/");
@@ -322,13 +871,9 @@ function cleanArticlePath(path){
 }
 
 
-/*
-Build the Markdown article URL.
-
-Each folder and file name is encoded
-separately so spaces, parentheses and
-other normal file-name characters work.
-*/
+/* =========================================================
+   BUILD MARKDOWN ARTICLE URL
+   ========================================================= */
 
 function articlePath(path){
 
@@ -336,12 +881,15 @@ function articlePath(path){
         path.split("/");
 
     var encoded = [];
+
     var i;
 
     for(i=0; i<parts.length; i++){
 
         encoded.push(
-            encodeURIComponent(parts[i])
+            encodeURIComponent(
+                parts[i]
+            )
         );
 
     }
@@ -355,13 +903,14 @@ function articlePath(path){
 }
 
 
-/*
-Read YAML-style frontmatter.
-*/
+/* =========================================================
+   READ YAML FRONTMATTER
+   ========================================================= */
 
 function parseFrontmatter(text){
 
     var result = {
+
         title:"",
         cover:"",
         credits:"",
@@ -369,17 +918,24 @@ function parseFrontmatter(text){
         audio:"",
         downloads:[],
         body:text
+
     };
 
-    var match = text.match(
-        /^---\s*([\s\S]*?)\s*---\s*/
-    );
+
+    var match =
+        text.match(
+            /^---\s*([\s\S]*?)\s*---\s*/
+        );
+
 
     if(!match){
         return result;
     }
 
-    var front = match[1];
+
+    var front =
+        match[1];
+
 
     result.body =
         text.replace(
@@ -387,60 +943,92 @@ function parseFrontmatter(text){
             ""
         );
 
+
     var titleMatch =
         front.match(
             /^title:\s*["']?(.*?)["']?\s*$/m
         );
 
+
     if(titleMatch){
+
         result.title =
-            cleanValue(titleMatch[1]);
+            cleanValue(
+                titleMatch[1]
+            );
+
     }
+
 
     var coverMatch =
         front.match(
             /^cover:\s*["']?(.*?)["']?\s*$/m
         );
 
+
     if(coverMatch){
+
         result.cover =
-            cleanValue(coverMatch[1]);
+            cleanValue(
+                coverMatch[1]
+            );
+
     }
+
 
     var creditsMatch =
         front.match(
             /^credits:\s*["']?(.*?)["']?\s*$/m
         );
 
+
     if(creditsMatch){
+
         result.credits =
-            cleanValue(creditsMatch[1]);
+            cleanValue(
+                creditsMatch[1]
+            );
+
     }
+
 
     var videoMatch =
         front.match(
             /^video:\s*["']?(.*?)["']?\s*$/m
         );
 
+
     if(videoMatch){
+
         result.video =
-            cleanValue(videoMatch[1]);
+            cleanValue(
+                videoMatch[1]
+            );
+
     }
+
 
     var audioMatch =
         front.match(
             /^audio:\s*["']?(.*?)["']?\s*$/m
         );
 
+
     if(audioMatch){
+
         result.audio =
-            cleanValue(audioMatch[1]);
+            cleanValue(
+                audioMatch[1]
+            );
+
     }
+
 
     var downloadsMatch =
         front.match(
             /^downloads:\s*([\s\S]*?)(?=^[a-zA-Z0-9_-]+\s*:|$)/m
         );
+
 
     if(downloadsMatch){
 
@@ -451,6 +1039,7 @@ function parseFrontmatter(text){
         var line;
         var value;
 
+
         for(i=0; i<lines.length; i++){
 
             line =
@@ -458,13 +1047,19 @@ function parseFrontmatter(text){
                     .replace(/^\s*-\s*/,"")
                     .trim();
 
+
             if(line){
 
                 value =
                     cleanValue(line);
 
+
                 if(value){
-                    result.downloads.push(value);
+
+                    result.downloads.push(
+                        value
+                    );
+
                 }
 
             }
@@ -473,14 +1068,15 @@ function parseFrontmatter(text){
 
     }
 
+
     return result;
 
 }
 
 
-/*
-Remove simple YAML quotes.
-*/
+/* =========================================================
+   REMOVE SIMPLE YAML QUOTES
+   ========================================================= */
 
 function cleanValue(value){
 
@@ -489,6 +1085,7 @@ function cleanValue(value){
 
     value =
         value.replace(/\s+$/,"");
+
 
     if(
         value.length >= 2 &&
@@ -517,34 +1114,44 @@ function cleanValue(value){
 
     }
 
+
     return value;
 
 }
 
 
-/*
-Fix inline images.
-*/
+/* =========================================================
+   FIX INLINE IMAGES
+   ========================================================= */
 
 function fixInlineImages(){
 
     var images =
-        content.getElementsByTagName("img");
+        content.getElementsByTagName(
+            "img"
+        );
 
     var i;
     var src;
 
+
     for(i=0; i<images.length; i++){
 
         src =
-            images[i].getAttribute("src");
+            images[i].getAttribute(
+                "src"
+            );
+
 
         if(src){
 
             images[i].src =
                 mediaPath(src);
 
-            prepareImage(images[i]);
+            prepareImage(
+                images[i]
+            );
+
 
             images[i].onerror =
                 function(){
@@ -564,72 +1171,92 @@ function fixInlineImages(){
 }
 
 
-/*
-Fix inline videos.
-*/
+/* =========================================================
+   FIX INLINE VIDEOS
+   ========================================================= */
 
 function fixInlineVideos(){
 
     var videos =
-        content.getElementsByTagName("video");
+        content.getElementsByTagName(
+            "video"
+        );
 
     var i;
     var src;
+
 
     for(i=0; i<videos.length; i++){
 
         src =
-            videos[i].getAttribute("src");
+            videos[i].getAttribute(
+                "src"
+            );
+
 
         if(src){
+
             videos[i].src =
                 mediaPath(src);
+
         }
 
-        videos[i].controls = true;
+
+        videos[i].controls =
+            true;
 
     }
 
 }
 
 
-/*
-Fix inline audio.
-*/
+/* =========================================================
+   FIX INLINE AUDIO
+   ========================================================= */
 
 function fixInlineAudios(){
 
     var audios =
-        content.getElementsByTagName("audio");
+        content.getElementsByTagName(
+            "audio"
+        );
 
     var i;
     var src;
 
+
     for(i=0; i<audios.length; i++){
 
         src =
-            audios[i].getAttribute("src");
+            audios[i].getAttribute(
+                "src"
+            );
+
 
         if(src){
+
             audios[i].src =
                 mediaPath(src);
+
         }
 
-        audios[i].controls = true;
+
+        audios[i].controls =
+            true;
 
     }
 
 }
 
 
-/*
-Render uploaded media after
-the article.
-*/
+/* =========================================================
+   RENDER UPLOADED MEDIA
+   ========================================================= */
 
 function renderExtraMedia(data){
 
     var html = "";
+
 
     if(data.video){
 
@@ -648,6 +1275,7 @@ function renderExtraMedia(data){
 
     }
 
+
     if(data.audio){
 
         html +=
@@ -665,13 +1293,16 @@ function renderExtraMedia(data){
 
     }
 
+
     if(data.downloads.length){
 
         html +=
             '<div class="media-box">' +
             '<h2 class="media-title">Downloads</h2>';
 
+
         var i;
+
 
         for(i=0; i<data.downloads.length; i++){
 
@@ -691,43 +1322,50 @@ function renderExtraMedia(data){
 
         }
 
+
         html +=
             '</div>';
 
     }
 
-    media.innerHTML = html;
+
+    media.innerHTML =
+        html;
 
 }
 
 
-/*
-Low-spec image handling.
-*/
+/* =========================================================
+   LOW-SPEC IMAGE HANDLING
+   ========================================================= */
 
 function prepareImage(image){
 
     try{
+
         image.setAttribute(
             "loading",
             "lazy"
         );
+
     }catch(e){}
 
+
     try{
+
         image.setAttribute(
             "decoding",
             "async"
         );
+
     }catch(e){}
 
 }
 
 
-/*
-Convert Pages CMS media paths
-into website-root paths.
-*/
+/* =========================================================
+   CONVERT PAGES CMS MEDIA PATHS
+   ========================================================= */
 
 function mediaPath(src){
 
@@ -735,8 +1373,10 @@ function mediaPath(src){
         return "";
     }
 
+
     src =
         src.replace(/^<|>$/g,"");
+
 
     if(
         src.indexOf("http://") === 0 ||
@@ -749,15 +1389,26 @@ function mediaPath(src){
 
     }
 
-    while(src.indexOf("../") === 0){
+
+    while(
+        src.indexOf("../") === 0
+    ){
+
         src =
             src.substring(3);
+
     }
 
-    while(src.indexOf("./") === 0){
+
+    while(
+        src.indexOf("./") === 0
+    ){
+
         src =
             src.substring(2);
+
     }
+
 
     if(
         src.indexOf("content/") === 0
@@ -767,19 +1418,21 @@ function mediaPath(src){
 
     }
 
+
     return "/content/images/" + src;
 
 }
 
 
-/*
-Get file name for fallback title.
-*/
+/* =========================================================
+   GET FILE NAME
+   ========================================================= */
 
 function getFileName(path){
 
     var parts =
         path.split("/");
+
 
     return parts[
         parts.length - 1
@@ -788,25 +1441,45 @@ function getFileName(path){
 }
 
 
-/*
-HTML escaping.
-*/
+/* =========================================================
+   HTML ESCAPING
+   ========================================================= */
 
 function escapeHtml(value){
 
     return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#39;");
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#39;"
+        );
 
 }
 
 
-/*
-Attribute-safe escaping.
-*/
+/* =========================================================
+   ATTRIBUTE ESCAPING
+   ========================================================= */
 
 function escapeAttribute(value){
 
@@ -817,7 +1490,5 @@ function escapeAttribute(value){
 </script>
 
 </body>
-
-</html>
 
 </html>
