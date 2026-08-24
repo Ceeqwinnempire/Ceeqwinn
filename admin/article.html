@@ -197,6 +197,40 @@ h1{
 
 
 /* =========================================================
+   NEW — TEMPORARY DEVELOPER RESET BUTTON
+   ========================================================= */
+
+.story-reset{
+    display:none;
+
+    width:100%;
+    box-sizing:border-box;
+
+    margin:35px 0 20px 0;
+    padding:13px 16px;
+
+    font-family:Arial,sans-serif;
+    font-size:14px;
+
+    background:#f7f7f7;
+    color:#555;
+
+    border:1px dashed #aaa;
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.story-reset:hover{
+    background:#eeeeee;
+}
+
+.story-reset:active{
+    background:#e3e3e3;
+}
+
+
+/* =========================================================
    MOBILE / LOW-SPEC DEVICES
    ========================================================= */
 
@@ -232,6 +266,19 @@ h1{
 <div id="status"></div>
 
 <div id="content"></div>
+
+
+<!-- =========================================================
+     TEMPORARY DEVELOPER RESET
+     ========================================================= -->
+
+<button
+    id="storyReset"
+    class="story-reset"
+    type="button"
+>
+    ↺ Reset Story
+</button>
 
 
 <!-- =========================================================
@@ -319,6 +366,37 @@ var credits =
 var media =
     document.getElementById("media");
 
+var storyReset =
+    document.getElementById("storyReset");
+
+
+/* =========================================================
+   NEW — CURRENT STORY STORAGE KEY
+   =========================================================
+
+   Every article gets its own storage area.
+
+   Example:
+
+   story A:
+   ceeqwinn_story_choices_welcome-to-ceeqwinn
+
+   story B:
+   ceeqwinn_story_choices_another-story
+
+   This prevents two articles from interfering
+   with each other's choices.
+
+   ========================================================= */
+
+var currentStoryKey =
+    "ceeqwinn_story_choices_" +
+    cleanStorageKey(file);
+
+
+/* =========================================================
+   INITIAL LOAD
+   ========================================================= */
 
 if(!file){
 
@@ -331,6 +409,89 @@ if(!file){
 }else{
 
     loadStory(file);
+
+}
+
+
+/* =========================================================
+   TEMPORARY RESET BUTTON
+   ========================================================= */
+
+storyReset.onclick =
+    function(){
+
+        resetCurrentStory();
+
+    };
+
+
+/* =========================================================
+   RESET CURRENT STORY
+   =========================================================
+
+   This removes ONLY the choices belonging
+   to the current article.
+
+   It does NOT clear all browser storage.
+
+   ========================================================= */
+
+function resetCurrentStory(){
+
+    try{
+
+        localStorage.removeItem(
+            currentStoryKey
+        );
+
+    }catch(e){}
+
+
+    /*
+       Reload the current article.
+
+       This gives us a completely fresh
+       interactive story without changing
+       the Markdown file.
+    */
+
+    loadStory(file);
+
+    
+    /*
+       Return to the top of the article.
+    */
+
+    try{
+
+        window.scrollTo(
+            0,
+            0
+        );
+
+    }catch(e){}
+
+}
+
+
+/* =========================================================
+   STORAGE KEY CLEANING
+   ========================================================= */
+
+function cleanStorageKey(value){
+
+    if(!value){
+
+        return "article";
+
+    }
+
+
+    return String(value)
+        .replace(
+            /[^a-zA-Z0-9_-]/g,
+            "_"
+        );
 
 }
 
@@ -358,8 +519,27 @@ function loadStory(storyFile){
     }
 
 
+    /*
+       Keep the current article's
+       storage key synchronized.
+    */
+
+    currentStoryKey =
+        "ceeqwinn_story_choices_" +
+        cleanStorageKey(storyFile);
+
+
     status.innerHTML =
         "Loading...";
+
+
+    /*
+       Hide the reset button while
+       the article is rebuilding.
+    */
+
+    storyReset.style.display =
+        "none";
 
 
     var xhr =
@@ -501,6 +681,29 @@ function loadStory(storyFile){
             activateStoryChoices();
 
 
+            /*
+               Show the temporary reset button
+               ONLY if this article actually
+               contains an interactive choice.
+            */
+
+            if(
+                content.getElementsByClassName(
+                    "story-choice"
+                ).length > 0
+            ){
+
+                storyReset.style.display =
+                    "block";
+
+            }else{
+
+                storyReset.style.display =
+                    "none";
+
+            }
+
+
             status.innerHTML =
                 "";
 
@@ -525,7 +728,7 @@ function loadStory(storyFile){
 
 
 /* =========================================================
-   NEW INTERACTIVE STORY ENGINE
+   INTERACTIVE STORY ENGINE
    =========================================================
 
    STORY FORMAT:
@@ -565,18 +768,6 @@ function loadStory(storyFile){
    You walk away...
 
    [ENDCHOICE]
-
-
-   IMPORTANT:
-
-   The reader NEVER sees:
-
-   [CHOICE]
-   [CONSEQUENCE]
-   [ENDCHOICE]
-
-   They only see the actual story
-   and the choices.
 
    ========================================================= */
 
@@ -779,8 +970,6 @@ function parseChoiceBlock(
 
         /*
            OPTION
-
-           Only letters A-Z are accepted.
         */
 
         var optionMatch =
@@ -866,7 +1055,7 @@ function parseChoiceBlock(
 
 
     /*
-       Build the visible choice.
+       Build visible choice.
     */
 
     var html =
@@ -924,13 +1113,9 @@ function parseChoiceBlock(
 
 
     /*
-       Add all branches AFTER
-       the choice.
+       Add all branches.
 
-       They begin hidden.
-
-       Nested choices are rendered
-       recursively here.
+       Nested choices are supported.
     */
 
     for(j=0; j<branches.length; j++){
@@ -1064,26 +1249,117 @@ function selectStoryChoice(
 ){
 
     /*
-       Save the decision.
+       Save this choice inside
+       the CURRENT STORY only.
     */
 
-    try{
-
-        localStorage.setItem(
-            "ceeqwinn_choice_" +
-            choiceId,
-
-            letter
-
-        );
-
-    }catch(e){}
+    saveStoryChoice(
+        choiceId,
+        letter
+    );
 
 
     showSelectedBranch(
         choiceId,
         letter
     );
+
+}
+
+
+/* =========================================================
+   SAVE STORY CHOICE
+   ========================================================= */
+
+function saveStoryChoice(
+    choiceId,
+    letter
+){
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                currentStoryKey
+            );
+
+
+        var choices = {};
+
+
+        if(saved){
+
+            try{
+
+                choices =
+                    JSON.parse(saved);
+
+            }catch(e){
+
+                choices = {};
+
+            }
+
+        }
+
+
+        choices[choiceId] =
+            letter;
+
+
+        localStorage.setItem(
+            currentStoryKey,
+            JSON.stringify(
+                choices
+            )
+        );
+
+
+    }catch(e){}
+
+}
+
+
+/* =========================================================
+   GET SAVED STORY CHOICE
+   ========================================================= */
+
+function getSavedStoryChoice(
+    choiceId
+){
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                currentStoryKey
+            );
+
+
+        if(!saved){
+
+            return null;
+
+        }
+
+
+        var choices =
+            JSON.parse(saved);
+
+
+        if(
+            choices &&
+            choices[choiceId]
+        ){
+
+            return choices[choiceId];
+
+        }
+
+    }catch(e){}
+
+
+    return null;
 
 }
 
@@ -1207,18 +1483,10 @@ function restoreSavedChoices(){
             );
 
 
-        savedLetter = null;
-
-
-        try{
-
-            savedLetter =
-                localStorage.getItem(
-                    "ceeqwinn_choice_" +
-                    choiceId
-                );
-
-        }catch(e){}
+        savedLetter =
+            getSavedStoryChoice(
+                choiceId
+            );
 
 
         if(savedLetter){
@@ -1830,11 +2098,6 @@ function renderExtraMedia(data){
    ========================================================= */
 
 function prepareImage(image){
-
-    /*
-       These are optional performance hints.
-       The try/catch keeps older browsers safe.
-    */
 
     try{
 
