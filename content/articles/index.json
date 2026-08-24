@@ -20,6 +20,11 @@
     "path": "certain URL formats work; certain URL formats don't./missing"
   },
   {
+    "title": "Chapter 1 story...",
+    "slug": "chapter-1-story",
+    "path": "chapter-1-story"
+  },
+  {
     "title": "⚡ Fastest option: grab a GIF",
     "slug": "fastest-option-grab-a-gif",
     "path": "fastest-option-grab-a-gif"
