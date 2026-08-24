@@ -25,6 +25,11 @@
     "path": "chapter-1-story"
   },
   {
+    "title": "Chapter 2 story...",
+    "slug": "chapter-2-story",
+    "path": "chapter-2-story"
+  },
+  {
     "title": "⚡ Fastest option: grab a GIF",
     "slug": "fastest-option-grab-a-gif",
     "path": "fastest-option-grab-a-gif"
