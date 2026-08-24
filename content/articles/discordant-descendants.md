@@ -627,6 +627,482 @@ Then at the door.
 
 Then back at her phone.
 
-She had three options.
+# SCENE 03 — THE CREST
+
+Lexis stared at the tiny symbol on her phone.
+
+The crest.
+
+She had seen it before.
+
+Not once.
+
+Several times.
+
+Usually on documents her father kept locked away in his study.
+
+She stood.
+
+The room suddenly felt too small.
+
+If the crest belonged to the Okoyes, why was it appearing on a mysterious account that had been created only three days ago?
+
+And why had someone connected it to her?
+
+Lexis slipped her phone into her pocket.
+
+She could ask her father.
+
+That would be the sensible thing to do.
+
+Unfortunately, sensible things had never been particularly good at satisfying her curiosity.
+
+She opened her bedroom door.
+
+The hallway was quiet.
+
+Downstairs, she could hear the faint clinking of dishes.
+
+Her father was still home.
+
+Lexis took one step toward the stairs.
+
+Then stopped.
+
+Something had changed.
+
+The door to her father's study was open.
+
+She frowned.
+
+It was almost always locked.
+
+Almost.
+
+Lexis slowly walked toward it.
+
+The light inside was off.
+
+She stood at the doorway.
+
+“Dad?”
+
+No answer.
+
+She pushed the door open.
+
+The room smelled faintly of old paper and cedar.
+
+Everything looked normal.
+
+The desk.
+
+The bookshelves.
+
+The framed photographs.
+
+Even the enormous wooden cabinet beside the window.
+
+Then Lexis noticed something.
+
+One of the cabinet drawers wasn't completely closed.
+
+She walked closer.
+
+Her fingers touched the handle.
+
+She hesitated.
+
+If she opened it, she would be crossing a line.
+
+A very obvious one.
+
+Her father's private things were private for a reason.
+
+But the mysterious profile had shown her the crest.
+
+And now she was standing in the exact room where she'd seen it before.
+
+Lexis glanced toward the hallway.
+
+Still nothing.
+
+She pulled the drawer open.
+
+Inside were several old documents, a leather notebook, and a small black envelope.
+
+The envelope had no name on it.
+
+Only the same crest.
+
+Lexis swallowed.
+
+“Oh, this is getting ridiculous.”
+
+She reached for it.
+
+Then—
+
+“Lexis?”
+
+Her father's voice came from downstairs.
+
+She froze.
+
+The envelope was still beneath her fingers.
+
+
+
+[CHOICE:02]
+
+[A] Take the envelope.
+
+[B] Leave the envelope and close the drawer.
+
+[C] Photograph the envelope, then leave everything untouched.
+
+[CONSEQUENCE:A]
+
+Lexis grabbed the envelope.
+
+She closed the drawer with one hand and slipped the envelope behind her back.
+
+“Coming!”
+
+She stepped away from the cabinet.
+
+Her father's footsteps sounded from the hallway.
+
+Lexis quickly tucked the envelope beneath her shirt.
+
+Her father appeared in the doorway.
+
+He looked at her.
+
+Then at the cabinet.
+
+Then back at her.
+
+Lexis smiled.
+
+A little too brightly.
+
+“Hi.”
+
+His eyes narrowed.
+
+“What are you doing in here?”
+
+“Looking for you.”
+
+“You couldn't find me downstairs?”
+
+“I thought you might have teleported.”
+
+Her father gave her the kind of look that suggested he was deciding whether that answer deserved a response.
+
+Then his eyes moved toward the cabinet.
+
+Lexis's stomach tightened.
+
+“Did you open that drawer?”
+
+“No.”
+
+The answer came far too quickly.
+
+Her father raised an eyebrow.
+
+Lexis sighed.
+
+“Okay. Technically, yes.”
+
+He stepped into the room.
+
+“Lexis.”
+
+She pulled the envelope from behind her back.
+
+“I found this.”
+
+The moment her father saw it, the amusement disappeared from his face.
+
+He didn't speak.
+
+Lexis noticed.
+
+That frightened her more than anger would have.
+
+“You know what this is.”
+
+Her father looked at the crest.
+
+Then at his daughter.
+
+“Where did you get it?”
+
+“In your drawer.”
+
+A pause.
+
+“Give it to me.”
+
+Lexis held it tighter.
+
+“Why?”
+
+“Because it's not yours.”
+
+That answer only made her more curious.
+
+“What is inside?”
+
+“Nothing you need to worry about.”
+
+Lexis stared at him.
+
+“Dad.”
+
+He reached for the envelope.
+
+She stepped back.
+
+For the first time that evening, her father's expression looked genuinely worried.
+
+“Lexis, please.”
+
+That single word stopped her.
+
+She had never heard him say it like that.
+
+She slowly handed him the envelope.
+
+He took it.
+
+But before he could put it away—
+
+**Bzzzt.**
+
+Lexis's phone vibrated.
+
+Both of them looked down.
+
+A new message appeared.
+
+From **S. Chukwudi.**
+
+> *You found it.*
+
+Lexis looked at her father.
+
+Her father looked at the phone.
+
+Neither of them spoke.
+
+[CONSEQUENCE:B]
+
+Lexis stared at the envelope.
+
+Then at the hallway.
+
+“Nope.”
+
+She slowly pushed the drawer shut.
+
+Whatever was inside that envelope, she wasn't going to discover it by sneaking through her father's things.
+
+She stepped away from the cabinet.
+
+“Coming!”
+
+Her father appeared moments later.
+
+“You called me?”
+
+“No. You called me.”
+
+He smiled faintly.
+
+“Fair enough.”
+
+Lexis leaned against the desk.
+
+She studied his face.
+
+“Dad?”
+
+“Yes?”
+
+“Do you know the Okoye family crest?”
+
+His expression changed.
+
+Only slightly.
+
+But Lexis noticed.
+
+“What makes you ask?”
+
+“Nothing.”
+
+She smiled innocently.
+
+“I was just wondering.”
+
+Her father studied her for a moment.
+
+Then he looked toward the cabinet.
+
+“Some things are better understood when you're older.”
+
+Lexis frowned.
+
+“That's what adults say when they don't want to explain things.”
+
+He laughed softly.
+
+“Perhaps.”
+
+He walked toward the door.
+
+“Come downstairs. I need to tell you something about tomorrow.”
+
+Lexis followed.
+
+But as she passed the cabinet, she noticed something.
+
+The drawer hadn't closed completely.
+
+A tiny corner of the black envelope was still visible.
+
+And beneath it—
+
+a second envelope.
+
+This one was **red**.
+
+Lexis stopped.
+
+Her father continued walking.
+
+She looked at the red envelope.
+
+Then at him.
+
+She had a feeling she was going to regret leaving that room.
+
+[CONSEQUENCE:C]
+
+Lexis didn't touch it.
+
+Instead, she quietly pulled out her phone.
+
+Click.
+
+The photograph captured the envelope.
+
+Click.
+
+Another photograph.
+
+This time, she zoomed in on the crest.
+
+She was about to take one more when—
+
+“Lexis?”
+
+Her father's voice.
+
+She nearly dropped the phone.
+
+She quickly returned everything exactly as she found it.
+
+“Coming!”
+
+She closed the drawer.
+
+Then she noticed something strange.
+
+The photograph on her screen wasn't quite right.
+
+The crest looked different.
+
+Lexis frowned.
+
+She zoomed in.
+
+There was a tiny inscription beneath it.
+
+Three words.
+
+**THE FIRST HEIR.**
+
+Her eyes widened.
+
+She took another screenshot.
+
+Then another.
+
+Her father appeared at the doorway.
+
+“What are you doing?”
+
+“Nothing.”
+
+He looked suspicious.
+
+Lexis smiled.
+
+“Absolutely nothing.”
+
+Her phone vibrated.
+
+She glanced down.
+
+A message.
+
+Unknown number.
+
+**You should not have photographed that.**
+
+Lexis's smile disappeared.
+
+She looked toward the doorway.
+
+Her father hadn't seen the message.
+
+Another one appeared.
+
+**Now they know you're looking.**
+
+Lexis's fingers went cold.
+
+She immediately locked the phone.
+
+“Dad?”
+
+“Yes?”
+
+“Who is the first heir?”
+
+Her father's face went completely still.
+
+For several seconds, he said nothing.
+
+Then—
+
+“Where did you hear that?”
+
+Lexis knew immediately.
+
+She had found something.
+
+[CHOICE:03]
+
+[A] Ask Dad directly about the First Heir.
+
+[B] Pretend she knows nothing and investigate secretly.
+
+[C] Tell Dad about the mysterious messages.
 
 [ENDCHOICE]
