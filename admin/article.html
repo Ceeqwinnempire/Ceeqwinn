@@ -197,7 +197,7 @@ h1{
 
 
 /* =========================================================
-   TEMPORARY DEVELOPER RESET
+   NEW — TEMPORARY DEVELOPER RESET BUTTON
    ========================================================= */
 
 .story-reset{
@@ -322,67 +322,20 @@ l.parentNode.insertBefore(s, l);
 <script>
 
 /* =========================================================
-   CEEQWINN ARTICLE READER
-   =========================================================
-
-   SURGICAL STORY ENGINE
-
-   Supports:
-
-   CHOICE
-      A
-      B
-      C
-
-   Each consequence may contain:
-
-      another CHOICE
-         A
-         B
-         C
-
-   Nested choices remain independent.
-
-   Example:
-
-   CHOICE 01
-      A -> CHOICE 02
-              A
-              B
-              C
-
-      B -> CHOICE 03
-              A
-              B
-              C
-
-      C -> CHOICE 04
-              A
-              B
-              C
-
-   Choices are saved separately for each article.
-
-   ========================================================= */
-
-
-/* =========================================================
    GET ARTICLE FILE
    ========================================================= */
 
-var search =
-    window.location.search;
+var search = window.location.search;
 
 var file = "";
 
 
 if(search){
 
-    file =
-        search
-            .replace(/^\?/, "")
-            .split("&")[0]
-            .replace(/^file=/, "");
+    file = search
+        .replace(/^\?/, "")
+        .split("&")[0]
+        .replace(/^file=/, "");
 
 
     try{
@@ -394,10 +347,6 @@ if(search){
 
 }
 
-
-/* =========================================================
-   DOM REFERENCES
-   ========================================================= */
 
 var title =
     document.getElementById("title");
@@ -422,7 +371,22 @@ var storyReset =
 
 
 /* =========================================================
-   CURRENT STORY STORAGE KEY
+   NEW — CURRENT STORY STORAGE KEY
+   =========================================================
+
+   Every article gets its own storage area.
+
+   Example:
+
+   story A:
+   ceeqwinn_story_choices_welcome-to-ceeqwinn
+
+   story B:
+   ceeqwinn_story_choices_another-story
+
+   This prevents two articles from interfering
+   with each other's choices.
+
    ========================================================= */
 
 var currentStoryKey =
@@ -450,7 +414,7 @@ if(!file){
 
 
 /* =========================================================
-   RESET BUTTON
+   TEMPORARY RESET BUTTON
    ========================================================= */
 
 storyReset.onclick =
@@ -463,6 +427,13 @@ storyReset.onclick =
 
 /* =========================================================
    RESET CURRENT STORY
+   =========================================================
+
+   This removes ONLY the choices belonging
+   to the current article.
+
+   It does NOT clear all browser storage.
+
    ========================================================= */
 
 function resetCurrentStory(){
@@ -476,8 +447,20 @@ function resetCurrentStory(){
     }catch(e){}
 
 
+    /*
+       Reload the current article.
+
+       This gives us a completely fresh
+       interactive story without changing
+       the Markdown file.
+    */
+
     loadStory(file);
 
+    
+    /*
+       Return to the top of the article.
+    */
 
     try{
 
@@ -536,6 +519,11 @@ function loadStory(storyFile){
     }
 
 
+    /*
+       Keep the current article's
+       storage key synchronized.
+    */
+
     currentStoryKey =
         "ceeqwinn_story_choices_" +
         cleanStorageKey(storyFile);
@@ -544,6 +532,11 @@ function loadStory(storyFile){
     status.innerHTML =
         "Loading...";
 
+
+    /*
+       Hide the reset button while
+       the article is rebuilding.
+    */
 
     storyReset.style.display =
         "none";
@@ -600,9 +593,7 @@ function loadStory(storyFile){
 
 
             title.innerHTML =
-                escapeHtml(
-                    articleTitle
-                );
+                escapeHtml(articleTitle);
 
 
             /* =================================================
@@ -626,9 +617,7 @@ function loadStory(storyFile){
                 cover.style.display =
                     "block";
 
-                prepareImage(
-                    cover
-                );
+                prepareImage(cover);
 
 
                 cover.onerror =
@@ -662,7 +651,7 @@ function loadStory(storyFile){
 
 
             /* =================================================
-               RENDER INTERACTIVE STORY
+               INTERACTIVE STORY ENGINE
                ================================================= */
 
             content.innerHTML =
@@ -671,9 +660,10 @@ function loadStory(storyFile){
                 );
 
 
-            /* =================================================
-               NORMAL MEDIA
-               ================================================= */
+            /*
+               Fix normal media after the story
+               has been rendered.
+            */
 
             fixInlineImages();
 
@@ -681,17 +671,21 @@ function loadStory(storyFile){
 
             fixInlineAudios();
 
-            renderExtraMedia(
-                frontData
-            );
+            renderExtraMedia(frontData);
 
 
-            /* =================================================
-               ACTIVATE STORY
-               ================================================= */
+            /*
+               Activate all choices.
+            */
 
             activateStoryChoices();
 
+
+            /*
+               Show the temporary reset button
+               ONLY if this article actually
+               contains an interactive choice.
+            */
 
             if(
                 content.getElementsByClassName(
@@ -737,13 +731,43 @@ function loadStory(storyFile){
    INTERACTIVE STORY ENGINE
    =========================================================
 
-   IMPORTANT:
+   STORY FORMAT:
 
-   This parser is recursive.
+   [CHOICE:choice-01]
 
-   That means a consequence can contain
-   another choice, and that choice can
-   contain another choice, and so on.
+   [A] Open the door.
+
+   [B] Walk away.
+
+   [C] Call for help.
+
+   [CONSEQUENCE:A]
+
+   The door opens...
+
+   [CHOICE:choice-02]
+
+   [A] Step inside.
+
+   [B] Stay outside.
+
+   [CONSEQUENCE:A]
+
+   The room is dark...
+
+   [ENDCHOICE]
+
+   [CONSEQUENCE:B]
+
+   You remain outside...
+
+   [ENDCHOICE]
+
+   [CONSEQUENCE:B]
+
+   You walk away...
+
+   [ENDCHOICE]
 
    ========================================================= */
 
@@ -789,19 +813,18 @@ function parseStorySegment(
     while(i < lines.length){
 
         /*
-           Is this the beginning
-           of a choice?
+           Look for a choice.
         */
 
         if(
-            isChoiceStart(
+            /^\s*\[CHOICE:[a-zA-Z0-9_-]+\]\s*$/.test(
                 lines[i]
             )
         ){
 
             /*
-               Render ordinary text
-               before the choice.
+               Render everything before
+               the choice first.
             */
 
             if(normalLines.length){
@@ -817,7 +840,7 @@ function parseStorySegment(
 
 
             /*
-               Parse the complete choice.
+               Parse the choice.
             */
 
             var choiceResult =
@@ -841,7 +864,7 @@ function parseStorySegment(
 
 
         /*
-           Ordinary Markdown text.
+           Ordinary story text.
         */
 
         normalLines.push(
@@ -854,7 +877,7 @@ function parseStorySegment(
 
 
     /*
-       Render remaining Markdown.
+       Render anything remaining.
     */
 
     if(normalLines.length){
@@ -879,18 +902,6 @@ function parseStorySegment(
 
 
 /* =========================================================
-   IDENTIFY CHOICE START
-   ========================================================= */
-
-function isChoiceStart(line){
-
-    return /^\s*\[CHOICE:[a-zA-Z0-9_-]+\]\s*$/
-        .test(line);
-
-}
-
-
-/* =========================================================
    PARSE ONE CHOICE BLOCK
    ========================================================= */
 
@@ -899,8 +910,12 @@ function parseChoiceBlock(
     startIndex
 ){
 
+    var firstLine =
+        lines[startIndex];
+
+
     var match =
-        lines[startIndex].match(
+        firstLine.match(
             /^\s*\[CHOICE:([a-zA-Z0-9_-]+)\]\s*$/
         );
 
@@ -932,18 +947,6 @@ function parseChoiceBlock(
         startIndex + 1;
 
 
-    /*
-       Read until this choice's
-       ENDCHOICE marker.
-
-       Nested choices are NOT treated
-       as ordinary options.
-
-       They remain inside the current
-       consequence branch and are later
-       parsed recursively.
-    */
-
     while(i < lines.length){
 
         var line =
@@ -951,7 +954,7 @@ function parseChoiceBlock(
 
 
         /*
-           END OF CURRENT CHOICE
+           END OF THIS CHOICE
         */
 
         if(
@@ -967,9 +970,6 @@ function parseChoiceBlock(
 
         /*
            OPTION
-
-           Only accept options before
-           the first consequence.
         */
 
         var optionMatch =
@@ -1002,7 +1002,7 @@ function parseChoiceBlock(
 
 
         /*
-           CONSEQUENCE
+           CONSEQUENCE / BRANCH
         */
 
         var consequenceMatch =
@@ -1036,10 +1036,8 @@ function parseChoiceBlock(
 
 
         /*
-           Everything after a consequence
-           belongs to that branch.
-
-           This includes another CHOICE.
+           Story text belonging to
+           the current branch.
         */
 
         if(currentBranch){
@@ -1057,7 +1055,7 @@ function parseChoiceBlock(
 
 
     /*
-       Create the choice container.
+       Build visible choice.
     */
 
     var html =
@@ -1065,7 +1063,6 @@ function parseChoiceBlock(
         'data-choice-id="' +
         escapeAttribute(choiceId) +
         '">' +
-
 
         '<div class="story-choice-title">' +
 
@@ -1075,7 +1072,7 @@ function parseChoiceBlock(
 
 
     /*
-       Create A/B/C buttons.
+       Add buttons.
     */
 
     var j;
@@ -1091,9 +1088,7 @@ function parseChoiceBlock(
             'class="story-choice-button" ' +
 
             'data-choice-id="' +
-            escapeAttribute(
-                choiceId
-            ) +
+            escapeAttribute(choiceId) +
             '" ' +
 
             'data-choice-letter="' +
@@ -1118,27 +1113,9 @@ function parseChoiceBlock(
 
 
     /*
-       Render every consequence.
+       Add all branches.
 
-       THIS IS THE IMPORTANT PART.
-
-       If a consequence contains:
-
-       [CHOICE:choice-02]
-
-       parseStorySegment()
-       runs again.
-
-       Therefore:
-
-       Choice 01
-          A
-             Choice 02
-                A
-                B
-                C
-
-       works naturally.
+       Nested choices are supported.
     */
 
     for(j=0; j<branches.length; j++){
@@ -1160,9 +1137,7 @@ function parseChoiceBlock(
             'class="story-branch story-hidden" ' +
 
             'data-choice-id="' +
-            escapeAttribute(
-                choiceId
-            ) +
+            escapeAttribute(choiceId) +
             '" ' +
 
             'data-choice-letter="' +
@@ -1201,7 +1176,7 @@ function parseChoiceBlock(
 
 
 /* =========================================================
-   ACTIVATE ALL CHOICES
+   ACTIVATE ALL STORY CHOICES
    ========================================================= */
 
 function activateStoryChoices(){
@@ -1225,8 +1200,7 @@ function activateStoryChoices(){
 
 
     /*
-       Restore saved progress
-       after all buttons exist.
+       Restore previously selected choices.
     */
 
     restoreSavedChoices();
@@ -1273,6 +1247,11 @@ function selectStoryChoice(
     choiceId,
     letter
 ){
+
+    /*
+       Save this choice inside
+       the CURRENT STORY only.
+    */
 
     saveStoryChoice(
         choiceId,
@@ -1410,15 +1389,8 @@ function showSelectedBranch(
 
 
     /*
-       Hide the selected choice's
-       buttons.
-
-       IMPORTANT:
-
-       Only the matching choice ID
-       is affected.
-
-       Nested choices are untouched.
+       Hide the choice buttons
+       after selection.
     */
 
     for(i=0; i<choices.length; i++){
@@ -1438,8 +1410,8 @@ function showSelectedBranch(
 
 
     /*
-       Hide all branches belonging
-       to THIS choice.
+       Hide every branch belonging
+       to this choice.
     */
 
     for(i=0; i<branches.length; i++){
@@ -1502,16 +1474,6 @@ function restoreSavedChoices(){
 
     var savedLetter;
 
-
-    /*
-       Restore choices in document order.
-
-       This means a parent choice is restored
-       before its nested choices.
-
-       The nested branch becomes visible
-       when its parent becomes visible.
-    */
 
     for(i=0; i<choices.length; i++){
 
@@ -1829,7 +1791,7 @@ function parseFrontmatter(text){
 
 
 /* =========================================================
-   CLEAN FRONTMATTER VALUE
+   CLEAN VALUE
    ========================================================= */
 
 function cleanValue(value){
