@@ -1106,3 +1106,247 @@ She had found something.
 [C] Tell Dad about the mysterious messages.
 
 [ENDCHOICE]
+
+
+
+[CHOICE:03]
+
+[A] Ask Dad directly about the First Heir.
+
+[B] Pretend she knows nothing and investigate secretly.
+
+[C] Tell Dad about the mysterious messages.
+
+[CONSEQUENCE:A]
+
+Lexis didn't move.
+
+“Dad.”
+
+Her father looked at her.
+
+She held his gaze.
+
+“Who is the First Heir?”
+
+For a moment, the room seemed completely still.
+
+Her father's expression changed.
+
+Not confusion.
+
+Recognition.
+
+“You really shouldn't have found that.”
+
+Lexis frowned.
+
+“Found what?”
+
+He looked toward the cabinet.
+
+Then toward the hallway.
+
+Finally, he lowered his voice.
+
+“The First Heir was supposed to disappear from our family's history.”
+
+Lexis stared at him.
+
+“Supposed to?”
+
+Her father didn't answer.
+
+Instead, he walked toward the door.
+
+“Go upstairs, Lexis.”
+
+“Dad—”
+
+“Now.”
+
+He closed the door behind himself.
+
+Lexis stood alone in the hallway.
+
+Her phone vibrated.
+
+One new message.
+
+**S. Chukwudi:**  
+
+*You asked the right question.*
+
+Lexis stared at the screen.
+
+Another message appeared.
+
+**S. Chukwudi:**  
+
+*Now you need to see what your father was hiding.*
+
+She swallowed.
+
+There was only one problem.
+
+She had no idea where to look.
+
+---
+
+**Your next chapter begins here:**
+
+[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)
+
+[ENDCHOICE]
+
+[CONSEQUENCE:B]
+
+Lexis smiled.
+
+“Nothing.”
+
+Her father studied her.
+
+“You're hiding something.”
+
+“I'm hiding several things. Mostly snacks.”
+
+He almost smiled.
+
+Almost.
+
+Then his expression became serious again.
+
+“Lexis.”
+
+“Yes?”
+
+“Whatever you think you've discovered, leave it alone.”
+
+That was the worst possible thing he could have said.
+
+Because now Lexis knew there was definitely something worth discovering.
+
+Later that night, she returned to her room.
+
+She opened her phone.
+
+The mysterious account was gone.
+
+But one new photograph had appeared in her gallery.
+
+She hadn't taken it.
+
+It showed the Okoye residence.
+
+And in one of the upstairs windows—
+
+a figure was standing there.
+
+Lexis zoomed in.
+
+Her phone vibrated.
+
+**S. Chukwudi:**  
+
+*Don't investigate the house.*
+
+A second message followed.
+
+*Investigate the family.*
+
+Lexis stared at the screen.
+
+“Well, that's not ominous at all.”
+
+She opened a blank note.
+
+At the top, she typed:
+
+**THE FIRST HEIR**
+
+Then underneath:
+
+**Find out who they were.**
+
+---
+
+**Your next chapter begins here:**
+
+[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)
+
+[ENDCHOICE]
+
+[CONSEQUENCE:C]
+
+Lexis took a breath.
+
+“Dad, I need to tell you something.”
+
+Her father turned.
+
+“What?”
+
+She showed him the phone.
+
+She showed him the messages.
+
+She showed him the photograph.
+
+For several seconds, he said nothing.
+
+Then he sat down.
+
+“Lexis…”
+
+She waited.
+
+“I was hoping you would never become involved in this.”
+
+Her stomach tightened.
+
+“Involved in what?”
+
+He looked at the crest on her screen.
+
+“The family has secrets.”
+
+Lexis raised an eyebrow.
+
+“Clearly.”
+
+Her father gave a tired laugh.
+
+“You don't understand.”
+
+“Then explain it.”
+
+He looked at her.
+
+“I can't.”
+
+Lexis's expression fell.
+
+“Why?”
+
+“Because if the wrong people know that you are asking questions, they may come looking for you.”
+
+The room went silent.
+
+Lexis slowly lowered her phone.
+
+“So someone is watching me?”
+
+Her father didn't answer.
+
+He didn't need to.
+
+That was answer enough.
+
+---
+
+**Your next chapter begins here:**
+
+[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)
+
+[ENDCHOICE]
