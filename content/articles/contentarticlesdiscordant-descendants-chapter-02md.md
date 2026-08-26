@@ -1,5 +1,5 @@
 ---
-title: content/articles/discordant-descendants-chapter-02.md
+title: DISCORDANT DESCENDANTS — CHAPTER TWO
 ---
 ---
 
