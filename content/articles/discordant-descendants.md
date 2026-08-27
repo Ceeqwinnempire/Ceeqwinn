@@ -1,1352 +1,1344 @@
 ---
 title: DISCORDANT DESCENDANTS
 ---
+**---**
+
+**title: DISCORDANT DESCENDANTS**
+
+**---**
+
 **DISCORDANT DESCENDANTS TEST CEE**
 
-***An Interactive Story***
+*****An Interactive Story*****
 
 **by Confidence Cyrus**
 
----
+**---**
 
 **PROLOGUE**
 
-Friday.
+**Friday.**
 
-The most celebrated day of the week.
+**The most celebrated day of the week.**
 
-For most students at Emerald High, Friday meant freedom was finally within reach.
+**For most students at Emerald High, Friday meant freedom was finally within reach.**
 
-For Lexis Azunna, it meant she had somehow been sentenced to spending an entire school day around Sirena.
+**For Lexis Azunna, it meant she had somehow been sentenced to spending an entire school day around Sirena.**
 
-She shifted uncomfortably in her chair, staring at the emerald-patterned tiles beneath her desk while Sir Adam continued explaining something about gravity.
+**She shifted uncomfortably in her chair, staring at the emerald-patterned tiles beneath her desk while Sir Adam continued explaining something about gravity.**
 
-Gravity.
+**Gravity.**
 
-Wonderful.
+**Wonderful.**
 
-Exactly what she needed while contemplating believable excuses for escaping her cousin.
+**Exactly what she needed while contemplating believable excuses for escaping her cousin.**
 
-Her gaze drifted down to her bell-flower shirt.
+**Her gaze drifted down to her bell-flower shirt.**
 
-Maybe illness.
+**Maybe illness.**
 
-Too obvious.
+**Too obvious.**
 
-A family emergency?
+**A family emergency?**
 
-Too dramatic.
+**Too dramatic.**
 
-Sudden amnesia?
+**Sudden amnesia?**
 
-Tempting.
+**Tempting.**
 
-She was still constructing the perfect lie when—
+**She was still constructing the perfect lie when—**
 
 **Chime!**
 
-The school bell rescued her.
+**The school bell rescued her.**
 
-Lexis practically floated out of the classroom.
+**Lexis practically floated out of the classroom.**
 
-A few minutes later, the cafeteria's warm aroma of pastries stopped her in her tracks.
+**A few minutes later, the cafeteria's warm aroma of pastries stopped her in her tracks.**
 
-“Two doughnuts, please.”
+**“Two doughnuts, please.”**
 
-One of the chefs handed them over, and Lexis made her way through the crowded cafeteria toward her favorite place beside the window.
+**One of the chefs handed them over, and Lexis made her way through the crowded cafeteria toward her favorite place beside the window.**
 
-She had barely sat down when—
+**She had barely sat down when—**
 
-“Bestie!”
+**“Bestie!”**
 
-Lexis nearly jumped out of her chair.
+**Lexis nearly jumped out of her chair.**
 
-“Thank you. How comforting. You made my heart jump.”
+**“Thank you. How comforting. You made my heart jump.”**
 
-“Sorry, dear.” Estée grinned, sliding into the seat beside her. “But the Okoyes' party is going to be as splendid as junk food for breakfast served in bed!”
+**“Sorry, dear.” Estée grinned, sliding into the seat beside her. “But the Okoyes' party is going to be as splendid as junk food for breakfast served in bed!”**
 
-Lexis frowned.
+**Lexis frowned.**
 
-“I thought that gathering was just for family.”
+**“I thought that gathering was just for family.”**
 
-“Maybe. But your cousin kindly invited everyone. You should get to know her.”
+**“Maybe. But your cousin kindly invited everyone. You should get to know her.”**
 
-Estée's eyes landed on Lexis's doughnuts.
+**Estée's eyes landed on Lexis's doughnuts.**
 
-“And me, too. Hey, can I have one?”
+**“And me, too. Hey, can I have one?”**
 
-Lexis pushed one toward her.
+**Lexis pushed one toward her.**
 
-“Sure. You also need a blog. Somebody has to help the rest of us keep up with the Okoyes.”
+**“Sure. You also need a blog. Somebody has to help the rest of us keep up with the Okoyes.”**
 
-They laughed.
+**They laughed.**
 
-For a moment, everything felt ordinary.
+**For a moment, everything felt ordinary.**
 
-Then Lexis remembered.
+**Then Lexis remembered.**
 
-“Estée, I can't come over today. My dad's home, and I need to speak with him before he leaves.”
+**“Estée, I can't come over today. My dad's home, and I need to speak with him before he leaves.”**
 
-Her fingers rubbed nervously against each other.
+**Her fingers rubbed nervously against each other.**
 
-Estée's smile faded.
+**Estée's smile faded.**
 
-“Oh. Sure.”
+**“Oh. Sure.”**
 
-She said it lightly.
+**She said it lightly.**
 
-Too lightly.
+**Too lightly.**
 
-Lexis noticed.
+**Lexis noticed.**
 
-Across the cafeteria, another pair of eyes noticed too.
+**Across the cafeteria, another pair of eyes noticed too.**
 
-Sirena.
+**Sirena.**
 
-She had been watching them.
+**She had been watching them.**
 
-And she had already begun thinking.
+**And she had already begun thinking.**
 
----
+**---**
 
 **THE FIRST CRACK**
 
-Lexis left the cafeteria without noticing what happened behind her.
+**Lexis left the cafeteria without noticing what happened behind her.**
 
-Sirena approached Estée.
+**Sirena approached Estée.**
 
-Tonia followed.
+**Tonia followed.**
 
-“Your scarf's lovely,” Sirena said sweetly.
+**“Your scarf's lovely,” Sirena said sweetly.**
 
-“Thanks.”
+**“Thanks.”**
 
-“And I love your outfit.”
+**“And I love your outfit.”**
 
-Tonia complimented Sirena's hair.
+**Tonia complimented Sirena's hair.**
 
-Sirena barely acknowledged it.
+**Sirena barely acknowledged it.**
 
-Instead, she studied Estée.
+**Instead, she studied Estée.**
 
-“I noticed your gloomy expression when you were speaking with my cousin.”
+**“I noticed your gloomy expression when you were speaking with my cousin.”**
 
-Estée folded her hands.
+**Estée folded her hands.**
 
-“It's nothing much.”
+**“It's nothing much.”**
 
-She hesitated.
+**She hesitated.**
 
-“It's just... lately, Lexis keeps finding excuses to escape hanging out with me.”
+**“It's just... lately, Lexis keeps finding excuses to escape hanging out with me.”**
 
-Sirena's smile widened.
+**Sirena's smile widened.**
 
-“Aww.”
+**“Aww.”**
 
-She tilted her head.
+**She tilted her head.**
 
-“I understand what it means to be in hot water.”
+**“I understand what it means to be in hot water.”**
 
-Then her eyebrows rose.
+**Then her eyebrows rose.**
 
-“But if you follow my instructions perfectly, your desire to become closer to your bestie may come true.”
+**“But if you follow my instructions perfectly, your desire to become closer to your bestie may come true.”**
 
-Estée's face brightened.
+**Estée's face brightened.**
 
-“Oh, thank you! Wherever do I begin?”
+**“Oh, thank you! Wherever do I begin?”**
 
-Sirena's smile remained.
+**Sirena's smile remained.**
 
-But there was nothing warm about it.
+**But there was nothing warm about it.**
 
-“That's the easy part.”
+**“That's the easy part.”**
 
----
+**---**
 
 **LEXIS GOES HOME**
 
-The hallway was almost empty when Lexis hurried through it.
+**The hallway was almost empty when Lexis hurried through it.**
 
-“Bestie!”
+**“Bestie!”**
 
-She turned.
+**She turned.**
 
-Estée was trying to catch up.
+**Estée was trying to catch up.**
 
-“Why are you leaving school early? And why aren't you taking my calls?”
+**“Why are you leaving school early? And why aren't you taking my calls?”**
 
-“I took permission beforehand,” Lexis replied in one breath. “My phone is on silent. I just... don't feel right.”
+**“I took permission beforehand,” Lexis replied in one breath. “My phone is on silent. I just... don't feel right.”**
 
-Estée's expression softened.
+**Estée's expression softened.**
 
-She wrapped Lexis in a hug.
+**She wrapped Lexis in a hug.**
 
-The familiar lemony scent of her perfume settled Lexis's nerves.
+**The familiar lemony scent of her perfume settled Lexis's nerves.**
 
-“You'll be as steady as a rock when this is all over.”
+**“You'll be as steady as a rock when this is all over.”**
 
-She pulled away.
+**She pulled away.**
 
-“Oh! One more thing.”
+**“Oh! One more thing.”**
 
-“What?”
+**“What?”**
 
-“Try Sirena's low sleek ponytail for your party look. Forget the hair jewels.”
+**“Try Sirena's low sleek ponytail for your party look. Forget the hair jewels.”**
 
-Lexis stared at her.
+**Lexis stared at her.**
 
-“Could I also skip her iconic pearl-white look?”
+**“Could I also skip her iconic pearl-white look?”**
 
-“Absolutely.”
+**“Absolutely.”**
 
-They burst into laughter.
+**They burst into laughter.**
 
-For a few seconds, Lexis forgot the strange feeling in her stomach.
+**For a few seconds, Lexis forgot the strange feeling in her stomach.**
 
-She wouldn't forget it for long.
+**She wouldn't forget it for long.**
 
----
+**---**
 
-**SCENE 01 — THE OKOYE LEGACY**
+**# SCENE 01 — THE OKOYE LEGACY**
 
-By the time Lexis reached home, Crystal City's usual noise had softened beneath the afternoon sun.
+**By the time Lexis reached home, Crystal City's usual noise had softened beneath the afternoon sun.**
 
-She climbed the stairs.
+**She climbed the stairs.**
 
-The front door was unlocked.
+**The front door was unlocked.**
 
-Lexis stopped.
+**Lexis stopped.**
 
-“Dad?”
+**“Dad?”**
 
-“Welcome, sweetie!”
+**“Welcome, sweetie!”**
 
-She exhaled.
+**She exhaled.**
 
-“Good afternoon, sir.”
+**“Good afternoon, sir.”**
 
-Her father smiled.
+**Her father smiled.**
 
-Lexis dropped onto the couch.
+**Lexis dropped onto the couch.**
 
-“Dad, please give me the details of this Okoye family gathering. It's accumulating way too much buzz.”
+**“Dad, please give me the details of this Okoye family gathering. It's accumulating way too much buzz.”**
 
-Her father settled beside her.
+**Her father settled beside her.**
 
-“Simply put, the gathering is to officially introduce the next heir—or overall beneficiary—of the family's fortune.”
+**“Simply put, the gathering is to officially introduce the next heir—or overall beneficiary—of the family's fortune.”**
 
-Lexis waved dismissively.
+**Lexis waved dismissively.**
 
-“That seems unwise. Besides, why should I care? We don't need it.”
+**“That seems unwise. Besides, why should I care? We don't need it.”**
 
-Her father leaned closer.
+**Her father leaned closer.**
 
-“You're the first grandchild.”
+**“You're the first grandchild.”**
 
-Lexis immediately understood.
+**Lexis immediately understood.**
 
-“What does tradition require?”
+**“What does tradition require?”**
 
-She slumped deeper into the couch.
+**She slumped deeper into the couch.**
 
-“Guess history reveals that such absurd duty has produced nothing but beauty.”
+**“Guess history reveals that such absurd duty has produced nothing but beauty.”**
 
-Her father's expression changed.
+**Her father's expression changed.**
 
-“Lexis... what happened was nobody's fault.”
+**“Lexis... what happened was nobody's fault.”**
 
-He paused.
+**He paused.**
 
-“And I trust Sirena to know her place. So, like me, you'll be fine.”
+**“And I trust Sirena to know her place. So, like me, you'll be fine.”**
 
-He squeezed her hand.
+**He squeezed her hand.**
 
-Then he slipped several paper notes into her palm.
+**Then he slipped several paper notes into her palm.**
 
-“That should be enough for your preparations. I'll be leaving town tonight, but I'll meet you at the party.”
+**“That should be enough for your preparations. I'll be leaving town tonight, but I'll meet you at the party.”**
 
-Lexis smiled.
+**Lexis smiled.**
 
-“Thank you so much, sir.”
+**“Thank you so much, sir.”**
 
-She watched him leave.
+**She watched him leave.**
 
-Something about his words bothered her.
+**Something about his words bothered her.**
 
-Not the inheritance.
+**Not the inheritance.**
 
-Not even Sirena.
+**Not even Sirena.**
 
-It was the strange certainty in his voice.
+**It was the strange certainty in his voice.**
 
-As though he knew something Lexis didn't.
+**As though he knew something Lexis didn't.**
 
----
+**---**
 
-**SCENE 02 — THE HIDDEN BOX**
+**# SCENE 02 — THE HIDDEN BOX**
 
-That evening, Lexis wandered around her purple-and-black bedroom in comfortable clothes.
+**That evening, Lexis wandered around her purple-and-black bedroom in comfortable clothes.**
 
-She was thinking.
+**She was thinking.**
 
-About the party.
+**About the party.**
 
-About Sirena.
+**About Sirena.**
 
-About her father.
+**About her father.**
 
-And about the strange heaviness she couldn't explain.
+**And about the strange heaviness she couldn't explain.**
 
-Then—
+**Then—**
 
 **Click.**
 
-A tile beneath her foot shifted.
+**A tile beneath her foot shifted.**
 
-Lexis stopped.
+**Lexis stopped.**
 
-She crouched.
+**She crouched.**
 
-The tile was loose.
+**The tile was loose.**
 
-“Well, hello.”
+**“Well, hello.”**
 
-She lifted it.
+**She lifted it.**
 
-A small hidden compartment sat underneath.
+**A small hidden compartment sat underneath.**
 
-Lexis smiled.
+**Lexis smiled.**
 
-She placed two-thirds of her money inside.
+**She placed two-thirds of her money inside.**
 
-“I'm not cheap. I'm economical.”
+**“I'm not cheap. I'm economical.”**
 
-The tile went back into place.
+**The tile went back into place.**
 
-Her phone blinked.
+**Her phone blinked.**
 
-She picked it up.
+**She picked it up.**
 
-A message.
+**A message.**
 
-Then another.
+**Then another.**
 
-She frowned.
+**She frowned.**
 
-Estée still hadn't replied.
+**Estée still hadn't replied.**
 
-That wasn't like her.
+**That wasn't like her.**
 
-Before Lexis could type another message, a new notification appeared.
+**Before Lexis could type another message, a new notification appeared.**
 
 **FRIEND REQUEST**
 
-No name she recognized.
+**No name she recognized.**
 
-No explanation.
+**No explanation.**
 
-Just a profile.
+**Just a profile.**
 
-Lexis stared at it.
+**Lexis stared at it.**
 
-Her first instinct was to reject it.
+**Her first instinct was to reject it.**
 
-Her second was curiosity.
+**Her second was curiosity.**
 
-And curiosity had always been dangerous around the Okoyes.
+**And curiosity had always been dangerous around the Okoyes.**
 
+**[CHOICE:choice-01]**
 
+**[A] Accept the request.**
 
-[CHOICE:choice-01]
+**[B] Reject it.**
 
-[A] Accept the request.
+**[C] Screenshot it and investigate first.**
 
-[B] Reject it.
+**[CONSEQUENCE:A]**
 
-[C] Screenshot it and investigate first.
+**Lexis tapped Accept.**
 
-[CONSEQUENCE:A]
+**The profile immediately changed.**
 
-Lexis tapped Accept.
+**A message appeared.**
 
-The profile immediately changed.
+**Sirena: *Finally.***
 
-A message appeared.
+**Lexis's mouth fell open.**
 
-**Sirena:** *Finally.*
+**“You've got to be kidding me.”**
 
-Lexis's mouth fell open.
+**Another message arrived.**
 
-“You've got to be kidding me.”
+**Sirena: *We need to talk.***
 
-Another message arrived.
+**Lexis stared at the screen.**
 
-**Sirena:** *We need to talk.*
+**She could almost hear Sirena's voice through the words.**
 
-Lexis stared at the screen.
+**Cold.**
 
-She could almost hear Sirena's voice through the words.
+**Polished.**
 
-Cold.
+**Annoyingly confident.**
 
-Polished.
-
-Annoyingly confident.
-
-Lexis typed:
+**Lexis typed:**
 
 **About what?**
 
-The typing indicator appeared.
+**The typing indicator appeared.**
 
-Disappeared.
+**Disappeared.**
 
-Appeared again.
+**Appeared again.**
 
-Then—
+**Then—**
 
-**Sirena:** *Tomorrow's gathering.*
+**Sirena: *Tomorrow's gathering.***
 
-Lexis's amusement vanished.
+**Lexis's amusement vanished.**
 
-She sat upright.
+**She sat upright.**
 
-“What about it?”
+**“What about it?”**
 
-No response.
+**No response.**
 
-Instead, Sirena sent a photograph.
+**Instead, Sirena sent a photograph.**
 
-Lexis opened it.
+**Lexis opened it.**
 
-Her face changed.
+**Her face changed.**
 
-It was an old photograph of the Okoye family.
+**It was an old photograph of the Okoye family.**
 
-Her father was there.
+**Her father was there.**
 
-Sirena's father was there.
+**Sirena's father was there.**
 
-And standing between them was her grandfather.
+**And standing between them was her grandfather.**
 
-But that wasn't what disturbed Lexis.
+**But that wasn't what disturbed Lexis.**
 
-It was the person standing behind them.
+**It was the person standing behind them.**
 
-Someone Lexis had never seen before.
+**Someone Lexis had never seen before.**
 
-Someone whose face had been deliberately scratched out.
+**Someone whose face had been deliberately scratched out.**
 
-Lexis zoomed in.
+**Lexis zoomed in.**
 
-Her heart began beating faster.
+**Her heart began beating faster.**
 
-Then another message appeared.
+**Then another message appeared.**
 
-**Sirena:** *Ask your father who she is.*
+**Sirena: *Ask your father who she is.***
 
-Lexis stared at the screen.
+**Lexis stared at the screen.**
 
-Before she could respond, the message disappeared.
+**Before she could respond, the message disappeared.**
 
 **Deleted.**
 
-Her phone went silent.
+**Her phone went silent.**
 
-And suddenly the quiet bedroom didn't feel quiet anymore.
+**And suddenly the quiet bedroom didn't feel quiet anymore.**
 
-[CONSEQUENCE:B]
+**[CONSEQUENCE:B]**
 
-Lexis pressed Decline.
+**Lexis pressed Decline.**
 
-“Nice try.”
+**“Nice try.”**
 
-She tossed the phone onto her bed.
+**She tossed the phone onto her bed.**
 
-Two seconds later—
-
-**Buzz.**
-
-She glanced over.
-
-Another notification.
-
-The same account.
-
-Another friend request.
-
-Lexis narrowed her eyes.
-
-“Persistent, aren't we?”
-
-She rejected it again.
+**Two seconds later—**
 
 **Buzz.**
 
-Again.
+**She glanced over.**
 
-This time Lexis stopped smiling.
+**Another notification.**
 
-She picked up the phone.
+**The same account.**
 
-The request was gone.
+**Another friend request.**
 
-Instead, there was a message from an unknown number.
+**Lexis narrowed her eyes.**
+
+**“Persistent, aren't we?”**
+
+**She rejected it again.**
+
+**Buzz.**
+
+**Again.**
+
+**This time Lexis stopped smiling.**
+
+**She picked up the phone.**
+
+**The request was gone.**
+
+**Instead, there was a message from an unknown number.**
 
 **You shouldn't ignore people who know your family.**
 
-Lexis froze.
+**Lexis froze.**
 
-Her fingers tightened around the phone.
+**Her fingers tightened around the phone.**
 
-She typed:
+**She typed:**
 
 **Who are you?**
 
-The reply came almost immediately.
+**The reply came almost immediately.**
 
 **Someone who knows what happened before you were born.**
 
-Lexis stared at the words.
+**Lexis stared at the words.**
 
-Then the message vanished.
+**Then the message vanished.**
 
-Her phone returned to its ordinary home screen.
+**Her phone returned to its ordinary home screen.**
 
-No conversation.
+**No conversation.**
 
-No number.
+**No number.**
 
-No evidence that she'd ever received anything.
+**No evidence that she'd ever received anything.**
 
-Lexis slowly lowered the phone.
+**Lexis slowly lowered the phone.**
 
-“Okay.”
+**“Okay.”**
 
-She looked around her room.
+**She looked around her room.**
 
-“That's officially creepy.”
+**“That's officially creepy.”**
 
-Then she heard something.
+**Then she heard something.**
 
-A faint sound beneath the floor.
+**A faint sound beneath the floor.**
 
 **Click.**
 
-Lexis's eyes moved toward the loose tile.
+**Lexis's eyes moved toward the loose tile.**
 
-[CONSEQUENCE:C]
+**[CONSEQUENCE:C]**
 
-Lexis didn't accept.
+**Lexis didn't accept.**
 
-She didn't reject.
+**She didn't reject.**
 
-Instead, she took a screenshot.
+**Instead, she took a screenshot.**
 
-Then another.
+**Then another.**
 
-She opened the profile and began examining every detail.
+**She opened the profile and began examining every detail.**
 
-No photograph.
+**No photograph.**
 
-No posts.
+**No posts.**
 
-No public information.
+**No public information.**
 
-But there was one thing.
+**But there was one thing.**
 
-A location tag.
+**A location tag.**
 
 **Okoye Residence.**
 
-Lexis blinked.
+**Lexis blinked.**
 
-“You've got to be joking.”
+**“You've got to be joking.”**
 
-She opened the account's limited information again.
+**She opened the account's limited information again.**
 
-The profile had been created only three days ago.
+**The profile had been created only three days ago.**
 
-Three days.
+**Three days.**
 
-Exactly when everyone started talking about the family gathering.
+**Exactly when everyone started talking about the family gathering.**
 
-Lexis's suspicion deepened.
+**Lexis's suspicion deepened.**
 
-She opened her browser and began searching.
+**She opened her browser and began searching.**
 
-Nothing.
+**Nothing.**
 
-She searched the username.
+**She searched the username.**
 
-Nothing.
+**Nothing.**
 
-She searched the phone number attached to the profile.
+**She searched the phone number attached to the profile.**
 
-Nothing.
+**Nothing.**
 
-Then she noticed something strange.
+**Then she noticed something strange.**
 
-The profile picture wasn't actually blank.
+**The profile picture wasn't actually blank.**
 
-It was a solid white image.
+**It was a solid white image.**
 
-Lexis zoomed in.
+**Lexis zoomed in.**
 
-A tiny symbol appeared in the centre.
+**A tiny symbol appeared in the centre.**
 
-An old-fashioned family crest.
+**An old-fashioned family crest.**
 
-She had seen it before.
+**She had seen it before.**
 
-Not at school.
+**Not at school.**
 
-Not at the Okoye mansion.
+**Not at the Okoye mansion.**
 
-At home.
+**At home.**
 
-Inside her father's study.
+**Inside her father's study.**
 
-Lexis slowly put down the phone.
+**Lexis slowly put down the phone.**
 
-“Well…”
+**“Well…”**
 
-She looked toward the hallway.
+**She looked toward the hallway.**
 
-Her father was still downstairs.
+**Her father was still downstairs.**
 
-If that symbol belonged to the family, he might know what it meant.
+**If that symbol belonged to the family, he might know what it meant.**
 
-But asking him directly could raise questions.
+**But asking him directly could raise questions.**
 
-And Lexis wasn't sure she wanted him to know she'd been investigating.
+**And Lexis wasn't sure she wanted him to know she'd been investigating.**
 
-She looked at the clock.
+**She looked at the clock.**
 
-Then at the door.
+**Then at the door.**
 
-Then back at her phone.
+**Then back at her phone.**
 
-# SCENE 03 — THE CREST
+**---**
 
-Lexis stared at the tiny symbol on her phone.
+**# SCENE 03 — THE CREST**
 
-The crest.
+**Lexis stared at the tiny symbol on her phone.**
 
-She had seen it before.
+**The crest.**
 
-Not once.
+**She had seen it before.**
 
-Several times.
+**Not once.**
 
-Usually on documents her father kept locked away in his study.
+**Several times.**
 
-She stood.
+**Usually on documents her father kept locked away in his study.**
 
-The room suddenly felt too small.
+**She stood.**
 
-If the crest belonged to the Okoyes, why was it appearing on a mysterious account that had been created only three days ago?
+**The room suddenly felt too small.**
 
-And why had someone connected it to her?
+**If the crest belonged to the Okoyes, why was it appearing on a mysterious account that had been created only three days ago?**
 
-Lexis slipped her phone into her pocket.
+**And why had someone connected it to her?**
 
-She could ask her father.
+**Lexis slipped her phone into her pocket.**
 
-That would be the sensible thing to do.
+**She could ask her father.**
 
-Unfortunately, sensible things had never been particularly good at satisfying her curiosity.
+**That would be the sensible thing to do.**
 
-She opened her bedroom door.
+**Unfortunately, sensible things had never been particularly good at satisfying her curiosity.**
 
-The hallway was quiet.
+**She opened her bedroom door.**
 
-Downstairs, she could hear the faint clinking of dishes.
+**The hallway was quiet.**
 
-Her father was still home.
+**Downstairs, she could hear the faint clinking of dishes.**
 
-Lexis took one step toward the stairs.
+**Her father was still home.**
 
-Then stopped.
+**Lexis took one step toward the stairs.**
 
-Something had changed.
+**Then stopped.**
 
-The door to her father's study was open.
+**Something had changed.**
 
-She frowned.
+**The door to her father's study was open.**
 
-It was almost always locked.
+**She frowned.**
 
-Almost.
+**It was almost always locked.**
 
-Lexis slowly walked toward it.
+**Almost.**
 
-The light inside was off.
+**Lexis slowly walked toward it.**
 
-She stood at the doorway.
+**The light inside was off.**
 
-“Dad?”
+**She stood at the doorway.**
 
-No answer.
+**“Dad?”**
 
-She pushed the door open.
+**No answer.**
 
-The room smelled faintly of old paper and cedar.
+**She pushed the door open.**
 
-Everything looked normal.
+**The room smelled faintly of old paper and cedar.**
 
-The desk.
+**Everything looked normal.**
 
-The bookshelves.
+**The desk.**
 
-The framed photographs.
+**The bookshelves.**
 
-Even the enormous wooden cabinet beside the window.
+**The framed photographs.**
 
-Then Lexis noticed something.
+**Even the enormous wooden cabinet beside the window.**
 
-One of the cabinet drawers wasn't completely closed.
+**Then Lexis noticed something.**
 
-She walked closer.
+**One of the cabinet drawers wasn't completely closed.**
 
-Her fingers touched the handle.
+**She walked closer.**
 
-She hesitated.
+**Her fingers touched the handle.**
 
-If she opened it, she would be crossing a line.
+**She hesitated.**
 
-A very obvious one.
+**If she opened it, she would be crossing a line.**
 
-Her father's private things were private for a reason.
+**A very obvious one.**
 
-But the mysterious profile had shown her the crest.
+**Her father's private things were private for a reason.**
 
-And now she was standing in the exact room where she'd seen it before.
+**But the mysterious profile had shown her the crest.**
 
-Lexis glanced toward the hallway.
+**And now she was standing in the exact room where she'd seen it before.**
 
-Still nothing.
+**Lexis glanced toward the hallway.**
 
-She pulled the drawer open.
+**Still nothing.**
 
-Inside were several old documents, a leather notebook, and a small black envelope.
+**She pulled the drawer open.**
 
-The envelope had no name on it.
+**Inside were several old documents, a leather notebook, and a small black envelope.**
 
-Only the same crest.
+**The envelope had no name on it.**
 
-Lexis swallowed.
+**Only the same crest.**
 
-“Oh, this is getting ridiculous.”
+**Lexis swallowed.**
 
-She reached for it.
+**“Oh, this is getting ridiculous.”**
 
-Then—
+**She reached for it.**
 
-“Lexis?”
+**Then—**
 
-Her father's voice came from downstairs.
+**“Lexis?”**
 
-She froze.
+**Her father's voice came from downstairs.**
 
-The envelope was still beneath her fingers.
+**She froze.**
 
+**The envelope was still beneath her fingers.**
 
+**[CHOICE:choice-02]**
 
-[CHOICE:02]
+**[A] Take the envelope.**
 
-[A] Take the envelope.
+**[B] Leave the envelope and close the drawer.**
 
-[B] Leave the envelope and close the drawer.
+**[C] Photograph the envelope, then leave everything untouched.**
 
-[C] Photograph the envelope, then leave everything untouched.
+**[CONSEQUENCE:A]**
 
-[CONSEQUENCE:A]
+**Lexis grabbed the envelope.**
 
-Lexis grabbed the envelope.
+**She closed the drawer with one hand and slipped the envelope behind her back.**
 
-She closed the drawer with one hand and slipped the envelope behind her back.
+**“Coming!”**
 
-“Coming!”
+**She stepped away from the cabinet.**
 
-She stepped away from the cabinet.
+**Her father's footsteps sounded from the hallway.**
 
-Her father's footsteps sounded from the hallway.
+**Lexis quickly tucked the envelope beneath her shirt.**
 
-Lexis quickly tucked the envelope beneath her shirt.
+**Her father appeared in the doorway.**
 
-Her father appeared in the doorway.
+**He looked at her.**
 
-He looked at her.
+**Then at the cabinet.**
 
-Then at the cabinet.
+**Then back at her.**
 
-Then back at her.
+**Lexis smiled.**
 
-Lexis smiled.
+**A little too brightly.**
 
-A little too brightly.
+**“Hi.”**
 
-“Hi.”
+**His eyes narrowed.**
 
-His eyes narrowed.
+**“What are you doing in here?”**
 
-“What are you doing in here?”
+**“Looking for you.”**
 
-“Looking for you.”
+**“You couldn't find me downstairs?”**
 
-“You couldn't find me downstairs?”
+**“I thought you might have teleported.”**
 
-“I thought you might have teleported.”
+**Her father gave her the kind of look that suggested he was deciding whether that answer deserved a response.**
 
-Her father gave her the kind of look that suggested he was deciding whether that answer deserved a response.
+**Then his eyes moved toward the cabinet.**
 
-Then his eyes moved toward the cabinet.
+**Lexis's stomach tightened.**
 
-Lexis's stomach tightened.
+**“Did you open that drawer?”**
 
-“Did you open that drawer?”
+**“No.”**
 
-“No.”
+**The answer came far too quickly.**
 
-The answer came far too quickly.
+**Her father raised an eyebrow.**
 
-Her father raised an eyebrow.
+**Lexis sighed.**
 
-Lexis sighed.
+**“Okay. Technically, yes.”**
 
-“Okay. Technically, yes.”
+**He stepped into the room.**
 
-He stepped into the room.
+**“Lexis.”**
 
-“Lexis.”
+**She pulled the envelope from behind her back.**
 
-She pulled the envelope from behind her back.
+**“I found this.”**
 
-“I found this.”
+**The moment her father saw it, the amusement disappeared from his face.**
 
-The moment her father saw it, the amusement disappeared from his face.
+**He didn't speak.**
 
-He didn't speak.
+**Lexis noticed.**
 
-Lexis noticed.
+**That frightened her more than anger would have.**
 
-That frightened her more than anger would have.
+**“You know what this is.”**
 
-“You know what this is.”
+**Her father looked at the crest.**
 
-Her father looked at the crest.
+**Then at his daughter.**
 
-Then at his daughter.
+**“Where did you get it?”**
 
-“Where did you get it?”
+**“In your drawer.”**
 
-“In your drawer.”
+**A pause.**
 
-A pause.
+**“Give it to me.”**
 
-“Give it to me.”
+**Lexis held it tighter.**
 
-Lexis held it tighter.
+**“Why?”**
 
-“Why?”
+**“Because it's not yours.”**
 
-“Because it's not yours.”
+**That answer only made her more curious.**
 
-That answer only made her more curious.
+**“What is inside?”**
 
-“What is inside?”
+**“Nothing you need to worry about.”**
 
-“Nothing you need to worry about.”
+**Lexis stared at him.**
 
-Lexis stared at him.
+**“Dad.”**
 
-“Dad.”
+**He reached for the envelope.**
 
-He reached for the envelope.
+**She stepped back.**
 
-She stepped back.
+**For the first time that evening, her father's expression looked genuinely worried.**
 
-For the first time that evening, her father's expression looked genuinely worried.
+**“Lexis, please.”**
 
-“Lexis, please.”
+**That single word stopped her.**
 
-That single word stopped her.
+**She had never heard him say it like that.**
 
-She had never heard him say it like that.
+**She slowly handed him the envelope.**
 
-She slowly handed him the envelope.
+**He took it.**
 
-He took it.
-
-But before he could put it away—
+**But before he could put it away—**
 
 **Bzzzt.**
 
-Lexis's phone vibrated.
+**Lexis's phone vibrated.**
 
-Both of them looked down.
+**Both of them looked down.**
 
-A new message appeared.
+**A new message appeared.**
 
-From **S. Chukwudi.**
+**From S. Chukwudi.**
 
-> *You found it.*
+**> *You found it.***
 
-Lexis looked at her father.
+**Lexis looked at her father.**
 
-Her father looked at the phone.
+**Her father looked at the phone.**
 
-Neither of them spoke.
+**Neither of them spoke.**
 
-[CONSEQUENCE:B]
+**[CONSEQUENCE:B]**
 
-Lexis stared at the envelope.
+**Lexis stared at the envelope.**
 
-Then at the hallway.
+**Then at the hallway.**
 
-“Nope.”
+**“Nope.”**
 
-She slowly pushed the drawer shut.
+**She slowly pushed the drawer shut.**
 
-Whatever was inside that envelope, she wasn't going to discover it by sneaking through her father's things.
+**Whatever was inside that envelope, she wasn't going to discover it by sneaking through her father's things.**
 
-She stepped away from the cabinet.
+**She stepped away from the cabinet.**
 
-“Coming!”
+**“Coming!”**
 
-Her father appeared moments later.
+**Her father appeared moments later.**
 
-“You called me?”
+**“You called me?”**
 
-“No. You called me.”
+**“No. You called me.”**
 
-He smiled faintly.
+**He smiled faintly.**
 
-“Fair enough.”
+**“Fair enough.”**
 
-Lexis leaned against the desk.
+**Lexis leaned against the desk.**
 
-She studied his face.
+**She studied his face.**
 
-“Dad?”
+**“Dad?”**
 
-“Yes?”
+**“Yes?”**
 
-“Do you know the Okoye family crest?”
+**“Do you know the Okoye family crest?”**
 
-His expression changed.
+**His expression changed.**
 
-Only slightly.
+**Only slightly.**
 
-But Lexis noticed.
+**But Lexis noticed.**
 
-“What makes you ask?”
+**“What makes you ask?”**
 
-“Nothing.”
+**“Nothing.”**
 
-She smiled innocently.
+**She smiled innocently.**
 
-“I was just wondering.”
+**“I was just wondering.”**
 
-Her father studied her for a moment.
+**Her father studied her for a moment.**
 
-Then he looked toward the cabinet.
+**Then he looked toward the cabinet.**
 
-“Some things are better understood when you're older.”
+**“Some things are better understood when you're older.”**
 
-Lexis frowned.
+**Lexis frowned.**
 
-“That's what adults say when they don't want to explain things.”
+**“That's what adults say when they don't want to explain things.”**
 
-He laughed softly.
+**He laughed softly.**
 
-“Perhaps.”
+**“Perhaps.”**
 
-He walked toward the door.
+**He walked toward the door.**
 
-“Come downstairs. I need to tell you something about tomorrow.”
+**“Come downstairs. I need to tell you something about tomorrow.”**
 
-Lexis followed.
+**Lexis followed.**
 
-But as she passed the cabinet, she noticed something.
+**But as she passed the cabinet, she noticed something.**
 
-The drawer hadn't closed completely.
+**The drawer hadn't closed completely.**
 
-A tiny corner of the black envelope was still visible.
+**A tiny corner of the black envelope was still visible.**
 
-And beneath it—
+**And beneath it—**
 
-a second envelope.
+**a second envelope.**
 
-This one was **red**.
+**This one was red.**
 
-Lexis stopped.
+**Lexis stopped.**
 
-Her father continued walking.
+**Her father continued walking.**
 
-She looked at the red envelope.
+**She looked at the red envelope.**
 
-Then at him.
+**Then at him.**
 
-She had a feeling she was going to regret leaving that room.
+**She had a feeling she was going to regret leaving that room.**
 
-[CONSEQUENCE:C]
+**[CONSEQUENCE:C]**
 
-Lexis didn't touch it.
+**Lexis didn't touch it.**
 
-Instead, she quietly pulled out her phone.
+**Instead, she quietly pulled out her phone.**
 
-Click.
+**Click.**
 
-The photograph captured the envelope.
+**The photograph captured the envelope.**
 
-Click.
+**Click.**
 
-Another photograph.
+**Another photograph.**
 
-This time, she zoomed in on the crest.
+**This time, she zoomed in on the crest.**
 
-She was about to take one more when—
+**She was about to take one more when—**
 
-“Lexis?”
+**“Lexis?”**
 
-Her father's voice.
+**Her father's voice.**
 
-She nearly dropped the phone.
+**She nearly dropped the phone.**
 
-She quickly returned everything exactly as she found it.
+**She quickly returned everything exactly as she found it.**
 
-“Coming!”
+**“Coming!”**
 
-She closed the drawer.
+**She closed the drawer.**
 
-Then she noticed something strange.
+**Then she noticed something strange.**
 
-The photograph on her screen wasn't quite right.
+**The photograph on her screen wasn't quite right.**
 
-The crest looked different.
+**The crest looked different.**
 
-Lexis frowned.
+**Lexis frowned.**
 
-She zoomed in.
+**She zoomed in.**
 
-There was a tiny inscription beneath it.
+**There was a tiny inscription beneath it.**
 
-Three words.
+**Three words.**
 
 **THE FIRST HEIR.**
 
-Her eyes widened.
+**Her eyes widened.**
 
-She took another screenshot.
+**She took another screenshot.**
 
-Then another.
+**Then another.**
 
-Her father appeared at the doorway.
+**Her father appeared at the doorway.**
 
-“What are you doing?”
+**“What are you doing?”**
 
-“Nothing.”
+**“Nothing.”**
 
-He looked suspicious.
+**He looked suspicious.**
 
-Lexis smiled.
+**Lexis smiled.**
 
-“Absolutely nothing.”
+**“Absolutely nothing.”**
 
-Her phone vibrated.
+**Her phone vibrated.**
 
-She glanced down.
+**She glanced down.**
 
-A message.
+**A message.**
 
-Unknown number.
+**Unknown number.**
 
 **You should not have photographed that.**
 
-Lexis's smile disappeared.
+**Lexis's smile disappeared.**
 
-She looked toward the doorway.
+**She looked toward the doorway.**
 
-Her father hadn't seen the message.
+**Her father hadn't seen the message.**
 
-Another one appeared.
+**Another one appeared.**
 
 **Now they know you're looking.**
 
-Lexis's fingers went cold.
+**Lexis's fingers went cold.**
 
-She immediately locked the phone.
+**She immediately locked the phone.**
 
-“Dad?”
+**“Dad?”**
 
-“Yes?”
+**“Yes?”**
 
-“Who is the first heir?”
+**“Who is the first heir?”**
 
-Her father's face went completely still.
+**Her father's face went completely still.**
 
-For several seconds, he said nothing.
+**For several seconds, he said nothing.**
 
-Then—
+**Then—**
 
-“Where did you hear that?”
+**“Where did you hear that?”**
 
-Lexis knew immediately.
+**Lexis knew immediately.**
 
-She had found something.
+**She had found something.**
 
-[CHOICE:03]
+**[CHOICE:choice-03]**
 
-[A] Ask Dad directly about the First Heir.
+**[A] Ask Dad directly about the First Heir.**
 
-[B] Pretend she knows nothing and investigate secretly.
+**[B] Pretend she knows nothing and investigate secretly.**
 
-[C] Tell Dad about the mysterious messages.
+**[C] Tell Dad about the mysterious messages.**
 
-[ENDCHOICE]
+**[CONSEQUENCE:A]**
 
+**Lexis didn't move.**
 
+**“Dad.”**
 
-[CHOICE:03]
+**Her father looked at her.**
 
-[A] Ask Dad directly about the First Heir.
+**She held his gaze.**
 
-[B] Pretend she knows nothing and investigate secretly.
+**“Who is the First Heir?”**
 
-[C] Tell Dad about the mysterious messages.
+**For a moment, the room seemed completely still.**
 
-[CONSEQUENCE:A]
+**Her father's expression changed.**
 
-Lexis didn't move.
+**Not confusion.**
 
-“Dad.”
+**Recognition.**
 
-Her father looked at her.
+**“You really shouldn't have found that.”**
 
-She held his gaze.
+**Lexis frowned.**
 
-“Who is the First Heir?”
+**“Found what?”**
 
-For a moment, the room seemed completely still.
+**He looked toward the cabinet.**
 
-Her father's expression changed.
+**Then toward the hallway.**
 
-Not confusion.
+**Finally, he lowered his voice.**
 
-Recognition.
+**“The First Heir was supposed to disappear from our family's history.”**
 
-“You really shouldn't have found that.”
+**Lexis stared at him.**
 
-Lexis frowned.
+**“Supposed to?”**
 
-“Found what?”
+**Her father didn't answer.**
 
-He looked toward the cabinet.
+**Instead, he walked toward the door.**
 
-Then toward the hallway.
+**“Go upstairs, Lexis.”**
 
-Finally, he lowered his voice.
+**“Dad—”**
 
-“The First Heir was supposed to disappear from our family's history.”
+**“Now.”**
 
-Lexis stared at him.
+**He closed the door behind himself.**
 
-“Supposed to?”
+**Lexis stood alone in the hallway.**
 
-Her father didn't answer.
+**Her phone vibrated.**
 
-Instead, he walked toward the door.
+**One new message.**
 
-“Go upstairs, Lexis.”
+**S. Chukwudi:**
 
-“Dad—”
+***You asked the right question.***
 
-“Now.”
+**Lexis stared at the screen.**
 
-He closed the door behind himself.
+**Another message appeared.**
 
-Lexis stood alone in the hallway.
+**S. Chukwudi:**
 
-Her phone vibrated.
+***Now you need to see what your father was hiding.***
 
-One new message.
+**She swallowed.**
 
-**S. Chukwudi:**  
+**There was only one problem.**
 
-*You asked the right question.*
+**She had no idea where to look.**
 
-Lexis stared at the screen.
-
-Another message appeared.
-
-**S. Chukwudi:**  
-
-*Now you need to see what your father was hiding.*
-
-She swallowed.
-
-There was only one problem.
-
-She had no idea where to look.
-
----
+**---**
 
 **Your next chapter begins here:**
 
-[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)
+**[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)**
 
-[ENDCHOICE]
+**[ENDCHOICE]**
 
-[CONSEQUENCE:B]
+**[CONSEQUENCE:B]**
 
-Lexis smiled.
+**Lexis smiled.**
 
-“Nothing.”
+**“Nothing.”**
 
-Her father studied her.
+**Her father studied her.**
 
-“You're hiding something.”
+**“You're hiding something.”**
 
-“I'm hiding several things. Mostly snacks.”
+**“I'm hiding several things. Mostly snacks.”**
 
-He almost smiled.
+**He almost smiled.**
 
-Almost.
+**Almost.**
 
-Then his expression became serious again.
+**Then his expression became serious again.**
 
-“Lexis.”
+**“Lexis.”**
 
-“Yes?”
+**“Yes?”**
 
-“Whatever you think you've discovered, leave it alone.”
+**“Whatever you think you've discovered, leave it alone.”**
 
-That was the worst possible thing he could have said.
+**That was the worst possible thing he could have said.**
 
-Because now Lexis knew there was definitely something worth discovering.
+**Because now Lexis knew there was definitely something worth discovering.**
 
-Later that night, she returned to her room.
+**Later that night, she returned to her room.**
 
-She opened her phone.
+**She opened her phone.**
 
-The mysterious account was gone.
+**The mysterious account was gone.**
 
-But one new photograph had appeared in her gallery.
+**But one new photograph had appeared in her gallery.**
 
-She hadn't taken it.
+**She hadn't taken it.**
 
-It showed the Okoye residence.
+**It showed the Okoye residence.**
 
-And in one of the upstairs windows—
+**And in one of the upstairs windows—**
 
-a figure was standing there.
+**a figure was standing there.**
 
-Lexis zoomed in.
+**Lexis zoomed in.**
 
-Her phone vibrated.
+**Her phone vibrated.**
 
-**S. Chukwudi:**  
+**S. Chukwudi:**
 
-*Don't investigate the house.*
+***Don't investigate the house.***
 
-A second message followed.
+**A second message followed.**
 
-*Investigate the family.*
+***Investigate the family.***
 
-Lexis stared at the screen.
+**Lexis stared at the screen.**
 
-“Well, that's not ominous at all.”
+**“Well, that's not ominous at all.”**
 
-She opened a blank note.
+**She opened a blank note.**
 
-At the top, she typed:
+**At the top, she typed:**
 
 **THE FIRST HEIR**
 
-Then underneath:
+**Then underneath:**
 
 **Find out who they were.**
 
----
+**---**
 
 **Your next chapter begins here:**
 
-[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)
+**[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)**
 
-[ENDCHOICE]
+**[ENDCHOICE]**
 
-[CONSEQUENCE:C]
+**[CONSEQUENCE:C]**
 
-Lexis took a breath.
+**Lexis took a breath.**
 
-“Dad, I need to tell you something.”
+**“Dad, I need to tell you something.”**
 
-Her father turned.
+**Her father turned.**
 
-“What?”
+**“What?”**
 
-She showed him the phone.
+**She showed him the phone.**
 
-She showed him the messages.
+**She showed him the messages.**
 
-She showed him the photograph.
+**She showed him the photograph.**
 
-For several seconds, he said nothing.
+**For several seconds, he said nothing.**
 
-Then he sat down.
+**Then he sat down.**
 
-“Lexis…”
+**“Lexis…”**
 
-She waited.
+**She waited.**
 
-“I was hoping you would never become involved in this.”
+**“I was hoping you would never become involved in this.”**
 
-Her stomach tightened.
+**Her stomach tightened.**
 
-“Involved in what?”
+**“Involved in what?”**
 
-He looked at the crest on her screen.
+**He looked at the crest on her screen.**
 
-“The family has secrets.”
+**“The family has secrets.”**
 
-Lexis raised an eyebrow.
+**Lexis raised an eyebrow.**
 
-“Clearly.”
+**“Clearly.”**
 
-Her father gave a tired laugh.
+**Her father gave a tired laugh.**
 
-“You don't understand.”
+**“You don't understand.”**
 
-“Then explain it.”
+**“Then explain it.”**
 
-He looked at her.
+**He looked at her.**
 
-“I can't.”
+**“I can't.”**
 
-Lexis's expression fell.
+**Lexis's expression fell.**
 
-“Why?”
+**“Why?”**
 
-“Because if the wrong people know that you are asking questions, they may come looking for you.”
+**“Because if the wrong people know that you are asking questions, they may come looking for you.”**
 
-The room went silent.
+**The room went silent.**
 
-Lexis slowly lowered her phone.
+**Lexis slowly lowered her phone.**
 
-“So someone is watching me?”
+**“So someone is watching me?”**
 
-Her father didn't answer.
+**Her father didn't answer.**
 
-He didn't need to.
+**He didn't need to.**
 
-That was answer enough.
+**That was answer enough.**
 
----
+**---**
 
 **Your next chapter begins here:**
 
-[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)
+**[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)**
 
-[ENDCHOICE]
+**[ENDCHOICE]**
