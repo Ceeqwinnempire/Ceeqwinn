@@ -197,7 +197,39 @@ h1{
 
 
 /* =========================================================
-   NEW — TEMPORARY DEVELOPER RESET BUTTON
+   NEW — CHAPTER CONTINUATION
+   ========================================================= */
+
+.story-next-chapter{
+    display:block;
+
+    margin:40px 0;
+    padding:16px 18px;
+
+    background:#222;
+    color:#fff;
+
+    border:1px solid #222;
+    border-radius:8px;
+
+    text-decoration:none;
+    text-align:center;
+
+    font-weight:bold;
+    font-size:16px;
+}
+
+.story-next-chapter:hover{
+    background:#444;
+}
+
+.story-next-chapter:active{
+    background:#111;
+}
+
+
+/* =========================================================
+   TEMPORARY DEVELOPER RESET BUTTON
    ========================================================= */
 
 .story-reset{
@@ -245,6 +277,11 @@ h1{
     }
 
     .story-choice-button{
+        font-size:16px;
+        padding:15px;
+    }
+
+    .story-next-chapter{
         font-size:16px;
         padding:15px;
     }
@@ -371,22 +408,7 @@ var storyReset =
 
 
 /* =========================================================
-   NEW — CURRENT STORY STORAGE KEY
-   =========================================================
-
-   Every article gets its own storage area.
-
-   Example:
-
-   story A:
-   ceeqwinn_story_choices_welcome-to-ceeqwinn
-
-   story B:
-   ceeqwinn_story_choices_another-story
-
-   This prevents two articles from interfering
-   with each other's choices.
-
+   CURRENT STORY STORAGE KEY
    ========================================================= */
 
 var currentStoryKey =
@@ -427,13 +449,6 @@ storyReset.onclick =
 
 /* =========================================================
    RESET CURRENT STORY
-   =========================================================
-
-   This removes ONLY the choices belonging
-   to the current article.
-
-   It does NOT clear all browser storage.
-
    ========================================================= */
 
 function resetCurrentStory(){
@@ -447,20 +462,8 @@ function resetCurrentStory(){
     }catch(e){}
 
 
-    /*
-       Reload the current article.
-
-       This gives us a completely fresh
-       interactive story without changing
-       the Markdown file.
-    */
-
     loadStory(file);
 
-    
-    /*
-       Return to the top of the article.
-    */
 
     try{
 
@@ -519,11 +522,6 @@ function loadStory(storyFile){
     }
 
 
-    /*
-       Keep the current article's
-       storage key synchronized.
-    */
-
     currentStoryKey =
         "ceeqwinn_story_choices_" +
         cleanStorageKey(storyFile);
@@ -532,11 +530,6 @@ function loadStory(storyFile){
     status.innerHTML =
         "Loading...";
 
-
-    /*
-       Hide the reset button while
-       the article is rebuilding.
-    */
 
     storyReset.style.display =
         "none";
@@ -660,11 +653,6 @@ function loadStory(storyFile){
                 );
 
 
-            /*
-               Fix normal media after the story
-               has been rendered.
-            */
-
             fixInlineImages();
 
             fixInlineVideos();
@@ -674,18 +662,8 @@ function loadStory(storyFile){
             renderExtraMedia(frontData);
 
 
-            /*
-               Activate all choices.
-            */
-
             activateStoryChoices();
 
-
-            /*
-               Show the temporary reset button
-               ONLY if this article actually
-               contains an interactive choice.
-            */
 
             if(
                 content.getElementsByClassName(
@@ -729,46 +707,6 @@ function loadStory(storyFile){
 
 /* =========================================================
    INTERACTIVE STORY ENGINE
-   =========================================================
-
-   STORY FORMAT:
-
-   [CHOICE:choice-01]
-
-   [A] Open the door.
-
-   [B] Walk away.
-
-   [C] Call for help.
-
-   [CONSEQUENCE:A]
-
-   The door opens...
-
-   [CHOICE:choice-02]
-
-   [A] Step inside.
-
-   [B] Stay outside.
-
-   [CONSEQUENCE:A]
-
-   The room is dark...
-
-   [ENDCHOICE]
-
-   [CONSEQUENCE:B]
-
-   You remain outside...
-
-   [ENDCHOICE]
-
-   [CONSEQUENCE:B]
-
-   You walk away...
-
-   [ENDCHOICE]
-
    ========================================================= */
 
 
@@ -822,26 +760,19 @@ function parseStorySegment(
             )
         ){
 
-            /*
-               Render everything before
-               the choice first.
-            */
-
             if(normalLines.length){
 
                 html +=
                     marked(
-                        normalLines.join("\n")
+                        processNextChapterMarkers(
+                            normalLines.join("\n")
+                        )
                     );
 
                 normalLines = [];
 
             }
 
-
-            /*
-               Parse the choice.
-            */
 
             var choiceResult =
                 parseChoiceBlock(
@@ -876,15 +807,13 @@ function parseStorySegment(
     }
 
 
-    /*
-       Render anything remaining.
-    */
-
     if(normalLines.length){
 
         html +=
             marked(
-                normalLines.join("\n")
+                processNextChapterMarkers(
+                    normalLines.join("\n")
+                )
             );
 
     }
@@ -897,6 +826,65 @@ function parseStorySegment(
         nextIndex:i
 
     };
+
+}
+
+
+/* =========================================================
+   NEXT CHAPTER MARKER
+   =========================================================
+
+   MARKDOWN FORMAT:
+
+   [NEXTCHAPTER:discordant-descendants-chapter-02]
+
+   This becomes a button linking to:
+
+   article.html?file=discordant-descendants-chapter-02
+
+   ========================================================= */
+
+function processNextChapterMarkers(text){
+
+    var pattern =
+        /\[NEXTCHAPTER:([a-zA-Z0-9_-]+)\]/g;
+
+
+    return text.replace(
+        pattern,
+        function(match, chapterFile){
+
+            return (
+                '<a class="story-next-chapter" ' +
+                'href="' +
+                escapeAttribute(
+                    chapterUrl(chapterFile)
+                ) +
+                '">' +
+                'Continue to Chapter 2' +
+                '</a>'
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CHAPTER URL
+   ========================================================= */
+
+function chapterUrl(chapterFile){
+
+    return (
+        "article.html?file=" +
+        encodeURIComponent(
+            cleanArticlePath(
+                chapterFile
+            )
+        )
+    );
 
 }
 
@@ -1199,10 +1187,6 @@ function activateStoryChoices(){
     }
 
 
-    /*
-       Restore previously selected choices.
-    */
-
     restoreSavedChoices();
 
 }
@@ -1247,11 +1231,6 @@ function selectStoryChoice(
     choiceId,
     letter
 ){
-
-    /*
-       Save this choice inside
-       the CURRENT STORY only.
-    */
 
     saveStoryChoice(
         choiceId,
@@ -1602,8 +1581,21 @@ function articlePath(path){
     }
 
 
+    /*
+       IMPORTANT:
+
+       article.html is in the site root.
+
+       Therefore content/articles is also
+       reached from the site root.
+
+       The old "../content/articles/"
+       could point outside the site when
+       article.html is already at the root.
+    */
+
     return (
-        "../content/articles/" +
+        "/content/articles/" +
         encoded.join("/") +
         ".md"
     );
