@@ -3,19 +3,23 @@ title: DISCORDANT DESCENDANTS
 ---
 ---
 
-## title: DISCORDANT DESCENDANTS
+
+
+---
+
+## title: DISCORDANT DESCENDANTS — CHAPTER 1
 
 # DISCORDANT DESCENDANTS
 
 *An Interactive Story*
 
-by Confidence Cyrus
+**by Confidence Cyrus**
 
 ---
 
 ## PROLOGUE
 
-**Friday.**
+Friday.
 
 The most celebrated day of the week.
 
@@ -25,7 +29,7 @@ For Lexis Azunna, it meant she had somehow been sentenced to spending an entire 
 
 She shifted uncomfortably in her chair, staring at the emerald-patterned tiles beneath her desk while Sir Adam continued explaining something about gravity.
 
-**Gravity.**
+Gravity.
 
 Wonderful.
 
@@ -281,10 +285,8 @@ And curiosity had always been dangerous around the Okoyes.
 
 [CHOICE:choice-01]
 
-[A] Accept the mysterious request.
-
-[B] Reject the mysterious request.
-
+[A] Accept the mysterious request.  
+[B] Reject the mysterious request.  
 [C] Screenshot the request and investigate first.
 
 [CONSEQUENCE:A]
@@ -295,7 +297,7 @@ The profile immediately changed.
 
 A message appeared.
 
-Sirena: *Finally.*
+**Sirena:** *Finally.*
 
 Lexis stared at the screen.
 
@@ -303,7 +305,7 @@ Lexis stared at the screen.
 
 Another message arrived.
 
-Sirena: *We need to talk.*
+**Sirena:** *We need to talk.*
 
 Lexis frowned.
 
@@ -311,7 +313,7 @@ Lexis frowned.
 
 Sirena's reply came quickly.
 
-Sirena: *Tomorrow's gathering.*
+**Sirena:** *Tomorrow's gathering.*
 
 Lexis sat upright.
 
@@ -339,7 +341,7 @@ The face had been deliberately obscured.
 
 Then another message appeared.
 
-Sirena: *Ask your father who she is.*
+**Sirena:** *Ask your father who she is.*
 
 The message disappeared.
 
@@ -350,6 +352,8 @@ Lexis stared at the screen.
 Something was wrong.
 
 Very wrong.
+
+[ENDCHOICE]
 
 [CONSEQUENCE:B]
 
@@ -377,17 +381,17 @@ The request disappeared.
 
 Then a message appeared from an unknown number.
 
-You shouldn't ignore people who know your family.
+*You shouldn't ignore people who know your family.*
 
 Lexis froze.
 
 She typed:
 
-Who are you?
+*Who are you?*
 
 The reply arrived almost immediately.
 
-Someone who knows what happened before you were born.
+*Someone who knows what happened before you were born.*
 
 The message vanished.
 
@@ -397,7 +401,7 @@ Lexis slowly lowered her phone.
 
 She looked around her room.
 
-“That's officially creepy.”
+“That’s officially creepy.”
 
 Then—
 
@@ -406,6 +410,8 @@ Click.
 The sound came from beneath the floor.
 
 Lexis looked toward the loose tile.
+
+[ENDCHOICE]
 
 [CONSEQUENCE:C]
 
@@ -429,7 +435,7 @@ But there was one thing.
 
 A location tag.
 
-Okoye Residence.
+**Okoye Residence.**
 
 Lexis blinked.
 
@@ -609,10 +615,8 @@ The envelope was still beneath her fingers.
 
 [CHOICE:choice-02]
 
-[A] Take the envelope.
-
-[B] Leave the envelope and close the drawer.
-
+[A] Take the envelope.  
+[B] Leave the envelope and close the drawer.  
 [C] Photograph the envelope, then leave everything untouched.
 
 [CONSEQUENCE:A]
@@ -707,13 +711,15 @@ Both of them looked down.
 
 A new message appeared.
 
-S. Chukwudi: *You found it.*
+**S. Chukwudi:** *You found it.*
 
 Lexis looked at her father.
 
 Her father looked at the phone.
 
 Neither of them spoke.
+
+[ENDCHOICE]
 
 [CONSEQUENCE:B]
 
@@ -767,7 +773,7 @@ Then he looked toward the cabinet.
 
 Lexis frowned.
 
-“That's what adults say when they don't want to explain things.”
+“That’s what adults say when they don't want to explain things.”
 
 He laughed softly.
 
@@ -801,6 +807,8 @@ Then at him.
 
 Something told her that envelope mattered.
 
+[ENDCHOICE]
+
 [CONSEQUENCE:C]
 
 Lexis didn't touch the envelope.
@@ -813,7 +821,7 @@ There was a tiny inscription beneath it.
 
 Three words.
 
-THE FIRST HEIR.
+**THE FIRST HEIR.**
 
 Her eyes widened.
 
@@ -837,13 +845,13 @@ A message.
 
 Unknown number.
 
-You should not have photographed that.
+*You should not have photographed that.*
 
 Lexis's smile disappeared.
 
 Another message appeared.
 
-Now they know you're looking.
+*Now they know you're looking.*
 
 Lexis immediately locked the phone.
 
@@ -871,10 +879,54 @@ She had found something.
 
 [CHOICE:choice-03]
 
-[A] Ask Dad directly about the First Heir.
-
-[B] Pretend she knows nothing and investigate secretly.
-
+[A] Ask Dad directly about the First Heir.  
+[B] Pretend she knows nothing and investigate secretly.  
 [C] Tell Dad about the mysterious messages.
 
+[CONSEQUENCE:A]
+
+Lexis looked directly at her father.
+
+“Dad, I want the truth. Who is the First Heir?”
+
+Her father said nothing.
+
+The silence told her more than an answer might have.
+
 [ENDCHOICE]
+
+[CONSEQUENCE:B]
+
+Lexis forced a smile.
+
+“I heard it somewhere.”
+
+She decided not to tell him everything.
+
+If her father was hiding something, she needed to understand it before confronting him.
+
+[ENDCHOICE]
+
+[CONSEQUENCE:C]
+
+Lexis unlocked her phone.
+
+“I've been receiving messages.”
+
+She showed him the screen.
+
+Her father's expression hardened.
+
+“This conversation is not happening here.”
+
+Lexis frowned.
+
+“Why?”
+
+“Because tomorrow, you're going to learn exactly why the Okoye family has been keeping secrets.”
+
+[ENDCHOICE]
+
+---
+
+[NEXT:chapter-02]
