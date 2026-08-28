@@ -11,240 +11,243 @@
 <style>
 
 body{
-max-width:800px;
-margin:auto;
-padding:40px 20px;
-font-family:Arial,sans-serif;
-line-height:1.8;
-background:#fafafa;
-color:#222;
+    max-width:800px;
+    margin:auto;
+    padding:40px 20px;
+    font-family:Arial,sans-serif;
+    line-height:1.8;
+    background:#fafafa;
+    color:#222;
 }
 
 h1{
-font-size:2.2rem;
-margin-bottom:20px;
+    font-size:2.2rem;
+    margin-bottom:20px;
 }
 
 #cover{
-display:none;
-max-width:100%;
-height:auto;
-margin:0 auto 30px auto;
-border-radius:12px;
+    display:none;
+    max-width:100%;
+    height:auto;
+    margin:0 auto 30px auto;
+    border-radius:12px;
 }
 
 #credits{
-color:#666;
-margin:0 0 25px 0;
+    color:#666;
+    margin:0 0 25px 0;
 }
 
 #content{
-word-wrap:break-word;
-overflow-wrap:break-word;
+    word-wrap:break-word;
+    overflow-wrap:break-word;
 }
 
 #content img{
-display:block;
-max-width:100%;
-height:auto;
-margin:24px auto;
-border-radius:12px;
+    display:block;
+    max-width:100%;
+    height:auto;
+    margin:24px auto;
+    border-radius:12px;
 }
 
 #content video{
-display:block;
-width:100%;
-max-width:100%;
-margin:24px auto;
+    display:block;
+    width:100%;
+    max-width:100%;
+    margin:24px auto;
 }
 
 #content audio{
-display:block;
-width:100%;
-max-width:100%;
-margin:24px 0;
+    display:block;
+    width:100%;
+    max-width:100%;
+    margin:24px 0;
 }
 
 #media{
-margin-top:40px;
+    margin-top:40px;
 }
 
 .media-title{
-margin-top:35px;
-margin-bottom:12px;
+    margin-top:35px;
+    margin-bottom:12px;
 }
 
 .media-box{
-margin:20px 0;
+    margin:20px 0;
 }
 
 .media-box a{
-word-break:break-word;
+    word-break:break-word;
 }
 
 #content h2,
 #content h3{
-margin-top:30px;
+    margin-top:30px;
 }
 
 #content blockquote{
-margin:24px 0;
-padding:10px 20px;
-border-left:4px solid #999;
-background:#f0f0f0;
+    margin:24px 0;
+    padding:10px 20px;
+    border-left:4px solid #999;
+    background:#f0f0f0;
 }
 
 #content table{
-width:100%;
-border-collapse:collapse;
-margin:24px 0;
+    width:100%;
+    border-collapse:collapse;
+    margin:24px 0;
 }
 
 #content th,
 #content td{
-padding:10px;
-border:1px solid #ccc;
+    padding:10px;
+    border:1px solid #ccc;
 }
 
 #status{
-color:#666;
+    color:#666;
 }
 
 .error{
-color:#777;
-font-size:0.9rem;
+    color:#777;
+    font-size:0.9rem;
 }
 
+
 /* =========================================================
-INTERACTIVE STORY
+   INTERACTIVE STORY
 ========================================================= */
 
 .story-choice{
-margin:40px 0;
-padding:24px 0;
+    margin:40px 0;
+    padding:24px 0;
 }
 
 .story-choice-title{
-font-weight:bold;
-margin-bottom:18px;
-font-size:1.05rem;
+    font-weight:bold;
+    margin-bottom:18px;
+    font-size:1.05rem;
 }
 
 .story-choice-button{
-display:block;
-width:100%;
-box-sizing:border-box;
+    display:block;
+    width:100%;
+    box-sizing:border-box;
 
-margin:12px 0;
-padding:15px 16px;
+    margin:12px 0;
+    padding:15px 16px;
 
-font-family:Arial,sans-serif;
-font-size:16px;
-line-height:1.5;
-text-align:left;
+    font-family:Arial,sans-serif;
+    font-size:16px;
+    line-height:1.5;
+    text-align:left;
 
-background:#fff;
-color:#222;
+    background:#fff;
+    color:#222;
 
-border:1px solid #ccc;
-border-radius:8px;
+    border:1px solid #ccc;
+    border-radius:8px;
 
-cursor:pointer;
+    cursor:pointer;
 }
 
 .story-choice-button:hover{
-background:#f2f2f2;
+    background:#f2f2f2;
 }
 
 .story-choice-button:active{
-background:#e8e8e8;
+    background:#e8e8e8;
 }
 
 .story-choice-button:disabled{
-cursor:default;
-opacity:0.6;
+    cursor:default;
+    opacity:0.6;
 }
 
 .story-branch{
-margin-top:25px;
+    margin-top:25px;
 }
 
 .story-hidden{
-display:none !important;
+    display:none !important;
 }
 
 .story-continue{
-display:block;
-margin:30px 0;
-padding:14px 16px;
+    display:block;
+    margin:30px 0;
+    padding:14px 16px;
 
-background:#fff;
-color:#222;
+    background:#fff;
+    color:#222;
 
-border:1px solid #ccc;
-border-radius:8px;
+    border:1px solid #ccc;
+    border-radius:8px;
 
-text-decoration:none;
-text-align:center;
+    text-decoration:none;
+    text-align:center;
 
-font-weight:bold;
+    font-weight:bold;
 }
 
 .story-continue:hover{
-background:#f2f2f2;
+    background:#f2f2f2;
 }
 
+
 /* =========================================================
-NEW — TEMPORARY DEVELOPER RESET BUTTON
+   TEMPORARY DEVELOPER RESET BUTTON
 ========================================================= */
 
 .story-reset{
-display:none;
+    display:none;
 
-width:100%;
-box-sizing:border-box;
+    width:100%;
+    box-sizing:border-box;
 
-margin:35px 0 20px 0;
-padding:13px 16px;
+    margin:35px 0 20px 0;
+    padding:13px 16px;
 
-font-family:Arial,sans-serif;
-font-size:14px;
+    font-family:Arial,sans-serif;
+    font-size:14px;
 
-background:#f7f7f7;
-color:#555;
+    background:#f7f7f7;
+    color:#555;
 
-border:1px dashed #aaa;
-border-radius:8px;
+    border:1px dashed #aaa;
+    border-radius:8px;
 
-cursor:pointer;
+    cursor:pointer;
 }
 
 .story-reset:hover{
-background:#eeeeee;
+    background:#eeeeee;
 }
 
 .story-reset:active{
-background:#e3e3e3;
+    background:#e3e3e3;
 }
 
+
 /* =========================================================
-MOBILE / LOW-SPEC DEVICES
+   MOBILE / LOW-SPEC DEVICES
 ========================================================= */
 
 @media screen and (max-width:600px){
 
-body{
-    padding:25px 16px;
-}
+    body{
+        padding:25px 16px;
+    }
 
-h1{
-    font-size:1.8rem;
-}
+    h1{
+        font-size:1.8rem;
+    }
 
-.story-choice-button{
-    font-size:16px;
-    padding:15px;
-}
+    .story-choice-button{
+        font-size:16px;
+        padding:15px;
+    }
 
 }
 
@@ -264,20 +267,22 @@ h1{
 
 <div id="content"></div>
 
+
 <!-- =========================================================
-TEMPORARY DEVELOPER RESET
+     TEMPORARY DEVELOPER RESET
 ========================================================= -->
 
 <button
-id="storyReset"
-class="story-reset"
-type="button"
+    id="storyReset"
+    class="story-reset"
+    type="button"
 >
-↺ Reset Story
+    ↺ Reset Story
 </button>
 
+
 <!-- =========================================================
-HILLTOP ADS
+     HILLTOP ADS
 ========================================================= -->
 
 <script>
@@ -285,8 +290,8 @@ HILLTOP ADS
 (function(xbjc){
 
 var d = document,
-s = d.createElement('script'),
-l = d.scripts[d.scripts.length - 1];
+    s = d.createElement('script'),
+    l = d.scripts[d.scripts.length - 1];
 
 s.settings = xbjc || {};
 
@@ -303,14 +308,17 @@ l.parentNode.insertBefore(s, l);
 
 </script>
 
+
 <div id="media"></div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
+
 
 <script>
 
 /* =========================================================
-GET ARTICLE FILE
+   GET ARTICLE FILE
 ========================================================= */
 
 var search = window.location.search;
@@ -319,87 +327,73 @@ var file = "";
 
 if(search){
 
-file = search
-    .replace(/^\?/, "")
-    .split("&")[0]
-    .replace(/^file=/, "");
+    file = search
+        .replace(/^\?/, "")
+        .split("&")[0]
+        .replace(/^file=/, "");
 
-try{
+    try{
 
-    file =
-        decodeURIComponent(file);
+        file =
+            decodeURIComponent(file);
 
-}catch(e){}
+    }catch(e){}
 
 }
 
+
 var title =
-document.getElementById("title");
+    document.getElementById("title");
 
 var status =
-document.getElementById("status");
+    document.getElementById("status");
 
 var content =
-document.getElementById("content");
+    document.getElementById("content");
 
 var cover =
-document.getElementById("cover");
+    document.getElementById("cover");
 
 var credits =
-document.getElementById("credits");
+    document.getElementById("credits");
 
 var media =
-document.getElementById("media");
+    document.getElementById("media");
 
 var storyReset =
-document.getElementById("storyReset");
+    document.getElementById("storyReset");
 
 
 /* =========================================================
-CURRENT STORY STORAGE KEY
-=========================================================
-
-Every article gets its own storage area.
-
-Example:
-
-story A:
-ceeqwinn_story_choices_welcome-to-ceeqwinn
-
-story B:
-ceeqwinn_story_choices_another-story
-
-This prevents two articles from interfering
-with each other's choices.
-
+   CURRENT STORY STORAGE KEY
 ========================================================= */
 
 var currentStoryKey =
-"ceeqwinn_story_choices_" +
-cleanStorageKey(file);
+    "ceeqwinn_story_choices_" +
+    cleanStorageKey(file);
 
 
 /* =========================================================
-INITIAL LOAD
+   INITIAL LOAD
 ========================================================= */
 
 if(!file){
 
-title.innerHTML =
-    "Article not found";
+    title.innerHTML =
+        "Article not found";
 
-status.innerHTML =
-    "No article was selected.";
+    status.innerHTML =
+        "No article was selected.";
 
 }else{
 
-loadStory(file);
+    loadStory(file);
 
 }
 
 
 /* =========================================================
-TEMPORARY RESET BUTTON
+   TEMPORARY RESET BUTTON
 ========================================================= */
 
 storyReset.onclick =
@@ -411,143 +405,258 @@ function(){
 
 
 /* =========================================================
-RESET CURRENT STORY
-=========================================================
-
-This removes ONLY the choices belonging
-to the current article.
-
-It does NOT clear all browser storage.
-
+   RESET CURRENT STORY
 ========================================================= */
 
 function resetCurrentStory(){
 
-try{
+    try{
 
-    localStorage.removeItem(
-        currentStoryKey
-    );
+        localStorage.removeItem(
+            currentStoryKey
+        );
 
-}catch(e){}
-
-
-/*
-   Reload the current article.
-
-   This gives us a completely fresh
-   interactive story without changing
-   the Markdown file.
-*/
-
-loadStory(file);
+    }catch(e){}
 
 
-/*
-   Return to the top of the article.
-*/
+    loadStory(file);
 
-try{
 
-    window.scrollTo(
-        0,
-        0
-    );
+    try{
 
-}catch(e){}
+        window.scrollTo(
+            0,
+            0
+        );
+
+    }catch(e){}
 
 }
 
 
 /* =========================================================
-STORAGE KEY CLEANING
+   STORAGE KEY CLEANING
 ========================================================= */
 
 function cleanStorageKey(value){
 
-if(!value){
+    if(!value){
 
-    return "article";
+        return "article";
 
-}
+    }
 
-return String(value)
-    .replace(
-        /[^a-zA-Z0-9_-]/g,
-        "_"
-    );
+    return String(value)
+        .replace(
+            /[^a-zA-Z0-9_-]/g,
+            "_"
+        );
 
 }
 
 
 /* =========================================================
-LOAD STORY
+   LOAD STORY
 ========================================================= */
 
 function loadStory(storyFile){
 
-storyFile =
-    cleanArticlePath(storyFile);
+    storyFile =
+        cleanArticlePath(storyFile);
 
-if(!storyFile){
+    if(!storyFile){
 
-    title.innerHTML =
-        "Article not found";
+        title.innerHTML =
+            "Article not found";
+
+        status.innerHTML =
+            "The article path is invalid.";
+
+        return;
+
+    }
+
+
+    currentStoryKey =
+        "ceeqwinn_story_choices_" +
+        cleanStorageKey(storyFile);
+
 
     status.innerHTML =
-        "The article path is invalid.";
-
-    return;
-
-}
+        "Loading...";
 
 
-/*
-   Keep the current article's
-   storage key synchronized.
-*/
-
-currentStoryKey =
-    "ceeqwinn_story_choices_" +
-    cleanStorageKey(storyFile);
-
-status.innerHTML =
-    "Loading...";
+    storyReset.style.display =
+        "none";
 
 
-/*
-   Hide the reset button while
-   the article is rebuilding.
-*/
-
-storyReset.style.display =
-    "none";
+    var xhr =
+        new XMLHttpRequest();
 
 
-var xhr =
-    new XMLHttpRequest();
-
-xhr.open(
-    "GET",
-    articlePath(storyFile),
-    true
-);
+    xhr.open(
+        "GET",
+        articlePath(storyFile),
+        true
+    );
 
 
-xhr.onreadystatechange =
-    function(){
+    xhr.onreadystatechange =
+        function(){
 
-        if(xhr.readyState !== 4){
+            if(xhr.readyState !== 4){
 
-            return;
+                return;
 
-        }
+            }
 
 
-        if(
-            xhr.status !== 200 &&
-            xhr.status !== 0
-        ){
+            if(
+                xhr.status !== 200 &&
+                xhr.status !== 0
+            ){
+
+                title.innerHTML =
+                    "Unable to load article";
+
+                status.innerHTML =
+                    "The article could not be loaded.";
+
+                return;
+
+            }
+
+
+            var text =
+                xhr.responseText;
+
+
+            var frontData =
+                parseFrontmatter(text);
+
+
+            var articleTitle =
+                frontData.title ||
+                getFileName(storyFile);
+
+
+            title.innerHTML =
+                escapeHtml(articleTitle);
+
+
+            /* =================================================
+               COVER
+            ================================================= */
+
+            cover.style.display =
+                "none";
+
+
+            if(frontData.cover){
+
+                cover.src =
+                    mediaPath(
+                        frontData.cover
+                    );
+
+                cover.alt =
+                    articleTitle;
+
+                cover.style.display =
+                    "block";
+
+                prepareImage(cover);
+
+
+                cover.onerror =
+                    function(){
+
+                        cover.style.display =
+                            "none";
+
+                    };
+
+            }
+
+
+            /* =================================================
+               CREDITS
+            ================================================= */
+
+            credits.innerHTML =
+                "";
+
+
+            if(frontData.credits){
+
+                credits.innerHTML =
+                    "<strong>Credits:</strong> " +
+                    escapeHtml(
+                        frontData.credits
+                    );
+
+            }
+
+
+            /* =================================================
+               INTERACTIVE STORY
+            ================================================= */
+
+            content.innerHTML =
+                renderInteractiveStory(
+                    frontData.body
+                );
+
+
+            /* =================================================
+               MEDIA
+            ================================================= */
+
+            fixInlineImages();
+
+            fixInlineVideos();
+
+            fixInlineAudios();
+
+            renderExtraMedia(frontData);
+
+
+            /* =================================================
+               ACTIVATE CHOICES
+            ================================================= */
+
+            activateStoryChoices();
+
+
+            /* =================================================
+               RESET BUTTON
+            ================================================= */
+
+            if(
+                content.getElementsByClassName(
+                    "story-choice"
+                ).length > 0
+            ){
+
+                storyReset.style.display =
+                    "block";
+
+            }else{
+
+                storyReset.style.display =
+                    "none";
+
+            }
+
+
+            status.innerHTML =
+                "";
+
+        };
+
+
+    xhr.onerror =
+        function(){
 
             title.innerHTML =
                 "Unable to load article";
@@ -555,1206 +664,1108 @@ xhr.onreadystatechange =
             status.innerHTML =
                 "The article could not be loaded.";
 
-            return;
-
-        }
+        };
 
 
-        var text =
-            xhr.responseText;
-
-
-        var frontData =
-            parseFrontmatter(text);
-
-
-        var articleTitle =
-            frontData.title ||
-            getFileName(storyFile);
-
-
-        title.innerHTML =
-            escapeHtml(articleTitle);
-
-
-/* =================================================
-   COVER
-================================================= */
-
-        cover.style.display =
-            "none";
-
-
-        if(frontData.cover){
-
-            cover.src =
-                mediaPath(
-                    frontData.cover
-                );
-
-            cover.alt =
-                articleTitle;
-
-            cover.style.display =
-                "block";
-
-            prepareImage(cover);
-
-
-            cover.onerror =
-                function(){
-
-                    cover.style.display =
-                        "none";
-
-                };
-
-        }
-
-
-/* =================================================
-   CREDITS
-================================================= */
-
-        credits.innerHTML =
-            "";
-
-
-        if(frontData.credits){
-
-            credits.innerHTML =
-                "<strong>Credits:</strong> " +
-                escapeHtml(
-                    frontData.credits
-                );
-
-        }
-
-
-/* =================================================
-   INTERACTIVE STORY ENGINE
-================================================= */
-
-        content.innerHTML =
-            renderInteractiveStory(
-                frontData.body
-            );
-
-
-/*
-   Fix normal media after the story
-   has been rendered.
-*/
-
-        fixInlineImages();
-
-        fixInlineVideos();
-
-        fixInlineAudios();
-
-        renderExtraMedia(frontData);
-
-
-/*
-   Activate all choices.
-*/
-
-        activateStoryChoices();
-
-
-/*
-   Show the temporary reset button
-   ONLY if this article actually
-   contains an interactive choice.
-*/
-
-        if(
-            content.getElementsByClassName(
-                "story-choice"
-            ).length > 0
-        ){
-
-            storyReset.style.display =
-                "block";
-
-        }else{
-
-            storyReset.style.display =
-                "none";
-
-        }
-
-
-        status.innerHTML =
-            "";
-
-    };
-
-
-xhr.onerror =
-    function(){
-
-        title.innerHTML =
-            "Unable to load article";
-
-        status.innerHTML =
-            "The article could not be loaded.";
-
-    };
-
-
-xhr.send(null);
+    xhr.send(null);
 
 }
 
 
 /* =========================================================
-INTERACTIVE STORY ENGINE
-=========================================================
+   INTERACTIVE STORY ENGINE
 
-STORY FORMAT:
+   SUPPORTED MARKDOWN:
 
-[CHOICE:choice-01]
+   [CHOICE:choice-01]
 
-[A] Open the door.
+   [A] Accept the request.
+   [B] Reject it.
+   [C] Screenshot it.
 
-[B] Walk away.
+   [CONSEQUENCE:A]
 
-[C] Call for help.
+   Consequence text.
 
-[CONSEQUENCE:A]
+   [CONSEQUENCE:B]
 
-The door opens...
+   Consequence text.
 
-[CHOICE:choice-02]
+   [CONSEQUENCE:C]
 
-[A] Step inside.
+   Consequence text.
 
-[B] Stay outside.
-
-[CONSEQUENCE:A]
-
-The room is dark...
-
-[ENDCHOICE]
-
-[CONSEQUENCE:B]
-
-You remain outside...
-
-[ENDCHOICE]
-
-[CONSEQUENCE:B]
-
-You walk away...
-
-[ENDCHOICE]
+   [ENDCHOICE]
 
 ========================================================= */
 
 
 /* =========================================================
-RENDER ENTIRE STORY
+   RENDER ENTIRE STORY
 ========================================================= */
 
 function renderInteractiveStory(body){
 
-var result =
-    parseStorySegment(
-        body,
-        0
-    );
+    var result =
+        parseStorySegment(
+            body,
+            0
+        );
 
-return result.html;
+    return result.html;
 
 }
 
 
 /* =========================================================
-PARSE STORY SEGMENT
+   PARSE STORY SEGMENT
 ========================================================= */
 
 function parseStorySegment(
-text,
-startIndex
+    text,
+    startIndex
 ){
 
-var lines =
-    text.split(/\r?\n/);
+    var lines =
+        text.split(/\r?\n/);
 
-var html = "";
+    var html = "";
 
-var normalLines = [];
+    var normalLines = [];
 
-var i =
-    startIndex || 0;
+    var i =
+        startIndex || 0;
 
 
-while(i < lines.length){
-
-    /*
-       Look for a choice.
-    */
-
-    if(
-        /^\s*\[CHOICE:[a-zA-Z0-9_-]+\]\s*$/.test(
-            lines[i]
-        )
-    ){
+    while(i < lines.length){
 
         /*
-           Render everything before
-           the choice first.
+           THIS IS THE IMPORTANT FIX.
+
+           We are looking for the ACTUAL Markdown:
+
+           [CHOICE:choice-01]
+
+           No asterisk.
+           No extra backslash.
         */
 
-        if(normalLines.length){
+        if(
+            /^\s*\[CHOICE:[a-zA-Z0-9_-]+\]\s*$/.test(
+                lines[i]
+            )
+        ){
 
-            html +=
-                marked(
-                    normalLines.join("\n")
+            if(normalLines.length){
+
+                html +=
+                    marked(
+                        normalLines.join("\n")
+                    );
+
+                normalLines = [];
+
+            }
+
+
+            var choiceResult =
+                parseChoiceBlock(
+                    lines,
+                    i
                 );
 
-            normalLines = [];
+
+            html +=
+                choiceResult.html;
+
+
+            i =
+                choiceResult.nextIndex;
+
+
+            continue;
 
         }
 
 
+        normalLines.push(
+            lines[i]
+        );
+
+        i++;
+
+    }
+
+
+    if(normalLines.length){
+
+        html +=
+            marked(
+                normalLines.join("\n")
+            );
+
+    }
+
+
+    return {
+
+        html:html,
+
+        nextIndex:i
+
+    };
+
+}
+
+
+/* =========================================================
+   PARSE ONE CHOICE BLOCK
+========================================================= */
+
+function parseChoiceBlock(
+    lines,
+    startIndex
+){
+
+    var firstLine =
+        lines[startIndex];
+
+
+    /*
+       IMPORTANT FIX:
+
+       Match:
+
+       [CHOICE:choice-01]
+
+       NOT:
+
+       \*[CHOICE...
+
+       NOT:
+
+       \\[CHOICE...
+    */
+
+    var match =
+        firstLine.match(
+            /^\s*\[CHOICE:([a-zA-Z0-9_-]+)\]\s*$/
+        );
+
+
+    if(!match){
+
+        return {
+
+            html:"",
+
+            nextIndex:
+                startIndex + 1
+
+        };
+
+    }
+
+
+    var choiceId =
+        match[1];
+
+
+    var options = [];
+
+    var branches = [];
+
+    var currentBranch =
+        null;
+
+    var i =
+        startIndex + 1;
+
+
+    while(i < lines.length){
+
+        var line =
+            lines[i];
+
+
+        /* =================================================
+           END CHOICE
+        ================================================= */
+
+        if(
+            /^\s*\[ENDCHOICE\]\s*$/.test(
+                line
+            )
+        ){
+
+            break;
+
+        }
+
+
+        /* =================================================
+           OPTION
+
+           [A] ...
+           [B] ...
+           [C] ...
+        ================================================= */
+
+        var optionMatch =
+            line.match(
+                /^\s*\[([A-Z])\]\s*(.+?)\s*$/
+            );
+
+
+        if(
+            optionMatch &&
+            currentBranch === null
+        ){
+
+            options.push({
+
+                letter:
+                    optionMatch[1],
+
+                label:
+                    optionMatch[2]
+
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /* =================================================
+           CONSEQUENCE
+
+           [CONSEQUENCE:A]
+        ================================================= */
+
+        var consequenceMatch =
+            line.match(
+                /^\s*\[CONSEQUENCE:([A-Z])\]\s*$/
+            );
+
+
+        if(consequenceMatch){
+
+            currentBranch = {
+
+                letter:
+                    consequenceMatch[1],
+
+                lines:[]
+
+            };
+
+
+            branches.push(
+                currentBranch
+            );
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /* =================================================
+           BRANCH CONTENT
+        ================================================= */
+
+        if(currentBranch){
+
+            currentBranch.lines.push(
+                line
+            );
+
+        }
+
+
+        i++;
+
+    }
+
+
+    /* =====================================================
+       BUILD CHOICE BUTTON AREA
+    ===================================================== */
+
+    var html =
+        '<div class="story-choice" ' +
+        'data-choice-id="' +
+        escapeAttribute(choiceId) +
+        '">' +
+
+        '<div class="story-choice-title">' +
+
+        'What does Lexis do?' +
+
+        '</div>';
+
+
+    var j;
+
+
+    /*
+       Create one button for
+       every [A], [B], [C], etc.
+    */
+
+    for(
+        j = 0;
+        j < options.length;
+        j++
+    ){
+
+        html +=
+            '<button ' +
+
+            'type="button" ' +
+
+            'class="story-choice-button" ' +
+
+            'data-choice-id="' +
+            escapeAttribute(choiceId) +
+            '" ' +
+
+            'data-choice-letter="' +
+            escapeAttribute(
+                options[j].letter
+            ) +
+            '">' +
+
+            escapeHtml(
+                options[j].letter +
+                " — " +
+                options[j].label
+            ) +
+
+            '</button>';
+
+    }
+
+
+    html +=
+        '</div>';
+
+
+    /* =====================================================
+       BUILD CONSEQUENCE BRANCHES
+    ===================================================== */
+
+    for(
+        j = 0;
+        j < branches.length;
+        j++
+    ){
+
+        var branch =
+            branches[j];
+
+
         /*
-           Parse the choice.
+           This is what allows a consequence
+           to contain another choice.
+
+           Example:
+
+           [CONSEQUENCE:A]
+
+           Story text.
+
+           [CHOICE:choice-02]
+
+           [A] ...
+           [B] ...
+
+           [CONSEQUENCE:A]
+
+           ...
+
+           [ENDCHOICE]
         */
 
-        var choiceResult =
-            parseChoiceBlock(
-                lines,
-                i
+        var branchResult =
+            parseStorySegment(
+                branch.lines.join("\n"),
+                0
             );
 
 
         html +=
-            choiceResult.html;
+            '<div ' +
 
+            'class="story-branch story-hidden" ' +
 
-        i =
-            choiceResult.nextIndex;
+            'data-choice-id="' +
+            escapeAttribute(choiceId) +
+            '" ' +
 
+            'data-choice-letter="' +
+            escapeAttribute(
+                branch.letter
+            ) +
+            '">' +
 
-        continue;
+            branchResult.html +
+
+            '</div>';
 
     }
 
 
-    /*
-       Ordinary story text.
-    */
+    /* =====================================================
+       MOVE PAST ENDCHOICE
+    ===================================================== */
 
-    normalLines.push(
-        lines[i]
-    );
+    if(i < lines.length){
 
-    i++;
+        i++;
 
-}
+    }
 
-
-/*
-   Render anything remaining.
-*/
-
-if(normalLines.length){
-
-    html +=
-        marked(
-            normalLines.join("\n")
-        );
-
-}
-
-
-return {
-
-    html:html,
-
-    nextIndex:i
-
-};
-
-}
-
-
-/* =========================================================
-PARSE ONE CHOICE BLOCK
-========================================================= */
-
-function parseChoiceBlock(
-lines,
-startIndex
-){
-
-var firstLine =
-    lines[startIndex];
-
-
-var match =
-    firstLine.match(
-        /^\s*\[CHOICE:([a-zA-Z0-9_-]+)\]\s*$/
-    );
-
-
-if(!match){
 
     return {
 
-        html:"",
-        nextIndex:startIndex + 1
+        html:html,
+
+        nextIndex:i
 
     };
 
 }
 
 
-var choiceId =
-    match[1];
-
-
-var options = [];
-
-var branches = [];
-
-var currentBranch =
-    null;
-
-var i =
-    startIndex + 1;
-
-
-while(i < lines.length){
-
-    var line =
-        lines[i];
-
-
-    /*
-       END OF THIS CHOICE
-    */
-
-    if(
-        /^\s*\[ENDCHOICE\]\s*$/.test(
-            line
-        )
-    ){
-
-        break;
-
-    }
-
-
-    /*
-       OPTION
-    */
-
-    var optionMatch =
-        line.match(
-            /^\s*\[([A-Z])\]\s*(.+?)\s*$/
-        );
-
-
-    if(
-        optionMatch &&
-        currentBranch === null
-    ){
-
-        options.push({
-
-            letter:
-                optionMatch[1],
-
-            label:
-                optionMatch[2]
-
-        });
-
-
-        i++;
-
-        continue;
-
-    }
-
-
-    /*
-       CONSEQUENCE / BRANCH
-    */
-
-    var consequenceMatch =
-        line.match(
-            /^\s*\[CONSEQUENCE:([A-Z])\]\s*$/
-        );
-
-
-    if(consequenceMatch){
-
-        currentBranch = {
-
-            letter:
-                consequenceMatch[1],
-
-            lines:[]
-
-        };
-
-
-        branches.push(
-            currentBranch
-        );
-
-
-        i++;
-
-        continue;
-
-    }
-
-
-    /*
-       Story text belonging to
-       the current branch.
-    */
-
-    if(currentBranch){
-
-        currentBranch.lines.push(
-            line
-        );
-
-    }
-
-
-    i++;
-
-}
-
-
-/*
-   Build visible choice.
-*/
-
-var html =
-    '<div class="story-choice" ' +
-    'data-choice-id="' +
-    escapeAttribute(choiceId) +
-    '">' +
-
-    '<div class="story-choice-title">' +
-
-    'What does Lexis do?' +
-
-    '</div>';
-
-
-/*
-   Add buttons.
-*/
-
-var j;
-
-
-for(j=0; j<options.length; j++){
-
-    html +=
-        '<button ' +
-
-        'type="button" ' +
-
-        'class="story-choice-button" ' +
-
-        'data-choice-id="' +
-        escapeAttribute(choiceId) +
-        '" ' +
-
-        'data-choice-letter="' +
-        escapeAttribute(
-            options[j].letter
-        ) +
-        '">' +
-
-        escapeHtml(
-            options[j].letter +
-            " — " +
-            options[j].label
-        ) +
-
-        '</button>';
-
-}
-
-
-html +=
-    '</div>';
-
-
-/*
-   Add all branches.
-
-   Nested choices are supported.
-*/
-
-for(j=0; j<branches.length; j++){
-
-    var branch =
-        branches[j];
-
-
-    var branchResult =
-        parseStorySegment(
-            branch.lines.join("\n"),
-            0
-        );
-
-
-    html +=
-        '<div ' +
-
-        'class="story-branch story-hidden" ' +
-
-        'data-choice-id="' +
-        escapeAttribute(choiceId) +
-        '" ' +
-
-        'data-choice-letter="' +
-        escapeAttribute(
-            branch.letter
-        ) +
-        '">' +
-
-        branchResult.html +
-
-        '</div>';
-
-}
-
-
-/*
-   Move past ENDCHOICE.
-*/
-
-if(i < lines.length){
-
-    i++;
-
-}
-
-
-return {
-
-    html:html,
-
-    nextIndex:i
-
-};
-
-}
-
-
 /* =========================================================
-ACTIVATE ALL STORY CHOICES
+   ACTIVATE ALL STORY CHOICES
 ========================================================= */
 
 function activateStoryChoices(){
 
-var buttons =
-    content.getElementsByClassName(
-        "story-choice-button"
-    );
+    var buttons =
+        content.getElementsByClassName(
+            "story-choice-button"
+        );
 
 
-var i;
+    var i;
 
 
-for(i=0; i<buttons.length; i++){
+    for(
+        i = 0;
+        i < buttons.length;
+        i++
+    ){
 
-    activateChoiceButton(
-        buttons[i]
-    );
+        activateChoiceButton(
+            buttons[i]
+        );
 
-}
+    }
 
 
-/*
-   Restore previously selected choices.
-*/
-
-restoreSavedChoices();
+    restoreSavedChoices();
 
 }
 
 
 /* =========================================================
-ACTIVATE ONE BUTTON
+   ACTIVATE ONE BUTTON
 ========================================================= */
 
 function activateChoiceButton(button){
 
-button.onclick =
-    function(){
+    button.onclick =
+        function(){
 
-        var choiceId =
-            button.getAttribute(
-                "data-choice-id"
+            var choiceId =
+                button.getAttribute(
+                    "data-choice-id"
+                );
+
+
+            var letter =
+                button.getAttribute(
+                    "data-choice-letter"
+                );
+
+
+            selectStoryChoice(
+                choiceId,
+                letter
             );
 
-
-        var letter =
-            button.getAttribute(
-                "data-choice-letter"
-            );
-
-
-        selectStoryChoice(
-            choiceId,
-            letter
-        );
-
-    };
+        };
 
 }
 
 
 /* =========================================================
-SELECT STORY CHOICE
+   SELECT STORY CHOICE
 ========================================================= */
 
 function selectStoryChoice(
-choiceId,
-letter
+    choiceId,
+    letter
 ){
 
-/*
-   Save this choice inside
-   the CURRENT STORY only.
-*/
-
-saveStoryChoice(
-    choiceId,
-    letter
-);
+    saveStoryChoice(
+        choiceId,
+        letter
+    );
 
 
-showSelectedBranch(
-    choiceId,
-    letter
-);
+    showSelectedBranch(
+        choiceId,
+        letter
+    );
 
 }
 
 
 /* =========================================================
-SAVE STORY CHOICE
+   SAVE STORY CHOICE
 ========================================================= */
 
 function saveStoryChoice(
-choiceId,
-letter
+    choiceId,
+    letter
 ){
 
-try{
+    try{
 
-    var saved =
-        localStorage.getItem(
-            currentStoryKey
+        var saved =
+            localStorage.getItem(
+                currentStoryKey
+            );
+
+
+        var choices = {};
+
+
+        if(saved){
+
+            try{
+
+                choices =
+                    JSON.parse(saved);
+
+            }catch(e){
+
+                choices = {};
+
+            }
+
+        }
+
+
+        choices[choiceId] =
+            letter;
+
+
+        localStorage.setItem(
+            currentStoryKey,
+            JSON.stringify(
+                choices
+            )
+        );
+
+    }catch(e){}
+
+}
+
+
+/* =========================================================
+   GET SAVED STORY CHOICE
+========================================================= */
+
+function getSavedStoryChoice(
+    choiceId
+){
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                currentStoryKey
+            );
+
+
+        if(!saved){
+
+            return null;
+
+        }
+
+
+        var choices =
+            JSON.parse(saved);
+
+
+        if(
+            choices &&
+            choices[choiceId]
+        ){
+
+            return choices[choiceId];
+
+        }
+
+    }catch(e){}
+
+
+    return null;
+
+}
+
+
+/* =========================================================
+   SHOW SELECTED BRANCH
+========================================================= */
+
+function showSelectedBranch(
+    choiceId,
+    letter
+){
+
+    var choices =
+        content.getElementsByClassName(
+            "story-choice"
         );
 
 
-    var choices = {};
+    var branches =
+        content.getElementsByClassName(
+            "story-branch"
+        );
 
 
-    if(saved){
+    var i;
 
-        try{
 
-            choices =
-                JSON.parse(saved);
+    /* =====================================================
+       HIDE THE SELECTED CHOICE BUTTON AREA
+    ===================================================== */
 
-        }catch(e){
+    for(
+        i = 0;
+        i < choices.length;
+        i++
+    ){
 
-            choices = {};
+        if(
+            choices[i].getAttribute(
+                "data-choice-id"
+            ) === choiceId
+        ){
+
+            choices[i].style.display =
+                "none";
 
         }
 
     }
 
 
-    choices[choiceId] =
-        letter;
+    /* =====================================================
+       HIDE ALL BRANCHES FOR THIS CHOICE
+    ===================================================== */
+
+    for(
+        i = 0;
+        i < branches.length;
+        i++
+    ){
+
+        if(
+            branches[i].getAttribute(
+                "data-choice-id"
+            ) === choiceId
+        ){
+
+            branches[i].className =
+                "story-branch story-hidden";
+
+        }
+
+    }
 
 
-    localStorage.setItem(
-        currentStoryKey,
-        JSON.stringify(
-            choices
-        )
-    );
+    /* =====================================================
+       SHOW ONLY SELECTED CONSEQUENCE
+    ===================================================== */
 
+    for(
+        i = 0;
+        i < branches.length;
+        i++
+    ){
 
-}catch(e){}
+        if(
+            branches[i].getAttribute(
+                "data-choice-id"
+            ) === choiceId &&
+
+            branches[i].getAttribute(
+                "data-choice-letter"
+            ) === letter
+        ){
+
+            branches[i].className =
+                "story-branch";
+
+        }
+
+    }
 
 }
 
 
 /* =========================================================
-GET SAVED STORY CHOICE
-========================================================= */
-
-function getSavedStoryChoice(
-choiceId
-){
-
-try{
-
-    var saved =
-        localStorage.getItem(
-            currentStoryKey
-        );
-
-
-    if(!saved){
-
-        return null;
-
-    }
-
-
-    var choices =
-        JSON.parse(saved);
-
-
-    if(
-        choices &&
-        choices[choiceId]
-    ){
-
-        return choices[choiceId];
-
-    }
-
-}catch(e){}
-
-
-return null;
-
-}
-
-
-/* =========================================================
-SHOW SELECTED BRANCH
-========================================================= */
-
-function showSelectedBranch(
-choiceId,
-letter
-){
-
-var choices =
-    content.getElementsByClassName(
-        "story-choice"
-    );
-
-
-var branches =
-    content.getElementsByClassName(
-        "story-branch"
-    );
-
-
-var i;
-
-
-/*
-   Hide the choice buttons
-   after selection.
-*/
-
-for(i=0; i<choices.length; i++){
-
-    if(
-        choices[i].getAttribute(
-            "data-choice-id"
-        ) === choiceId
-    ){
-
-        choices[i].style.display =
-            "none";
-
-    }
-
-}
-
-
-/*
-   Hide every branch belonging
-   to this choice.
-*/
-
-for(i=0; i<branches.length; i++){
-
-    if(
-        branches[i].getAttribute(
-            "data-choice-id"
-        ) === choiceId
-    ){
-
-        branches[i].className =
-            "story-branch story-hidden";
-
-    }
-
-}
-
-
-/*
-   Show ONLY the selected branch.
-*/
-
-for(i=0; i<branches.length; i++){
-
-    if(
-        branches[i].getAttribute(
-            "data-choice-id"
-        ) === choiceId &&
-
-        branches[i].getAttribute(
-            "data-choice-letter"
-        ) === letter
-    ){
-
-        branches[i].className =
-            "story-branch";
-
-    }
-
-}
-
-}
-
-
-/* =========================================================
-RESTORE SAVED CHOICES
+   RESTORE SAVED CHOICES
 ========================================================= */
 
 function restoreSavedChoices(){
 
-var choices =
-    content.getElementsByClassName(
-        "story-choice"
-    );
-
-
-var i;
-
-var choiceId;
-
-var savedLetter;
-
-
-for(i=0; i<choices.length; i++){
-
-    choiceId =
-        choices[i].getAttribute(
-            "data-choice-id"
+    var choices =
+        content.getElementsByClassName(
+            "story-choice"
         );
 
 
-    savedLetter =
-        getSavedStoryChoice(
-            choiceId
-        );
+    var i;
+
+    var choiceId;
+
+    var savedLetter;
 
 
-    if(savedLetter){
+    for(
+        i = 0;
+        i < choices.length;
+        i++
+    ){
 
-        showSelectedBranch(
-            choiceId,
-            savedLetter
-        );
+        choiceId =
+            choices[i].getAttribute(
+                "data-choice-id"
+            );
+
+
+        savedLetter =
+            getSavedStoryChoice(
+                choiceId
+            );
+
+
+        if(savedLetter){
+
+            showSelectedBranch(
+                choiceId,
+                savedLetter
+            );
+
+        }
 
     }
-
-}
 
 }
 
 
 /* =========================================================
-ARTICLE PATH CLEANING
+   ARTICLE PATH CLEANING
 ========================================================= */
 
 function cleanArticlePath(path){
 
-path =
-    path.replace(
-        /\\/g,
-        "/"
-    );
+    path =
+        path.replace(
+            /\\/g,
+            "/"
+        );
 
 
-path =
-    path.replace(
-        /^\/+/,
-        ""
-    );
+    path =
+        path.replace(
+            /^\/+/,
+            ""
+        );
 
 
-var parts =
-    path.split("/");
+    var parts =
+        path.split("/");
 
 
-var clean = [];
+    var clean = [];
 
 
-var i;
+    var i;
 
-var part;
-
-
-for(i=0; i<parts.length; i++){
-
-    part =
-        parts[i].trim();
+    var part;
 
 
-    if(!part){
+    for(
+        i = 0;
+        i < parts.length;
+        i++
+    ){
 
-        continue;
+        part =
+            parts[i].trim();
+
+
+        if(!part){
+
+            continue;
+
+        }
+
+
+        if(
+            part === "." ||
+            part === ".."
+        ){
+
+            return "";
+
+        }
+
+
+        clean.push(part);
 
     }
 
 
-    if(
-        part === "." ||
-        part === ".."
-    ){
+    if(!clean.length){
 
         return "";
 
     }
 
 
-    clean.push(part);
-
-}
-
-
-if(!clean.length){
-
-    return "";
-
-}
-
-
-return clean.join("/");
+    return clean.join("/");
 
 }
 
 
 /* =========================================================
-ARTICLE URL
+   ARTICLE URL
 ========================================================= */
 
 function articlePath(path){
 
-var parts =
-    path.split("/");
+    var parts =
+        path.split("/");
 
 
-var encoded = [];
+    var encoded = [];
 
 
-var i;
+    var i;
 
 
-for(i=0; i<parts.length; i++){
+    for(
+        i = 0;
+        i < parts.length;
+        i++
+    ){
 
-    encoded.push(
-        encodeURIComponent(
-            parts[i]
-        )
+        encoded.push(
+            encodeURIComponent(
+                parts[i]
+            )
+        );
+
+    }
+
+
+    return (
+        "../content/articles/" +
+        encoded.join("/") +
+        ".md"
     );
-
-}
-
-
-return (
-    "../content/articles/" +
-    encoded.join("/") +
-    ".md"
-);
 
 }
 
 
 /* =========================================================
-FRONTMATTER
+   FRONTMATTER
 ========================================================= */
 
 function parseFrontmatter(text){
 
-var result = {
+    var result = {
 
-    title:"",
-    cover:"",
-    credits:"",
-    video:"",
-    audio:"",
-    downloads:[],
-    body:text
+        title:"",
+        cover:"",
+        credits:"",
+        video:"",
+        audio:"",
+        downloads:[],
+        body:text
 
-};
-
-
-var match =
-    text.match(
-        /^---\s*([\s\S]*?)\s*---\s*/
-    );
+    };
 
 
-if(!match){
-
-    return result;
-
-}
-
-
-var front =
-    match[1];
-
-
-result.body =
-    text.replace(
-        /^---\s*[\s\S]*?\s*---\s*/,
-        ""
-    );
-
-
-var titleMatch =
-    front.match(
-        /^title:\s*["']?(.*?)["']?\s*$/m
-    );
-
-
-if(titleMatch){
-
-    result.title =
-        cleanValue(
-            titleMatch[1]
+    var match =
+        text.match(
+            /^---\s*([\s\S]*?)\s*---\s*/
         );
 
-}
+
+    if(!match){
+
+        return result;
+
+    }
 
 
-var coverMatch =
-    front.match(
-        /^cover:\s*["']?(.*?)["']?\s*$/m
-    );
+    var front =
+        match[1];
 
 
-if(coverMatch){
-
-    result.cover =
-        cleanValue(
-            coverMatch[1]
+    result.body =
+        text.replace(
+            /^---\s*[\s\S]*?\s*---\s*/,
+            ""
         );
 
-}
 
-
-var creditsMatch =
-    front.match(
-        /^credits:\s*["']?(.*?)["']?\s*$/m
-    );
-
-
-if(creditsMatch){
-
-    result.credits =
-        cleanValue(
-            creditsMatch[1]
+    var titleMatch =
+        front.match(
+            /^title:\s*["']?(.*?)["']?\s*$/m
         );
 
-}
+
+    if(titleMatch){
+
+        result.title =
+            cleanValue(
+                titleMatch[1]
+            );
+
+    }
 
 
-var videoMatch =
-    front.match(
-        /^video:\s*["']?(.*?)["']?\s*$/m
-    );
-
-
-if(videoMatch){
-
-    result.video =
-        cleanValue(
-            videoMatch[1]
+    var coverMatch =
+        front.match(
+            /^cover:\s*["']?(.*?)["']?\s*$/m
         );
 
-}
+
+    if(coverMatch){
+
+        result.cover =
+            cleanValue(
+                coverMatch[1]
+            );
+
+    }
 
 
-var audioMatch =
-    front.match(
-        /^audio:\s*["']?(.*?)["']?\s*$/m
-    );
-
-
-if(audioMatch){
-
-    result.audio =
-        cleanValue(
-            audioMatch[1]
+    var creditsMatch =
+        front.match(
+            /^credits:\s*["']?(.*?)["']?\s*$/m
         );
 
-}
+
+    if(creditsMatch){
+
+        result.credits =
+            cleanValue(
+                creditsMatch[1]
+            );
+
+    }
 
 
-var downloadsMatch =
-    front.match(
-        /^downloads:\s*([\s\S]*?)(?=^[a-zA-Z0-9_-]+\s*:|$)/m
-    );
+    var videoMatch =
+        front.match(
+            /^video:\s*["']?(.*?)["']?\s*$/m
+        );
 
 
-if(downloadsMatch){
+    if(videoMatch){
 
-    var lines =
-        downloadsMatch[1].split("\n");
+        result.video =
+            cleanValue(
+                videoMatch[1]
+            );
 
-
-    var i;
-
-    var line;
-
-    var value;
+    }
 
 
-    for(i=0; i<lines.length; i++){
-
-        line =
-            lines[i]
-                .replace(
-                    /^\s*-\s*/,
-                    ""
-                )
-                .trim();
+    var audioMatch =
+        front.match(
+            /^audio:\s*["']?(.*?)["']?\s*$/m
+        );
 
 
-        if(line){
+    if(audioMatch){
 
-            value =
-                cleanValue(line);
+        result.audio =
+            cleanValue(
+                audioMatch[1]
+            );
+
+    }
 
 
-            if(value){
+    var downloadsMatch =
+        front.match(
+            /^downloads:\s*([\s\S]*?)(?=^[a-zA-Z0-9_-]+\s*:|$)/m
+        );
 
-                result.downloads.push(
-                    value
-                );
+
+    if(downloadsMatch){
+
+        var lines =
+            downloadsMatch[1].split("\n");
+
+
+        var i;
+
+        var line;
+
+        var value;
+
+
+        for(
+            i = 0;
+            i < lines.length;
+            i++
+        ){
+
+            line =
+                lines[i]
+                    .replace(
+                        /^\s*-\s*/,
+                        ""
+                    )
+                    .trim();
+
+
+            if(line){
+
+                value =
+                    cleanValue(line);
+
+
+                if(value){
+
+                    result.downloads.push(
+                        value
+                    );
+
+                }
 
             }
 
@@ -1762,471 +1773,485 @@ if(downloadsMatch){
 
     }
 
-}
 
-
-return result;
+    return result;
 
 }
 
 
 /* =========================================================
-CLEAN VALUE
+   CLEAN VALUE
 ========================================================= */
 
 function cleanValue(value){
 
-value =
-    value.replace(
-        /^\s+/,
-        ""
-    );
-
-
-value =
-    value.replace(
-        /\s+$/,
-        ""
-    );
-
-
-if(
-    value.length >= 2 &&
-    (
-        (
-            value.charAt(0) === '"' &&
-            value.charAt(
-                value.length - 1
-            ) === '"'
-        )
-        ||
-        (
-            value.charAt(0) === "'" &&
-            value.charAt(
-                value.length - 1
-            ) === "'"
-        )
-    )
-){
-
     value =
-        value.substring(
-            1,
-            value.length - 1
+        value.replace(
+            /^\s+/,
+            ""
         );
 
-}
+
+    value =
+        value.replace(
+            /\s+$/,
+            ""
+        );
 
 
-return value;
+    if(
+        value.length >= 2 &&
+        (
+            (
+                value.charAt(0) === '"' &&
+                value.charAt(
+                    value.length - 1
+                ) === '"'
+            )
+            ||
+            (
+                value.charAt(0) === "'" &&
+                value.charAt(
+                    value.length - 1
+                ) === "'"
+            )
+        )
+    ){
+
+        value =
+            value.substring(
+                1,
+                value.length - 1
+            );
+
+    }
+
+
+    return value;
 
 }
 
 
 /* =========================================================
-INLINE IMAGES
+   INLINE IMAGES
 ========================================================= */
 
 function fixInlineImages(){
 
-var images =
-    content.getElementsByTagName(
-        "img"
-    );
-
-
-var i;
-
-var src;
-
-
-for(i=0; i<images.length; i++){
-
-    src =
-        images[i].getAttribute(
-            "src"
+    var images =
+        content.getElementsByTagName(
+            "img"
         );
-
-
-    if(src){
-
-        images[i].src =
-            mediaPath(src);
-
-
-        prepareImage(
-            images[i]
-        );
-
-
-        images[i].onerror =
-            function(){
-
-                this.alt =
-                    "Image could not be loaded.";
-
-                this.style.opacity =
-                    "0.6";
-
-            };
-
-    }
-
-}
-
-}
-
-
-/* =========================================================
-INLINE VIDEOS
-========================================================= */
-
-function fixInlineVideos(){
-
-var videos =
-    content.getElementsByTagName(
-        "video"
-    );
-
-
-var i;
-
-var src;
-
-
-for(i=0; i<videos.length; i++){
-
-    src =
-        videos[i].getAttribute(
-            "src"
-        );
-
-
-    if(src){
-
-        videos[i].src =
-            mediaPath(src);
-
-    }
-
-
-    videos[i].controls =
-        true;
-
-}
-
-}
-
-
-/* =========================================================
-INLINE AUDIO
-========================================================= */
-
-function fixInlineAudios(){
-
-var audios =
-    content.getElementsByTagName(
-        "audio"
-    );
-
-
-var i;
-
-var src;
-
-
-for(i=0; i<audios.length; i++){
-
-    src =
-        audios[i].getAttribute(
-            "src"
-        );
-
-
-    if(src){
-
-        audios[i].src =
-            mediaPath(src);
-
-    }
-
-
-    audios[i].controls =
-        true;
-
-}
-
-}
-
-
-/* =========================================================
-EXTRA MEDIA
-========================================================= */
-
-function renderExtraMedia(data){
-
-var html = "";
-
-
-if(data.video){
-
-    html +=
-        '<div class="media-box">' +
-
-        '<h2 class="media-title">Video</h2>' +
-
-        '<video controls preload="metadata" width="100%">' +
-
-        '<source src="' +
-
-        escapeAttribute(
-            mediaPath(
-                data.video
-            )
-        ) +
-
-        '">' +
-
-        'Your browser cannot play this video.' +
-
-        '</video>' +
-
-        '</div>';
-
-}
-
-
-if(data.audio){
-
-    html +=
-        '<div class="media-box">' +
-
-        '<h2 class="media-title">Audio</h2>' +
-
-        '<audio controls preload="metadata">' +
-
-        '<source src="' +
-
-        escapeAttribute(
-            mediaPath(
-                data.audio
-            )
-        ) +
-
-        '">' +
-
-        'Your browser cannot play this audio.' +
-
-        '</audio>' +
-
-        '</div>';
-
-}
-
-
-if(data.downloads.length){
-
-    html +=
-        '<div class="media-box">' +
-
-        '<h2 class="media-title">Downloads</h2>';
 
 
     var i;
 
+    var src;
 
-    for(i=0; i<data.downloads.length; i++){
+
+    for(
+        i = 0;
+        i < images.length;
+        i++
+    ){
+
+        src =
+            images[i].getAttribute(
+                "src"
+            );
+
+
+        if(src){
+
+            images[i].src =
+                mediaPath(src);
+
+
+            prepareImage(
+                images[i]
+            );
+
+
+            images[i].onerror =
+                function(){
+
+                    this.alt =
+                        "Image could not be loaded.";
+
+                    this.style.opacity =
+                        "0.6";
+
+                };
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   INLINE VIDEOS
+========================================================= */
+
+function fixInlineVideos(){
+
+    var videos =
+        content.getElementsByTagName(
+            "video"
+        );
+
+
+    var i;
+
+    var src;
+
+
+    for(
+        i = 0;
+        i < videos.length;
+        i++
+    ){
+
+        src =
+            videos[i].getAttribute(
+                "src"
+            );
+
+
+        if(src){
+
+            videos[i].src =
+                mediaPath(src);
+
+        }
+
+
+        videos[i].controls =
+            true;
+
+    }
+
+}
+
+
+/* =========================================================
+   INLINE AUDIO
+========================================================= */
+
+function fixInlineAudios(){
+
+    var audios =
+        content.getElementsByTagName(
+            "audio"
+        );
+
+
+    var i;
+
+    var src;
+
+
+    for(
+        i = 0;
+        i < audios.length;
+        i++
+    ){
+
+        src =
+            audios[i].getAttribute(
+                "src"
+            );
+
+
+        if(src){
+
+            audios[i].src =
+                mediaPath(src);
+
+        }
+
+
+        audios[i].controls =
+            true;
+
+    }
+
+}
+
+
+/* =========================================================
+   EXTRA MEDIA
+========================================================= */
+
+function renderExtraMedia(data){
+
+    var html = "";
+
+
+    if(data.video){
 
         html +=
-            '<p>' +
+            '<div class="media-box">' +
 
-            '<a href="' +
+            '<h2 class="media-title">Video</h2>' +
+
+            '<video controls preload="metadata" width="100%">' +
+
+            '<source src="' +
 
             escapeAttribute(
                 mediaPath(
-                    data.downloads[i]
+                    data.video
                 )
             ) +
 
-            '" download>' +
+            '">' +
 
-            'Download file ' +
+            'Your browser cannot play this video.' +
 
-            (i + 1) +
+            '</video>' +
 
-            '</a>' +
-
-            '</p>';
+            '</div>';
 
     }
 
 
-    html +=
-        '</div>';
+    if(data.audio){
 
-}
+        html +=
+            '<div class="media-box">' +
+
+            '<h2 class="media-title">Audio</h2>' +
+
+            '<audio controls preload="metadata">' +
+
+            '<source src="' +
+
+            escapeAttribute(
+                mediaPath(
+                    data.audio
+                )
+            ) +
+
+            '">' +
+
+            'Your browser cannot play this audio.' +
+
+            '</audio>' +
+
+            '</div>';
+
+    }
 
 
-media.innerHTML =
-    html;
+    if(data.downloads.length){
+
+        html +=
+            '<div class="media-box">' +
+
+            '<h2 class="media-title">Downloads</h2>';
+
+
+        var i;
+
+
+        for(
+            i = 0;
+            i < data.downloads.length;
+            i++
+        ){
+
+            html +=
+                '<p>' +
+
+                '<a href="' +
+
+                escapeAttribute(
+                    mediaPath(
+                        data.downloads[i]
+                    )
+                ) +
+
+                '" download>' +
+
+                'Download file ' +
+
+                (i + 1) +
+
+                '</a>' +
+
+                '</p>';
+
+        }
+
+
+        html +=
+            '</div>';
+
+    }
+
+
+    media.innerHTML =
+        html;
 
 }
 
 
 /* =========================================================
-LOW-SPEC IMAGE HANDLING
+   LOW-SPEC IMAGE HANDLING
 ========================================================= */
 
 function prepareImage(image){
 
-try{
+    try{
 
-    image.setAttribute(
-        "loading",
-        "lazy"
-    );
+        image.setAttribute(
+            "loading",
+            "lazy"
+        );
 
-}catch(e){}
+    }catch(e){}
 
 
-try{
+    try{
 
-    image.setAttribute(
-        "decoding",
-        "async"
-    );
+        image.setAttribute(
+            "decoding",
+            "async"
+        );
 
-}catch(e){}
+    }catch(e){}
 
 }
 
 
 /* =========================================================
-MEDIA PATH
+   MEDIA PATH
 ========================================================= */
 
 function mediaPath(src){
 
-if(!src){
+    if(!src){
 
-    return "";
+        return "";
 
-}
+    }
 
-
-src =
-    src.replace(
-        /^<|>$/g,
-        ""
-    );
-
-
-if(
-    src.indexOf("http://") === 0 ||
-    src.indexOf("https://") === 0 ||
-    src.indexOf("data:") === 0 ||
-    src.charAt(0) === "/"
-){
-
-    return src;
-
-}
-
-
-while(
-    src.indexOf("../") === 0
-){
 
     src =
-        src.substring(3);
-
-}
-
-
-while(
-    src.indexOf("./") === 0
-){
-
-    src =
-        src.substring(2);
-
-}
+        src.replace(
+            /^<|>$/g,
+            ""
+        );
 
 
-if(
-    src.indexOf("content/") === 0
-){
+    if(
+        src.indexOf("http://") === 0 ||
+        src.indexOf("https://") === 0 ||
+        src.indexOf("data:") === 0 ||
+        src.charAt(0) === "/"
+    ){
 
-    return "/" + src;
+        return src;
 
-}
+    }
 
 
-return "/content/images/" + src;
+    while(
+        src.indexOf("../") === 0
+    ){
+
+        src =
+            src.substring(3);
+
+    }
+
+
+    while(
+        src.indexOf("./") === 0
+    ){
+
+        src =
+            src.substring(2);
+
+    }
+
+
+    if(
+        src.indexOf("content/") === 0
+    ){
+
+        return "/" + src;
+
+    }
+
+
+    return "/content/images/" + src;
 
 }
 
 
 /* =========================================================
-FILE NAME
+   FILE NAME
 ========================================================= */
 
 function getFileName(path){
 
-var parts =
-    path.split("/");
+    var parts =
+        path.split("/");
 
 
-return parts[
-    parts.length - 1
-];
+    return parts[
+        parts.length - 1
+    ];
 
 }
 
 
 /* =========================================================
-HTML ESCAPING
+   HTML ESCAPING
 ========================================================= */
 
 function escapeHtml(value){
 
-return String(value)
+    return String(value)
 
-    .replace(
-        /&/g,
-        "&amp;"
-    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
 
-    .replace(
-        /</g,
-        "&lt;"
-    )
+        .replace(
+            /</g,
+            "&lt;"
+        )
 
-    .replace(
-        />/g,
-        "&gt;"
-    )
+        .replace(
+            />/g,
+            "&gt;"
+        )
 
-    .replace(
-        /"/g,
-        "&quot;"
-    )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
 
-    .replace(
-        /'/g,
-        "&#39;"
-    );
+        .replace(
+            /'/g,
+            "&#39;"
+        );
 
 }
 
 
 /* =========================================================
-ATTRIBUTE ESCAPING
+   ATTRIBUTE ESCAPING
 ========================================================= */
 
 function escapeAttribute(value){
 
-return escapeHtml(value);
+    return escapeHtml(value);
 
 }
 
