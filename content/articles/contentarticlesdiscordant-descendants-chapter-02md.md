@@ -5,199 +5,175 @@ title: DISCORDANT DESCENDANTS — CHAPTER TWO
 
 
 
-# THE FAMILY THAT WASN'T SUPPOSED TO EXIST
 
-Saturday morning.
-
-Lexis woke up with three things on her mind.
-
-The First Heir.
-
-The mysterious account.
-
-And the fact that apparently everyone around her knew something she didn't.
-
-She sat up.
-
-Her room was quiet.
-
-Too quiet.
-
-Her phone was lying beside her pillow.
-
-She reached for it.
-
-No new messages.
-
-For once, that should have been comforting.
-
-It wasn't.
-
-Lexis opened her notes.
-
-At the top was the list she had created the previous night.
-
-**THE FIRST HEIR**
-
-Underneath it were three questions.
-
-**Who were they?**
-
-**Why were they erased from the family history?**
-
-**Why does Dad know about them?**
-
-She stared at the third question.
-
-Then added another.
-
-**Who is S. Chukwudi?**
-
-A knock sounded at the door.
-
-Lexis quickly locked her phone.
-
-“Come in.”
-
-Her father opened the door.
-
-He looked exhausted.
-
-“You're awake.”
-
-“Unfortunately.”
-
-He smiled faintly.
-
-“Get dressed. We're going to the Okoye residence.”
-
-Lexis froze.
-
-“The mansion?”
-
-“Yes.”
-
-“Today?”
-
-“Yes.”
-
-She stared at him.
-
-“Dad.”
-
-“Yes?”
-
-“You've got to be kidding me.”
-
-He shook his head.
-
-“I wish I were.”
-
-Lexis climbed out of bed.
-
-Something about his expression told her this wasn't a normal family gathering anymore.
-
-And as she reached for her clothes, her phone vibrated.
-
-One message.
-
-Unknown number.
-
-**You chose to ask questions.**
-
-Lexis stopped.
-
-Another message appeared.
-
-**Now come to the mansion.**
-
-She stared at the screen.
-
-Then at her father.
-
-He was already walking away.
-
-Lexis slipped the phone into her pocket.
-
-Whatever waited for her at the Okoye residence—
-
-she was going to find out.
 
 ---
 
-# SCENE 04 — THE OKOYE RESIDENCE
+## title: DISCORDANT DESCENDANTS — CHAPTER 2
 
-The gates opened slowly.
+# DISCORDANT DESCENDANTS
 
-Lexis stared through the car window.
+## CHAPTER 2 — THE FIRST HEIR
 
-The Okoye residence looked exactly as she remembered.
+The following morning arrived far too quickly.
 
-Beautiful.
+Lexis stood in front of her bedroom mirror, adjusting the sleeve of her outfit.
 
-Expensive.
+The gathering was tonight.
 
-And somehow less welcoming than before.
+The Okoye family had spent weeks preparing for it.
 
-Her father parked.
+And somehow, after everything that had happened, Lexis felt as though she was walking toward something rather than simply attending a party.
 
-Before Lexis could open her door, he spoke.
+Her phone sat on the dresser.
 
-“Whatever happens inside, stay close to me.”
+She hadn't received another message.
 
-Lexis turned toward him.
+That almost made things worse.
 
-“That sounds reassuring.”
+Silence was rarely comforting when someone had already warned you that they were watching.
 
-“It wasn't meant to.”
+Lexis picked up her phone.
 
-She stared at him.
+She checked the mysterious profile again.
 
-He looked serious.
+Still there.
 
-Very serious.
+Still empty.
 
-Lexis opened the door.
+Still carrying the strange crest.
 
-The moment her feet touched the ground, her phone vibrated.
+She locked the screen.
 
-She looked down.
+“Enough.”
 
-A new message.
+Downstairs, she heard movement.
 
-**S. Chukwudi:**
+Her father was speaking to someone.
 
-*Ask Sirena about the photograph.*
+Lexis paused at the top of the stairs.
 
-Lexis looked toward the mansion.
+She recognized the second voice.
 
-Sirena was standing at the entrance.
+Sirena.
 
-Waiting.
+Lexis frowned.
 
-And beside her—
+Why was Sirena at her house?
 
-someone Lexis had never seen before.
+She moved quietly toward the staircase.
 
-A woman.
+“I told you she doesn't know anything,” her father said.
 
-Older.
+Sirena answered softly.
 
-Elegant.
+“She knows enough.”
 
-And wearing the same family crest.
+Lexis froze.
 
-Lexis stopped walking.
+Her father's voice became sharper.
 
-Her father noticed.
+“Not another word.”
 
-“What is it?”
+A silence followed.
 
-Lexis stared at the woman.
+Then Sirena laughed.
 
-“I think…”
+It wasn't a friendly laugh.
 
-She swallowed.
+“You really think you can keep this from her forever?”
 
-“…we're about to have a very interesting morning.”
+Lexis's eyes widened.
+
+She stepped backward.
+
+The floor creaked.
+
+Both voices stopped.
+
+“Lexis?”
+
+Her father's voice.
+
+She quickly walked downstairs.
+
+“Morning.”
+
+Her father stared at her.
+
+Sirena smiled.
+
+“Good morning, cousin.”
+
+Lexis looked between them.
+
+“What are you doing here?”
+
+Sirena shrugged.
+
+“Helping your father prepare for tonight.”
+
+Lexis didn't believe her.
+
+Not for a second.
+
+Her father picked up his jacket.
+
+“We'll talk later.”
+
+“About the First Heir?”
+
+He stopped.
+
+Sirena's smile disappeared.
+
+Her father looked at Lexis.
+
+Then at Sirena.
+
+Then toward the front door.
+
+“Tonight.”
+
+He walked outside.
+
+Sirena remained behind.
+
+Lexis folded her arms.
+
+“So.”
+
+Sirena tilted her head.
+
+“So?”
+
+“You're hiding something.”
+
+Sirena smiled again.
+
+“Everybody is hiding something, Lexis.”
+
+She walked toward the door.
+
+“But tonight, you'll finally find out what yours is.”
+
+The door closed.
+
+Lexis stood completely still.
+
+Outside, a car engine started.
+
+She looked toward the window.
+
+Then at the clock.
+
+The gathering was only hours away.
+
+And for the first time, Lexis wasn't wondering whether she should attend.
+
+She was wondering what would happen if she didn't.
+
+---
+
+## END OF CHAPTER 2
 
