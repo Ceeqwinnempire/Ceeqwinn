@@ -4,286 +4,741 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>CEEQWINN Reader</title>
 
 <style>
 
-body{
-    max-width:800px;
-    margin:auto;
-    padding:40px 20px;
-    font-family:Arial,sans-serif;
-    line-height:1.8;
-    background:#fafafa;
-    color:#222;
+/* =========================================================
+   CEEQWINN UNIVERSAL READER
+   SEQUENCE READER — CODE 01
+
+   CORE IDEA:
+
+   One reader.
+   Multiple presentation modes.
+
+   Supported modes:
+
+   article
+   story
+   moodboard
+   feed
+
+   Existing Markdown files remain compatible.
+
+   ========================================================= */
+
+
+/* =========================================================
+   RESET / BASE
+   ========================================================= */
+
+*{
+    box-sizing:border-box;
 }
 
-h1{
-    font-size:2.2rem;
-    margin-bottom:20px;
+
+html{
+    margin:0;
+    padding:0;
 }
+
+
+body{
+
+    margin:0;
+
+    padding:0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:#fafafa;
+
+    color:#222;
+
+    line-height:1.7;
+
+}
+
+
+/* =========================================================
+   READER SHELL
+   ========================================================= */
+
+#reader{
+
+    width:100%;
+
+    min-height:100vh;
+
+}
+
+
+.reader-inner{
+
+    width:100%;
+
+    max-width:900px;
+
+    margin:0 auto;
+
+    padding:35px 20px 80px 20px;
+
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.reader-header{
+
+    margin-bottom:30px;
+
+}
+
 
 #cover{
+
     display:none;
-    max-width:100%;
+
+    width:100%;
+
+    max-width:900px;
+
     height:auto;
+
     margin:0 auto 30px auto;
-    border-radius:12px;
+
+    border-radius:14px;
+
 }
+
+
+#title{
+
+    margin:0 0 12px 0;
+
+    font-size:2.4rem;
+
+    line-height:1.2;
+
+}
+
 
 #credits{
-    color:#666;
-    margin:0 0 25px 0;
+
+    color:#777;
+
+    margin-bottom:15px;
+
 }
+
+
+#status{
+
+    color:#777;
+
+    font-size:.95rem;
+
+    margin-bottom:20px;
+
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
 
 #content{
+
+    width:100%;
+
     word-wrap:break-word;
+
     overflow-wrap:break-word;
+
 }
+
+
+#content p{
+
+    margin:0 0 20px 0;
+
+}
+
+
+#content h2{
+
+    margin-top:40px;
+
+    line-height:1.3;
+
+}
+
+
+#content h3{
+
+    margin-top:30px;
+
+    line-height:1.3;
+
+}
+
 
 #content img{
+
     display:block;
+
+    width:auto;
+
     max-width:100%;
+
     height:auto;
-    margin:24px auto;
+
+    margin:28px auto;
+
     border-radius:12px;
+
 }
+
 
 #content video{
+
     display:block;
+
     width:100%;
+
     max-width:100%;
-    margin:24px auto;
+
+    margin:28px auto;
+
 }
+
 
 #content audio{
+
     display:block;
+
     width:100%;
+
     max-width:100%;
-    margin:24px 0;
+
+    margin:28px 0;
+
 }
 
-#media{
-    margin-top:40px;
-}
-
-.media-title{
-    margin-top:35px;
-    margin-bottom:12px;
-}
-
-.media-box{
-    margin:20px 0;
-}
-
-.media-box a{
-    word-break:break-word;
-}
-
-#content h2,
-#content h3{
-    margin-top:30px;
-}
 
 #content blockquote{
-    margin:24px 0;
-    padding:10px 20px;
+
+    margin:28px 0;
+
+    padding:12px 20px;
+
     border-left:4px solid #999;
+
     background:#f0f0f0;
+
 }
 
+
 #content table{
+
     width:100%;
+
     border-collapse:collapse;
-    margin:24px 0;
+
+    margin:28px 0;
+
 }
+
 
 #content th,
 #content td{
+
     padding:10px;
+
     border:1px solid #ccc;
+
 }
 
-#status{
-    color:#666;
-}
 
-.error{
-    color:#777;
-    font-size:0.9rem;
+#content a{
+
+    word-break:break-word;
+
 }
 
 
 /* =========================================================
-   INTERACTIVE STORY
+   EXTRA MEDIA
+   ========================================================= */
+
+#media{
+
+    margin-top:45px;
+
+}
+
+
+.media-box{
+
+    margin:30px 0;
+
+}
+
+
+.media-title{
+
+    margin-bottom:12px;
+
+}
+
+
+.media-box video{
+
+    display:block;
+
+    width:100%;
+
+}
+
+
+.media-box audio{
+
+    display:block;
+
+    width:100%;
+
+}
+
+
+/* =========================================================
+   GENERAL HIDDEN
+   ========================================================= */
+
+.hidden{
+
+    display:none !important;
+
+}
+
+
+/* =========================================================
+   STORY MODE
    ========================================================= */
 
 .story-choice{
-    margin:40px 0;
-    padding:24px 0;
+
+    margin:45px 0;
+
+    padding:25px 0;
+
 }
+
 
 .story-choice-title{
-    font-weight:bold;
+
     margin-bottom:18px;
-    font-size:1.05rem;
+
+    font-weight:bold;
+
+    font-size:1.08rem;
+
 }
+
 
 .story-choice-button{
+
     display:block;
+
     width:100%;
-    box-sizing:border-box;
 
     margin:12px 0;
+
     padding:15px 16px;
 
+    background:#fff;
+
+    color:#222;
+
+    border:1px solid #ccc;
+
+    border-radius:9px;
+
     font-family:Arial,sans-serif;
+
     font-size:16px;
+
     line-height:1.5;
+
     text-align:left;
 
-    background:#fff;
-    color:#222;
-
-    border:1px solid #ccc;
-    border-radius:8px;
-
     cursor:pointer;
+
 }
+
 
 .story-choice-button:hover{
+
     background:#f2f2f2;
+
 }
+
 
 .story-choice-button:active{
+
     background:#e8e8e8;
+
 }
+
 
 .story-choice-button:disabled{
+
     cursor:default;
-    opacity:0.6;
+
+    opacity:.6;
+
 }
+
 
 .story-branch{
+
     margin-top:25px;
+
 }
+
 
 .story-hidden{
+
     display:none !important;
+
 }
 
-.story-continue{
-    display:block;
-    margin:30px 0;
-    padding:14px 16px;
-
-    background:#fff;
-    color:#222;
-
-    border:1px solid #ccc;
-    border-radius:8px;
-
-    text-decoration:none;
-    text-align:center;
-
-    font-weight:bold;
-}
-
-.story-continue:hover{
-    background:#f2f2f2;
-}
-
-
-/* =========================================================
-   NEW — CHAPTER CONTINUATION
-   ========================================================= */
 
 .story-next-chapter{
+
     display:block;
 
     margin:40px 0;
+
     padding:16px 18px;
 
     background:#222;
-    color:#fff;
+
+    color:#fff !important;
 
     border:1px solid #222;
-    border-radius:8px;
+
+    border-radius:9px;
 
     text-decoration:none;
+
     text-align:center;
 
     font-weight:bold;
-    font-size:16px;
+
 }
+
 
 .story-next-chapter:hover{
-    background:#444;
-}
 
-.story-next-chapter:active{
-    background:#111;
+    background:#444;
+
 }
 
 
 /* =========================================================
-   TEMPORARY DEVELOPER RESET BUTTON
+   STORY RESET
    ========================================================= */
 
 .story-reset{
+
     display:none;
 
     width:100%;
-    box-sizing:border-box;
 
     margin:35px 0 20px 0;
+
     padding:13px 16px;
 
-    font-family:Arial,sans-serif;
-    font-size:14px;
-
     background:#f7f7f7;
+
     color:#555;
 
     border:1px dashed #aaa;
+
     border-radius:8px;
 
+    font-family:Arial,sans-serif;
+
+    font-size:14px;
+
     cursor:pointer;
-}
 
-.story-reset:hover{
-    background:#eeeeee;
-}
-
-.story-reset:active{
-    background:#e3e3e3;
 }
 
 
 /* =========================================================
-   MOBILE / LOW-SPEC DEVICES
+   MOODBOARD MODE
+   ========================================================= */
+
+.mode-moodboard{
+
+    background:#f7f5f2;
+
+}
+
+
+.mode-moodboard .reader-inner{
+
+    max-width:1100px;
+
+}
+
+
+.mode-moodboard #title{
+
+    font-size:2.2rem;
+
+}
+
+
+.moodboard-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0,1fr));
+
+    gap:18px;
+
+    margin-top:35px;
+
+}
+
+
+.moodboard-card{
+
+    background:#fff;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    border:1px solid #e5e1dc;
+
+}
+
+
+.moodboard-card img{
+
+    display:block;
+
+    width:100%;
+
+    height:auto;
+
+    margin:0;
+
+    border-radius:0;
+
+}
+
+
+.moodboard-card-content{
+
+    padding:18px;
+
+}
+
+
+.moodboard-card-content p{
+
+    margin-bottom:10px;
+
+}
+
+
+.moodboard-wide{
+
+    grid-column:1 / -1;
+
+}
+
+
+/* =========================================================
+   FEED MODE
+   ========================================================= */
+
+.mode-feed{
+
+    background:#f5f5f5;
+
+}
+
+
+.mode-feed .reader-inner{
+
+    max-width:700px;
+
+}
+
+
+.feed-item{
+
+    background:#fff;
+
+    margin:25px 0;
+
+    padding:20px;
+
+    border-radius:14px;
+
+    border:1px solid #e5e5e5;
+
+}
+
+
+.feed-item img{
+
+    display:block;
+
+    width:100%;
+
+    height:auto;
+
+    margin:0 0 18px 0;
+
+    border-radius:10px;
+
+}
+
+
+.feed-item h2{
+
+    margin:0 0 12px 0;
+
+}
+
+
+.feed-item p:last-child{
+
+    margin-bottom:0;
+
+}
+
+
+/* =========================================================
+   ARTICLE MODE
+   ========================================================= */
+
+.mode-article .reader-inner{
+
+    max-width:800px;
+
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.reader-error{
+
+    color:#777;
+
+    padding:20px 0;
+
+}
+
+
+/* =========================================================
+   MOBILE
    ========================================================= */
 
 @media screen and (max-width:600px){
 
-    body{
-        padding:25px 16px;
+    .reader-inner{
+
+        padding:
+            25px
+            16px
+            60px
+            16px;
+
     }
 
-    h1{
-        font-size:1.8rem;
+
+    #title{
+
+        font-size:1.9rem;
+
     }
+
+
+    #cover{
+
+        border-radius:10px;
+
+    }
+
+
+    .moodboard-grid{
+
+        grid-template-columns:1fr;
+
+        gap:14px;
+
+    }
+
+
+    .moodboard-wide{
+
+        grid-column:auto;
+
+    }
+
 
     .story-choice-button{
+
         font-size:16px;
+
         padding:15px;
+
     }
 
-    .story-next-chapter{
-        font-size:16px;
-        padding:15px;
+}
+
+
+/* =========================================================
+   VERY SMALL / OLD DEVICES
+   ========================================================= */
+
+@media screen and (max-width:360px){
+
+    .reader-inner{
+
+        padding-left:12px;
+
+        padding-right:12px;
+
+    }
+
+
+    #title{
+
+        font-size:1.7rem;
+
     }
 
 }
@@ -292,30 +747,66 @@ h1{
 
 </head>
 
+
 <body>
 
-<img id="cover" alt="">
+<div id="reader">
 
-<h1 id="title">Loading...</h1>
-
-<div id="credits"></div>
-
-<div id="status"></div>
-
-<div id="content"></div>
+    <div class="reader-inner">
 
 
-<!-- =========================================================
-     TEMPORARY DEVELOPER RESET
-     ========================================================= -->
+        <!-- =================================================
+             HEADER
+             ================================================= -->
 
-<button
-    id="storyReset"
-    class="story-reset"
-    type="button"
->
-    ↺ Reset Story
-</button>
+        <header class="reader-header">
+
+            <img
+                id="cover"
+                alt=""
+            >
+
+            <h1 id="title">
+                Loading...
+            </h1>
+
+            <div id="credits"></div>
+
+            <div id="status"></div>
+
+        </header>
+
+
+        <!-- =================================================
+             MAIN CONTENT
+             ================================================= -->
+
+        <main id="content"></main>
+
+
+        <!-- =================================================
+             STORY RESET
+             ================================================= -->
+
+        <button
+            id="storyReset"
+            class="story-reset"
+            type="button"
+        >
+            ↺ Reset Story
+        </button>
+
+
+        <!-- =================================================
+             EXTRA MEDIA
+             ================================================= -->
+
+        <div id="media"></div>
+
+
+    </div>
+
+</div>
 
 
 <!-- =========================================================
@@ -328,11 +819,12 @@ h1{
 
 var d = document,
 
-    s =
-d.createElement('script'),
+    s = d.createElement("script"),
 
     l =
-d.scripts[d.scripts.length - 1];
+        d.scripts[
+            d.scripts.length - 1
+        ];
 
 s.settings = xbjc || {};
 
@@ -341,17 +833,22 @@ s.src =
 
 s.async = true;
 
-s.referrerPolicy = 'no-referrer-when-downgrade';
+s.referrerPolicy =
+    "no-referrer-when-downgrade";
 
-l.parentNode.insertBefore(s, l);
+l.parentNode.insertBefore(
+    s,
+    l
+);
 
-})({})
+})({});
 
 </script>
 
 
-<div id="media"></div>
-
+<!-- =========================================================
+     MARKED
+     ========================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
 
@@ -359,31 +856,15 @@ l.parentNode.insertBefore(s, l);
 <script>
 
 /* =========================================================
-   GET ARTICLE FILE
+   CEEQWINN UNIVERSAL READER
+   SEQUENCE READER — CODE 01
+   JAVASCRIPT ENGINE
    ========================================================= */
 
-var search = window.location.search;
 
-var file = "";
-
-
-if(search){
-
-    file = search
-        .replace(/^\?/, "")
-        .split("&")[0]
-        .replace(/^file=/, "");
-
-
-    try{
-
-        file =
-            decodeURIComponent(file);
-
-    }catch(e){}
-
-}
-
+/* =========================================================
+   DOM REFERENCES
+   ========================================================= */
 
 var title =
     document.getElementById("title");
@@ -406,37 +887,68 @@ var media =
 var storyReset =
     document.getElementById("storyReset");
 
-
-/* =========================================================
-   CURRENT STORY STORAGE KEY
-   ========================================================= */
-
-var currentStoryKey =
-    "ceeqwinn_story_choices_" +
-    cleanStorageKey(file);
+var reader =
+    document.getElementById("reader");
 
 
 /* =========================================================
-   INITIAL LOAD
+   GET FILE FROM URL
    ========================================================= */
 
-if(!file){
+var file = "";
 
-    title.innerHTML =
-        "Article not found";
+var search =
+    window.location.search;
 
-    status.innerHTML =
-        "No article was selected.";
 
-}else{
+if(search){
 
-    loadStory(file);
+    file =
+        search
+            .replace(/^\?/,"")
+            .split("&")[0]
+            .replace(/^file=/,"");
+
+
+    try{
+
+        file =
+            decodeURIComponent(file);
+
+    }catch(e){}
 
 }
 
 
 /* =========================================================
-   TEMPORARY RESET BUTTON
+   CURRENT STORAGE KEY
+   ========================================================= */
+
+var currentStoryKey =
+    "ceeqwinn_reader_" +
+    cleanStorageKey(file);
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+if(!file){
+
+    showError(
+        "Article not found",
+        "No article was selected."
+    );
+
+}else{
+
+    loadDocument(file);
+
+}
+
+
+/* =========================================================
+   RESET BUTTON
    ========================================================= */
 
 storyReset.onclick =
@@ -448,62 +960,10 @@ storyReset.onclick =
 
 
 /* =========================================================
-   RESET CURRENT STORY
+   LOAD DOCUMENT
    ========================================================= */
 
-function resetCurrentStory(){
-
-    try{
-
-        localStorage.removeItem(
-            currentStoryKey
-        );
-
-    }catch(e){}
-
-
-    loadStory(file);
-
-
-    try{
-
-        window.scrollTo(
-            0,
-            0
-        );
-
-    }catch(e){}
-
-}
-
-
-/* =========================================================
-   STORAGE KEY CLEANING
-   ========================================================= */
-
-function cleanStorageKey(value){
-
-    if(!value){
-
-        return "article";
-
-    }
-
-
-    return String(value)
-        .replace(
-            /[^a-zA-Z0-9_-]/g,
-            "_"
-        );
-
-}
-
-
-/* =========================================================
-   LOAD STORY
-   ========================================================= */
-
-function loadStory(storyFile){
+function loadDocument(storyFile){
 
     storyFile =
         cleanArticlePath(storyFile);
@@ -511,11 +971,10 @@ function loadStory(storyFile){
 
     if(!storyFile){
 
-        title.innerHTML =
-            "Article not found";
-
-        status.innerHTML =
-            "The article path is invalid.";
+        showError(
+            "Article not found",
+            "The article path is invalid."
+        );
 
         return;
 
@@ -523,7 +982,7 @@ function loadStory(storyFile){
 
 
     currentStoryKey =
-        "ceeqwinn_story_choices_" +
+        "ceeqwinn_reader_" +
         cleanStorageKey(storyFile);
 
 
@@ -561,11 +1020,10 @@ function loadStory(storyFile){
                 xhr.status !== 0
             ){
 
-                title.innerHTML =
-                    "Unable to load article";
-
-                status.innerHTML =
-                    "The article could not be loaded.";
+                showError(
+                    "Unable to load article",
+                    "The article could not be loaded."
+                );
 
                 return;
 
@@ -576,110 +1034,25 @@ function loadStory(storyFile){
                 xhr.responseText;
 
 
-            var frontData =
+            var data =
                 parseFrontmatter(text);
 
 
-            var articleTitle =
-                frontData.title ||
-                getFileName(storyFile);
+            applyReaderMode(
+                data.reader
+            );
 
 
-            title.innerHTML =
-                escapeHtml(articleTitle);
+            renderHeader(
+                data,
+                storyFile
+            );
 
 
-            /* =================================================
-               COVER
-               ================================================= */
-
-            cover.style.display =
-                "none";
-
-
-            if(frontData.cover){
-
-                cover.src =
-                    mediaPath(
-                        frontData.cover
-                    );
-
-                cover.alt =
-                    articleTitle;
-
-                cover.style.display =
-                    "block";
-
-                prepareImage(cover);
-
-
-                cover.onerror =
-                    function(){
-
-                        cover.style.display =
-                            "none";
-
-                    };
-
-            }
-
-
-            /* =================================================
-               CREDITS
-               ================================================= */
-
-            credits.innerHTML =
-                "";
-
-
-            if(frontData.credits){
-
-                credits.innerHTML =
-                    "<strong>Credits:</strong> " +
-                    escapeHtml(
-                        frontData.credits
-                    );
-
-            }
-
-
-            /* =================================================
-               INTERACTIVE STORY ENGINE
-               ================================================= */
-
-            content.innerHTML =
-                renderInteractiveStory(
-                    frontData.body
-                );
-
-
-            fixInlineImages();
-
-            fixInlineVideos();
-
-            fixInlineAudios();
-
-            renderExtraMedia(frontData);
-
-
-            activateStoryChoices();
-
-
-            if(
-                content.getElementsByClassName(
-                    "story-choice"
-                ).length > 0
-            ){
-
-                storyReset.style.display =
-                    "block";
-
-            }else{
-
-                storyReset.style.display =
-                    "none";
-
-            }
+            renderByMode(
+                data,
+                storyFile
+            );
 
 
             status.innerHTML =
@@ -691,11 +1064,10 @@ function loadStory(storyFile){
     xhr.onerror =
         function(){
 
-            title.innerHTML =
-                "Unable to load article";
-
-            status.innerHTML =
-                "The article could not be loaded.";
+            showError(
+                "Unable to load article",
+                "The article could not be loaded."
+            );
 
         };
 
@@ -706,12 +1078,509 @@ function loadStory(storyFile){
 
 
 /* =========================================================
-   INTERACTIVE STORY ENGINE
+   READER MODE
    ========================================================= */
+
+function normalizeReaderMode(value){
+
+    if(!value){
+
+        return "article";
+
+    }
+
+
+    value =
+        String(value)
+            .toLowerCase()
+            .replace(
+                /["']/g,
+                ""
+            )
+            .replace(
+                /\s+/g,
+                ""
+            );
+
+
+    if(
+        value === "story" ||
+        value === "interactive"
+    ){
+
+        return "story";
+
+    }
+
+
+    if(
+        value === "moodboard" ||
+        value === "mood-board"
+    ){
+
+        return "moodboard";
+
+    }
+
+
+    if(
+        value === "feed" ||
+        value === "social"
+    ){
+
+        return "feed";
+
+    }
+
+
+    return "article";
+
+}
 
 
 /* =========================================================
-   RENDER ENTIRE STORY
+   APPLY READER MODE
+   ========================================================= */
+
+function applyReaderMode(mode){
+
+    mode =
+        normalizeReaderMode(mode);
+
+
+    reader.className =
+        "mode-" + mode;
+
+}
+
+
+/* =========================================================
+   RENDER HEADER
+   ========================================================= */
+
+function renderHeader(
+    data,
+    storyFile
+){
+
+    var articleTitle =
+        data.title ||
+        getFileName(storyFile);
+
+
+    title.innerHTML =
+        escapeHtml(articleTitle);
+
+
+    credits.innerHTML =
+        "";
+
+
+    if(data.credits){
+
+        credits.innerHTML =
+            "<strong>Credits:</strong> " +
+            escapeHtml(
+                data.credits
+            );
+
+    }
+
+
+    cover.style.display =
+        "none";
+
+
+    if(data.cover){
+
+        cover.src =
+            mediaPath(
+                data.cover
+            );
+
+        cover.alt =
+            articleTitle;
+
+        cover.style.display =
+            "block";
+
+
+        prepareImage(
+            cover
+        );
+
+
+        cover.onerror =
+            function(){
+
+                cover.style.display =
+                    "none";
+
+            };
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER BY MODE
+   ========================================================= */
+
+function renderByMode(
+    data,
+    storyFile
+){
+
+    var mode =
+        normalizeReaderMode(
+            data.reader
+        );
+
+
+    content.innerHTML =
+        "";
+
+    media.innerHTML =
+        "";
+
+
+    if(mode === "story"){
+
+        renderStoryMode(
+            data
+        );
+
+    }
+
+    else if(mode === "moodboard"){
+
+        renderMoodboardMode(
+            data
+        );
+
+    }
+
+    else if(mode === "feed"){
+
+        renderFeedMode(
+            data
+        );
+
+    }
+
+    else{
+
+        renderArticleMode(
+            data
+        );
+
+    }
+
+
+    fixInlineImages();
+
+    fixInlineVideos();
+
+    fixInlineAudios();
+
+    renderExtraMedia(
+        data
+    );
+
+}
+
+
+/* =========================================================
+   ARTICLE MODE
+   ========================================================= */
+
+function renderArticleMode(data){
+
+    content.innerHTML =
+        marked(
+            processNextChapterMarkers(
+                data.body
+            )
+        );
+
+}
+
+
+/* =========================================================
+   STORY MODE
+   ========================================================= */
+
+function renderStoryMode(data){
+
+    content.innerHTML =
+        renderInteractiveStory(
+            data.body
+        );
+
+
+    activateStoryChoices();
+
+
+    if(
+        content.getElementsByClassName(
+            "story-choice"
+        ).length > 0
+    ){
+
+        storyReset.style.display =
+            "block";
+
+    }
+
+}
+
+
+/* =========================================================
+   MOODBOARD MODE
+   =========================================================
+
+   The Markdown itself remains the source.
+
+   A normal Markdown image:
+
+   ![caption](image.jpg)
+
+   becomes a moodboard card.
+
+   Text between images remains ordinary
+   Markdown content.
+
+   ========================================================= */
+
+function renderMoodboardMode(data){
+
+    var html =
+        marked(
+            data.body
+        );
+
+
+    var temporary =
+        document.createElement("div");
+
+
+    temporary.innerHTML =
+        html;
+
+
+    var images =
+        temporary.getElementsByTagName(
+            "img"
+        );
+
+
+    if(!images.length){
+
+        content.innerHTML =
+            html;
+
+        return;
+
+    }
+
+
+    var grid =
+        document.createElement("div");
+
+
+    grid.className =
+        "moodboard-grid";
+
+
+    var i;
+
+
+    for(i=0; i<images.length; i++){
+
+        var image =
+            images[i];
+
+
+        var card =
+            document.createElement("div");
+
+
+        card.className =
+            "moodboard-card";
+
+
+        card.appendChild(
+            image.cloneNode(true)
+        );
+
+
+        var caption =
+            image.getAttribute("alt");
+
+
+        if(caption){
+
+            var cardText =
+                document.createElement("div");
+
+
+            cardText.className =
+                "moodboard-card-content";
+
+
+            cardText.innerHTML =
+                "<p>" +
+                escapeHtml(caption) +
+                "</p>";
+
+
+            card.appendChild(
+                cardText
+            );
+
+        }
+
+
+        grid.appendChild(
+            card
+        );
+
+    }
+
+
+    content.innerHTML =
+        "";
+
+
+    content.appendChild(
+        grid
+    );
+
+
+    /*
+       Preserve ordinary text below
+       the image collection.
+    */
+
+    var textOnly =
+        temporary.cloneNode(true);
+
+
+    var textImages =
+        textOnly.getElementsByTagName(
+            "img"
+        );
+
+
+    while(textImages.length){
+
+        textImages[0].parentNode.removeChild(
+            textImages[0]
+        );
+
+    }
+
+
+    var remaining =
+        textOnly.innerHTML;
+
+
+    if(
+        remaining &&
+        remaining.replace(/\s/g,"")
+    ){
+
+        var textBlock =
+            document.createElement("div");
+
+
+        textBlock.innerHTML =
+            remaining;
+
+
+        content.appendChild(
+            textBlock
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FEED MODE
+   ========================================================= */
+
+function renderFeedMode(data){
+
+    var temporary =
+        document.createElement("div");
+
+
+    temporary.innerHTML =
+        marked(
+            data.body
+        );
+
+
+    var paragraphs =
+        temporary.getElementsByTagName(
+            "p"
+        );
+
+
+    if(!paragraphs.length){
+
+        content.innerHTML =
+            temporary.innerHTML;
+
+        return;
+
+    }
+
+
+    var feed =
+        document.createElement("div");
+
+
+    var i;
+
+
+    for(i=0; i<paragraphs.length; i++){
+
+        var item =
+            document.createElement("div");
+
+
+        item.className =
+            "feed-item";
+
+
+        item.innerHTML =
+            paragraphs[i].outerHTML;
+
+
+        feed.appendChild(
+            item
+        );
+
+    }
+
+
+    content.innerHTML =
+        "";
+
+
+    content.appendChild(
+        feed
+    );
+
+}
+
+
+/* =========================================================
+   INTERACTIVE STORY ENGINE
    ========================================================= */
 
 function renderInteractiveStory(body){
@@ -749,10 +1618,6 @@ function parseStorySegment(
 
 
     while(i < lines.length){
-
-        /*
-           Look for a choice.
-        */
 
         if(
             /^\s*\[CHOICE:[a-zA-Z0-9_-]+\]\s*$/.test(
@@ -794,10 +1659,6 @@ function parseStorySegment(
         }
 
 
-        /*
-           Ordinary story text.
-        */
-
         normalLines.push(
             lines[i]
         );
@@ -831,17 +1692,7 @@ function parseStorySegment(
 
 
 /* =========================================================
-   NEXT CHAPTER MARKER
-   =========================================================
-
-   MARKDOWN FORMAT:
-
-   [NEXTCHAPTER:discordant-descendants-chapter-02]
-
-   This becomes a button linking to:
-
-   article.html?file=discordant-descendants-chapter-02
-
+   NEXT CHAPTER
    ========================================================= */
 
 function processNextChapterMarkers(text){
@@ -852,16 +1703,20 @@ function processNextChapterMarkers(text){
 
     return text.replace(
         pattern,
-        function(match, chapterFile){
+        function(
+            match,
+            chapterFile
+        ){
 
             return (
-                '<a class="story-next-chapter" ' +
-                'href="' +
+                '<a class="story-next-chapter" href="' +
                 escapeAttribute(
-                    chapterUrl(chapterFile)
+                    chapterUrl(
+                        chapterFile
+                    )
                 ) +
                 '">' +
-                'Continue to Chapter 2' +
+                'Continue to next chapter' +
                 '</a>'
             );
 
@@ -890,7 +1745,7 @@ function chapterUrl(chapterFile){
 
 
 /* =========================================================
-   PARSE ONE CHOICE BLOCK
+   PARSE CHOICE BLOCK
    ========================================================= */
 
 function parseChoiceBlock(
@@ -931,6 +1786,7 @@ function parseChoiceBlock(
     var currentBranch =
         null;
 
+
     var i =
         startIndex + 1;
 
@@ -940,10 +1796,6 @@ function parseChoiceBlock(
         var line =
             lines[i];
 
-
-        /*
-           END OF THIS CHOICE
-        */
 
         if(
             /^\s*\[ENDCHOICE\]\s*$/.test(
@@ -955,10 +1807,6 @@ function parseChoiceBlock(
 
         }
 
-
-        /*
-           OPTION
-        */
 
         var optionMatch =
             line.match(
@@ -988,10 +1836,6 @@ function parseChoiceBlock(
 
         }
 
-
-        /*
-           CONSEQUENCE / BRANCH
-        */
 
         var consequenceMatch =
             line.match(
@@ -1023,11 +1867,6 @@ function parseChoiceBlock(
         }
 
 
-        /*
-           Story text belonging to
-           the current branch.
-        */
-
         if(currentBranch){
 
             currentBranch.lines.push(
@@ -1042,26 +1881,19 @@ function parseChoiceBlock(
     }
 
 
-    /*
-       Build visible choice.
-    */
-
     var html =
         '<div class="story-choice" ' +
         'data-choice-id="' +
-        escapeAttribute(choiceId) +
+        escapeAttribute(
+            choiceId
+        ) +
         '">' +
 
+
         '<div class="story-choice-title">' +
-
         'What does Lexis do?' +
-
         '</div>';
 
-
-    /*
-       Add buttons.
-    */
 
     var j;
 
@@ -1070,15 +1902,13 @@ function parseChoiceBlock(
 
         html +=
             '<button ' +
-
             'type="button" ' +
-
             'class="story-choice-button" ' +
-
             'data-choice-id="' +
-            escapeAttribute(choiceId) +
+            escapeAttribute(
+                choiceId
+            ) +
             '" ' +
-
             'data-choice-letter="' +
             escapeAttribute(
                 options[j].letter
@@ -1100,12 +1930,6 @@ function parseChoiceBlock(
         '</div>';
 
 
-    /*
-       Add all branches.
-
-       Nested choices are supported.
-    */
-
     for(j=0; j<branches.length; j++){
 
         var branch =
@@ -1121,13 +1945,12 @@ function parseChoiceBlock(
 
         html +=
             '<div ' +
-
             'class="story-branch story-hidden" ' +
-
             'data-choice-id="' +
-            escapeAttribute(choiceId) +
+            escapeAttribute(
+                choiceId
+            ) +
             '" ' +
-
             'data-choice-letter="' +
             escapeAttribute(
                 branch.letter
@@ -1140,10 +1963,6 @@ function parseChoiceBlock(
 
     }
 
-
-    /*
-       Move past ENDCHOICE.
-    */
 
     if(i < lines.length){
 
@@ -1164,7 +1983,7 @@ function parseChoiceBlock(
 
 
 /* =========================================================
-   ACTIVATE ALL STORY CHOICES
+   ACTIVATE STORY CHOICES
    ========================================================= */
 
 function activateStoryChoices(){
@@ -1193,7 +2012,7 @@ function activateStoryChoices(){
 
 
 /* =========================================================
-   ACTIVATE ONE BUTTON
+   ONE CHOICE BUTTON
    ========================================================= */
 
 function activateChoiceButton(button){
@@ -1224,7 +2043,7 @@ function activateChoiceButton(button){
 
 
 /* =========================================================
-   SELECT STORY CHOICE
+   SELECT
    ========================================================= */
 
 function selectStoryChoice(
@@ -1247,7 +2066,7 @@ function selectStoryChoice(
 
 
 /* =========================================================
-   SAVE STORY CHOICE
+   SAVE
    ========================================================= */
 
 function saveStoryChoice(
@@ -1293,14 +2112,13 @@ function saveStoryChoice(
             )
         );
 
-
     }catch(e){}
 
 }
 
 
 /* =========================================================
-   GET SAVED STORY CHOICE
+   GET SAVED
    ========================================================= */
 
 function getSavedStoryChoice(
@@ -1344,7 +2162,7 @@ function getSavedStoryChoice(
 
 
 /* =========================================================
-   SHOW SELECTED BRANCH
+   SHOW BRANCH
    ========================================================= */
 
 function showSelectedBranch(
@@ -1367,11 +2185,6 @@ function showSelectedBranch(
     var i;
 
 
-    /*
-       Hide the choice buttons
-       after selection.
-    */
-
     for(i=0; i<choices.length; i++){
 
         if(
@@ -1388,11 +2201,6 @@ function showSelectedBranch(
     }
 
 
-    /*
-       Hide every branch belonging
-       to this choice.
-    */
-
     for(i=0; i<branches.length; i++){
 
         if(
@@ -1408,10 +2216,6 @@ function showSelectedBranch(
 
     }
 
-
-    /*
-       Show ONLY the selected branch.
-    */
 
     for(i=0; i<branches.length; i++){
 
@@ -1436,7 +2240,7 @@ function showSelectedBranch(
 
 
 /* =========================================================
-   RESTORE SAVED CHOICES
+   RESTORE SAVED
    ========================================================= */
 
 function restoreSavedChoices(){
@@ -1449,20 +2253,16 @@ function restoreSavedChoices(){
 
     var i;
 
-    var choiceId;
-
-    var savedLetter;
-
 
     for(i=0; i<choices.length; i++){
 
-        choiceId =
+        var choiceId =
             choices[i].getAttribute(
                 "data-choice-id"
             );
 
 
-        savedLetter =
+        var savedLetter =
             getSavedStoryChoice(
                 choiceId
             );
@@ -1483,354 +2283,150 @@ function restoreSavedChoices(){
 
 
 /* =========================================================
-   ARTICLE PATH CLEANING
+   RESET CURRENT STORY
    ========================================================= */
 
-function cleanArticlePath(path){
+function resetCurrentStory(){
 
-    path =
-        path.replace(
-            /\\/g,
-            "/"
+    try{
+
+        localStorage.removeItem(
+            currentStoryKey
         );
 
+    }catch(e){}
 
-    path =
-        path.replace(
-            /^\/+/,
-            ""
+
+    loadDocument(file);
+
+
+    try{
+
+        window.scrollTo(
+            0,
+            0
         );
 
-
-    var parts =
-        path.split("/");
-
-
-    var clean = [];
-
-
-    var i;
-
-    var part;
-
-
-    for(i=0; i<parts.length; i++){
-
-        part =
-            parts[i].trim();
-
-
-        if(!part){
-
-            continue;
-
-        }
-
-
-        if(
-            part === "." ||
-            part === ".."
-        ){
-
-            return "";
-
-        }
-
-
-        clean.push(part);
-
-    }
-
-
-    if(!clean.length){
-
-        return "";
-
-    }
-
-
-    return clean.join("/");
+    }catch(e){}
 
 }
 
 
 /* =========================================================
-   ARTICLE URL
+   EXTRA MEDIA
    ========================================================= */
 
-function articlePath(path){
+function renderExtraMedia(data){
 
-    var parts =
-        path.split("/");
-
-
-    var encoded = [];
+    var html = "";
 
 
-    var i;
+    if(data.video){
 
+        html +=
+            '<div class="media-box">' +
 
-    for(i=0; i<parts.length; i++){
+            '<h2 class="media-title">' +
+            'Video' +
+            '</h2>' +
 
-        encoded.push(
-            encodeURIComponent(
-                parts[i]
-            )
-        );
+            '<video controls preload="metadata">' +
 
-    }
+            '<source src="' +
 
+            escapeAttribute(
+                mediaPath(
+                    data.video
+                )
+            ) +
 
-    /*
-       IMPORTANT:
+            '">' +
 
-       article.html is in the site root.
+            'Your browser cannot play this video.' +
 
-       Therefore content/articles is also
-       reached from the site root.
+            '</video>' +
 
-       The old "../content/articles/"
-       could point outside the site when
-       article.html is already at the root.
-    */
-
-    return (
-        "/content/articles/" +
-        encoded.join("/") +
-        ".md"
-    );
-
-}
-
-
-/* =========================================================
-   FRONTMATTER
-   ========================================================= */
-
-function parseFrontmatter(text){
-
-    var result = {
-
-        title:"",
-        cover:"",
-        credits:"",
-        video:"",
-        audio:"",
-        downloads:[],
-        body:text
-
-    };
-
-
-    var match =
-        text.match(
-            /^---\s*([\s\S]*?)\s*---\s*/
-        );
-
-
-    if(!match){
-
-        return result;
+            '</div>';
 
     }
 
 
-    var front =
-        match[1];
+    if(data.audio){
 
+        html +=
+            '<div class="media-box">' +
 
-    result.body =
-        text.replace(
-            /^---\s*[\s\S]*?\s*---\s*/,
-            ""
-        );
+            '<h2 class="media-title">' +
+            'Audio' +
+            '</h2>' +
 
+            '<audio controls preload="metadata">' +
 
-    var titleMatch =
-        front.match(
-            /^title:\s*["']?(.*?)["']?\s*$/m
-        );
+            '<source src="' +
 
+            escapeAttribute(
+                mediaPath(
+                    data.audio
+                )
+            ) +
 
-    if(titleMatch){
+            '">' +
 
-        result.title =
-            cleanValue(
-                titleMatch[1]
-            );
+            'Your browser cannot play this audio.' +
 
-    }
+            '</audio>' +
 
-
-    var coverMatch =
-        front.match(
-            /^cover:\s*["']?(.*?)["']?\s*$/m
-        );
-
-
-    if(coverMatch){
-
-        result.cover =
-            cleanValue(
-                coverMatch[1]
-            );
+            '</div>';
 
     }
 
 
-    var creditsMatch =
-        front.match(
-            /^credits:\s*["']?(.*?)["']?\s*$/m
-        );
+    if(data.downloads.length){
 
+        html +=
+            '<div class="media-box">' +
 
-    if(creditsMatch){
-
-        result.credits =
-            cleanValue(
-                creditsMatch[1]
-            );
-
-    }
-
-
-    var videoMatch =
-        front.match(
-            /^video:\s*["']?(.*?)["']?\s*$/m
-        );
-
-
-    if(videoMatch){
-
-        result.video =
-            cleanValue(
-                videoMatch[1]
-            );
-
-    }
-
-
-    var audioMatch =
-        front.match(
-            /^audio:\s*["']?(.*?)["']?\s*$/m
-        );
-
-
-    if(audioMatch){
-
-        result.audio =
-            cleanValue(
-                audioMatch[1]
-            );
-
-    }
-
-
-    var downloadsMatch =
-        front.match(
-            /^downloads:\s*([\s\S]*?)(?=^[a-zA-Z0-9_-]+\s*:|$)/m
-        );
-
-
-    if(downloadsMatch){
-
-        var lines =
-            downloadsMatch[1].split("\n");
+            '<h2 class="media-title">' +
+            'Downloads' +
+            '</h2>';
 
 
         var i;
 
-        var line;
 
-        var value;
+        for(i=0; i<data.downloads.length; i++){
 
+            html +=
+                '<p>' +
 
-        for(i=0; i<lines.length; i++){
+                '<a href="' +
 
-            line =
-                lines[i]
-                    .replace(
-                        /^\s*-\s*/,
-                        ""
+                escapeAttribute(
+                    mediaPath(
+                        data.downloads[i]
                     )
-                    .trim();
+                ) +
 
+                '" download>' +
 
-            if(line){
+                'Download file ' +
+                (i + 1) +
 
-                value =
-                    cleanValue(line);
+                '</a>' +
 
-
-                if(value){
-
-                    result.downloads.push(
-                        value
-                    );
-
-                }
-
-            }
+                '</p>';
 
         }
 
-    }
 
-
-    return result;
-
-}
-
-
-/* =========================================================
-   CLEAN VALUE
-   ========================================================= */
-
-function cleanValue(value){
-
-    value =
-        value.replace(
-            /^\s+/,
-            ""
-        );
-
-
-    value =
-        value.replace(
-            /\s+$/,
-            ""
-        );
-
-
-    if(
-        value.length >= 2 &&
-        (
-            (
-                value.charAt(0) === '"' &&
-                value.charAt(
-                    value.length - 1
-                ) === '"'
-            )
-            ||
-            (
-                value.charAt(0) === "'" &&
-                value.charAt(
-                    value.length - 1
-                ) === "'"
-            )
-        )
-    ){
-
-        value =
-            value.substring(
-                1,
-                value.length - 1
-            );
+        html +=
+            '</div>';
 
     }
 
 
-    return value;
+    media.innerHTML =
+        html;
 
 }
 
@@ -1849,12 +2445,10 @@ function fixInlineImages(){
 
     var i;
 
-    var src;
-
 
     for(i=0; i<images.length; i++){
 
-        src =
+        var src =
             images[i].getAttribute(
                 "src"
             );
@@ -1865,24 +2459,24 @@ function fixInlineImages(){
             images[i].src =
                 mediaPath(src);
 
-
-            prepareImage(
-                images[i]
-            );
-
-
-            images[i].onerror =
-                function(){
-
-                    this.alt =
-                        "Image could not be loaded.";
-
-                    this.style.opacity =
-                        "0.6";
-
-                };
-
         }
+
+
+        prepareImage(
+            images[i]
+        );
+
+
+        images[i].onerror =
+            function(){
+
+                this.alt =
+                    "Image could not be loaded.";
+
+                this.style.opacity =
+                    ".6";
+
+            };
 
     }
 
@@ -1903,12 +2497,10 @@ function fixInlineVideos(){
 
     var i;
 
-    var src;
-
 
     for(i=0; i<videos.length; i++){
 
-        src =
+        var src =
             videos[i].getAttribute(
                 "src"
             );
@@ -1944,12 +2536,10 @@ function fixInlineAudios(){
 
     var i;
 
-    var src;
-
 
     for(i=0; i<audios.length; i++){
 
-        src =
+        var src =
             audios[i].getAttribute(
                 "src"
             );
@@ -1972,121 +2562,7 @@ function fixInlineAudios(){
 
 
 /* =========================================================
-   EXTRA MEDIA
-   ========================================================= */
-
-function renderExtraMedia(data){
-
-    var html = "";
-
-
-    if(data.video){
-
-        html +=
-            '<div class="media-box">' +
-
-            '<h2 class="media-title">Video</h2>' +
-
-            '<video controls preload="metadata" width="100%">' +
-
-            '<source src="' +
-
-            escapeAttribute(
-                mediaPath(
-                    data.video
-                )
-            ) +
-
-            '">' +
-
-            'Your browser cannot play this video.' +
-
-            '</video>' +
-
-            '</div>';
-
-    }
-
-
-    if(data.audio){
-
-        html +=
-            '<div class="media-box">' +
-
-            '<h2 class="media-title">Audio</h2>' +
-
-            '<audio controls preload="metadata">' +
-
-            '<source src="' +
-
-            escapeAttribute(
-                mediaPath(
-                    data.audio
-                )
-            ) +
-
-            '">' +
-
-            'Your browser cannot play this audio.' +
-
-            '</audio>' +
-
-            '</div>';
-
-    }
-
-
-    if(data.downloads.length){
-
-        html +=
-            '<div class="media-box">' +
-
-            '<h2 class="media-title">Downloads</h2>';
-
-
-        var i;
-
-
-        for(i=0; i<data.downloads.length; i++){
-
-            html +=
-                '<p>' +
-
-                '<a href="' +
-
-                escapeAttribute(
-                    mediaPath(
-                        data.downloads[i]
-                    )
-                ) +
-
-                '" download>' +
-
-                'Download file ' +
-
-                (i + 1) +
-
-                '</a>' +
-
-                '</p>';
-
-        }
-
-
-        html +=
-            '</div>';
-
-    }
-
-
-    media.innerHTML =
-        html;
-
-}
-
-
-/* =========================================================
-   LOW-SPEC IMAGE HANDLING
+   LOW-SPEC IMAGE PREPARATION
    ========================================================= */
 
 function prepareImage(image){
@@ -2180,6 +2656,368 @@ function mediaPath(src){
 
 
 /* =========================================================
+   ARTICLE PATH
+   ========================================================= */
+
+function articlePath(path){
+
+    var parts =
+        path.split("/");
+
+
+    var encoded = [];
+
+
+    var i;
+
+
+    for(i=0; i<parts.length; i++){
+
+        encoded.push(
+            encodeURIComponent(
+                parts[i]
+            )
+        );
+
+    }
+
+
+    return (
+        "/content/articles/" +
+        encoded.join("/") +
+        ".md"
+    );
+
+}
+
+
+/* =========================================================
+   CLEAN ARTICLE PATH
+   ========================================================= */
+
+function cleanArticlePath(path){
+
+    path =
+        path.replace(
+            /\\/g,
+            "/"
+        );
+
+
+    path =
+        path.replace(
+            /^\/+/,
+            ""
+        );
+
+
+    var parts =
+        path.split("/");
+
+
+    var clean = [];
+
+
+    var i;
+
+
+    for(i=0; i<parts.length; i++){
+
+        var part =
+            parts[i].trim();
+
+
+        if(!part){
+
+            continue;
+
+        }
+
+
+        if(
+            part === "." ||
+            part === ".."
+        ){
+
+            return "";
+
+        }
+
+
+        clean.push(
+            part
+        );
+
+    }
+
+
+    if(!clean.length){
+
+        return "";
+
+    }
+
+
+    return clean.join("/");
+
+}
+
+
+/* =========================================================
+   FRONTMATTER
+   ========================================================= */
+
+function parseFrontmatter(text){
+
+    var result = {
+
+        title:"",
+
+        cover:"",
+
+        credits:"",
+
+        reader:"article",
+
+        video:"",
+
+        audio:"",
+
+        downloads:[],
+
+        body:text
+
+    };
+
+
+    var match =
+        text.match(
+            /^---\s*([\s\S]*?)\s*---\s*/
+        );
+
+
+    if(!match){
+
+        return result;
+
+    }
+
+
+    var front =
+        match[1];
+
+
+    result.body =
+        text.replace(
+            /^---\s*[\s\S]*?\s*---\s*/,
+            ""
+        );
+
+
+    var titleMatch =
+        front.match(
+            /^title:\s*["']?(.*?)["']?\s*$/m
+        );
+
+
+    if(titleMatch){
+
+        result.title =
+            cleanValue(
+                titleMatch[1]
+            );
+
+    }
+
+
+    var coverMatch =
+        front.match(
+            /^cover:\s*["']?(.*?)["']?\s*$/m
+        );
+
+
+    if(coverMatch){
+
+        result.cover =
+            cleanValue(
+                coverMatch[1]
+            );
+
+    }
+
+
+    var creditsMatch =
+        front.match(
+            /^credits:\s*["']?(.*?)["']?\s*$/m
+        );
+
+
+    if(creditsMatch){
+
+        result.credits =
+            cleanValue(
+                creditsMatch[1]
+            );
+
+    }
+
+
+    var readerMatch =
+        front.match(
+            /^reader:\s*["']?(.*?)["']?\s*$/m
+        );
+
+
+    if(readerMatch){
+
+        result.reader =
+            cleanValue(
+                readerMatch[1]
+            );
+
+    }
+
+
+    var videoMatch =
+        front.match(
+            /^video:\s*["']?(.*?)["']?\s*$/m
+        );
+
+
+    if(videoMatch){
+
+        result.video =
+            cleanValue(
+                videoMatch[1]
+            );
+
+    }
+
+
+    var audioMatch =
+        front.match(
+            /^audio:\s*["']?(.*?)["']?\s*$/m
+        );
+
+
+    if(audioMatch){
+
+        result.audio =
+            cleanValue(
+                audioMatch[1]
+            );
+
+    }
+
+
+    var downloadsMatch =
+        front.match(
+            /^downloads:\s*([\s\S]*?)(?=^[a-zA-Z0-9_-]+\s*:|$)/m
+        );
+
+
+    if(downloadsMatch){
+
+        var lines =
+            downloadsMatch[1].split("\n");
+
+
+        var i;
+
+
+        for(i=0; i<lines.length; i++){
+
+            var line =
+                lines[i]
+                    .replace(
+                        /^\s*-\s*/,
+                        ""
+                    )
+                    .trim();
+
+
+            if(line){
+
+                var value =
+                    cleanValue(
+                        line
+                    );
+
+
+                if(value){
+
+                    result.downloads.push(
+                        value
+                    );
+
+                }
+
+            }
+
+        }
+
+    }
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   CLEAN FRONTMATTER VALUE
+   ========================================================= */
+
+function cleanValue(value){
+
+    value =
+        value.replace(
+            /^\s+/,
+            ""
+        );
+
+
+    value =
+        value.replace(
+            /\s+$/,
+            ""
+        );
+
+
+    if(
+        value.length >= 2 &&
+        (
+            (
+                value.charAt(0) === '"' &&
+                value.charAt(
+                    value.length - 1
+                ) === '"'
+            )
+            ||
+            (
+                value.charAt(0) === "'" &&
+                value.charAt(
+                    value.length - 1
+                ) === "'"
+            )
+        )
+    ){
+
+        value =
+            value.substring(
+                1,
+                value.length - 1
+            );
+
+    }
+
+
+    return value;
+
+}
+
+
+/* =========================================================
    FILE NAME
    ========================================================= */
 
@@ -2197,7 +3035,60 @@ function getFileName(path){
 
 
 /* =========================================================
-   HTML ESCAPING
+   STORAGE KEY
+   ========================================================= */
+
+function cleanStorageKey(value){
+
+    if(!value){
+
+        return "article";
+
+    }
+
+
+    return String(value)
+        .replace(
+            /[^a-zA-Z0-9_-]/g,
+            "_"
+        );
+
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+function showError(
+    heading,
+    message
+){
+
+    title.innerHTML =
+        escapeHtml(
+            heading
+        );
+
+
+    status.innerHTML =
+        escapeHtml(
+            message
+        );
+
+
+    content.innerHTML =
+        "";
+
+
+    cover.style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   HTML ESCAPE
    ========================================================= */
 
 function escapeHtml(value){
@@ -2233,12 +3124,14 @@ function escapeHtml(value){
 
 
 /* =========================================================
-   ATTRIBUTE ESCAPING
+   ATTRIBUTE ESCAPE
    ========================================================= */
 
 function escapeAttribute(value){
 
-    return escapeHtml(value);
+    return escapeHtml(
+        value
+    );
 
 }
 
