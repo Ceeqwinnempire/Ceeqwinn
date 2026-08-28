@@ -7,7 +7,7 @@ title: DISCORDANT DESCENDANTS
 
 **---**
 
-**DISCORDANT DESCENDANTS TEST CEE**
+**# DISCORDANT DESCENDANTS**
 
 *****An Interactive Story*****
 
@@ -15,7 +15,7 @@ title: DISCORDANT DESCENDANTS
 
 **---**
 
-**PROLOGUE**
+**## PROLOGUE**
 
 **Friday.**
 
@@ -33,25 +33,7 @@ title: DISCORDANT DESCENDANTS
 
 **Exactly what she needed while contemplating believable excuses for escaping her cousin.**
 
-**Her gaze drifted down to her bell-flower shirt.**
-
-**Maybe illness.**
-
-**Too obvious.**
-
-**A family emergency?**
-
-**Too dramatic.**
-
-**Sudden amnesia?**
-
-**Tempting.**
-
-**She was still constructing the perfect lie when—**
-
-**Chime!**
-
-**The school bell rescued her.**
+**The bell finally rang.**
 
 **Lexis practically floated out of the classroom.**
 
@@ -59,7 +41,7 @@ title: DISCORDANT DESCENDANTS
 
 **“Two doughnuts, please.”**
 
-**One of the chefs handed them over, and Lexis made her way through the crowded cafeteria toward her favorite place beside the window.**
+**One of the chefs handed them over, and Lexis made her way toward her favorite place beside the window.**
 
 **She had barely sat down when—**
 
@@ -69,17 +51,19 @@ title: DISCORDANT DESCENDANTS
 
 **“Thank you. How comforting. You made my heart jump.”**
 
-**“Sorry, dear.” Estée grinned, sliding into the seat beside her. “But the Okoyes' party is going to be as splendid as junk food for breakfast served in bed!”**
+**Estée grinned.**
+
+**“The Okoyes' party is going to be spectacular!”**
 
 **Lexis frowned.**
 
 **“I thought that gathering was just for family.”**
 
-**“Maybe. But your cousin kindly invited everyone. You should get to know her.”**
+**“Maybe. But your cousin invited everyone.”**
 
-**Estée's eyes landed on Lexis's doughnuts.**
+**Estée reached toward Lexis's doughnuts.**
 
-**“And me, too. Hey, can I have one?”**
+**“Can I have one?”**
 
 **Lexis pushed one toward her.**
 
@@ -92,8 +76,6 @@ title: DISCORDANT DESCENDANTS
 **Then Lexis remembered.**
 
 **“Estée, I can't come over today. My dad's home, and I need to speak with him before he leaves.”**
-
-**Her fingers rubbed nervously against each other.**
 
 **Estée's smile faded.**
 
@@ -115,7 +97,7 @@ title: DISCORDANT DESCENDANTS
 
 **---**
 
-**THE FIRST CRACK**
+**## THE FIRST CRACK**
 
 **Lexis left the cafeteria without noticing what happened behind her.**
 
@@ -123,37 +105,17 @@ title: DISCORDANT DESCENDANTS
 
 **Tonia followed.**
 
-**“Your scarf's lovely,” Sirena said sweetly.**
+**“I noticed your gloomy expression when you were speaking with my cousin,” Sirena said.**
 
-**“Thanks.”**
+**Estée hesitated.**
 
-**“And I love your outfit.”**
+**“It’s just... lately, Lexis keeps finding excuses to escape hanging out with me.”**
 
-**Tonia complimented Sirena's hair.**
-
-**Sirena barely acknowledged it.**
-
-**Instead, she studied Estée.**
-
-**“I noticed your gloomy expression when you were speaking with my cousin.”**
-
-**Estée folded her hands.**
-
-**“It's nothing much.”**
-
-**She hesitated.**
-
-**“It's just... lately, Lexis keeps finding excuses to escape hanging out with me.”**
-
-**Sirena's smile widened.**
+**Sirena smiled.**
 
 **“Aww.”**
 
 **She tilted her head.**
-
-**“I understand what it means to be in hot water.”**
-
-**Then her eyebrows rose.**
 
 **“But if you follow my instructions perfectly, your desire to become closer to your bestie may come true.”**
 
@@ -169,51 +131,7 @@ title: DISCORDANT DESCENDANTS
 
 **---**
 
-**LEXIS GOES HOME**
-
-**The hallway was almost empty when Lexis hurried through it.**
-
-**“Bestie!”**
-
-**She turned.**
-
-**Estée was trying to catch up.**
-
-**“Why are you leaving school early? And why aren't you taking my calls?”**
-
-**“I took permission beforehand,” Lexis replied in one breath. “My phone is on silent. I just... don't feel right.”**
-
-**Estée's expression softened.**
-
-**She wrapped Lexis in a hug.**
-
-**The familiar lemony scent of her perfume settled Lexis's nerves.**
-
-**“You'll be as steady as a rock when this is all over.”**
-
-**She pulled away.**
-
-**“Oh! One more thing.”**
-
-**“What?”**
-
-**“Try Sirena's low sleek ponytail for your party look. Forget the hair jewels.”**
-
-**Lexis stared at her.**
-
-**“Could I also skip her iconic pearl-white look?”**
-
-**“Absolutely.”**
-
-**They burst into laughter.**
-
-**For a few seconds, Lexis forgot the strange feeling in her stomach.**
-
-**She wouldn't forget it for long.**
-
-**---**
-
-**# SCENE 01 — THE OKOYE LEGACY**
+**## SCENE 01 — THE OKOYE LEGACY**
 
 **By the time Lexis reached home, Crystal City's usual noise had softened beneath the afternoon sun.**
 
@@ -289,9 +207,9 @@ title: DISCORDANT DESCENDANTS
 
 **---**
 
-**# SCENE 02 — THE HIDDEN BOX**
+**## SCENE 02 — THE HIDDEN BOX**
 
-**That evening, Lexis wandered around her purple-and-black bedroom in comfortable clothes.**
+**That evening, Lexis wandered around her purple-and-black bedroom.**
 
 **She was thinking.**
 
@@ -361,13 +279,15 @@ title: DISCORDANT DESCENDANTS
 
 **And curiosity had always been dangerous around the Okoyes.**
 
+**---**
+
 **[CHOICE:choice-01]**
 
-**[A] Accept the request.**
+**[A] Accept the mysterious request.**
 
-**[B] Reject it.**
+**[B] Reject the mysterious request.**
 
-**[C] Screenshot it and investigate first.**
+**[C] Screenshot the request and investigate first.**
 
 **[CONSEQUENCE:A]**
 
@@ -379,7 +299,7 @@ title: DISCORDANT DESCENDANTS
 
 **Sirena: *Finally.***
 
-**Lexis's mouth fell open.**
+**Lexis stared at the screen.**
 
 **“You've got to be kidding me.”**
 
@@ -387,33 +307,15 @@ title: DISCORDANT DESCENDANTS
 
 **Sirena: *We need to talk.***
 
-**Lexis stared at the screen.**
+**Lexis frowned.**
 
-**She could almost hear Sirena's voice through the words.**
+**“About what?”**
 
-**Cold.**
-
-**Polished.**
-
-**Annoyingly confident.**
-
-**Lexis typed:**
-
-**About what?**
-
-**The typing indicator appeared.**
-
-**Disappeared.**
-
-**Appeared again.**
-
-**Then—**
+**Sirena's reply came quickly.**
 
 **Sirena: *Tomorrow's gathering.***
 
-**Lexis's amusement vanished.**
-
-**She sat upright.**
+**Lexis sat upright.**
 
 **“What about it?”**
 
@@ -423,8 +325,6 @@ title: DISCORDANT DESCENDANTS
 
 **Lexis opened it.**
 
-**Her face changed.**
-
 **It was an old photograph of the Okoye family.**
 
 **Her father was there.**
@@ -433,31 +333,25 @@ title: DISCORDANT DESCENDANTS
 
 **And standing between them was her grandfather.**
 
-**But that wasn't what disturbed Lexis.**
-
-**It was the person standing behind them.**
+**But someone else stood behind them.**
 
 **Someone Lexis had never seen before.**
 
-**Someone whose face had been deliberately scratched out.**
-
-**Lexis zoomed in.**
-
-**Her heart began beating faster.**
+**The face had been deliberately obscured.**
 
 **Then another message appeared.**
 
 **Sirena: *Ask your father who she is.***
 
-**Lexis stared at the screen.**
-
-**Before she could respond, the message disappeared.**
+**The message disappeared.**
 
 **Deleted.**
 
-**Her phone went silent.**
+**Lexis stared at the screen.**
 
-**And suddenly the quiet bedroom didn't feel quiet anymore.**
+**Something was wrong.**
+
+**Very wrong.**
 
 **[CONSEQUENCE:B]**
 
@@ -471,13 +365,9 @@ title: DISCORDANT DESCENDANTS
 
 **Buzz.**
 
-**She glanced over.**
-
-**Another notification.**
+**Another request.**
 
 **The same account.**
-
-**Another friend request.**
 
 **Lexis narrowed her eyes.**
 
@@ -485,45 +375,25 @@ title: DISCORDANT DESCENDANTS
 
 **She rejected it again.**
 
-**Buzz.**
+**The request disappeared.**
 
-**Again.**
-
-**This time Lexis stopped smiling.**
-
-**She picked up the phone.**
-
-**The request was gone.**
-
-**Instead, there was a message from an unknown number.**
+**Then a message appeared from an unknown number.**
 
 **You shouldn't ignore people who know your family.**
 
 **Lexis froze.**
 
-**Her fingers tightened around the phone.**
-
 **She typed:**
 
 **Who are you?**
 
-**The reply came almost immediately.**
+**The reply arrived almost immediately.**
 
 **Someone who knows what happened before you were born.**
 
-**Lexis stared at the words.**
+**The message vanished.**
 
-**Then the message vanished.**
-
-**Her phone returned to its ordinary home screen.**
-
-**No conversation.**
-
-**No number.**
-
-**No evidence that she'd ever received anything.**
-
-**Lexis slowly lowered the phone.**
+**Lexis slowly lowered her phone.**
 
 **“Okay.”**
 
@@ -531,13 +401,13 @@ title: DISCORDANT DESCENDANTS
 
 **“That's officially creepy.”**
 
-**Then she heard something.**
-
-**A faint sound beneath the floor.**
+**Then—**
 
 **Click.**
 
-**Lexis's eyes moved toward the loose tile.**
+**The sound came from beneath the floor.**
+
+**Lexis looked toward the loose tile.**
 
 **[CONSEQUENCE:C]**
 
@@ -549,7 +419,7 @@ title: DISCORDANT DESCENDANTS
 
 **Then another.**
 
-**She opened the profile and began examining every detail.**
+**She examined the mysterious profile.**
 
 **No photograph.**
 
@@ -567,31 +437,17 @@ title: DISCORDANT DESCENDANTS
 
 **“You've got to be joking.”**
 
-**She opened the account's limited information again.**
+**She checked the profile again.**
 
-**The profile had been created only three days ago.**
-
-**Three days.**
+**Created only three days ago.**
 
 **Exactly when everyone started talking about the family gathering.**
 
 **Lexis's suspicion deepened.**
 
-**She opened her browser and began searching.**
+**Then she noticed something else.**
 
-**Nothing.**
-
-**She searched the username.**
-
-**Nothing.**
-
-**She searched the phone number attached to the profile.**
-
-**Nothing.**
-
-**Then she noticed something strange.**
-
-**The profile picture wasn't actually blank.**
+**The profile picture wasn't blank.**
 
 **It was a solid white image.**
 
@@ -633,7 +489,7 @@ title: DISCORDANT DESCENDANTS
 
 **---**
 
-**# SCENE 03 — THE CREST**
+**## SCENE 03 — THE CREST**
 
 **Lexis stared at the tiny symbol on her phone.**
 
@@ -641,17 +497,13 @@ title: DISCORDANT DESCENDANTS
 
 **She had seen it before.**
 
-**Not once.**
-
 **Several times.**
 
 **Usually on documents her father kept locked away in his study.**
 
 **She stood.**
 
-**The room suddenly felt too small.**
-
-**If the crest belonged to the Okoyes, why was it appearing on a mysterious account that had been created only three days ago?**
+**If the crest belonged to the Okoyes, why was it appearing on a mysterious account?**
 
 **And why had someone connected it to her?**
 
@@ -697,8 +549,6 @@ title: DISCORDANT DESCENDANTS
 
 **She pushed the door open.**
 
-**The room smelled faintly of old paper and cedar.**
-
 **Everything looked normal.**
 
 **The desk.**
@@ -722,8 +572,6 @@ title: DISCORDANT DESCENDANTS
 **If she opened it, she would be crossing a line.**
 
 **A very obvious one.**
-
-**Her father's private things were private for a reason.**
 
 **But the mysterious profile had shown her the crest.**
 
@@ -757,6 +605,8 @@ title: DISCORDANT DESCENDANTS
 
 **The envelope was still beneath her fingers.**
 
+**---**
+
 **[CHOICE:choice-02]**
 
 **[A] Take the envelope.**
@@ -769,15 +619,13 @@ title: DISCORDANT DESCENDANTS
 
 **Lexis grabbed the envelope.**
 
-**She closed the drawer with one hand and slipped the envelope behind her back.**
+**She quickly closed the drawer.**
+
+**Her father's footsteps approached.**
 
 **“Coming!”**
 
-**She stepped away from the cabinet.**
-
-**Her father's footsteps sounded from the hallway.**
-
-**Lexis quickly tucked the envelope beneath her shirt.**
+**She slipped the envelope into her pocket.**
 
 **Her father appeared in the doorway.**
 
@@ -787,14 +635,6 @@ title: DISCORDANT DESCENDANTS
 
 **Then back at her.**
 
-**Lexis smiled.**
-
-**A little too brightly.**
-
-**“Hi.”**
-
-**His eyes narrowed.**
-
 **“What are you doing in here?”**
 
 **“Looking for you.”**
@@ -803,43 +643,23 @@ title: DISCORDANT DESCENDANTS
 
 **“I thought you might have teleported.”**
 
-**Her father gave her the kind of look that suggested he was deciding whether that answer deserved a response.**
-
-**Then his eyes moved toward the cabinet.**
-
-**Lexis's stomach tightened.**
-
-**“Did you open that drawer?”**
-
-**“No.”**
-
-**The answer came far too quickly.**
-
 **Her father raised an eyebrow.**
 
 **Lexis sighed.**
 
-**“Okay. Technically, yes.”**
+**“Okay. Technically, I opened the drawer.”**
 
-**He stepped into the room.**
+**His expression changed.**
 
 **“Lexis.”**
 
-**She pulled the envelope from behind her back.**
+**She pulled the envelope from her pocket.**
 
 **“I found this.”**
 
 **The moment her father saw it, the amusement disappeared from his face.**
 
-**He didn't speak.**
-
-**Lexis noticed.**
-
-**That frightened her more than anger would have.**
-
-**“You know what this is.”**
-
-**Her father looked at the crest.**
+**He stared at the crest.**
 
 **Then at his daughter.**
 
@@ -856,8 +676,6 @@ title: DISCORDANT DESCENDANTS
 **“Why?”**
 
 **“Because it's not yours.”**
-
-**That answer only made her more curious.**
 
 **“What is inside?”**
 
@@ -877,13 +695,9 @@ title: DISCORDANT DESCENDANTS
 
 **That single word stopped her.**
 
-**She had never heard him say it like that.**
-
 **She slowly handed him the envelope.**
 
-**He took it.**
-
-**But before he could put it away—**
+**Before he could put it away—**
 
 **Bzzzt.**
 
@@ -893,9 +707,7 @@ title: DISCORDANT DESCENDANTS
 
 **A new message appeared.**
 
-**From S. Chukwudi.**
-
-**> *You found it.***
+**S. Chukwudi: *You found it.***
 
 **Lexis looked at her father.**
 
@@ -915,10 +727,6 @@ title: DISCORDANT DESCENDANTS
 
 **Whatever was inside that envelope, she wasn't going to discover it by sneaking through her father's things.**
 
-**She stepped away from the cabinet.**
-
-**“Coming!”**
-
 **Her father appeared moments later.**
 
 **“You called me?”**
@@ -929,9 +737,7 @@ title: DISCORDANT DESCENDANTS
 
 **“Fair enough.”**
 
-**Lexis leaned against the desk.**
-
-**She studied his face.**
+**Lexis studied his face.**
 
 **“Dad?”**
 
@@ -993,47 +799,15 @@ title: DISCORDANT DESCENDANTS
 
 **Then at him.**
 
-**She had a feeling she was going to regret leaving that room.**
+**Something told her that envelope mattered.**
 
 **[CONSEQUENCE:C]**
 
-**Lexis didn't touch it.**
+**Lexis didn't touch the envelope.**
 
-**Instead, she quietly pulled out her phone.**
+**Instead, she quietly photographed it.**
 
-**Click.**
-
-**The photograph captured the envelope.**
-
-**Click.**
-
-**Another photograph.**
-
-**This time, she zoomed in on the crest.**
-
-**She was about to take one more when—**
-
-**“Lexis?”**
-
-**Her father's voice.**
-
-**She nearly dropped the phone.**
-
-**She quickly returned everything exactly as she found it.**
-
-**“Coming!”**
-
-**She closed the drawer.**
-
-**Then she noticed something strange.**
-
-**The photograph on her screen wasn't quite right.**
-
-**The crest looked different.**
-
-**Lexis frowned.**
-
-**She zoomed in.**
+**Then she zoomed in on the crest.**
 
 **There was a tiny inscription beneath it.**
 
@@ -1043,25 +817,21 @@ title: DISCORDANT DESCENDANTS
 
 **Her eyes widened.**
 
-**She took another screenshot.**
+**She took another photograph.**
 
-**Then another.**
+**Then—**
 
-**Her father appeared at the doorway.**
+**“Lexis?”**
 
-**“What are you doing?”**
+**Her father's voice.**
 
-**“Nothing.”**
+**She quickly returned everything exactly as she found it.**
 
-**He looked suspicious.**
+**“Coming!”**
 
-**Lexis smiled.**
-
-**“Absolutely nothing.”**
+**She closed the drawer.**
 
 **Her phone vibrated.**
-
-**She glanced down.**
 
 **A message.**
 
@@ -1071,17 +841,11 @@ title: DISCORDANT DESCENDANTS
 
 **Lexis's smile disappeared.**
 
-**She looked toward the doorway.**
-
-**Her father hadn't seen the message.**
-
-**Another one appeared.**
+**Another message appeared.**
 
 **Now they know you're looking.**
 
-**Lexis's fingers went cold.**
-
-**She immediately locked the phone.**
+**Lexis immediately locked the phone.**
 
 **“Dad?”**
 
@@ -1101,6 +865,8 @@ title: DISCORDANT DESCENDANTS
 
 **She had found something.**
 
+**---**
+
 **[CHOICE:choice-03]**
 
 **[A] Ask Dad directly about the First Heir.**
@@ -1108,237 +874,5 @@ title: DISCORDANT DESCENDANTS
 **[B] Pretend she knows nothing and investigate secretly.**
 
 **[C] Tell Dad about the mysterious messages.**
-
-**[CONSEQUENCE:A]**
-
-**Lexis didn't move.**
-
-**“Dad.”**
-
-**Her father looked at her.**
-
-**She held his gaze.**
-
-**“Who is the First Heir?”**
-
-**For a moment, the room seemed completely still.**
-
-**Her father's expression changed.**
-
-**Not confusion.**
-
-**Recognition.**
-
-**“You really shouldn't have found that.”**
-
-**Lexis frowned.**
-
-**“Found what?”**
-
-**He looked toward the cabinet.**
-
-**Then toward the hallway.**
-
-**Finally, he lowered his voice.**
-
-**“The First Heir was supposed to disappear from our family's history.”**
-
-**Lexis stared at him.**
-
-**“Supposed to?”**
-
-**Her father didn't answer.**
-
-**Instead, he walked toward the door.**
-
-**“Go upstairs, Lexis.”**
-
-**“Dad—”**
-
-**“Now.”**
-
-**He closed the door behind himself.**
-
-**Lexis stood alone in the hallway.**
-
-**Her phone vibrated.**
-
-**One new message.**
-
-**S. Chukwudi:**
-
-***You asked the right question.***
-
-**Lexis stared at the screen.**
-
-**Another message appeared.**
-
-**S. Chukwudi:**
-
-***Now you need to see what your father was hiding.***
-
-**She swallowed.**
-
-**There was only one problem.**
-
-**She had no idea where to look.**
-
-**---**
-
-**Your next chapter begins here:**
-
-**[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)**
-
-**[ENDCHOICE]**
-
-**[CONSEQUENCE:B]**
-
-**Lexis smiled.**
-
-**“Nothing.”**
-
-**Her father studied her.**
-
-**“You're hiding something.”**
-
-**“I'm hiding several things. Mostly snacks.”**
-
-**He almost smiled.**
-
-**Almost.**
-
-**Then his expression became serious again.**
-
-**“Lexis.”**
-
-**“Yes?”**
-
-**“Whatever you think you've discovered, leave it alone.”**
-
-**That was the worst possible thing he could have said.**
-
-**Because now Lexis knew there was definitely something worth discovering.**
-
-**Later that night, she returned to her room.**
-
-**She opened her phone.**
-
-**The mysterious account was gone.**
-
-**But one new photograph had appeared in her gallery.**
-
-**She hadn't taken it.**
-
-**It showed the Okoye residence.**
-
-**And in one of the upstairs windows—**
-
-**a figure was standing there.**
-
-**Lexis zoomed in.**
-
-**Her phone vibrated.**
-
-**S. Chukwudi:**
-
-***Don't investigate the house.***
-
-**A second message followed.**
-
-***Investigate the family.***
-
-**Lexis stared at the screen.**
-
-**“Well, that's not ominous at all.”**
-
-**She opened a blank note.**
-
-**At the top, she typed:**
-
-**THE FIRST HEIR**
-
-**Then underneath:**
-
-**Find out who they were.**
-
-**---**
-
-**Your next chapter begins here:**
-
-**[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)**
-
-**[ENDCHOICE]**
-
-**[CONSEQUENCE:C]**
-
-**Lexis took a breath.**
-
-**“Dad, I need to tell you something.”**
-
-**Her father turned.**
-
-**“What?”**
-
-**She showed him the phone.**
-
-**She showed him the messages.**
-
-**She showed him the photograph.**
-
-**For several seconds, he said nothing.**
-
-**Then he sat down.**
-
-**“Lexis…”**
-
-**She waited.**
-
-**“I was hoping you would never become involved in this.”**
-
-**Her stomach tightened.**
-
-**“Involved in what?”**
-
-**He looked at the crest on her screen.**
-
-**“The family has secrets.”**
-
-**Lexis raised an eyebrow.**
-
-**“Clearly.”**
-
-**Her father gave a tired laugh.**
-
-**“You don't understand.”**
-
-**“Then explain it.”**
-
-**He looked at her.**
-
-**“I can't.”**
-
-**Lexis's expression fell.**
-
-**“Why?”**
-
-**“Because if the wrong people know that you are asking questions, they may come looking for you.”**
-
-**The room went silent.**
-
-**Lexis slowly lowered her phone.**
-
-**“So someone is watching me?”**
-
-**Her father didn't answer.**
-
-**He didn't need to.**
-
-**That was answer enough.**
-
-**---**
-
-**Your next chapter begins here:**
-
-**[Continue to Chapter Two](article.html?file=discordant-descendants-chapter-02)**
 
 **[ENDCHOICE]**
