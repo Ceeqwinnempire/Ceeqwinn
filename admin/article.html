@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -145,34 +144,24 @@ h2{
 
 
 /* =========================================================
-   03 — STORY TRANSITION / NEXT SCENE
+   03 — NEXT CHAPTER
    ========================================================= */
 
 .story-next{
     margin:55px 0 25px;
-    padding:30px 0;
+    padding:25px 0;
     text-align:center;
-    border-top:1px solid #ddd;
-}
-
-.story-next-label{
-    margin-bottom:15px;
-    color:#777;
-    font-size:.95rem;
-    font-style:italic;
 }
 
 .story-next-button{
     display:inline-block;
-    min-width:220px;
-    padding:15px 24px;
+    padding:14px 22px;
     font:16px Arial,sans-serif;
     background:#222;
     color:#fff;
     border:none;
     border-radius:8px;
     cursor:pointer;
-    transition:opacity .2s;
 }
 
 .story-next-button:hover{
@@ -231,6 +220,7 @@ h2{
 
 </head>
 
+
 <body>
 
 <img id="cover" alt="">
@@ -249,11 +239,13 @@ h2{
 
 <div id="media"></div>
 
+
 <!-- =======================================================
      06 — MARKDOWN
      ======================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
+
 
 <script>
 
@@ -293,6 +285,9 @@ var reset =
    becomes:
 
    content/articles/discordant-descendants.md
+
+   IMPORTANT:
+   The ?file= value does NOT include .md.
    ========================================================= */
 
 var params =
@@ -311,6 +306,10 @@ file =
    09 — STORAGE
 
    Each story gets its own localStorage key.
+
+   Example:
+
+   ceeqwinn_story_discordant-descendants
    ========================================================= */
 
 var storageKey =
@@ -613,6 +612,25 @@ function frontValue(
 
 /* =========================================================
    15 — STORY RENDERER
+
+   Understands:
+
+   [CHOICE:id]
+
+   [A] Option
+   [B] Option
+   [C] Option
+
+   [CONSEQUENCE:A]
+
+   Story...
+
+   [ENDCHOICE]
+
+   [NEXT:story-slug]
+
+   Content after a choice is kept hidden
+   until the reader makes that choice.
    ========================================================= */
 
 function renderStory(text){
@@ -681,7 +699,7 @@ function renderFlow(lines){
 
 
         /* -----------------------------------------
-           NEXT SCENE / CHAPTER
+           NEXT CHAPTER
            ----------------------------------------- */
 
         if(isNextMarker(lines[i])){
@@ -758,16 +776,13 @@ function isChoiceStart(line){
 
 /* =========================================================
    18 — NEXT MARKER
-   =========================================================
 
-   Supported:
+   Example:
 
    [NEXT:discordant-descendants-chapter-2]
 
-   OR:
-
-   [NEXT:discordant-descendants-chapter-2|Enter the next scene →]
-
+   IMPORTANT:
+   Do NOT put .md inside the marker.
    ========================================================= */
 
 function isNextMarker(line){
@@ -917,22 +932,12 @@ function parseChoice(
 
 
     /* =====================================================
-       EVERYTHING AFTER THE CHOICE
-
-       This remains hidden until the reader makes
-       the choice.
-
-       IMPORTANT:
-
-       A [NEXT:...] marker can now live INSIDE
-       a consequence.
-
-       That means the selected choice controls
-       the transition into the next chapter.
+       EVERYTHING AFTER THIS CHOICE
        ===================================================== */
 
     var continuationLines =
         lines.slice(i);
+
 
     var continuationHTML = "";
 
@@ -1036,10 +1041,6 @@ function parseChoice(
 
     /* =====================================================
        CONTINUATION
-
-       This is the story after the entire choice.
-
-       It stays hidden until the choice is selected.
        ===================================================== */
 
     if(continuationHTML){
@@ -1065,7 +1066,7 @@ function parseChoice(
             html,
 
         next:
-            i
+            lines.length
 
     };
 
@@ -1470,23 +1471,20 @@ reset.onclick =
 
 
 /* =========================================================
-   30 — NEXT SCENE / CHAPTER RENDERER
-   =========================================================
+   30 — NEXT CHAPTER RENDERER
 
    Supported:
 
    [NEXT:discordant-descendants-chapter-2]
 
-   Or:
+   OR:
 
-   [NEXT:discordant-descendants-chapter-2|Enter the next scene →]
-
-   The second form is recommended.
+   [NEXT:discordant-descendants-chapter-2|Continue to Chapter 2]
 
    IMPORTANT:
-   The return is deliberately written together with
-   the HTML expression so JavaScript cannot accidentally
-   interpret the return as an empty return statement.
+   The filename DOES NOT include .md here.
+
+   The reader automatically adds .md when loading.
    ========================================================= */
 
 function renderNext(line){
@@ -1510,19 +1508,37 @@ function renderNext(line){
         );
 
 
+    /*
+       Remove .md if someone accidentally includes it.
+
+       This makes the system forgiving.
+    */
+
+    nextFile =
+        nextFile.replace(
+            /\.md$/i,
+            ""
+        );
+
+
     var label =
         match[2]
         ? match[2].trim()
-        : "Enter the next scene →";
+        : "Continue to the next chapter";
 
 
-    return (
+    /*
+       IMPORTANT FIX:
 
-        '<div class="story-next">' +
+       The return statement and HTML are now
+       on the SAME statement.
 
-        '<div class="story-next-label">' +
-        'The decision is made.' +
-        '</div>' +
+       This prevents JavaScript automatic
+       semicolon insertion from returning
+       nothing.
+    */
+
+    return '<div class="story-next">' +
 
         '<button ' +
         'type="button" ' +
@@ -1535,15 +1551,13 @@ function renderNext(line){
 
         '</button>' +
 
-        '</div>'
-
-    );
+        '</div>';
 
 }
 
 
 /* =========================================================
-   31 — ACTIVATE NEXT SCENE BUTTONS
+   31 — ACTIVATE NEXT CHAPTER BUTTONS
    ========================================================= */
 
 document.addEventListener(
@@ -1576,6 +1590,32 @@ document.addEventListener(
             return;
 
         }
+
+
+        /*
+           Make sure the next chapter URL
+           contains only the file slug.
+
+           Example:
+
+           discordant-descendants-chapter-2
+
+           becomes:
+
+           article.html?file=discordant-descendants-chapter-2
+        */
+
+        nextFile =
+            cleanPath(
+                nextFile
+            );
+
+
+        nextFile =
+            nextFile.replace(
+                /\.md$/i,
+                ""
+            );
 
 
         window.location.href =
