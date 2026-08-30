@@ -1,5 +1,5 @@
 ---
-title: DISCORDANT DESCENDANTS
+title: discordant-descendants-chapter-2.md
 ---
 ---
 
