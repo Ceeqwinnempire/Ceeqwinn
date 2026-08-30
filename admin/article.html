@@ -285,6 +285,9 @@ var reset =
    becomes:
 
    content/articles/discordant-descendants.md
+
+   IMPORTANT:
+   The ?file= value does NOT include .md.
    ========================================================= */
 
 var params =
@@ -610,9 +613,7 @@ function frontValue(
 /* =========================================================
    15 — STORY RENDERER
 
-   This is the major engine upgrade.
-
-   The renderer understands:
+   Understands:
 
    [CHOICE:id]
 
@@ -630,8 +631,6 @@ function frontValue(
 
    Content after a choice is kept hidden
    until the reader makes that choice.
-
-   This creates progressive visual-novel flow.
    ========================================================= */
 
 function renderStory(text){
@@ -648,16 +647,6 @@ function renderStory(text){
 
 /* =========================================================
    16 — RENDER FLOW
-
-   A flow contains:
-
-   normal story
-   → choice
-   → continuation
-   → another choice
-   → next chapter
-
-   Every choice becomes a gate.
    ========================================================= */
 
 function renderFlow(lines){
@@ -787,6 +776,13 @@ function isChoiceStart(line){
 
 /* =========================================================
    18 — NEXT MARKER
+
+   Example:
+
+   [NEXT:discordant-descendants-chapter-2]
+
+   IMPORTANT:
+   Do NOT put .md inside the marker.
    ========================================================= */
 
 function isNextMarker(line){
@@ -800,28 +796,6 @@ function isNextMarker(line){
 
 /* =========================================================
    19 — PARSE CHOICE
-
-   Important:
-
-   The choice itself is visible.
-
-   The selected consequence becomes visible
-   when the reader clicks.
-
-   The continuation AFTER the choice is
-   also hidden until a choice is selected.
-
-   This is what creates:
-
-   Story
-      ↓
-   Choice
-      ↓
-   Consequence
-      ↓
-   Next scene
-      ↓
-   Next choice
    ========================================================= */
 
 function parseChoice(
@@ -959,17 +933,6 @@ function parseChoice(
 
     /* =====================================================
        EVERYTHING AFTER THIS CHOICE
-
-       We need to keep it hidden until the reader
-       makes a choice.
-
-       Find the end of the entire flow here by
-       rendering the remaining lines separately.
-
-       The continuation is NOT rendered as another
-       choice branch.
-
-       It simply becomes the next part of the story.
        ===================================================== */
 
     var continuationLines =
@@ -1078,14 +1041,6 @@ function parseChoice(
 
     /* =====================================================
        CONTINUATION
-
-       This is the next scene / next choice /
-       next chapter marker.
-
-       It starts hidden.
-
-       When the reader selects A/B/C,
-       revealContinuation() displays it.
        ===================================================== */
 
     if(continuationHTML){
@@ -1390,24 +1345,6 @@ function revealContinuation(id){
 
 /* =========================================================
    26 — RESTORE SAVED STORY
-
-   Refreshing the page restores:
-
-   Choice 01
-      ↓
-   selected consequence
-      ↓
-   continuation
-      ↓
-   Choice 02
-      ↓
-   selected consequence
-      ↓
-   continuation
-      ↓
-   etc.
-
-   Because the choices are stored in localStorage.
    ========================================================= */
 
 function restoreChoices(){
@@ -1415,15 +1352,6 @@ function restoreChoices(){
     var choices =
         getChoices();
 
-
-    /*
-       Restore in order.
-
-       The repeated passes are intentional.
-
-       This allows parent choices to reveal
-       containers containing nested choices.
-    */
 
     var changed = true;
 
@@ -1484,8 +1412,6 @@ function restoreChoices(){
 
 /* =========================================================
    27 — COUNT VISIBLE STORY PARTS
-
-   Used only while restoring saved choices.
    ========================================================= */
 
 function countVisibleStoryParts(){
@@ -1551,9 +1477,14 @@ reset.onclick =
 
    [NEXT:discordant-descendants-chapter-2]
 
-   Optional:
+   OR:
 
    [NEXT:discordant-descendants-chapter-2|Continue to Chapter 2]
+
+   IMPORTANT:
+   The filename DOES NOT include .md here.
+
+   The reader automatically adds .md when loading.
    ========================================================= */
 
 function renderNext(line){
@@ -1577,15 +1508,37 @@ function renderNext(line){
         );
 
 
+    /*
+       Remove .md if someone accidentally includes it.
+
+       This makes the system forgiving.
+    */
+
+    nextFile =
+        nextFile.replace(
+            /\.md$/i,
+            ""
+        );
+
+
     var label =
         match[2]
         ? match[2].trim()
         : "Continue to the next chapter";
 
 
-    return
+    /*
+       IMPORTANT FIX:
 
-        '<div class="story-next">' +
+       The return statement and HTML are now
+       on the SAME statement.
+
+       This prevents JavaScript automatic
+       semicolon insertion from returning
+       nothing.
+    */
+
+    return '<div class="story-next">' +
 
         '<button ' +
         'type="button" ' +
@@ -1637,6 +1590,32 @@ document.addEventListener(
             return;
 
         }
+
+
+        /*
+           Make sure the next chapter URL
+           contains only the file slug.
+
+           Example:
+
+           discordant-descendants-chapter-2
+
+           becomes:
+
+           article.html?file=discordant-descendants-chapter-2
+        */
+
+        nextFile =
+            cleanPath(
+                nextFile
+            );
+
+
+        nextFile =
+            nextFile.replace(
+                /\.md$/i,
+                ""
+            );
 
 
         window.location.href =
