@@ -1,854 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>CEEQWINN Reader</title>
 
 <style>
 
 /* =========================================================
-   CEEQWINN UNIVERSAL READER
-   SEQUENCE READER — CODE 01
-
-   CORE IDEA:
-
-   One reader.
-   Multiple presentation modes.
-
-   Supported modes:
-
-   article
-   story
-   moodboard
-   feed
-
-   Existing Markdown files remain compatible.
-
+   01 — BASIC READER
    ========================================================= */
-
-
-/* =========================================================
-   RESET / BASE
-   ========================================================= */
-
-*{
-    box-sizing:border-box;
-}
-
-
-html{
-    margin:0;
-    padding:0;
-}
-
 
 body{
-
-    margin:0;
-
-    padding:0;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+    max-width:800px;
+    margin:auto;
+    padding:35px 18px;
+    font-family:Arial,sans-serif;
+    line-height:1.8;
     background:#fafafa;
-
     color:#222;
-
-    line-height:1.7;
-
 }
 
-
-/* =========================================================
-   READER SHELL
-   ========================================================= */
-
-#reader{
-
-    width:100%;
-
-    min-height:100vh;
-
+h1{
+    font-size:2.2rem;
+    margin-bottom:20px;
 }
-
-
-.reader-inner{
-
-    width:100%;
-
-    max-width:900px;
-
-    margin:0 auto;
-
-    padding:35px 20px 80px 20px;
-
-}
-
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-.reader-header{
-
-    margin-bottom:30px;
-
-}
-
 
 #cover{
-
     display:none;
-
-    width:100%;
-
-    max-width:900px;
-
+    max-width:100%;
     height:auto;
-
-    margin:0 auto 30px auto;
-
-    border-radius:14px;
-
+    margin:0 auto 30px;
+    border-radius:12px;
 }
-
-
-#title{
-
-    margin:0 0 12px 0;
-
-    font-size:2.4rem;
-
-    line-height:1.2;
-
-}
-
 
 #credits{
-
-    color:#777;
-
-    margin-bottom:15px;
-
+    color:#666;
+    margin-bottom:25px;
 }
-
 
 #status{
-
     color:#777;
-
-    font-size:.95rem;
-
-    margin-bottom:20px;
-
 }
-
-
-/* =========================================================
-   CONTENT
-   ========================================================= */
 
 #content{
-
-    width:100%;
-
-    word-wrap:break-word;
-
     overflow-wrap:break-word;
-
 }
-
-
-#content p{
-
-    margin:0 0 20px 0;
-
-}
-
-
-#content h2{
-
-    margin-top:40px;
-
-    line-height:1.3;
-
-}
-
-
-#content h3{
-
-    margin-top:30px;
-
-    line-height:1.3;
-
-}
-
 
 #content img{
-
     display:block;
-
-    width:auto;
-
     max-width:100%;
-
     height:auto;
-
-    margin:28px auto;
-
+    margin:25px auto;
     border-radius:12px;
-
 }
 
-
-#content video{
-
-    display:block;
-
-    width:100%;
-
-    max-width:100%;
-
-    margin:28px auto;
-
-}
-
-
+#content video,
 #content audio{
-
     display:block;
-
     width:100%;
-
     max-width:100%;
-
-    margin:28px 0;
-
+    margin:25px auto;
 }
-
 
 #content blockquote{
-
-    margin:28px 0;
-
-    padding:12px 20px;
-
+    margin:25px 0;
+    padding:10px 18px;
     border-left:4px solid #999;
-
     background:#f0f0f0;
-
 }
-
 
 #content table{
-
     width:100%;
-
     border-collapse:collapse;
-
-    margin:28px 0;
-
+    margin:25px 0;
 }
-
 
 #content th,
 #content td{
-
-    padding:10px;
-
+    padding:8px;
     border:1px solid #ccc;
-
-}
-
-
-#content a{
-
-    word-break:break-word;
-
 }
 
 
 /* =========================================================
-   EXTRA MEDIA
-   ========================================================= */
-
-#media{
-
-    margin-top:45px;
-
-}
-
-
-.media-box{
-
-    margin:30px 0;
-
-}
-
-
-.media-title{
-
-    margin-bottom:12px;
-
-}
-
-
-.media-box video{
-
-    display:block;
-
-    width:100%;
-
-}
-
-
-.media-box audio{
-
-    display:block;
-
-    width:100%;
-
-}
-
-
-/* =========================================================
-   GENERAL HIDDEN
-   ========================================================= */
-
-.hidden{
-
-    display:none !important;
-
-}
-
-
-/* =========================================================
-   STORY MODE
+   02 — STORY CHOICES
    ========================================================= */
 
 .story-choice{
-
-    margin:45px 0;
-
-    padding:25px 0;
-
+    margin:40px 0;
+    padding:20px 0;
 }
-
 
 .story-choice-title{
-
-    margin-bottom:18px;
-
     font-weight:bold;
-
-    font-size:1.08rem;
-
+    margin-bottom:15px;
 }
-
 
 .story-choice-button{
-
     display:block;
-
     width:100%;
-
-    margin:12px 0;
-
-    padding:15px 16px;
-
-    background:#fff;
-
-    color:#222;
-
-    border:1px solid #ccc;
-
-    border-radius:9px;
-
-    font-family:Arial,sans-serif;
-
-    font-size:16px;
-
-    line-height:1.5;
-
+    box-sizing:border-box;
+    margin:10px 0;
+    padding:15px;
+    font:16px Arial,sans-serif;
     text-align:left;
-
+    background:#fff;
+    color:#222;
+    border:1px solid #ccc;
+    border-radius:8px;
     cursor:pointer;
-
 }
-
 
 .story-choice-button:hover{
-
     background:#f2f2f2;
-
 }
-
-
-.story-choice-button:active{
-
-    background:#e8e8e8;
-
-}
-
-
-.story-choice-button:disabled{
-
-    cursor:default;
-
-    opacity:.6;
-
-}
-
-
-.story-branch{
-
-    margin-top:25px;
-
-}
-
 
 .story-hidden{
-
     display:none !important;
-
 }
 
-
-.story-next-chapter{
-
-    display:block;
-
-    margin:40px 0;
-
-    padding:16px 18px;
-
-    background:#222;
-
-    color:#fff !important;
-
-    border:1px solid #222;
-
-    border-radius:9px;
-
-    text-decoration:none;
-
-    text-align:center;
-
-    font-weight:bold;
-
-}
-
-
-.story-next-chapter:hover{
-
-    background:#444;
-
+.story-branch{
+    margin-top:25px;
 }
 
 
 /* =========================================================
-   STORY RESET
+   03 — RESET
    ========================================================= */
 
-.story-reset{
-
+#storyReset{
     display:none;
-
     width:100%;
-
-    margin:35px 0 20px 0;
-
-    padding:13px 16px;
-
+    margin:35px 0;
+    padding:12px;
     background:#f7f7f7;
-
     color:#555;
-
     border:1px dashed #aaa;
-
     border-radius:8px;
-
-    font-family:Arial,sans-serif;
-
-    font-size:14px;
-
-    cursor:pointer;
-
 }
 
 
 /* =========================================================
-   MOODBOARD MODE
+   04 — LOW-SPEC DEVICES
    ========================================================= */
 
-.mode-moodboard{
+@media(max-width:600px){
 
-    background:#f7f5f2;
-
-}
-
-
-.mode-moodboard .reader-inner{
-
-    max-width:1100px;
-
-}
-
-
-.mode-moodboard #title{
-
-    font-size:2.2rem;
-
-}
-
-
-.moodboard-grid{
-
-    display:grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0,1fr));
-
-    gap:18px;
-
-    margin-top:35px;
-
-}
-
-
-.moodboard-card{
-
-    background:#fff;
-
-    border-radius:14px;
-
-    overflow:hidden;
-
-    border:1px solid #e5e1dc;
-
-}
-
-
-.moodboard-card img{
-
-    display:block;
-
-    width:100%;
-
-    height:auto;
-
-    margin:0;
-
-    border-radius:0;
-
-}
-
-
-.moodboard-card-content{
-
-    padding:18px;
-
-}
-
-
-.moodboard-card-content p{
-
-    margin-bottom:10px;
-
-}
-
-
-.moodboard-wide{
-
-    grid-column:1 / -1;
-
-}
-
-
-/* =========================================================
-   FEED MODE
-   ========================================================= */
-
-.mode-feed{
-
-    background:#f5f5f5;
-
-}
-
-
-.mode-feed .reader-inner{
-
-    max-width:700px;
-
-}
-
-
-.feed-item{
-
-    background:#fff;
-
-    margin:25px 0;
-
-    padding:20px;
-
-    border-radius:14px;
-
-    border:1px solid #e5e5e5;
-
-}
-
-
-.feed-item img{
-
-    display:block;
-
-    width:100%;
-
-    height:auto;
-
-    margin:0 0 18px 0;
-
-    border-radius:10px;
-
-}
-
-
-.feed-item h2{
-
-    margin:0 0 12px 0;
-
-}
-
-
-.feed-item p:last-child{
-
-    margin-bottom:0;
-
-}
-
-
-/* =========================================================
-   ARTICLE MODE
-   ========================================================= */
-
-.mode-article .reader-inner{
-
-    max-width:800px;
-
-}
-
-
-/* =========================================================
-   ERROR
-   ========================================================= */
-
-.reader-error{
-
-    color:#777;
-
-    padding:20px 0;
-
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media screen and (max-width:600px){
-
-    .reader-inner{
-
-        padding:
-            25px
-            16px
-            60px
-            16px;
-
+    body{
+        padding:25px 15px;
     }
 
-
-    #title{
-
-        font-size:1.9rem;
-
+    h1{
+        font-size:1.8rem;
     }
-
-
-    #cover{
-
-        border-radius:10px;
-
-    }
-
-
-    .moodboard-grid{
-
-        grid-template-columns:1fr;
-
-        gap:14px;
-
-    }
-
-
-    .moodboard-wide{
-
-        grid-column:auto;
-
-    }
-
 
     .story-choice-button{
-
         font-size:16px;
-
         padding:15px;
-
-    }
-
-}
-
-
-/* =========================================================
-   VERY SMALL / OLD DEVICES
-   ========================================================= */
-
-@media screen and (max-width:360px){
-
-    .reader-inner{
-
-        padding-left:12px;
-
-        padding-right:12px;
-
-    }
-
-
-    #title{
-
-        font-size:1.7rem;
-
     }
 
 }
 
 </style>
-
 </head>
 
 
 <body>
 
-<div id="reader">
+<img id="cover" alt="">
 
-    <div class="reader-inner">
+<h1 id="title">Loading...</h1>
 
+<div id="credits"></div>
 
-        <!-- =================================================
-             HEADER
-             ================================================= -->
+<div id="status"></div>
 
-        <header class="reader-header">
+<div id="content"></div>
 
-            <img
-                id="cover"
-                alt=""
-            >
+<button id="storyReset" type="button">
+    ↺ Reset Story
+</button>
 
-            <h1 id="title">
-                Loading...
-            </h1>
-
-            <div id="credits"></div>
-
-            <div id="status"></div>
-
-        </header>
+<div id="media"></div>
 
 
-        <!-- =================================================
-             MAIN CONTENT
-             ================================================= -->
-
-        <main id="content"></main>
-
-
-        <!-- =================================================
-             STORY RESET
-             ================================================= -->
-
-        <button
-            id="storyReset"
-            class="story-reset"
-            type="button"
-        >
-            ↺ Reset Story
-        </button>
-
-
-        <!-- =================================================
-             EXTRA MEDIA
-             ================================================= -->
-
-        <div id="media"></div>
-
-
-    </div>
-
-</div>
-
-
-<!-- =========================================================
-     HILLTOP ADS
-     ========================================================= -->
-
-<script>
-
-(function(xbjc){
-
-var d = document,
-
-    s = d.createElement("script"),
-
-    l =
-        d.scripts[
-            d.scripts.length - 1
-        ];
-
-s.settings = xbjc || {};
-
-s.src =
-"\/\/juvenilechoice.com\/b.XuVYsWdhGelM0cY-WwcD\/Neomz9yu\/ZfUdlJkoPdTkc\/ztNVD\/Uo4\/N\/zCMdt\/N-zlMk0lNJTmgy3iNzwa";
-
-s.async = true;
-
-s.referrerPolicy =
-    "no-referrer-when-downgrade";
-
-l.parentNode.insertBefore(
-    s,
-    l
-);
-
-})({});
-
-</script>
-
-
-<!-- =========================================================
-     MARKED
-     ========================================================= -->
+<!-- =======================================================
+     05 — MARKDOWN
+     ======================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
 
@@ -856,1064 +196,395 @@ l.parentNode.insertBefore(
 <script>
 
 /* =========================================================
-   CEEQWINN UNIVERSAL READER
    SEQUENCE READER — CODE 01
-   JAVASCRIPT ENGINE
+   06 — BASIC SETUP
    ========================================================= */
+
+var title = document.getElementById("title");
+var credits = document.getElementById("credits");
+var status = document.getElementById("status");
+var content = document.getElementById("content");
+var cover = document.getElementById("cover");
+var media = document.getElementById("media");
+var reset = document.getElementById("storyReset");
 
 
 /* =========================================================
-   DOM REFERENCES
+   07 — GET ARTICLE NAME
+
+   Example:
+
+   article.html?file=discordant-descendants
+
+   becomes:
+
+   content/articles/discordant-descendants.md
    ========================================================= */
 
-var title =
-    document.getElementById("title");
+var params = new URLSearchParams(window.location.search);
+var file = params.get("file") || "";
 
-var status =
-    document.getElementById("status");
+file = cleanPath(file);
 
-var content =
-    document.getElementById("content");
-
-var cover =
-    document.getElementById("cover");
-
-var credits =
-    document.getElementById("credits");
-
-var media =
-    document.getElementById("media");
-
-var storyReset =
-    document.getElementById("storyReset");
-
-var reader =
-    document.getElementById("reader");
+var storageKey =
+    "ceeqwinn_story_" + file.replace(/[^a-zA-Z0-9_-]/g,"_");
 
 
 /* =========================================================
-   GET FILE FROM URL
-   ========================================================= */
-
-var file = "";
-
-var search =
-    window.location.search;
-
-
-if(search){
-
-    file =
-        search
-            .replace(/^\?/,"")
-            .split("&")[0]
-            .replace(/^file=/,"");
-
-
-    try{
-
-        file =
-            decodeURIComponent(file);
-
-    }catch(e){}
-
-}
-
-
-/* =========================================================
-   CURRENT STORAGE KEY
-   ========================================================= */
-
-var currentStoryKey =
-    "ceeqwinn_reader_" +
-    cleanStorageKey(file);
-
-
-/* =========================================================
-   START
+   08 — START
    ========================================================= */
 
 if(!file){
 
-    showError(
-        "Article not found",
-        "No article was selected."
-    );
+    title.textContent = "Article not found";
+    status.textContent = "No article was selected.";
 
 }else{
 
-    loadDocument(file);
+    loadStory();
 
 }
 
 
 /* =========================================================
-   RESET BUTTON
+   09 — LOAD MARKDOWN
    ========================================================= */
 
-storyReset.onclick =
-    function(){
+function loadStory(){
 
-        resetCurrentStory();
+    status.textContent = "Loading...";
+    content.innerHTML = "";
+    media.innerHTML = "";
 
-    };
-
-
-/* =========================================================
-   LOAD DOCUMENT
-   ========================================================= */
-
-function loadDocument(storyFile){
-
-    storyFile =
-        cleanArticlePath(storyFile);
-
-
-    if(!storyFile){
-
-        showError(
-            "Article not found",
-            "The article path is invalid."
-        );
-
-        return;
-
-    }
-
-
-    currentStoryKey =
-        "ceeqwinn_reader_" +
-        cleanStorageKey(storyFile);
-
-
-    status.innerHTML =
-        "Loading...";
-
-
-    storyReset.style.display =
-        "none";
-
-
-    var xhr =
-        new XMLHttpRequest();
-
+    var xhr = new XMLHttpRequest();
 
     xhr.open(
         "GET",
-        articlePath(storyFile),
+        "../content/articles/" +
+        encodeURIComponent(file) +
+        ".md",
         true
     );
 
+    xhr.onload = function(){
 
-    xhr.onreadystatechange =
-        function(){
+        if(xhr.status !== 200 && xhr.status !== 0){
 
-            if(xhr.readyState !== 4){
-
-                return;
-
-            }
-
-
-            if(
-                xhr.status !== 200 &&
-                xhr.status !== 0
-            ){
-
-                showError(
-                    "Unable to load article",
-                    "The article could not be loaded."
-                );
-
-                return;
-
-            }
-
-
-            var text =
-                xhr.responseText;
-
-
-            var data =
-                parseFrontmatter(text);
-
-
-            applyReaderMode(
-                data.reader
-            );
-
-
-            renderHeader(
-                data,
-                storyFile
-            );
-
-
-            renderByMode(
-                data,
-                storyFile
-            );
-
-
-            status.innerHTML =
-                "";
-
-        };
-
-
-    xhr.onerror =
-        function(){
-
-            showError(
-                "Unable to load article",
-                "The article could not be loaded."
-            );
-
-        };
-
-
-    xhr.send(null);
-
-}
-
-
-/* =========================================================
-   READER MODE
-   ========================================================= */
-
-function normalizeReaderMode(value){
-
-    if(!value){
-
-        return "article";
-
-    }
-
-
-    value =
-        String(value)
-            .toLowerCase()
-            .replace(
-                /["']/g,
-                ""
-            )
-            .replace(
-                /\s+/g,
-                ""
-            );
-
-
-    if(
-        value === "story" ||
-        value === "interactive"
-    ){
-
-        return "story";
-
-    }
-
-
-    if(
-        value === "moodboard" ||
-        value === "mood-board"
-    ){
-
-        return "moodboard";
-
-    }
-
-
-    if(
-        value === "feed" ||
-        value === "social"
-    ){
-
-        return "feed";
-
-    }
-
-
-    return "article";
-
-}
-
-
-/* =========================================================
-   APPLY READER MODE
-   ========================================================= */
-
-function applyReaderMode(mode){
-
-    mode =
-        normalizeReaderMode(mode);
-
-
-    reader.className =
-        "mode-" + mode;
-
-}
-
-
-/* =========================================================
-   RENDER HEADER
-   ========================================================= */
-
-function renderHeader(
-    data,
-    storyFile
-){
-
-    var articleTitle =
-        data.title ||
-        getFileName(storyFile);
-
-
-    title.innerHTML =
-        escapeHtml(articleTitle);
-
-
-    credits.innerHTML =
-        "";
-
-
-    if(data.credits){
-
-        credits.innerHTML =
-            "<strong>Credits:</strong> " +
-            escapeHtml(
-                data.credits
-            );
-
-    }
-
-
-    cover.style.display =
-        "none";
-
-
-    if(data.cover){
-
-        cover.src =
-            mediaPath(
-                data.cover
-            );
-
-        cover.alt =
-            articleTitle;
-
-        cover.style.display =
-            "block";
-
-
-        prepareImage(
-            cover
-        );
-
-
-        cover.onerror =
-            function(){
-
-                cover.style.display =
-                    "none";
-
-            };
-
-    }
-
-}
-
-
-/* =========================================================
-   RENDER BY MODE
-   ========================================================= */
-
-function renderByMode(
-    data,
-    storyFile
-){
-
-    var mode =
-        normalizeReaderMode(
-            data.reader
-        );
-
-
-    content.innerHTML =
-        "";
-
-    media.innerHTML =
-        "";
-
-
-    if(mode === "story"){
-
-        renderStoryMode(
-            data
-        );
-
-    }
-
-    else if(mode === "moodboard"){
-
-        renderMoodboardMode(
-            data
-        );
-
-    }
-
-    else if(mode === "feed"){
-
-        renderFeedMode(
-            data
-        );
-
-    }
-
-    else{
-
-        renderArticleMode(
-            data
-        );
-
-    }
-
-
-    fixInlineImages();
-
-    fixInlineVideos();
-
-    fixInlineAudios();
-
-    renderExtraMedia(
-        data
-    );
-
-}
-
-
-/* =========================================================
-   ARTICLE MODE
-   ========================================================= */
-
-function renderArticleMode(data){
-
-    content.innerHTML =
-        marked(
-            processNextChapterMarkers(
-                data.body
-            )
-        );
-
-}
-
-
-/* =========================================================
-   STORY MODE
-   ========================================================= */
-
-function renderStoryMode(data){
-
-    content.innerHTML =
-        renderInteractiveStory(
-            data.body
-        );
-
-
-    activateStoryChoices();
-
-
-    if(
-        content.getElementsByClassName(
-            "story-choice"
-        ).length > 0
-    ){
-
-        storyReset.style.display =
-            "block";
-
-    }
-
-}
-
-
-/* =========================================================
-   MOODBOARD MODE
-   =========================================================
-
-   The Markdown itself remains the source.
-
-   A normal Markdown image:
-
-   ![caption](image.jpg)
-
-   becomes a moodboard card.
-
-   Text between images remains ordinary
-   Markdown content.
-
-   ========================================================= */
-
-function renderMoodboardMode(data){
-
-    var html =
-        marked(
-            data.body
-        );
-
-
-    var temporary =
-        document.createElement("div");
-
-
-    temporary.innerHTML =
-        html;
-
-
-    var images =
-        temporary.getElementsByTagName(
-            "img"
-        );
-
-
-    if(!images.length){
-
-        content.innerHTML =
-            html;
-
-        return;
-
-    }
-
-
-    var grid =
-        document.createElement("div");
-
-
-    grid.className =
-        "moodboard-grid";
-
-
-    var i;
-
-
-    for(i=0; i<images.length; i++){
-
-        var image =
-            images[i];
-
-
-        var card =
-            document.createElement("div");
-
-
-        card.className =
-            "moodboard-card";
-
-
-        card.appendChild(
-            image.cloneNode(true)
-        );
-
-
-        var caption =
-            image.getAttribute("alt");
-
-
-        if(caption){
-
-            var cardText =
-                document.createElement("div");
-
-
-            cardText.className =
-                "moodboard-card-content";
-
-
-            cardText.innerHTML =
-                "<p>" +
-                escapeHtml(caption) +
-                "</p>";
-
-
-            card.appendChild(
-                cardText
-            );
+            title.textContent = "Unable to load article";
+            status.textContent = "The article could not be loaded.";
+            return;
 
         }
 
-
-        grid.appendChild(
-            card
-        );
-
-    }
-
-
-    content.innerHTML =
-        "";
-
-
-    content.appendChild(
-        grid
-    );
-
-
-    /*
-       Preserve ordinary text below
-       the image collection.
-    */
-
-    var textOnly =
-        temporary.cloneNode(true);
-
-
-    var textImages =
-        textOnly.getElementsByTagName(
-            "img"
-        );
-
-
-    while(textImages.length){
-
-        textImages[0].parentNode.removeChild(
-            textImages[0]
-        );
-
-    }
-
-
-    var remaining =
-        textOnly.innerHTML;
-
-
-    if(
-        remaining &&
-        remaining.replace(/\s/g,"")
-    ){
-
-        var textBlock =
-            document.createElement("div");
-
-
-        textBlock.innerHTML =
-            remaining;
-
-
-        content.appendChild(
-            textBlock
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   FEED MODE
-   ========================================================= */
-
-function renderFeedMode(data){
-
-    var temporary =
-        document.createElement("div");
-
-
-    temporary.innerHTML =
-        marked(
-            data.body
-        );
-
-
-    var paragraphs =
-        temporary.getElementsByTagName(
-            "p"
-        );
-
-
-    if(!paragraphs.length){
-
-        content.innerHTML =
-            temporary.innerHTML;
-
-        return;
-
-    }
-
-
-    var feed =
-        document.createElement("div");
-
-
-    var i;
-
-
-    for(i=0; i<paragraphs.length; i++){
-
-        var item =
-            document.createElement("div");
-
-
-        item.className =
-            "feed-item";
-
-
-        item.innerHTML =
-            paragraphs[i].outerHTML;
-
-
-        feed.appendChild(
-            item
-        );
-
-    }
-
-
-    content.innerHTML =
-        "";
-
-
-    content.appendChild(
-        feed
-    );
-
-}
-
-
-/* =========================================================
-   INTERACTIVE STORY ENGINE
-   ========================================================= */
-
-function renderInteractiveStory(body){
-
-    var result =
-        parseStorySegment(
-            body,
-            0
-        );
-
-
-    return result.html;
-
-}
-
-
-/* =========================================================
-   PARSE STORY SEGMENT
-   ========================================================= */
-
-function parseStorySegment(
-    text,
-    startIndex
-){
-
-    var lines =
-        text.split(/\r?\n/);
-
-    var html = "";
-
-    var normalLines = [];
-
-    var i =
-        startIndex || 0;
-
-
-    while(i < lines.length){
-
-        if(
-            /^\s*\[CHOICE:[a-zA-Z0-9_-]+\]\s*$/.test(
-                lines[i]
-            )
-        ){
-
-            if(normalLines.length){
-
-                html +=
-                    marked(
-                        processNextChapterMarkers(
-                            normalLines.join("\n")
-                        )
-                    );
-
-                normalLines = [];
-
-            }
-
-
-            var choiceResult =
-                parseChoiceBlock(
-                    lines,
-                    i
-                );
-
-
-            html +=
-                choiceResult.html;
-
-
-            i =
-                choiceResult.nextIndex;
-
-
-            continue;
-
-        }
-
-
-        normalLines.push(
-            lines[i]
-        );
-
-        i++;
-
-    }
-
-
-    if(normalLines.length){
-
-        html +=
-            marked(
-                processNextChapterMarkers(
-                    normalLines.join("\n")
-                )
-            );
-
-    }
-
-
-    return {
-
-        html:html,
-
-        nextIndex:i
+        buildStory(xhr.responseText);
 
     };
 
-}
+    xhr.onerror = function(){
 
+        title.textContent = "Unable to load article";
+        status.textContent = "The article could not be loaded.";
 
-/* =========================================================
-   NEXT CHAPTER
-   ========================================================= */
+    };
 
-function processNextChapterMarkers(text){
-
-    var pattern =
-        /\[NEXTCHAPTER:([a-zA-Z0-9_-]+)\]/g;
-
-
-    return text.replace(
-        pattern,
-        function(
-            match,
-            chapterFile
-        ){
-
-            return (
-                '<a class="story-next-chapter" href="' +
-                escapeAttribute(
-                    chapterUrl(
-                        chapterFile
-                    )
-                ) +
-                '">' +
-                'Continue to next chapter' +
-                '</a>'
-            );
-
-        }
-    );
+    xhr.send();
 
 }
 
 
 /* =========================================================
-   CHAPTER URL
+   10 — BUILD STORY
    ========================================================= */
 
-function chapterUrl(chapterFile){
+function buildStory(text){
 
-    return (
-        "article.html?file=" +
-        encodeURIComponent(
-            cleanArticlePath(
-                chapterFile
-            )
-        )
-    );
+    var data = parseFrontmatter(text);
 
-}
+    title.textContent =
+        data.title || file;
 
+    credits.innerHTML =
+        data.credits
+        ? "<strong>Credits:</strong> " +
+          escapeHtml(data.credits)
+        : "";
 
-/* =========================================================
-   PARSE CHOICE BLOCK
-   ========================================================= */
+    if(data.cover){
 
-function parseChoiceBlock(
-    lines,
-    startIndex
-){
+        cover.src = mediaPath(data.cover);
+        cover.alt = data.title || file;
+        cover.style.display = "block";
 
-    var firstLine =
-        lines[startIndex];
-
-
-    var match =
-        firstLine.match(
-            /^\s*\[CHOICE:([a-zA-Z0-9_-]+)\]\s*$/
-        );
-
-
-    if(!match){
-
-        return {
-
-            html:"",
-            nextIndex:startIndex + 1
-
+        cover.onerror = function(){
+            cover.style.display = "none";
         };
 
     }
 
+    /*
+       This is the important part.
 
-    var choiceId =
-        match[1];
+       Normal Markdown and interactive
+       story content are handled together.
+    */
+
+    content.innerHTML =
+        renderStory(data.body);
+
+    fixMedia();
+
+    if(hasChoices()){
+
+        reset.style.display = "block";
+
+        activateChoices();
+        restoreChoices();
+
+    }else{
+
+        reset.style.display = "none";
+
+    }
+
+    renderExtraMedia(data);
+
+    status.textContent = "";
+
+}
 
 
-    var options = [];
+/* =========================================================
+   11 — FRONTMATTER
+   ========================================================= */
 
-    var branches = [];
+function parseFrontmatter(text){
 
-    var currentBranch =
-        null;
+    var data = {
+        title:"",
+        cover:"",
+        credits:"",
+        video:"",
+        audio:"",
+        body:text
+    };
+
+    var match = text.match(
+        /^---\s*\n([\s\S]*?)\n---\s*\n?/
+    );
+
+    if(!match){
+        return data;
+    }
+
+    var front = match[1];
+
+    data.body =
+        text.substring(match[0].length);
+
+    data.title = frontValue(front,"title");
+    data.cover = frontValue(front,"cover");
+    data.credits = frontValue(front,"credits");
+    data.video = frontValue(front,"video");
+    data.audio = frontValue(front,"audio");
+
+    return data;
+}
 
 
-    var i =
-        startIndex + 1;
+function frontValue(text,key){
 
+    var re = new RegExp(
+        "^" + key + "\\s*:\\s*[\"']?(.*?)[\"']?$",
+        "m"
+    );
+
+    var match = text.match(re);
+
+    return match ? match[1].trim() : "";
+
+}
+
+
+/* =========================================================
+   12 — STORY RENDERER
+
+   Supported format:
+
+   [CHOICE:choice-01]
+
+   [A] Accept the request.
+   [B] Reject it.
+   [C] Screenshot it.
+
+   [CONSEQUENCE:A]
+
+   Something happens.
+
+   [ENDCHOICE]
+
+   The parser also accepts:
+
+   * [CHOICE:choice-01]
+   * [A] Accept the request.
+
+   So the Markdown does not have to be
+   perfectly formatted to be recognized.
+   ========================================================= */
+
+function renderStory(text){
+
+    var lines = text.split(/\r?\n/);
+    var output = "";
+    var normal = [];
+    var i = 0;
 
     while(i < lines.length){
 
-        var line =
-            lines[i];
+        if(isChoiceStart(lines[i])){
 
+            if(normal.length){
 
-        if(
-            /^\s*\[ENDCHOICE\]\s*$/.test(
-                line
-            )
-        ){
+                output += marked(normal.join("\n"));
+                normal = [];
 
-            break;
+            }
+
+            var result =
+                parseChoice(lines,i);
+
+            output += result.html;
+
+            i = result.next;
+
+        }else{
+
+            normal.push(lines[i]);
+            i++;
 
         }
 
+    }
 
-        var optionMatch =
-            line.match(
-                /^\s*\[([A-Z])\]\s*(.+?)\s*$/
-            );
+    if(normal.length){
+        output += marked(normal.join("\n"));
+    }
+
+    return output;
+}
 
 
-        if(
-            optionMatch &&
-            currentBranch === null
-        ){
+/* =========================================================
+   13 — RECOGNIZE CHOICE
+   ========================================================= */
+
+function isChoiceStart(line){
+
+    return /^\s*\*?\s*\[CHOICE:[\w-]+\]\s*$/.test(line);
+
+}
+
+
+/* =========================================================
+   14 — PARSE CHOICE
+   ========================================================= */
+
+function parseChoice(lines,start){
+
+    var match = lines[start].match(
+        /^\s*\*?\s*\[CHOICE:([\w-]+)\]\s*$/
+    );
+
+    var id = match[1];
+
+    var options = [];
+    var branches = [];
+
+    var current = null;
+    var i = start + 1;
+
+    while(i < lines.length){
+
+        var line = lines[i];
+
+        /* END */
+
+        if(/^\s*\*?\s*\[ENDCHOICE\]\s*$/.test(line)){
+            i++;
+            break;
+        }
+
+
+        /* OPTION */
+
+        var option = line.match(
+            /^\s*\*?\s*\[([A-Z])\]\s*(.+?)\s*$/
+        );
+
+        if(option && !current){
 
             options.push({
-
-                letter:
-                    optionMatch[1],
-
-                label:
-                    optionMatch[2]
-
+                letter:option[1],
+                label:option[2]
             });
 
-
             i++;
-
             continue;
 
         }
 
 
-        var consequenceMatch =
-            line.match(
-                /^\s*\[CONSEQUENCE:([A-Z])\]\s*$/
-            );
+        /* CONSEQUENCE */
 
+        var consequence = line.match(
+            /^\s*\*?\s*\[CONSEQUENCE:([A-Z])\]\s*$/
+        );
 
-        if(consequenceMatch){
+        if(consequence){
 
-            currentBranch = {
-
-                letter:
-                    consequenceMatch[1],
-
+            current = {
+                letter:consequence[1],
                 lines:[]
-
             };
 
-
-            branches.push(
-                currentBranch
-            );
-
+            branches.push(current);
 
             i++;
-
             continue;
 
         }
 
 
-        if(currentBranch){
+        /* BRANCH CONTENT */
 
-            currentBranch.lines.push(
-                line
-            );
+        if(current){
+
+            current.lines.push(line);
 
         }
-
 
         i++;
 
     }
 
 
+    /* BUILD CHOICE */
+
     var html =
         '<div class="story-choice" ' +
-        'data-choice-id="' +
-        escapeAttribute(
-            choiceId
-        ) +
-        '">' +
-
+        'data-choice="' + escapeAttr(id) + '">' +
 
         '<div class="story-choice-title">' +
-        'What does Lexis do?' +
+        'What do you do?' +
         '</div>';
 
 
-    var j;
-
-
-    for(j=0; j<options.length; j++){
+    for(var j=0;j<options.length;j++){
 
         html +=
-            '<button ' +
-            'type="button" ' +
+            '<button type="button" ' +
             'class="story-choice-button" ' +
-            'data-choice-id="' +
-            escapeAttribute(
-                choiceId
-            ) +
-            '" ' +
-            'data-choice-letter="' +
-            escapeAttribute(
-                options[j].letter
-            ) +
-            '">' +
+            'data-choice="' + escapeAttr(id) + '" ' +
+            'data-letter="' + options[j].letter + '">' +
 
             escapeHtml(
                 options[j].letter +
@@ -1925,191 +596,93 @@ function parseChoiceBlock(
 
     }
 
-
-    html +=
-        '</div>';
+    html += "</div>";
 
 
-    for(j=0; j<branches.length; j++){
+    /* BUILD BRANCHES */
 
-        var branch =
-            branches[j];
+    for(var k=0;k<branches.length;k++){
 
-
-        var branchResult =
-            parseStorySegment(
-                branch.lines.join("\n"),
-                0
-            );
-
+        var branch = branches[k];
 
         html +=
-            '<div ' +
-            'class="story-branch story-hidden" ' +
-            'data-choice-id="' +
-            escapeAttribute(
-                choiceId
-            ) +
-            '" ' +
-            'data-choice-letter="' +
-            escapeAttribute(
-                branch.letter
-            ) +
-            '">' +
+            '<div class="story-branch story-hidden" ' +
+            'data-choice="' + escapeAttr(id) + '" ' +
+            'data-letter="' + branch.letter + '">' +
 
-            branchResult.html +
+            renderStory(branch.lines.join("\n")) +
 
             '</div>';
 
     }
 
 
-    if(i < lines.length){
-
-        i++;
-
-    }
-
-
     return {
-
         html:html,
-
-        nextIndex:i
-
+        next:i
     };
 
 }
 
 
 /* =========================================================
-   ACTIVATE STORY CHOICES
+   15 — ACTIVATE CHOICE BUTTONS
    ========================================================= */
 
-function activateStoryChoices(){
+function activateChoices(){
 
     var buttons =
         content.getElementsByClassName(
             "story-choice-button"
         );
 
+    for(var i=0;i<buttons.length;i++){
 
-    var i;
+        buttons[i].onclick = function(){
 
-
-    for(i=0; i<buttons.length; i++){
-
-        activateChoiceButton(
-            buttons[i]
-        );
-
-    }
-
-
-    restoreSavedChoices();
-
-}
-
-
-/* =========================================================
-   ONE CHOICE BUTTON
-   ========================================================= */
-
-function activateChoiceButton(button){
-
-    button.onclick =
-        function(){
-
-            var choiceId =
-                button.getAttribute(
-                    "data-choice-id"
-                );
-
+            var id =
+                this.getAttribute("data-choice");
 
             var letter =
-                button.getAttribute(
-                    "data-choice-letter"
-                );
+                this.getAttribute("data-letter");
 
-
-            selectStoryChoice(
-                choiceId,
-                letter
-            );
+            choose(id,letter);
 
         };
 
-}
-
-
-/* =========================================================
-   SELECT
-   ========================================================= */
-
-function selectStoryChoice(
-    choiceId,
-    letter
-){
-
-    saveStoryChoice(
-        choiceId,
-        letter
-    );
-
-
-    showSelectedBranch(
-        choiceId,
-        letter
-    );
+    }
 
 }
 
 
 /* =========================================================
-   SAVE
+   16 — MAKE CHOICE
    ========================================================= */
 
-function saveStoryChoice(
-    choiceId,
-    letter
-){
+function choose(id,letter){
+
+    saveChoice(id,letter);
+
+    showBranch(id,letter);
+
+}
+
+
+/* =========================================================
+   17 — SAVE CHOICE
+   ========================================================= */
+
+function saveChoice(id,letter){
+
+    var choices = getChoices();
+
+    choices[id] = letter;
 
     try{
 
-        var saved =
-            localStorage.getItem(
-                currentStoryKey
-            );
-
-
-        var choices = {};
-
-
-        if(saved){
-
-            try{
-
-                choices =
-                    JSON.parse(saved);
-
-            }catch(e){
-
-                choices = {};
-
-            }
-
-        }
-
-
-        choices[choiceId] =
-            letter;
-
-
         localStorage.setItem(
-            currentStoryKey,
-            JSON.stringify(
-                choices
-            )
+            storageKey,
+            JSON.stringify(choices)
         );
 
     }catch(e){}
@@ -2118,95 +691,71 @@ function saveStoryChoice(
 
 
 /* =========================================================
-   GET SAVED
+   18 — GET SAVED CHOICES
    ========================================================= */
 
-function getSavedStoryChoice(
-    choiceId
-){
+function getChoices(){
 
     try{
 
         var saved =
-            localStorage.getItem(
-                currentStoryKey
-            );
+            localStorage.getItem(storageKey);
 
+        return saved
+            ? JSON.parse(saved)
+            : {};
 
-        if(!saved){
+    }catch(e){
 
-            return null;
+        return {};
 
-        }
-
-
-        var choices =
-            JSON.parse(saved);
-
-
-        if(
-            choices &&
-            choices[choiceId]
-        ){
-
-            return choices[choiceId];
-
-        }
-
-    }catch(e){}
-
-
-    return null;
+    }
 
 }
 
 
 /* =========================================================
-   SHOW BRANCH
+   19 — SHOW SELECTED CONSEQUENCE
    ========================================================= */
 
-function showSelectedBranch(
-    choiceId,
-    letter
-){
+function showBranch(id,letter){
 
     var choices =
         content.getElementsByClassName(
             "story-choice"
         );
 
-
     var branches =
         content.getElementsByClassName(
             "story-branch"
         );
 
-
     var i;
 
 
-    for(i=0; i<choices.length; i++){
+    /* Hide buttons */
+
+    for(i=0;i<choices.length;i++){
 
         if(
-            choices[i].getAttribute(
-                "data-choice-id"
-            ) === choiceId
+            choices[i].getAttribute("data-choice")
+            === id
         ){
 
-            choices[i].style.display =
-                "none";
+            choices[i].style.display = "none";
 
         }
 
     }
 
 
-    for(i=0; i<branches.length; i++){
+    /* Hide branches */
+
+    for(i=0;i<branches.length;i++){
 
         if(
-            branches[i].getAttribute(
-                "data-choice-id"
-            ) === choiceId
+            branches[i].getAttribute("data-choice")
+            === id
         ){
 
             branches[i].className =
@@ -2217,16 +766,16 @@ function showSelectedBranch(
     }
 
 
-    for(i=0; i<branches.length; i++){
+    /* Show selected branch */
+
+    for(i=0;i<branches.length;i++){
 
         if(
-            branches[i].getAttribute(
-                "data-choice-id"
-            ) === choiceId &&
-
-            branches[i].getAttribute(
-                "data-choice-letter"
-            ) === letter
+            branches[i].getAttribute("data-choice")
+            === id
+            &&
+            branches[i].getAttribute("data-letter")
+            === letter
         ){
 
             branches[i].className =
@@ -2240,39 +789,20 @@ function showSelectedBranch(
 
 
 /* =========================================================
-   RESTORE SAVED
+   20 — RESTORE CHOICES
    ========================================================= */
 
-function restoreSavedChoices(){
+function restoreChoices(){
 
-    var choices =
-        content.getElementsByClassName(
-            "story-choice"
-        );
+    var choices = getChoices();
 
+    for(var id in choices){
 
-    var i;
+        if(choices.hasOwnProperty(id)){
 
-
-    for(i=0; i<choices.length; i++){
-
-        var choiceId =
-            choices[i].getAttribute(
-                "data-choice-id"
-            );
-
-
-        var savedLetter =
-            getSavedStoryChoice(
-                choiceId
-            );
-
-
-        if(savedLetter){
-
-            showSelectedBranch(
-                choiceId,
-                savedLetter
+            showBranch(
+                id,
+                choices[id]
             );
 
         }
@@ -2283,336 +813,52 @@ function restoreSavedChoices(){
 
 
 /* =========================================================
-   RESET CURRENT STORY
+   21 — DOES STORY HAVE CHOICES?
    ========================================================= */
 
-function resetCurrentStory(){
+function hasChoices(){
+
+    return content.getElementsByClassName(
+        "story-choice"
+    ).length > 0;
+
+}
+
+
+/* =========================================================
+   22 — RESET STORY
+   ========================================================= */
+
+reset.onclick = function(){
 
     try{
 
-        localStorage.removeItem(
-            currentStoryKey
-        );
+        localStorage.removeItem(storageKey);
 
     }catch(e){}
 
+    loadStory();
 
-    loadDocument(file);
+    window.scrollTo(0,0);
 
-
-    try{
-
-        window.scrollTo(
-            0,
-            0
-        );
-
-    }catch(e){}
-
-}
+};
 
 
 /* =========================================================
-   EXTRA MEDIA
-   ========================================================= */
-
-function renderExtraMedia(data){
-
-    var html = "";
-
-
-    if(data.video){
-
-        html +=
-            '<div class="media-box">' +
-
-            '<h2 class="media-title">' +
-            'Video' +
-            '</h2>' +
-
-            '<video controls preload="metadata">' +
-
-            '<source src="' +
-
-            escapeAttribute(
-                mediaPath(
-                    data.video
-                )
-            ) +
-
-            '">' +
-
-            'Your browser cannot play this video.' +
-
-            '</video>' +
-
-            '</div>';
-
-    }
-
-
-    if(data.audio){
-
-        html +=
-            '<div class="media-box">' +
-
-            '<h2 class="media-title">' +
-            'Audio' +
-            '</h2>' +
-
-            '<audio controls preload="metadata">' +
-
-            '<source src="' +
-
-            escapeAttribute(
-                mediaPath(
-                    data.audio
-                )
-            ) +
-
-            '">' +
-
-            'Your browser cannot play this audio.' +
-
-            '</audio>' +
-
-            '</div>';
-
-    }
-
-
-    if(data.downloads.length){
-
-        html +=
-            '<div class="media-box">' +
-
-            '<h2 class="media-title">' +
-            'Downloads' +
-            '</h2>';
-
-
-        var i;
-
-
-        for(i=0; i<data.downloads.length; i++){
-
-            html +=
-                '<p>' +
-
-                '<a href="' +
-
-                escapeAttribute(
-                    mediaPath(
-                        data.downloads[i]
-                    )
-                ) +
-
-                '" download>' +
-
-                'Download file ' +
-                (i + 1) +
-
-                '</a>' +
-
-                '</p>';
-
-        }
-
-
-        html +=
-            '</div>';
-
-    }
-
-
-    media.innerHTML =
-        html;
-
-}
-
-
-/* =========================================================
-   INLINE IMAGES
-   ========================================================= */
-
-function fixInlineImages(){
-
-    var images =
-        content.getElementsByTagName(
-            "img"
-        );
-
-
-    var i;
-
-
-    for(i=0; i<images.length; i++){
-
-        var src =
-            images[i].getAttribute(
-                "src"
-            );
-
-
-        if(src){
-
-            images[i].src =
-                mediaPath(src);
-
-        }
-
-
-        prepareImage(
-            images[i]
-        );
-
-
-        images[i].onerror =
-            function(){
-
-                this.alt =
-                    "Image could not be loaded.";
-
-                this.style.opacity =
-                    ".6";
-
-            };
-
-    }
-
-}
-
-
-/* =========================================================
-   INLINE VIDEOS
-   ========================================================= */
-
-function fixInlineVideos(){
-
-    var videos =
-        content.getElementsByTagName(
-            "video"
-        );
-
-
-    var i;
-
-
-    for(i=0; i<videos.length; i++){
-
-        var src =
-            videos[i].getAttribute(
-                "src"
-            );
-
-
-        if(src){
-
-            videos[i].src =
-                mediaPath(src);
-
-        }
-
-
-        videos[i].controls =
-            true;
-
-    }
-
-}
-
-
-/* =========================================================
-   INLINE AUDIO
-   ========================================================= */
-
-function fixInlineAudios(){
-
-    var audios =
-        content.getElementsByTagName(
-            "audio"
-        );
-
-
-    var i;
-
-
-    for(i=0; i<audios.length; i++){
-
-        var src =
-            audios[i].getAttribute(
-                "src"
-            );
-
-
-        if(src){
-
-            audios[i].src =
-                mediaPath(src);
-
-        }
-
-
-        audios[i].controls =
-            true;
-
-    }
-
-}
-
-
-/* =========================================================
-   LOW-SPEC IMAGE PREPARATION
-   ========================================================= */
-
-function prepareImage(image){
-
-    try{
-
-        image.setAttribute(
-            "loading",
-            "lazy"
-        );
-
-    }catch(e){}
-
-
-    try{
-
-        image.setAttribute(
-            "decoding",
-            "async"
-        );
-
-    }catch(e){}
-
-}
-
-
-/* =========================================================
-   MEDIA PATH
+   23 — MEDIA PATH
    ========================================================= */
 
 function mediaPath(src){
 
     if(!src){
-
         return "";
-
     }
 
-
-    src =
-        src.replace(
-            /^<|>$/g,
-            ""
-        );
-
+    src = src.trim();
 
     if(
-        src.indexOf("http://") === 0 ||
-        src.indexOf("https://") === 0 ||
-        src.indexOf("data:") === 0 ||
+        /^https?:\/\//i.test(src) ||
+        /^data:/i.test(src) ||
         src.charAt(0) === "/"
     ){
 
@@ -2620,35 +866,17 @@ function mediaPath(src){
 
     }
 
-
-    while(
-        src.indexOf("../") === 0
-    ){
-
-        src =
-            src.substring(3);
-
+    while(src.indexOf("../") === 0){
+        src = src.substring(3);
     }
 
-
-    while(
-        src.indexOf("./") === 0
-    ){
-
-        src =
-            src.substring(2);
-
+    while(src.indexOf("./") === 0){
+        src = src.substring(2);
     }
 
-
-    if(
-        src.indexOf("content/") === 0
-    ){
-
+    if(src.indexOf("content/") === 0){
         return "/" + src;
-
     }
-
 
     return "/content/images/" + src;
 
@@ -2656,107 +884,118 @@ function mediaPath(src){
 
 
 /* =========================================================
-   ARTICLE PATH
+   24 — FIX INLINE MEDIA
    ========================================================= */
 
-function articlePath(path){
+function fixMedia(){
 
-    var parts =
-        path.split("/");
+    var images =
+        content.getElementsByTagName("img");
 
+    var videos =
+        content.getElementsByTagName("video");
 
-    var encoded = [];
-
+    var audios =
+        content.getElementsByTagName("audio");
 
     var i;
 
 
-    for(i=0; i<parts.length; i++){
+    for(i=0;i<images.length;i++){
 
-        encoded.push(
-            encodeURIComponent(
-                parts[i]
-            )
-        );
+        images[i].src =
+            mediaPath(images[i].getAttribute("src"));
+
+        images[i].setAttribute("loading","lazy");
 
     }
 
 
-    return (
-        "/content/articles/" +
-        encoded.join("/") +
-        ".md"
-    );
+    for(i=0;i<videos.length;i++){
+
+        videos[i].src =
+            mediaPath(videos[i].getAttribute("src"));
+
+        videos[i].controls = true;
+
+    }
+
+
+    for(i=0;i<audios.length;i++){
+
+        audios[i].src =
+            mediaPath(audios[i].getAttribute("src"));
+
+        audios[i].controls = true;
+
+    }
 
 }
 
 
 /* =========================================================
-   CLEAN ARTICLE PATH
+   25 — EXTRA MEDIA FROM FRONTMATTER
    ========================================================= */
 
-function cleanArticlePath(path){
+function renderExtraMedia(data){
 
-    path =
-        path.replace(
-            /\\/g,
-            "/"
-        );
+    var html = "";
+
+    if(data.video){
+
+        html +=
+            '<h2>Video</h2>' +
+            '<video controls preload="metadata">' +
+            '<source src="' +
+            escapeAttr(mediaPath(data.video)) +
+            '">' +
+            '</video>';
+
+    }
+
+    if(data.audio){
+
+        html +=
+            '<h2>Audio</h2>' +
+            '<audio controls preload="metadata">' +
+            '<source src="' +
+            escapeAttr(mediaPath(data.audio)) +
+            '">' +
+            '</audio>';
+
+    }
+
+    media.innerHTML = html;
+
+}
 
 
-    path =
-        path.replace(
-            /^\/+/,
-            ""
-        );
+/* =========================================================
+   26 — PATH CLEANING
+   ========================================================= */
 
+function cleanPath(path){
 
-    var parts =
-        path.split("/");
+    path = String(path)
+        .replace(/\\/g,"/")
+        .replace(/^\/+/,"");
 
-
+    var parts = path.split("/");
     var clean = [];
 
-
-    var i;
-
-
-    for(i=0; i<parts.length; i++){
-
-        var part =
-            parts[i].trim();
-
-
-        if(!part){
-
-            continue;
-
-        }
-
+    for(var i=0;i<parts.length;i++){
 
         if(
-            part === "." ||
-            part === ".."
+            parts[i] &&
+            parts[i] !== "." &&
+            parts[i] !== ".."
         ){
 
-            return "";
+            clean.push(parts[i]);
 
         }
 
-
-        clean.push(
-            part
-        );
-
     }
-
-
-    if(!clean.length){
-
-        return "";
-
-    }
-
 
     return clean.join("/");
 
@@ -2764,379 +1003,28 @@ function cleanArticlePath(path){
 
 
 /* =========================================================
-   FRONTMATTER
-   ========================================================= */
-
-function parseFrontmatter(text){
-
-    var result = {
-
-        title:"",
-
-        cover:"",
-
-        credits:"",
-
-        reader:"article",
-
-        video:"",
-
-        audio:"",
-
-        downloads:[],
-
-        body:text
-
-    };
-
-
-    var match =
-        text.match(
-            /^---\s*([\s\S]*?)\s*---\s*/
-        );
-
-
-    if(!match){
-
-        return result;
-
-    }
-
-
-    var front =
-        match[1];
-
-
-    result.body =
-        text.replace(
-            /^---\s*[\s\S]*?\s*---\s*/,
-            ""
-        );
-
-
-    var titleMatch =
-        front.match(
-            /^title:\s*["']?(.*?)["']?\s*$/m
-        );
-
-
-    if(titleMatch){
-
-        result.title =
-            cleanValue(
-                titleMatch[1]
-            );
-
-    }
-
-
-    var coverMatch =
-        front.match(
-            /^cover:\s*["']?(.*?)["']?\s*$/m
-        );
-
-
-    if(coverMatch){
-
-        result.cover =
-            cleanValue(
-                coverMatch[1]
-            );
-
-    }
-
-
-    var creditsMatch =
-        front.match(
-            /^credits:\s*["']?(.*?)["']?\s*$/m
-        );
-
-
-    if(creditsMatch){
-
-        result.credits =
-            cleanValue(
-                creditsMatch[1]
-            );
-
-    }
-
-
-    var readerMatch =
-        front.match(
-            /^reader:\s*["']?(.*?)["']?\s*$/m
-        );
-
-
-    if(readerMatch){
-
-        result.reader =
-            cleanValue(
-                readerMatch[1]
-            );
-
-    }
-
-
-    var videoMatch =
-        front.match(
-            /^video:\s*["']?(.*?)["']?\s*$/m
-        );
-
-
-    if(videoMatch){
-
-        result.video =
-            cleanValue(
-                videoMatch[1]
-            );
-
-    }
-
-
-    var audioMatch =
-        front.match(
-            /^audio:\s*["']?(.*?)["']?\s*$/m
-        );
-
-
-    if(audioMatch){
-
-        result.audio =
-            cleanValue(
-                audioMatch[1]
-            );
-
-    }
-
-
-    var downloadsMatch =
-        front.match(
-            /^downloads:\s*([\s\S]*?)(?=^[a-zA-Z0-9_-]+\s*:|$)/m
-        );
-
-
-    if(downloadsMatch){
-
-        var lines =
-            downloadsMatch[1].split("\n");
-
-
-        var i;
-
-
-        for(i=0; i<lines.length; i++){
-
-            var line =
-                lines[i]
-                    .replace(
-                        /^\s*-\s*/,
-                        ""
-                    )
-                    .trim();
-
-
-            if(line){
-
-                var value =
-                    cleanValue(
-                        line
-                    );
-
-
-                if(value){
-
-                    result.downloads.push(
-                        value
-                    );
-
-                }
-
-            }
-
-        }
-
-    }
-
-
-    return result;
-
-}
-
-
-/* =========================================================
-   CLEAN FRONTMATTER VALUE
-   ========================================================= */
-
-function cleanValue(value){
-
-    value =
-        value.replace(
-            /^\s+/,
-            ""
-        );
-
-
-    value =
-        value.replace(
-            /\s+$/,
-            ""
-        );
-
-
-    if(
-        value.length >= 2 &&
-        (
-            (
-                value.charAt(0) === '"' &&
-                value.charAt(
-                    value.length - 1
-                ) === '"'
-            )
-            ||
-            (
-                value.charAt(0) === "'" &&
-                value.charAt(
-                    value.length - 1
-                ) === "'"
-            )
-        )
-    ){
-
-        value =
-            value.substring(
-                1,
-                value.length - 1
-            );
-
-    }
-
-
-    return value;
-
-}
-
-
-/* =========================================================
-   FILE NAME
-   ========================================================= */
-
-function getFileName(path){
-
-    var parts =
-        path.split("/");
-
-
-    return parts[
-        parts.length - 1
-    ];
-
-}
-
-
-/* =========================================================
-   STORAGE KEY
-   ========================================================= */
-
-function cleanStorageKey(value){
-
-    if(!value){
-
-        return "article";
-
-    }
-
-
-    return String(value)
-        .replace(
-            /[^a-zA-Z0-9_-]/g,
-            "_"
-        );
-
-}
-
-
-/* =========================================================
-   ERROR
-   ========================================================= */
-
-function showError(
-    heading,
-    message
-){
-
-    title.innerHTML =
-        escapeHtml(
-            heading
-        );
-
-
-    status.innerHTML =
-        escapeHtml(
-            message
-        );
-
-
-    content.innerHTML =
-        "";
-
-
-    cover.style.display =
-        "none";
-
-}
-
-
-/* =========================================================
-   HTML ESCAPE
+   27 — ESCAPING
    ========================================================= */
 
 function escapeHtml(value){
 
     return String(value)
-
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#39;"
-        );
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#39;");
 
 }
 
 
-/* =========================================================
-   ATTRIBUTE ESCAPE
-   ========================================================= */
+function escapeAttr(value){
 
-function escapeAttribute(value){
-
-    return escapeHtml(
-        value
-    );
+    return escapeHtml(value);
 
 }
 
 </script>
 
 </body>
-
 </html>
