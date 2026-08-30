@@ -1,5 +1,6 @@
 ---
-title: "discordant-descendants.md "
+---
+title: DISCORDANT DESCENDANTS — CHAPTER 1
 ---
 ---
 
