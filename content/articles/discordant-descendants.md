@@ -929,5 +929,4 @@ Lexis frowned.
 [ENDCHOICE]
 
 ---
-
-[NEXT:discordant-descendants-chapter-2.md]
+[NEXT:discordant-descendants-chapter-2]
