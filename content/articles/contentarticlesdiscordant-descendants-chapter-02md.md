@@ -1,5 +1,6 @@
 ---
-title: discordant-descendants-chapter-2.md
+---
+title: DISCORDANT DESCENDANTS — CHAPTER 2
 ---
 ---
 
