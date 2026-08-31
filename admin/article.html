@@ -93,15 +93,21 @@ h2{
 
 .story-choice{
     margin:45px 0;
-    padding:10px 0;
+    padding:20px 0;
+}
+
+.story-choice-title{
+    font-weight:bold;
+    font-size:1.1rem;
+    margin-bottom:15px;
 }
 
 .story-choice-button{
     display:block;
     width:100%;
     box-sizing:border-box;
-    margin:12px 0;
-    padding:15px 18px;
+    margin:10px 0;
+    padding:15px;
     font:16px Arial,sans-serif;
     text-align:left;
     background:#fff;
@@ -109,18 +115,10 @@ h2{
     border:1px solid #ccc;
     border-radius:8px;
     cursor:pointer;
-    transition:background .15s ease,
-                border-color .15s ease,
-                transform .15s ease;
 }
 
 .story-choice-button:hover{
-    background:#f5f5f5;
-    border-color:#999;
-}
-
-.story-choice-button:active{
-    transform:translateY(1px);
+    background:#f2f2f2;
 }
 
 .story-choice-button:disabled{
@@ -774,6 +772,31 @@ function isEndIfMarker(line){
 
 /* =========================================================
    CONDITIONAL PARSER
+   =========================================================
+
+   Supports:
+
+   [IF:choice-03=A]
+
+   ...
+
+   [ELSE]
+
+   [IF:choice-03=B]
+
+   ...
+
+   [ELSE]
+
+   [IF:choice-03=C]
+
+   ...
+
+   [ENDIF]
+   [ENDIF]
+   [ENDIF]
+
+   The parser understands nesting.
    ========================================================= */
 
 function parseConditional(
@@ -882,6 +905,12 @@ function parseConditional(
             /^\s*\*?\s*\[ELSE\]\s*$/.test(line)
         ){
 
+            /*
+             * If the ELSE is followed immediately
+             * by another IF, create another conditional
+             * branch.
+             */
+
             var nextLine =
                 lines[i + 1] || "";
 
@@ -914,10 +943,19 @@ function parseConditional(
 
                 depth++;
 
+                /*
+                 * The matching ENDIF for the nested IF
+                 * is handled below.
+                 */
+
                 continue;
 
             }
 
+
+            /*
+             * Plain ELSE block.
+             */
 
             current = {
 
@@ -971,6 +1009,11 @@ function parseConditional(
         if(
             block.id === "__ELSE__"
         ){
+
+            /*
+             * Plain ELSE only works if no previous
+             * matching branch was selected.
+             */
 
             var anyMatched =
                 false;
@@ -1193,8 +1236,12 @@ function parseChoice(
 
 
     /*
-     * Everything after this choice becomes
-     * the continuation of this choice.
+     * IMPORTANT:
+     *
+     * Everything after this choice becomes the
+     * continuation of this choice.
+     *
+     * It remains hidden until this choice is made.
      */
 
     var continuationLines =
@@ -1219,10 +1266,6 @@ function parseChoice(
 
     /*
      * CHOICE
-     *
-     * The engine still stores A/B/C internally.
-     * The reader does not display those internal
-     * letters to the player.
      */
 
     var html =
@@ -1230,7 +1273,11 @@ function parseChoice(
         '<div class="story-choice" ' +
         'data-choice="' +
         escapeAttr(id) +
-        '">';
+        '">' +
+
+        '<div class="story-choice-title">' +
+        'What do you do?' +
+        '</div>';
 
 
     for(
@@ -1254,6 +1301,8 @@ function parseChoice(
             '">' +
 
             escapeHtml(
+                options[j].letter +
+                " — " +
                 options[j].label
             ) +
 
@@ -1268,9 +1317,6 @@ function parseChoice(
 
     /*
      * CONSEQUENCES
-     *
-     * Consequence markers remain engine-only.
-     * The player sees only the selected story.
      */
 
     for(
@@ -1329,6 +1375,11 @@ function parseChoice(
     return {
 
         html:html,
+
+        /*
+         * The rest has been placed inside the
+         * continuation container.
+         */
 
         next:lines.length
 
@@ -1399,7 +1450,6 @@ function activateChoices(){
                         "data-choice"
                     );
 
-
                 var letter =
                     this.getAttribute(
                         "data-letter"
@@ -1448,7 +1498,7 @@ function choose(
 
 
     /*
-     * Put the selected story branch into view.
+     * Put the selected consequence into view.
      */
 
     var selected =
@@ -1466,16 +1516,10 @@ function choose(
         setTimeout(
             function(){
 
-                if(
-                    selected.scrollIntoView
-                ){
-
-                    selected.scrollIntoView({
-                        behavior:"smooth",
-                        block:"start"
-                    });
-
-                }
+                selected.scrollIntoView({
+                    behavior:"smooth",
+                    block:"start"
+                });
 
             },
             50
@@ -1581,7 +1625,7 @@ function showBranch(
 
 
     /*
-     * Hide the entire choice interface.
+     * Hide choice buttons.
      */
 
     for(
@@ -1630,7 +1674,7 @@ function showBranch(
 
 
     /*
-     * Show only the selected branch.
+     * Show selected branch.
      */
 
     for(
@@ -1744,6 +1788,17 @@ function restoreChoices(){
 
     }
 
+
+    /*
+     * Re-evaluate conditionals by rebuilding
+     * only when the chapter itself depends on
+     * earlier choices.
+     *
+     * Chapter 2 is loaded after Chapter 1,
+     * so its [IF:choice-03=...] content has
+     * already been resolved during rendering.
+     */
+
 }
 
 
@@ -1760,7 +1815,6 @@ function getChoiceIds(){
 
 
     var ids = [];
-
 
     for(
         var i = 0;
@@ -1793,6 +1847,14 @@ function getChoiceIds(){
 
 /* =========================================================
    NEXT BUTTON CONTROL
+   =========================================================
+
+   A NEXT button is locked until every choice
+   that exists in the current chapter has been
+   answered.
+
+   This prevents the chapter transition from
+   appearing immediately after an earlier choice.
    ========================================================= */
 
 function updateNextButtons(){
@@ -1840,6 +1902,14 @@ function updateNextButtons(){
         j < nextButtons.length;
         j++
     ){
+
+        /*
+         * If the NEXT button is inside a hidden
+         * continuation, it remains hidden anyway.
+         *
+         * This class only controls whether the
+         * transition itself is available.
+         */
 
         if(complete){
 
