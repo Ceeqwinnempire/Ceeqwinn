@@ -11,10 +11,6 @@
 
 <style>
 
-/* =========================================================
-   01 — BASIC READER
-   ========================================================= */
-
 body{
     max-width:800px;
     margin:auto;
@@ -92,7 +88,7 @@ h2{
 
 
 /* =========================================================
-   02 — STORY ENGINE
+   STORY ENGINE
    ========================================================= */
 
 .story-choice{
@@ -142,11 +138,6 @@ h2{
     margin-top:25px;
 }
 
-
-/* =========================================================
-   03 — STORY CONTINUATION
-   ========================================================= */
-
 .story-next{
     margin:55px 0 25px;
     padding:25px 0;
@@ -174,11 +165,6 @@ h2{
     opacity:.85;
 }
 
-
-/* =========================================================
-   04 — RESET
-   ========================================================= */
-
 #storyReset{
     display:none;
     width:100%;
@@ -197,7 +183,7 @@ h2{
 
 
 /* =========================================================
-   05 — LOW-SPEC DEVICES
+   MOBILE
    ========================================================= */
 
 @media(max-width:600px){
@@ -246,17 +232,13 @@ h2{
 <div id="media"></div>
 
 
-<!-- =======================================================
-     06 — MARKDOWN
-     ======================================================= -->
-
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
 
 
 <script>
 
 /* =========================================================
-   07 — BASIC SETUP
+   BASIC ELEMENTS
    ========================================================= */
 
 var title =
@@ -282,7 +264,7 @@ var reset =
 
 
 /* =========================================================
-   08 — GET ARTICLE NAME
+   ARTICLE FILE
    ========================================================= */
 
 var params =
@@ -298,21 +280,7 @@ file =
 
 
 /* =========================================================
-   09 — STORY-WIDE IDENTITY
-   =========================================================
-
-   All chapters belonging to the same story share
-   ONE choice history.
-
-   Examples:
-
-   discordant-descendants
-   discordant-descendants-chapter-2
-   discordant-descendants-chapter-3
-
-   all become:
-
-   discordant-descendants
+   STORY ID
    ========================================================= */
 
 var storyId =
@@ -320,7 +288,7 @@ var storyId =
 
 
 /* =========================================================
-   10 — STORY-WIDE STORAGE
+   STORY STORAGE
    ========================================================= */
 
 var storageKey =
@@ -329,7 +297,7 @@ var storageKey =
 
 
 /* =========================================================
-   11 — START
+   START
    ========================================================= */
 
 if(!file){
@@ -348,7 +316,7 @@ if(!file){
 
 
 /* =========================================================
-   12 — LOAD MARKDOWN
+   LOAD MARKDOWN
    ========================================================= */
 
 function loadStory(){
@@ -360,7 +328,8 @@ function loadStory(){
 
     media.innerHTML = "";
 
-    cover.style.display = "none";
+    cover.style.display =
+        "none";
 
     var xhr =
         new XMLHttpRequest();
@@ -373,12 +342,32 @@ function loadStory(){
         true
     );
 
-    xhr.onload = function(){
+    xhr.onload =
+        function(){
 
-        if(
-            xhr.status !== 200 &&
-            xhr.status !== 0
-        ){
+            if(
+                xhr.status !== 200 &&
+                xhr.status !== 0
+            ){
+
+                title.textContent =
+                    "Unable to load article";
+
+                status.textContent =
+                    "The article could not be loaded.";
+
+                return;
+
+            }
+
+            buildStory(
+                xhr.responseText
+            );
+
+        };
+
+    xhr.onerror =
+        function(){
 
             title.textContent =
                 "Unable to load article";
@@ -386,25 +375,7 @@ function loadStory(){
             status.textContent =
                 "The article could not be loaded.";
 
-            return;
-
-        }
-
-        buildStory(
-            xhr.responseText
-        );
-
-    };
-
-    xhr.onerror = function(){
-
-        title.textContent =
-            "Unable to load article";
-
-        status.textContent =
-            "The article could not be loaded.";
-
-    };
+        };
 
     xhr.send();
 
@@ -412,7 +383,7 @@ function loadStory(){
 
 
 /* =========================================================
-   13 — BUILD STORY
+   BUILD STORY
    ========================================================= */
 
 function buildStory(text){
@@ -421,17 +392,9 @@ function buildStory(text){
         parseFrontmatter(text);
 
 
-    /* ---------------------------------------------
-       TITLE
-       --------------------------------------------- */
-
     title.textContent =
         data.title || file;
 
-
-    /* ---------------------------------------------
-       CREDITS
-       --------------------------------------------- */
 
     credits.innerHTML =
         data.credits
@@ -439,10 +402,6 @@ function buildStory(text){
           escapeHtml(data.credits)
         : "";
 
-
-    /* ---------------------------------------------
-       COVER
-       --------------------------------------------- */
 
     if(data.cover){
 
@@ -455,55 +414,25 @@ function buildStory(text){
         cover.style.display =
             "block";
 
-        cover.onerror = function(){
+        cover.onerror =
+            function(){
 
-            cover.style.display =
-                "none";
+                cover.style.display =
+                    "none";
 
-        };
+            };
 
     }
 
-
-    /* ---------------------------------------------
-       STORY RENDERING
-       --------------------------------------------- */
 
     content.innerHTML =
         renderStory(data.body);
 
 
-    /* ---------------------------------------------
-       INLINE MEDIA
-       --------------------------------------------- */
-
     fixMedia();
 
+    setupStory();
 
-    /* ---------------------------------------------
-       CHOICES
-       --------------------------------------------- */
-
-    if(hasChoices()){
-
-        reset.style.display =
-            "block";
-
-        activateChoices();
-
-        restoreChoices();
-
-    }else{
-
-        reset.style.display =
-            "none";
-
-    }
-
-
-    /* ---------------------------------------------
-       EXTRA FRONTMATTER MEDIA
-       --------------------------------------------- */
 
     renderExtraMedia(data);
 
@@ -514,7 +443,7 @@ function buildStory(text){
 
 
 /* =========================================================
-   14 — FRONTMATTER
+   FRONTMATTER
    ========================================================= */
 
 function parseFrontmatter(text){
@@ -591,7 +520,7 @@ function parseFrontmatter(text){
 
 
 /* =========================================================
-   15 — FRONTMATTER VALUE
+   FRONTMATTER VALUE
    ========================================================= */
 
 function frontValue(
@@ -619,31 +548,7 @@ function frontValue(
 
 
 /* =========================================================
-   16 — STORY RENDERER
-   =========================================================
-
-   Understands:
-
-   [CHOICE:id]
-
-   [A] Option
-   [B] Option
-   [C] Option
-
-   [CONSEQUENCE:A]
-
-   Story...
-
-   [ENDCHOICE]
-
-   [NEXT:story-slug]
-
-   [IF:choice-01=A]
-
-   Story that appears only when
-   the reader previously chose A.
-
-   [ENDIF]
+   STORY RENDERER
    ========================================================= */
 
 function renderStory(text){
@@ -659,7 +564,7 @@ function renderStory(text){
 
 
 /* =========================================================
-   17 — RENDER FLOW
+   FLOW RENDERER
    ========================================================= */
 
 function renderFlow(lines){
@@ -673,25 +578,16 @@ function renderFlow(lines){
 
     while(i < lines.length){
 
-        /* -----------------------------------------
-           CONDITIONAL STORY
-           ----------------------------------------- */
+        /*
+         * CONDITIONAL
+         */
 
         if(isIfMarker(lines[i])){
 
-            if(normal.length){
-
-                output +=
-                    marked(
-                        normal.join("\n")
-                    );
-
-                normal = [];
-
-            }
+            flushNormal();
 
 
-            var conditionalResult =
+            var conditional =
                 parseConditional(
                     lines,
                     i
@@ -699,11 +595,11 @@ function renderFlow(lines){
 
 
             output +=
-                conditionalResult.html;
+                conditional.html;
 
 
             i =
-                conditionalResult.next;
+                conditional.next;
 
 
             continue;
@@ -711,25 +607,16 @@ function renderFlow(lines){
         }
 
 
-        /* -----------------------------------------
-           CHOICE
-           ----------------------------------------- */
+        /*
+         * CHOICE
+         */
 
         if(isChoiceStart(lines[i])){
 
-            if(normal.length){
-
-                output +=
-                    marked(
-                        normal.join("\n")
-                    );
-
-                normal = [];
-
-            }
+            flushNormal();
 
 
-            var choiceResult =
+            var choice =
                 parseChoice(
                     lines,
                     i
@@ -737,11 +624,11 @@ function renderFlow(lines){
 
 
             output +=
-                choiceResult.html;
+                choice.html;
 
 
             i =
-                choiceResult.next;
+                choice.next;
 
 
             continue;
@@ -749,22 +636,13 @@ function renderFlow(lines){
         }
 
 
-        /* -----------------------------------------
-           NEXT CHAPTER
-           ----------------------------------------- */
+        /*
+         * NEXT CHAPTER
+         */
 
         if(isNextMarker(lines[i])){
 
-            if(normal.length){
-
-                output +=
-                    marked(
-                        normal.join("\n")
-                    );
-
-                normal = [];
-
-            }
+            flushNormal();
 
 
             output +=
@@ -780,9 +658,9 @@ function renderFlow(lines){
         }
 
 
-        /* -----------------------------------------
-           ENDIF
-           ----------------------------------------- */
+        /*
+         * STRAY ENDIF
+         */
 
         if(isEndIfMarker(lines[i])){
 
@@ -793,9 +671,24 @@ function renderFlow(lines){
         }
 
 
-        /* -----------------------------------------
-           NORMAL STORY
-           ----------------------------------------- */
+        /*
+         * ELSE IS HANDLED INSIDE CONDITIONALS.
+         */
+
+        if(
+            /^\s*\*?\s*\[ELSE\]\s*$/.test(
+                lines[i]
+            )
+        ){
+
+            flushNormal();
+
+            i++;
+
+            continue;
+
+        }
+
 
         normal.push(
             lines[i]
@@ -803,12 +696,24 @@ function renderFlow(lines){
 
         i++;
 
+
+        function flushNormal(){
+
+            if(normal.length){
+
+                output +=
+                    marked(
+                        normal.join("\n")
+                    );
+
+                normal = [];
+
+            }
+
+        }
+
     }
 
-
-    /* ---------------------------------------------
-       REMAINING NORMAL STORY
-       --------------------------------------------- */
 
     if(normal.length){
 
@@ -826,7 +731,7 @@ function renderFlow(lines){
 
 
 /* =========================================================
-   18 — CHOICE START
+   MARKER TESTS
    ========================================================= */
 
 function isChoiceStart(line){
@@ -838,10 +743,6 @@ function isChoiceStart(line){
 }
 
 
-/* =========================================================
-   19 — NEXT MARKER
-   ========================================================= */
-
 function isNextMarker(line){
 
     return /^\s*\*?\s*\[NEXT:[^\]]+\]\s*$/.test(
@@ -851,10 +752,6 @@ function isNextMarker(line){
 }
 
 
-/* =========================================================
-   20 — IF MARKER
-   ========================================================= */
-
 function isIfMarker(line){
 
     return /^\s*\*?\s*\[IF:[\w-]+=[A-Z]\]\s*$/.test(
@@ -863,10 +760,6 @@ function isIfMarker(line){
 
 }
 
-
-/* =========================================================
-   21 — ENDIF MARKER
-   ========================================================= */
 
 function isEndIfMarker(line){
 
@@ -878,19 +771,32 @@ function isEndIfMarker(line){
 
 
 /* =========================================================
-   22 — PARSE CONDITIONAL
+   CONDITIONAL PARSER
    =========================================================
 
-   Example:
+   Supports:
 
-   [IF:choice-01=A]
+   [IF:choice-03=A]
 
-   Lexis took the envelope.
+   ...
+
+   [ELSE]
+
+   [IF:choice-03=B]
+
+   ...
+
+   [ELSE]
+
+   [IF:choice-03=C]
+
+   ...
 
    [ENDIF]
+   [ENDIF]
+   [ENDIF]
 
-   The block is rendered only if the stored
-   choice matches.
+   The parser understands nesting.
    ========================================================= */
 
 function parseConditional(
@@ -898,33 +804,41 @@ function parseConditional(
     start
 ){
 
-    var match =
+    var first =
         lines[start].match(
             /^\s*\*?\s*\[IF:([\w-]+)=([A-Z])\]\s*$/
         );
 
 
-    if(!match){
+    if(!first){
 
         return {
-
             html:"",
             next:start + 1
-
         };
 
     }
 
 
-    var choiceId =
-        match[1];
+    var blocks = [];
+
+    var current = {
+
+        id:first[1],
+
+        letter:first[2],
+
+        lines:[]
+
+    };
 
 
-    var requiredLetter =
-        match[2];
+    blocks.push(
+        current
+    );
 
 
-    var innerLines = [];
+    var depth = 1;
 
     var i =
         start + 1;
@@ -932,23 +846,143 @@ function parseConditional(
 
     while(i < lines.length){
 
-        if(
-            isEndIfMarker(
-                lines[i]
-            )
-        ){
+        var line =
+            lines[i];
+
+
+        /*
+         * Nested IF
+         */
+
+        if(isIfMarker(line)){
+
+            depth++;
+
+            current.lines.push(
+                line
+            );
 
             i++;
 
-            break;
+            continue;
 
         }
 
 
-        innerLines.push(
-            lines[i]
-        );
+        /*
+         * ENDIF
+         */
 
+        if(isEndIfMarker(line)){
+
+            depth--;
+
+            if(depth === 0){
+
+                i++;
+
+                break;
+
+            }
+
+            current.lines.push(
+                line
+            );
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * ELSE belonging to this IF
+         */
+
+        if(
+            depth === 1 &&
+            /^\s*\*?\s*\[ELSE\]\s*$/.test(line)
+        ){
+
+            /*
+             * If the ELSE is followed immediately
+             * by another IF, create another conditional
+             * branch.
+             */
+
+            var nextLine =
+                lines[i + 1] || "";
+
+
+            var nextIf =
+                nextLine.match(
+                    /^\s*\*?\s*\[IF:([\w-]+)=([A-Z])\]\s*$/
+                );
+
+
+            if(nextIf){
+
+                current = {
+
+                    id:nextIf[1],
+
+                    letter:nextIf[2],
+
+                    lines:[]
+
+                };
+
+
+                blocks.push(
+                    current
+                );
+
+
+                i += 2;
+
+                depth++;
+
+                /*
+                 * The matching ENDIF for the nested IF
+                 * is handled below.
+                 */
+
+                continue;
+
+            }
+
+
+            /*
+             * Plain ELSE block.
+             */
+
+            current = {
+
+                id:"__ELSE__",
+
+                letter:"ELSE",
+
+                lines:[]
+
+            };
+
+
+            blocks.push(
+                current
+            );
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        current.lines.push(
+            line
+        );
 
         i++;
 
@@ -959,20 +993,82 @@ function parseConditional(
         getChoices();
 
 
-    var selected =
-        choices[choiceId] || "";
+    var selectedHTML = "";
 
 
-    if(
-        selected !== requiredLetter
+    for(
+        var b = 0;
+        b < blocks.length;
+        b++
     ){
 
-        return {
+        var block =
+            blocks[b];
 
-            html:"",
-            next:i
 
-        };
+        if(
+            block.id === "__ELSE__"
+        ){
+
+            /*
+             * Plain ELSE only works if no previous
+             * matching branch was selected.
+             */
+
+            var anyMatched =
+                false;
+
+
+            for(
+                var x = 0;
+                x < b;
+                x++
+            ){
+
+                if(
+                    choices[blocks[x].id] ===
+                    blocks[x].letter
+                ){
+
+                    anyMatched =
+                        true;
+
+                    break;
+
+                }
+
+            }
+
+
+            if(
+                !anyMatched
+            ){
+
+                selectedHTML =
+                    renderFlow(
+                        block.lines
+                    );
+
+            }
+
+            continue;
+
+        }
+
+
+        if(
+            choices[block.id] ===
+            block.letter
+        ){
+
+            selectedHTML =
+                renderFlow(
+                    block.lines
+                );
+
+            break;
+
+        }
 
     }
 
@@ -980,9 +1076,7 @@ function parseConditional(
     return {
 
         html:
-            renderFlow(
-                innerLines
-            ),
+            selectedHTML,
 
         next:i
 
@@ -992,7 +1086,7 @@ function parseConditional(
 
 
 /* =========================================================
-   23 — PARSE CHOICE
+   CHOICE PARSER
    ========================================================= */
 
 function parseChoice(
@@ -1004,6 +1098,19 @@ function parseChoice(
         lines[start].match(
             /^\s*\*?\s*\[CHOICE:([\w-]+)\]\s*$/
         );
+
+
+    if(!match){
+
+        return {
+
+            html:"",
+
+            next:start + 1
+
+        };
+
+    }
 
 
     var id =
@@ -1026,9 +1133,9 @@ function parseChoice(
             lines[i];
 
 
-        /* -----------------------------------------
-           END CHOICE
-           ----------------------------------------- */
+        /*
+         * END CHOICE
+         */
 
         if(
             /^\s*\*?\s*\[ENDCHOICE\]\s*$/.test(
@@ -1043,9 +1150,9 @@ function parseChoice(
         }
 
 
-        /* -----------------------------------------
-           OPTION
-           ----------------------------------------- */
+        /*
+         * OPTION
+         */
 
         var option =
             line.match(
@@ -1076,9 +1183,9 @@ function parseChoice(
         }
 
 
-        /* -----------------------------------------
-           CONSEQUENCE
-           ----------------------------------------- */
+        /*
+         * CONSEQUENCE
+         */
 
         var consequence =
             line.match(
@@ -1110,9 +1217,9 @@ function parseChoice(
         }
 
 
-        /* -----------------------------------------
-           BRANCH CONTENT
-           ----------------------------------------- */
+        /*
+         * BRANCH CONTENT
+         */
 
         if(current){
 
@@ -1128,18 +1235,26 @@ function parseChoice(
     }
 
 
-    /* =====================================================
-       EVERYTHING AFTER THIS CHOICE
-       ===================================================== */
+    /*
+     * IMPORTANT:
+     *
+     * Everything after this choice becomes the
+     * continuation of this choice.
+     *
+     * It remains hidden until this choice is made.
+     */
 
     var continuationLines =
         lines.slice(i);
 
 
-    var continuationHTML = "";
+    var continuationHTML =
+        "";
 
 
-    if(continuationLines.length){
+    if(
+        continuationLines.length
+    ){
 
         continuationHTML =
             renderFlow(
@@ -1149,9 +1264,9 @@ function parseChoice(
     }
 
 
-    /* =====================================================
-       CHOICE HTML
-       ===================================================== */
+    /*
+     * CHOICE
+     */
 
     var html =
 
@@ -1200,9 +1315,9 @@ function parseChoice(
         '</div>';
 
 
-    /* =====================================================
-       CONSEQUENCE BRANCHES
-       ===================================================== */
+    /*
+     * CONSEQUENCES
+     */
 
     for(
         var k = 0;
@@ -1236,9 +1351,9 @@ function parseChoice(
     }
 
 
-    /* =====================================================
-       CONTINUATION
-       ===================================================== */
+    /*
+     * CONTINUATION
+     */
 
     if(continuationHTML){
 
@@ -1259,11 +1374,14 @@ function parseChoice(
 
     return {
 
-        html:
-            html,
+        html:html,
 
-        next:
-            lines.length
+        /*
+         * The rest has been placed inside the
+         * continuation container.
+         */
+
+        next:lines.length
 
     };
 
@@ -1271,7 +1389,43 @@ function parseChoice(
 
 
 /* =========================================================
-   24 — ACTIVATE CHOICE BUTTONS
+   SETUP STORY
+   ========================================================= */
+
+function setupStory(){
+
+    var choices =
+        content.getElementsByClassName(
+            "story-choice"
+        );
+
+
+    if(
+        choices.length
+    ){
+
+        reset.style.display =
+            "block";
+
+    }else{
+
+        reset.style.display =
+            "none";
+
+    }
+
+
+    activateChoices();
+
+    restoreChoices();
+
+    updateNextButtons();
+
+}
+
+
+/* =========================================================
+   ACTIVATE CHOICES
    ========================================================= */
 
 function activateChoices(){
@@ -1315,7 +1469,7 @@ function activateChoices(){
 
 
 /* =========================================================
-   25 — MAKE CHOICE
+   MAKE CHOICE
    ========================================================= */
 
 function choose(
@@ -1339,19 +1493,45 @@ function choose(
         id
     );
 
+
+    updateNextButtons();
+
+
+    /*
+     * Put the selected consequence into view.
+     */
+
+    var selected =
+        content.querySelector(
+            '.story-branch[data-choice="' +
+            cssEscape(id) +
+            '"][data-letter="' +
+            cssEscape(letter) +
+            '"]'
+        );
+
+
+    if(selected){
+
+        setTimeout(
+            function(){
+
+                selected.scrollIntoView({
+                    behavior:"smooth",
+                    block:"start"
+                });
+
+            },
+            50
+        );
+
+    }
+
 }
 
 
 /* =========================================================
-   26 — SAVE CHOICE
-   =========================================================
-
-   IMPORTANT:
-
-   This now saves to the STORY-WIDE history.
-
-   Chapter 1, Chapter 2, Chapter 3...
-   all use the same history.
+   SAVE CHOICE
    ========================================================= */
 
 function saveChoice(
@@ -1382,7 +1562,7 @@ function saveChoice(
 
 
 /* =========================================================
-   27 — GET SAVED CHOICES
+   GET CHOICES
    ========================================================= */
 
 function getChoices(){
@@ -1395,8 +1575,20 @@ function getChoices(){
             );
 
 
-        return saved
-            ? JSON.parse(saved)
+        if(!saved){
+
+            return {};
+
+        }
+
+
+        var parsed =
+            JSON.parse(saved);
+
+
+        return parsed &&
+               typeof parsed === "object"
+            ? parsed
             : {};
 
     }catch(e){
@@ -1409,7 +1601,7 @@ function getChoices(){
 
 
 /* =========================================================
-   28 — SHOW SELECTED CONSEQUENCE
+   SHOW BRANCH
    ========================================================= */
 
 function showBranch(
@@ -1432,9 +1624,9 @@ function showBranch(
     var i;
 
 
-    /* ---------------------------------------------
-       Hide the choice buttons
-       --------------------------------------------- */
+    /*
+     * Hide choice buttons.
+     */
 
     for(
         i = 0;
@@ -1456,9 +1648,10 @@ function showBranch(
     }
 
 
-    /* ---------------------------------------------
-       Hide every branch belonging to this choice
-       --------------------------------------------- */
+    /*
+     * Hide all branches belonging
+     * to this choice.
+     */
 
     for(
         i = 0;
@@ -1480,9 +1673,9 @@ function showBranch(
     }
 
 
-    /* ---------------------------------------------
-       Show selected branch
-       --------------------------------------------- */
+    /*
+     * Show selected branch.
+     */
 
     for(
         i = 0;
@@ -1515,7 +1708,7 @@ function showBranch(
 
 
 /* =========================================================
-   29 — REVEAL CONTINUATION
+   REVEAL CONTINUATION
    ========================================================= */
 
 function revealContinuation(id){
@@ -1549,7 +1742,7 @@ function revealContinuation(id){
 
 
 /* =========================================================
-   30 — RESTORE SAVED STORY
+   RESTORE SAVED CHOICES
    ========================================================= */
 
 function restoreChoices(){
@@ -1558,55 +1751,181 @@ function restoreChoices(){
         getChoices();
 
 
-    var changed = true;
+    var ids =
+        getChoiceIds();
 
-    var safety = 0;
 
+    /*
+     * Restore in the order the choices
+     * appear in the current chapter.
+     */
 
-    while(
-        changed &&
-        safety < 20
+    for(
+        var i = 0;
+        i < ids.length;
+        i++
     ){
 
-        changed = false;
+        var id =
+            ids[i];
 
-        safety++;
 
-
-        for(
-            var id in choices
+        if(
+            choices[id]
         ){
 
-            if(
-                choices.hasOwnProperty(id)
-            ){
-
-                var before =
-                    countVisibleStoryParts();
+            showBranch(
+                id,
+                choices[id]
+            );
 
 
-                showBranch(
-                    id,
-                    choices[id]
-                );
+            revealContinuation(
+                id
+            );
+
+        }
+
+    }
 
 
-                revealContinuation(
-                    id
-                );
+    /*
+     * Re-evaluate conditionals by rebuilding
+     * only when the chapter itself depends on
+     * earlier choices.
+     *
+     * Chapter 2 is loaded after Chapter 1,
+     * so its [IF:choice-03=...] content has
+     * already been resolved during rendering.
+     */
+
+}
 
 
-                var after =
-                    countVisibleStoryParts();
+/* =========================================================
+   FIND CHOICE IDS
+   ========================================================= */
+
+function getChoiceIds(){
+
+    var elements =
+        content.getElementsByClassName(
+            "story-choice"
+        );
 
 
-                if(after !== before){
+    var ids = [];
 
-                    changed = true;
+    for(
+        var i = 0;
+        i < elements.length;
+        i++
+    ){
 
-                }
+        var id =
+            elements[i].getAttribute(
+                "data-choice"
+            );
 
-            }
+
+        if(
+            id &&
+            ids.indexOf(id) === -1
+        ){
+
+            ids.push(id);
+
+        }
+
+    }
+
+
+    return ids;
+
+}
+
+
+/* =========================================================
+   NEXT BUTTON CONTROL
+   =========================================================
+
+   A NEXT button is locked until every choice
+   that exists in the current chapter has been
+   answered.
+
+   This prevents the chapter transition from
+   appearing immediately after an earlier choice.
+   ========================================================= */
+
+function updateNextButtons(){
+
+    var nextButtons =
+        content.getElementsByClassName(
+            "story-next-button"
+        );
+
+
+    var ids =
+        getChoiceIds();
+
+
+    var choices =
+        getChoices();
+
+
+    var complete =
+        true;
+
+
+    for(
+        var i = 0;
+        i < ids.length;
+        i++
+    ){
+
+        if(
+            !choices[ids[i]]
+        ){
+
+            complete =
+                false;
+
+            break;
+
+        }
+
+    }
+
+
+    for(
+        var j = 0;
+        j < nextButtons.length;
+        j++
+    ){
+
+        /*
+         * If the NEXT button is inside a hidden
+         * continuation, it remains hidden anyway.
+         *
+         * This class only controls whether the
+         * transition itself is available.
+         */
+
+        if(complete){
+
+            nextButtons[j].disabled =
+                false;
+
+            nextButtons[j].style.display =
+                "";
+
+        }else{
+
+            nextButtons[j].disabled =
+                true;
+
+            nextButtons[j].style.display =
+                "none";
 
         }
 
@@ -1616,89 +1935,7 @@ function restoreChoices(){
 
 
 /* =========================================================
-   31 — COUNT VISIBLE STORY PARTS
-   ========================================================= */
-
-function countVisibleStoryParts(){
-
-    var visible =
-        content.querySelectorAll(
-            ".story-branch:not(.story-hidden), " +
-            ".story-continuation:not(.story-hidden)"
-        );
-
-
-    return visible.length;
-
-}
-
-
-/* =========================================================
-   32 — DOES STORY HAVE CHOICES?
-   ========================================================= */
-
-function hasChoices(){
-
-    return (
-        content.getElementsByClassName(
-            "story-choice"
-        ).length > 0
-    );
-
-}
-
-
-/* =========================================================
-   33 — RESET ENTIRE STORY
-   =========================================================
-
-   IMPORTANT:
-
-   Resetting Chapter 2 now resets the WHOLE
-   Discordant Descendants choice history.
-   ========================================================= */
-
-reset.onclick =
-    function(){
-
-        try{
-
-            localStorage.removeItem(
-                storageKey
-            );
-
-        }catch(e){}
-
-
-        loadStory();
-
-
-        window.scrollTo(
-            0,
-            0
-        );
-
-    };
-
-
-/* =========================================================
-   34 — NEXT CHAPTER RENDERER
-   =========================================================
-
-   Supported:
-
-   [NEXT:discordant-descendants-chapter-2]
-
-   OR:
-
-   [NEXT:discordant-descendants-chapter-2|The door opened.]
-
-   The second part becomes the button text.
-
-   Example:
-
-   [NEXT:discordant-descendants-chapter-2|The envelope had only begun to speak.]
-
+   NEXT CHAPTER
    ========================================================= */
 
 function renderNext(line){
@@ -1758,7 +1995,7 @@ function renderNext(line){
 
 
 /* =========================================================
-   35 — ACTIVATE NEXT CHAPTER BUTTONS
+   NEXT CHAPTER CLICK
    ========================================================= */
 
 document.addEventListener(
@@ -1774,6 +2011,13 @@ document.addEventListener(
                 "story-next-button"
             )
         ){
+
+            return;
+
+        }
+
+
+        if(target.disabled){
 
             return;
 
@@ -1817,21 +2061,28 @@ document.addEventListener(
 
 
 /* =========================================================
-   36 — STORY ID
-   =========================================================
+   RESET STORY
+   ========================================================= */
 
-   Converts:
+reset.onclick =
+    function(){
 
-   discordant-descendants
-   discordant-descendants-chapter-2
-   discordant-descendants-chapter-3
+        try{
 
-   into:
+            localStorage.removeItem(
+                storageKey
+            );
 
-   discordant-descendants
+        }catch(e){}
 
-   This is what makes all chapters share
-   one history.
+
+        window.location.reload();
+
+    };
+
+
+/* =========================================================
+   STORY ID
    ========================================================= */
 
 function getStoryId(path){
@@ -1840,26 +2091,12 @@ function getStoryId(path){
         String(path);
 
 
-    /*
-       Remove .md if present.
-    */
-
     path =
         path.replace(
             /\.md$/i,
             ""
         );
 
-
-    /*
-       Remove chapter numbering.
-
-       Examples:
-
-       -chapter-2
-       -chapter-3
-       -chapter-10
-    */
 
     path =
         path.replace(
@@ -1874,7 +2111,7 @@ function getStoryId(path){
 
 
 /* =========================================================
-   37 — MEDIA PATH
+   MEDIA PATH
    ========================================================= */
 
 function mediaPath(src){
@@ -1889,10 +2126,6 @@ function mediaPath(src){
     src =
         src.trim();
 
-
-    /* ---------------------------------------------
-       External / absolute paths
-       --------------------------------------------- */
 
     if(
 
@@ -1912,10 +2145,6 @@ function mediaPath(src){
 
     }
 
-
-    /* ---------------------------------------------
-       Remove leading relative markers
-       --------------------------------------------- */
 
     while(
         src.indexOf("../") === 0
@@ -1937,10 +2166,6 @@ function mediaPath(src){
     }
 
 
-    /* ---------------------------------------------
-       Already points into content
-       --------------------------------------------- */
-
     if(
         src.indexOf("content/") === 0
     ){
@@ -1950,17 +2175,13 @@ function mediaPath(src){
     }
 
 
-    /* ---------------------------------------------
-       Default image location
-       --------------------------------------------- */
-
     return "/content/images/" + src;
 
 }
 
 
 /* =========================================================
-   38 — FIX INLINE MEDIA
+   FIX MEDIA
    ========================================================= */
 
 function fixMedia(){
@@ -1985,10 +2206,6 @@ function fixMedia(){
 
     var i;
 
-
-    /* ---------------------------------------------
-       IMAGES
-       --------------------------------------------- */
 
     for(
         i = 0;
@@ -2020,10 +2237,6 @@ function fixMedia(){
     }
 
 
-    /* ---------------------------------------------
-       VIDEO
-       --------------------------------------------- */
-
     for(
         i = 0;
         i < videos.length;
@@ -2051,10 +2264,6 @@ function fixMedia(){
 
     }
 
-
-    /* ---------------------------------------------
-       AUDIO
-       --------------------------------------------- */
 
     for(
         i = 0;
@@ -2087,7 +2296,7 @@ function fixMedia(){
 
 
 /* =========================================================
-   39 — EXTRA MEDIA FROM FRONTMATTER
+   EXTRA MEDIA
    ========================================================= */
 
 function renderExtraMedia(data){
@@ -2148,15 +2357,21 @@ function renderExtraMedia(data){
 
 
 /* =========================================================
-   40 — PATH CLEANING
+   CLEAN PATH
    ========================================================= */
 
 function cleanPath(path){
 
     path =
         String(path)
-        .replace(/\\/g,"/")
-        .replace(/^\/+/,"");
+        .replace(
+            /\\/g,
+            "/"
+        )
+        .replace(
+            /^\/+/,
+            ""
+        );
 
 
     var parts =
@@ -2201,7 +2416,7 @@ function cleanPath(path){
 
 
 /* =========================================================
-   41 — ESCAPE HTML
+   HTML ESCAPING
    ========================================================= */
 
 function escapeHtml(value){
@@ -2236,15 +2451,30 @@ function escapeHtml(value){
 }
 
 
-/* =========================================================
-   42 — ESCAPE ATTRIBUTE
-   ========================================================= */
-
 function escapeAttr(value){
 
     return escapeHtml(
         value
     );
+
+}
+
+
+/* =========================================================
+   SIMPLE CSS ESCAPE
+   ========================================================= */
+
+function cssEscape(value){
+
+    return String(value)
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /"/g,
+            '\\"'
+        );
 
 }
 
