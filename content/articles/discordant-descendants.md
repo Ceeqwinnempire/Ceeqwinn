@@ -1,5 +1,4 @@
 ---
----
 title: DISCORDANT DESCENDANTS — CHAPTER 1
 ---
 ---
@@ -894,6 +893,12 @@ Her father said nothing.
 
 The silence told her more than an answer might have.
 
+Something about that silence made Lexis realize that tomorrow's gathering was not going to be an ordinary family event.
+
+She had asked her father directly.
+
+Now she was going to find out what he had been protecting.
+
 [ENDCHOICE]
 
 [CONSEQUENCE:B]
@@ -905,6 +910,12 @@ Lexis forced a smile.
 She decided not to tell him everything.
 
 If her father was hiding something, she needed to understand it before confronting him.
+
+Tomorrow, she would watch.
+
+Listen.
+
+And investigate without letting anyone know what she had discovered.
 
 [ENDCHOICE]
 
@@ -926,7 +937,16 @@ Lexis frowned.
 
 “Because tomorrow, you're going to learn exactly why the Okoye family has been keeping secrets.”
 
+Lexis stared at him.
+
+For the first time, she understood something important.
+
+Her father wasn't simply hiding information.
+
+He was afraid of what would happen if the truth came out.
+
 [ENDCHOICE]
 
 ---
-[NEXT:discordant-descendants-chapter-2]
+
+[NEXT:discordant-descendants-chapter-2|Step into the gathering.]
