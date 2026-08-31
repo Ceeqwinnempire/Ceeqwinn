@@ -1,9 +1,15 @@
 ---
 title: DISCORDANT DESCENDANTS — CHAPTER 2
 ---
+## title: DISCORDANT DESCENDANTS — CHAPTER 2
+
 ---
 
-## title: DISCORDANT DESCENDANTS — CHAPTER 2
+# ---
+
+title: DISCORDANT DESCENDANTS — CHAPTER 2
+
+---
 
 # DISCORDANT DESCENDANTS
 
@@ -13,9 +19,225 @@ title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 ---
 
+[IF:choice-03=A]
+
+## THE MORNING AFTER THE QUESTION
+
+Lexis barely slept.
+
+Her father's silence kept replaying in her mind.
+
+Who was the First Heir?
+
+Why had he refused to answer?
+
+And why did the question seem to frighten him more than the gathering itself?
+
+She had asked him directly.
+
+He had given her nothing.
+
+Which meant there was only one place left to find answers.
+
+The gathering.
+
+If the Okoye family wanted to keep its secrets, Lexis intended to make them work for it.
+
+[ELSE]
+
+[IF:choice-03=B]
+
+## THE MORNING AFTER THE SECRET
+
+Lexis woke with one thought already fixed in her mind.
+
+Investigate.
+
+She had decided not to tell her father everything.
+
+That meant she had to be careful.
+
+If he was hiding something, she needed to know what it was before confronting him.
+
+The gathering would give her the perfect opportunity.
+
+Everyone would be distracted.
+
+Everyone would be watching everyone else.
+
+And Lexis could watch them.
+
+[ELSE]
+
+[IF:choice-03=C]
+
+## THE MORNING AFTER THE WARNING
+
+Lexis couldn't forget her father's expression.
+
+She had shown him the messages.
+
+He hadn't laughed.
+
+He hadn't dismissed them.
+
+He had looked afraid.
+
+That frightened Lexis more than the messages themselves.
+
+Someone had been contacting her.
+
+Someone knew about the Okoye family.
+
+And now her father knew that she knew.
+
+Tomorrow's gathering suddenly felt less like a celebration—
+
+and more like a trap.
+
+[ENDIF]
+
+[ENDIF]
+
+[ENDIF]
+
+---
+
 ## THE NIGHT OF THE GATHERING
 
 The Okoye residence had never looked more intimidating.
+
+Golden lights lined the enormous driveway.
+
+Luxury vehicles arrived one after another.
+
+Music drifted through the open doors of the mansion, mixing with the sound of conversation, laughter, and the occasional clinking of glasses.
+
+Lexis stood at the bottom of the staircase.
+
+She stared at the crowd.
+
+“This is supposed to be a family gathering?”
+
+Her father adjusted his jacket.
+
+“Yes.”
+
+Lexis looked around.
+
+“There are enough people here to form a small government.”
+
+He laughed.
+
+“Just behave yourself.”
+
+“I always behave.”
+
+Her father gave her a look.
+
+Lexis sighed.
+
+“Fine. I usually behave.”
+
+He smiled.
+
+But the moment he looked toward the entrance, his expression changed.
+
+Lexis noticed.
+
+“Dad?”
+
+He didn't answer.
+
+Someone had just entered.
+
+A tall woman in a dark emerald dress walked slowly into the mansion.
+
+Several conversations stopped.
+
+Lexis frowned.
+
+“Who is that?”
+
+Her father looked at her.
+
+“You don't need to know.”
+
+That answer immediately made Lexis more interested.
+
+“Then obviously I need to know.”
+
+“Lexis.”
+
+“What?”
+
+“Stay close to me tonight.”
+
+She stared at him.
+
+“You're making this sound incredibly normal.”
+
+Before he could respond, a voice came from behind them.
+
+“Well, well.”
+
+Sirena.
+
+She smiled.
+
+“Look who finally arrived.”
+
+Lexis turned.
+
+“Sirena.”
+
+Sirena's eyes moved briefly toward Lexis's father.
+
+Then toward Lexis.
+
+“Enjoying the evening?”
+
+“Ask me again when I know what I'm supposed to be enjoying.”
+
+Sirena laughed.
+
+“You'll understand soon enough.”
+
+She walked away.
+
+Lexis watched her go.
+
+Then she looked at her father.
+
+“Okay.”
+
+She folded her arms.
+
+“What is happening?”
+
+Her father didn't answer.
+
+Instead, he looked toward the staircase.
+
+The music stopped.
+
+Everyone turned.
+
+An elderly man stepped onto the balcony above them.
+
+The room fell completely silent.
+
+“Ladies and gentlemen,” he said.
+
+“Tonight, the Okoye family welcomes its next heir.”
+
+Lexis's heart skipped.
+
+Her father slowly reached for her hand.
+
+And for the first time that night—
+
+he looked afraid.
 
 Golden lights lined the enormous driveway.
 
