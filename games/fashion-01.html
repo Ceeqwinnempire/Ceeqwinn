@@ -1,1 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexis — Fashion Game</title>
 
+<style>
+body {
+  margin: 0;
+  background: #111;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+.game {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+}
+
+#lexis {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+}
+
+button {
+  padding: 14px 22px;
+  margin: 8px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#message {
+  margin: 15px 0;
+  min-height: 24px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+  <h1>Choose Lexis's Outfit</h1>
+
+  <img id="lexis" src="../content/images/characters/lexis/outfits/lexis_default.png" alt="Lexis">
+
+  <div id="message">
+    Choose an outfit for Lexis.
+  </div>
+
+  <button onclick="chooseOutfit('lexis_red_dress')">
+    Red Dress
+  </button>
+
+  <button onclick="chooseOutfit('lexis_black_dress')">
+    Black Dress
+  </button>
+
+  <br>
+
+  <button onclick="finishGame()">
+    Continue
+  </button>
+
+</div>
+
+<script>
+
+const OUTFIT_IMAGES = {
+  lexis_default:
+    "../content/images/characters/lexis/outfits/lexis_default.png",
+
+  lexis_red_dress:
+    "../content/images/characters/lexis/outfits/lexis_red_dress.png",
+
+  lexis_black_dress:
+    "../content/images/characters/lexis/outfits/lexis_black_dress.png"
+};
+
+function getPlayerState() {
+
+  let saved = localStorage.getItem("ceeqwinn_player_state");
+
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (error) {
+      console.log("Could not read player state.");
+    }
+  }
+
+  return {
+    characters: {
+      lexis: {
+        currentOutfit: "lexis_default"
+      }
+    },
+    games: {
+      fashion01: {
+        result: null,
+        score: null
+      }
+    }
+  };
+}
+
+
+function savePlayerState(state) {
+
+  localStorage.setItem(
+    "ceeqwinn_player_state",
+    JSON.stringify(state)
+  );
+
+}
+
+
+function chooseOutfit(outfitId) {
+
+  const state = getPlayerState();
+
+  state.characters.lexis.currentOutfit = outfitId;
+
+  state.games.fashion01.result = outfitId;
+
+  savePlayerState(state);
+
+  document.getElementById("lexis").src =
+    OUTFIT_IMAGES[outfitId];
+
+  document.getElementById("message").textContent =
+    "Lexis is now wearing this outfit.";
+
+}
+
+
+function finishGame() {
+
+  const state = getPlayerState();
+
+  state.games.fashion01.result =
+    state.characters.lexis.currentOutfit;
+
+  savePlayerState(state);
+
+  window.location.href =
+    "../article.html?file=discordant-descendants-chapter-3";
+
+}
+
+</script>
+
+</body>
+</html>
