@@ -203,6 +203,19 @@ h2{
 }
 
 
+/* =========================================================
+   GAME CONTINUATION
+   ========================================================= */
+
+.story-game-continuation{
+    margin-top:25px;
+}
+
+.story-game-continuation.story-hidden{
+    display:none !important;
+}
+
+
 #storyReset{
     display:none;
     width:100%;
@@ -652,6 +665,10 @@ function renderFlow(lines){
 
         /*
          * GAME
+         *
+         * A game is a progression gate.
+         * Everything after the game remains hidden
+         * until the game has been completed.
          */
 
         if(isGameMarker(lines[i])){
@@ -659,13 +676,20 @@ function renderFlow(lines){
             flushNormal();
 
 
-            output +=
-                renderGame(
-                    lines[i]
+            var game =
+                parseGame(
+                    lines,
+                    i
                 );
 
 
-            i++;
+            output +=
+                game.html;
+
+
+            i =
+                game.next;
+
 
             continue;
 
@@ -791,6 +815,119 @@ function renderFlow(lines){
 
 
     return output;
+
+}
+
+
+/* =========================================================
+   GAME PARSER
+   ========================================================= */
+
+function parseGame(
+    lines,
+    start
+){
+
+    var gameLine =
+        lines[start];
+
+
+    var gameId =
+        getGameId(
+            gameLine
+        );
+
+
+    var gameHTML =
+        renderGame(
+            gameLine
+        );
+
+
+    /*
+     * Everything after the game becomes
+     * the game's continuation.
+     */
+
+    var continuationLines =
+        lines.slice(
+            start + 1
+        );
+
+
+    var continuationHTML =
+        "";
+
+
+    if(
+        continuationLines.length
+    ){
+
+        continuationHTML =
+            renderFlow(
+                continuationLines
+            );
+
+    }
+
+
+    var html =
+        gameHTML;
+
+
+    /*
+     * Put all story content after the game
+     * inside a hidden continuation container.
+     */
+
+    if(continuationHTML){
+
+        html +=
+
+            '<div ' +
+            'class="story-game-continuation story-hidden" ' +
+            'data-after-game="' +
+            escapeAttr(gameId) +
+            '">' +
+
+            continuationHTML +
+
+            '</div>';
+
+    }
+
+
+    return {
+
+        html:html,
+
+        /*
+         * Everything after this game has already
+         * been placed inside the continuation.
+         */
+
+        next:lines.length
+
+    };
+
+}
+
+
+/* =========================================================
+   GET GAME ID
+   ========================================================= */
+
+function getGameId(line){
+
+    var match =
+        line.match(
+            /^\s*\*?\s*\[GAME:([A-Z0-9_-]+)\]\s*$/
+        );
+
+
+    return match
+        ? match[1]
+        : "";
 
 }
 
@@ -1566,6 +1703,90 @@ function parseChoice(
 
 
 /* =========================================================
+   GAME COMPLETION
+   ========================================================= */
+
+function getCompletedGames(){
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                "ceeqwinn_completed_games"
+            );
+
+
+        if(!saved){
+
+            return {};
+
+        }
+
+
+        var parsed =
+            JSON.parse(
+                saved
+            );
+
+
+        return parsed &&
+               typeof parsed === "object"
+            ? parsed
+            : {};
+
+    }catch(e){
+
+        return {};
+
+    }
+
+}
+
+
+/* =========================================================
+   RESTORE COMPLETED GAMES
+   ========================================================= */
+
+function restoreCompletedGames(){
+
+    var completedGames =
+        getCompletedGames();
+
+
+    var continuations =
+        content.getElementsByClassName(
+            "story-game-continuation"
+        );
+
+
+    for(
+        var i = 0;
+        i < continuations.length;
+        i++
+    ){
+
+        var gameId =
+            continuations[i].getAttribute(
+                "data-after-game"
+            );
+
+
+        if(
+            gameId &&
+            completedGames[gameId]
+        ){
+
+            continuations[i].className =
+                "story-game-continuation";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
    SETUP STORY
    ========================================================= */
 
@@ -1595,6 +1816,8 @@ function setupStory(){
     activateChoices();
 
     restoreChoices();
+
+    restoreCompletedGames();
 
     updateNextButtons();
 
