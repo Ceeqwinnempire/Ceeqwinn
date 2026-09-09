@@ -363,6 +363,18 @@ var returnGame =
     params.get("return") || "";
 
 
+/*
+ * Clean the return game value as well.
+ *
+ * This keeps the comparison reliable if the URL
+ * contains accidental whitespace or path characters.
+ */
+
+returnGame =
+    String(returnGame)
+    .trim();
+
+
 file =
     cleanPath(file);
 
@@ -512,6 +524,15 @@ function buildStory(text){
 
     }
 
+
+    /*
+     * IMPORTANT:
+     *
+     * The entire chapter is rendered through the
+     * same existing story renderer.
+     *
+     * We are NOT creating a second Chapter 3.
+     */
 
     content.innerHTML =
         renderStory(data.body);
@@ -1378,11 +1399,6 @@ function parseConditional(
                 depth++;
 
 
-                /*
-                 * The matching ENDIF for the nested IF
-                 * is handled below.
-                 */
-
                 continue;
 
             }
@@ -1444,11 +1460,6 @@ function parseConditional(
         if(
             block.id === "__ELSE__"
         ){
-
-            /*
-             * Plain ELSE only works if no previous
-             * matching branch was selected.
-             */
 
             var anyMatched =
                 false;
@@ -1671,12 +1682,8 @@ function parseChoice(
 
 
     /*
-     * IMPORTANT:
-     *
      * Everything after this choice becomes the
      * continuation of this choice.
-     *
-     * It remains hidden until this choice is made.
      */
 
     var continuationLines =
@@ -1811,11 +1818,6 @@ function parseChoice(
 
         html:html,
 
-        /*
-         * The rest has been placed inside the
-         * continuation container.
-         */
-
         next:lines.length
 
     };
@@ -1911,12 +1913,21 @@ function restoreCompletedGames(){
    RESTORE GAME RETURN POSITION
    =========================================================
 
-   When the player returns from a completed game,
-   automatically move the viewport to the exact
-   continuation that was unlocked.
+   THIS IS THE IMPORTANT RETURN FIX.
 
-   The continuation is restored first.
-   Then the browser scrolls to it.
+   The game does NOT create a new chapter.
+
+   The reader loads the SAME article again,
+   restores the completed game gate, and then
+   moves the viewport to the continuation that
+   was already present in that article.
+
+   We wait for the continuation to become visible
+   and for the browser to finish laying out the page
+   before calculating its position.
+
+   This is more reliable than calling scrollIntoView()
+   only once immediately after the page loads.
    ========================================================= */
 
 function restoreGameReturnPosition(){
@@ -1928,10 +1939,25 @@ function restoreGameReturnPosition(){
     }
 
 
+    /*
+     * Normalize the game identifier.
+     */
+
+    var targetGame =
+        String(returnGame)
+        .trim()
+        .toUpperCase();
+
+
+    /*
+     * Find the continuation belonging to the
+     * game we just returned from.
+     */
+
     var continuation =
         content.querySelector(
             '.story-game-continuation[data-after-game="' +
-            cssEscape(returnGame) +
+            cssEscape(targetGame) +
             '"]'
         );
 
@@ -1944,8 +1970,25 @@ function restoreGameReturnPosition(){
 
 
     /*
-     * Never attempt to scroll to a continuation
-     * that is still locked.
+     * Make absolutely sure the completed game
+     * has unlocked this continuation.
+     */
+
+    var completedGames =
+        getCompletedGames();
+
+
+    if(
+        !completedGames[targetGame]
+    ){
+
+        return;
+
+    }
+
+
+    /*
+     * The continuation must not still be hidden.
      */
 
     if(
@@ -1959,16 +2002,185 @@ function restoreGameReturnPosition(){
     }
 
 
+    /*
+     * Give the browser several layout opportunities.
+     *
+     * This matters because the article has just been
+     * rebuilt, and images / headings / Markdown content
+     * can affect the final page height.
+     */
+
+    var attempts =
+        0;
+
+
+    function scrollToContinuation(){
+
+        attempts++;
+
+
+        /*
+         * Stop after a reasonable number of attempts.
+         */
+
+        if(
+            attempts > 12
+        ){
+
+            return;
+
+        }
+
+
+        /*
+         * If the continuation somehow became hidden
+         * again, wait for the next attempt.
+         */
+
+        if(
+            continuation.className.indexOf(
+                "story-hidden"
+            ) !== -1
+        ){
+
+            setTimeout(
+                scrollToContinuation,
+                100
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Calculate the continuation's actual
+         * document position.
+         *
+         * This avoids depending entirely on
+         * scrollIntoView(), which can be inconsistent
+         * across older browsers.
+         */
+
+        var rect =
+            continuation.getBoundingClientRect();
+
+
+        var pageTop =
+            rect.top +
+            (
+                window.pageYOffset ||
+                document.documentElement.scrollTop ||
+                document.body.scrollTop ||
+                0
+            );
+
+
+        /*
+         * Small breathing space above the continuation
+         * so the heading/prose is not pressed against
+         * the top edge of the screen.
+         */
+
+        var targetPosition =
+            Math.max(
+                0,
+                pageTop - 20
+            );
+
+
+        /*
+         * First use the direct window scroll.
+         */
+
+        try{
+
+            window.scrollTo(
+                0,
+                targetPosition
+            );
+
+        }catch(e){}
+
+
+        /*
+         * Also use scrollIntoView as a compatibility
+         * fallback for browsers where window scrolling
+         * behaves differently.
+         */
+
+        try{
+
+            continuation.scrollIntoView(
+                false
+            );
+
+        }catch(e){}
+
+
+        /*
+         * One final correction after the browser has
+         * painted the new position.
+         *
+         * This prevents a late image/layout change
+         * from leaving the reader slightly above or
+         * below the continuation.
+         */
+
+        if(
+            attempts < 4
+        ){
+
+            setTimeout(
+                function(){
+
+                    var finalRect =
+                        continuation.getBoundingClientRect();
+
+
+                    var finalPageTop =
+                        finalRect.top +
+                        (
+                            window.pageYOffset ||
+                            document.documentElement.scrollTop ||
+                            document.body.scrollTop ||
+                            0
+                        );
+
+
+                    var finalPosition =
+                        Math.max(
+                            0,
+                            finalPageTop - 20
+                        );
+
+
+                    try{
+
+                        window.scrollTo(
+                            0,
+                            finalPosition
+                        );
+
+                    }catch(e){}
+
+
+                },
+                250
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Start after the current rendering cycle.
+     */
+
     setTimeout(
-        function(){
-
-            continuation.scrollIntoView({
-                behavior:"smooth",
-                block:"start"
-            });
-
-        },
-        150
+        scrollToContinuation,
+        100
     );
 
 }
@@ -2001,11 +2213,25 @@ function setupStory(){
     }
 
 
+    /*
+     * IMPORTANT ORDER
+     *
+     * 1. Unlock completed games first.
+     * 2. Restore saved choices.
+     * 3. Activate buttons.
+     * 4. Restore return position.
+     * 5. Update NEXT controls.
+     *
+     * This ensures the game continuation exists
+     * in its visible state before we try to return
+     * the reader to it.
+     */
+
+    restoreCompletedGames();
+
     activateChoices();
 
     restoreChoices();
-
-    restoreCompletedGames();
 
     restoreGameReturnPosition();
 
@@ -2381,17 +2607,6 @@ function restoreChoices(){
 
     }
 
-
-    /*
-     * Re-evaluate conditionals by rebuilding
-     * only when the chapter itself depends on
-     * earlier choices.
-     *
-     * Chapter 2 is loaded after Chapter 1,
-     * so its [IF:choice-03=...] content has
-     * already been resolved during rendering.
-     */
-
 }
 
 
@@ -2441,14 +2656,6 @@ function getChoiceIds(){
 
 /* =========================================================
    NEXT BUTTON CONTROL
-   =========================================================
-
-   A NEXT button is locked until every choice
-   that exists in the current chapter has been
-   answered.
-
-   This prevents the chapter transition from
-   appearing immediately after an earlier choice.
    ========================================================= */
 
 function updateNextButtons(){
@@ -2496,14 +2703,6 @@ function updateNextButtons(){
         j < nextButtons.length;
         j++
     ){
-
-        /*
-         * If the NEXT button is inside a hidden
-         * continuation, it remains hidden anyway.
-         *
-         * This class only controls whether the
-         * transition itself is available.
-         */
 
         if(complete){
 
@@ -2656,15 +2855,6 @@ document.addEventListener(
 
 /* =========================================================
    RESET STORY
-   =========================================================
-
-   Development-stage reset:
-   - Clears the current story's saved choices.
-   - Clears completed game gates.
-   - Returns the current chapter to its
-     original locked/progressive state.
-
-   This is intentionally NOT a whole-story reset yet.
    ========================================================= */
 
 reset.onclick =
@@ -2672,22 +2862,10 @@ reset.onclick =
 
         try{
 
-            /*
-             * Clear the saved choices for the
-             * current story/chapter development state.
-             */
-
             localStorage.removeItem(
                 storageKey
             );
 
-
-            /*
-             * Clear completed game progress.
-             *
-             * This is what makes the game gate
-             * lock again.
-             */
 
             localStorage.removeItem(
                 "ceeqwinn_completed_games"
@@ -2901,7 +3079,7 @@ function fixMedia(){
 
             audios[i].src =
                 mediaPath(
-                    videoSrc
+                    audioSrc
                 );
 
         }
@@ -2990,7 +3168,7 @@ function cleanPath(path){
         )
         .replace(
             /^\/+/,
-            "" 
+            ""
         );
 
 
