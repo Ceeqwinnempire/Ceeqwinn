@@ -1787,53 +1787,6 @@ function restoreCompletedGames(){
 
 
 /* =========================================================
-   RETURN TO GAME POSITION
-   ========================================================= */
-
-function restoreGameReturnPosition(){
-
-    var returnGame =
-        params.get("return");
-
-
-    if(!returnGame){
-
-        return;
-
-    }
-
-
-    var target =
-        content.querySelector(
-            '.story-game-continuation[data-after-game="' +
-            cssEscape(returnGame) +
-            '"]'
-        );
-
-
-    if(!target){
-
-        return;
-
-    }
-
-
-    setTimeout(
-        function(){
-
-            target.scrollIntoView({
-                behavior:"auto",
-                block:"start"
-            });
-
-        },
-        100
-    );
-
-}
-
-
-/* =========================================================
    SETUP STORY
    ========================================================= */
 
@@ -1867,8 +1820,6 @@ function setupStory(){
     restoreCompletedGames();
 
     updateNextButtons();
-
-    restoreGameReturnPosition();
 
 }
 
