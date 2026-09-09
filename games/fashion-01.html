@@ -261,15 +261,44 @@ function finishGame() {
 
 
   /*
-   * Return to Chapter 3.
+   * Return to the SAME Chapter 3
+   * article reader.
    *
-   * The "return" parameter tells
-   * article.html which game we
-   * came back from.
+   * URL is constructed explicitly from
+   * the current site location instead of
+   * relying on a plain relative href.
    */
 
-  window.location.href =
-    "../article.html?file=discordant-descendants-chapter-3&return=FASHION-01";
+  const returnUrl =
+    new URL(
+      "../article.html",
+      window.location.href
+    );
+
+
+  returnUrl.searchParams.set(
+    "file",
+    "discordant-descendants-chapter-3"
+  );
+
+
+  returnUrl.searchParams.set(
+    "return",
+    "FASHION-01"
+  );
+
+
+  /*
+   * Replace the game page with the
+   * Chapter 3 reader.
+   *
+   * This is still the SAME article.html
+   * reader. It is not a new chapter.
+   */
+
+  window.location.replace(
+    returnUrl.href
+  );
 
 }
 
