@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
@@ -330,6 +331,18 @@ var params =
 
 var file =
     params.get("file") || "";
+
+
+/*
+ * GAME RETURN
+ *
+ * When a game sends the reader back to a chapter,
+ * this tells the reader which game was just completed.
+ */
+
+var returnGame =
+    params.get("return") || "";
+
 
 file =
     cleanPath(file);
@@ -1787,6 +1800,73 @@ function restoreCompletedGames(){
 
 
 /* =========================================================
+   RESTORE GAME RETURN POSITION
+   =========================================================
+
+   When the player returns from a completed game,
+   automatically move the viewport to the exact
+   continuation that was unlocked.
+
+   The continuation is restored first.
+   Then the browser scrolls to it.
+   ========================================================= */
+
+function restoreGameReturnPosition(){
+
+    if(!returnGame){
+
+        return;
+
+    }
+
+
+    var continuation =
+        content.querySelector(
+            '.story-game-continuation[data-after-game="' +
+            cssEscape(returnGame) +
+            '"]'
+        );
+
+
+    if(!continuation){
+
+        return;
+
+    }
+
+
+    /*
+     * Never attempt to scroll to a continuation
+     * that is still locked.
+     */
+
+    if(
+        continuation.className.indexOf(
+            "story-hidden"
+        ) !== -1
+    ){
+
+        return;
+
+    }
+
+
+    setTimeout(
+        function(){
+
+            continuation.scrollIntoView({
+                behavior:"smooth",
+                block:"start"
+            });
+
+        },
+        150
+    );
+
+}
+
+
+/* =========================================================
    SETUP STORY
    ========================================================= */
 
@@ -1818,6 +1898,8 @@ function setupStory(){
     restoreChoices();
 
     restoreCompletedGames();
+
+    restoreGameReturnPosition();
 
     updateNextButtons();
 
@@ -2464,6 +2546,15 @@ document.addEventListener(
 
 /* =========================================================
    RESET STORY
+   =========================================================
+
+   Development-stage reset:
+   - Clears the current story's saved choices.
+   - Clears completed game gates.
+   - Returns the current chapter to its
+     original locked/progressive state.
+
+   This is intentionally NOT a whole-story reset yet.
    ========================================================= */
 
 reset.onclick =
@@ -2471,8 +2562,25 @@ reset.onclick =
 
         try{
 
+            /*
+             * Clear the saved choices for the
+             * current story/chapter development state.
+             */
+
             localStorage.removeItem(
                 storageKey
+            );
+
+
+            /*
+             * Clear completed game progress.
+             *
+             * This is what makes the game gate
+             * lock again.
+             */
+
+            localStorage.removeItem(
+                "ceeqwinn_completed_games"
             );
 
         }catch(e){}
@@ -2883,7 +2991,5 @@ function cssEscape(value){
 </script>
 
 </body>
-
-</html>
 
 </html>
