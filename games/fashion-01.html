@@ -50,7 +50,11 @@ button {
 
   <h1>Choose Lexis's Outfit</h1>
 
-  <img id="lexis" src="../content/images/characters/lexis/outfits/lexis_default.png" alt="Lexis">
+  <img
+    id="lexis"
+    src="../content/images/characters/lexis/outfits/lexis_default.png"
+    alt="Lexis"
+  >
 
   <div id="message">
     Choose an outfit for Lexis.
@@ -75,6 +79,7 @@ button {
 <script>
 
 const OUTFIT_IMAGES = {
+
   lexis_default:
     "../content/images/characters/lexis/outfits/lexis_default.png",
 
@@ -83,35 +88,70 @@ const OUTFIT_IMAGES = {
 
   lexis_black_dress:
     "../content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg"
+
 };
+
+
+/* =========================================================
+   PLAYER STATE
+   ========================================================= */
 
 function getPlayerState() {
 
-  let saved = localStorage.getItem("ceeqwinn_player_state");
+  let saved =
+    localStorage.getItem(
+      "ceeqwinn_player_state"
+    );
 
   if (saved) {
+
     try {
+
       return JSON.parse(saved);
+
     } catch (error) {
-      console.log("Could not read player state.");
+
+      console.log(
+        "Could not read player state."
+      );
+
     }
+
   }
 
   return {
+
     characters: {
+
       lexis: {
-        currentOutfit: "lexis_default"
+
+        currentOutfit:
+          "lexis_default"
+
       }
+
     },
+
     games: {
+
       fashion01: {
+
         result: null,
+
         score: null
+
       }
+
     }
+
   };
+
 }
 
+
+/* =========================================================
+   SAVE PLAYER STATE
+   ========================================================= */
 
 function savePlayerState(state) {
 
@@ -123,36 +163,113 @@ function savePlayerState(state) {
 }
 
 
+/* =========================================================
+   CHOOSE OUTFIT
+   ========================================================= */
+
 function chooseOutfit(outfitId) {
 
-  const state = getPlayerState();
+  const state =
+    getPlayerState();
 
-  state.characters.lexis.currentOutfit = outfitId;
 
-  state.games.fashion01.result = outfitId;
+  state.characters.lexis.currentOutfit =
+    outfitId;
 
-  savePlayerState(state);
 
-  document.getElementById("lexis").src =
+  state.games.fashion01.result =
+    outfitId;
+
+
+  savePlayerState(
+    state
+  );
+
+
+  document.getElementById(
+    "lexis"
+  ).src =
     OUTFIT_IMAGES[outfitId];
 
-  document.getElementById("message").textContent =
+
+  document.getElementById(
+    "message"
+  ).textContent =
     "Lexis is now wearing this outfit.";
 
 }
 
 
+/* =========================================================
+   FINISH GAME
+   ========================================================= */
+
 function finishGame() {
 
-  const state = getPlayerState();
+  const state =
+    getPlayerState();
+
+
+  /*
+   * Keep the selected outfit as the
+   * final result of the fashion game.
+   */
 
   state.games.fashion01.result =
     state.characters.lexis.currentOutfit;
 
-  savePlayerState(state);
+
+  savePlayerState(
+    state
+  );
+
+
+  /*
+   * Tell the story engine that
+   * FASHION-01 has been completed.
+   */
+
+  let completedGames = {};
+
+
+  try {
+
+    completedGames =
+      JSON.parse(
+        localStorage.getItem(
+          "ceeqwinn_completed_games"
+        ) || "{}"
+      );
+
+  } catch (error) {
+
+    completedGames = {};
+
+  }
+
+
+  completedGames["FASHION-01"] =
+    true;
+
+
+  localStorage.setItem(
+    "ceeqwinn_completed_games",
+    JSON.stringify(
+      completedGames
+    )
+  );
+
+
+  /*
+   * Return to Chapter 3.
+   *
+   * The "return" parameter tells
+   * article.html which game we
+   * came back from.
+   */
 
   window.location.href =
-    "../article.html?file=discordant-descendants-chapter-3";
+    "../article.html?file=discordant-descendants-chapter-3&return=FASHION-01";
 
 }
 
