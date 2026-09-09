@@ -165,6 +165,44 @@ h2{
     opacity:.85;
 }
 
+
+/* =========================================================
+   GAME BRIDGE
+   ========================================================= */
+
+.story-game{
+    margin:45px 0;
+    padding:25px 0;
+    text-align:center;
+}
+
+.story-game-title{
+    font-weight:bold;
+    font-size:1.15rem;
+    margin-bottom:10px;
+}
+
+.story-game-text{
+    color:#666;
+    margin-bottom:18px;
+}
+
+.story-game-button{
+    display:inline-block;
+    padding:15px 24px;
+    font:16px Arial,sans-serif;
+    background:#222;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.story-game-button:hover{
+    opacity:.85;
+}
+
+
 #storyReset{
     display:none;
     width:100%;
@@ -202,6 +240,11 @@ h2{
     }
 
     .story-next-button{
+        width:100%;
+        box-sizing:border-box;
+    }
+
+    .story-game-button{
         width:100%;
         box-sizing:border-box;
     }
@@ -608,6 +651,28 @@ function renderFlow(lines){
 
 
         /*
+         * GAME
+         */
+
+        if(isGameMarker(lines[i])){
+
+            flushNormal();
+
+
+            output +=
+                renderGame(
+                    lines[i]
+                );
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
          * CHOICE
          */
 
@@ -734,6 +799,15 @@ function renderFlow(lines){
    MARKER TESTS
    ========================================================= */
 
+function isGameMarker(line){
+
+    return /^\s*\*?\s*\[GAME:[A-Z0-9_-]+\]\s*$/.test(
+        line
+    );
+
+}
+
+
 function isChoiceStart(line){
 
     return /^\s*\*?\s*\[CHOICE:[\w-]+\]\s*$/.test(
@@ -768,6 +842,108 @@ function isEndIfMarker(line){
     );
 
 }
+
+
+/* =========================================================
+   GAME BRIDGE
+   ========================================================= */
+
+function renderGame(line){
+
+    var match =
+        line.match(
+            /^\s*\*?\s*\[GAME:([A-Z0-9_-]+)\]\s*$/
+        );
+
+
+    if(!match){
+
+        return "";
+
+    }
+
+
+    var gameId =
+        match[1];
+
+
+    if(
+        gameId === "FASHION-01"
+    ){
+
+        return (
+
+            '<div class="story-game">' +
+
+                '<div class="story-game-title">' +
+                    'Lexis needs to choose her outfit.' +
+                '</div>' +
+
+                '<div class="story-game-text">' +
+                    'Choose how she wants to face the evening.' +
+                '</div>' +
+
+                '<button ' +
+                    'type="button" ' +
+                    'class="story-game-button" ' +
+                    'data-game="FASHION-01">' +
+
+                    'Open Fashion Game' +
+
+                '</button>' +
+
+            '</div>'
+
+        );
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =========================================================
+   GAME BUTTON
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        var target =
+            event.target;
+
+
+        if(
+            !target.classList.contains(
+                "story-game-button"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        var gameId =
+            target.getAttribute(
+                "data-game"
+            );
+
+
+        if(
+            gameId === "FASHION-01"
+        ){
+
+            window.location.href =
+                "games/fashion-01.html";
+
+        }
+
+    }
+);
 
 
 /* =========================================================
@@ -942,6 +1118,7 @@ function parseConditional(
                 i += 2;
 
                 depth++;
+
 
                 /*
                  * The matching ENDIF for the nested IF
@@ -1815,6 +1992,7 @@ function getChoiceIds(){
 
 
     var ids = [];
+
 
     for(
         var i = 0;
