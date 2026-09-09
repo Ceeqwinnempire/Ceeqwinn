@@ -217,6 +217,25 @@ h2{
 }
 
 
+/* =========================================================
+   SHOW OUTFIT
+   ========================================================= */
+
+.story-outfit{
+    margin:35px 0;
+    text-align:center;
+}
+
+.story-outfit img{
+    display:block;
+    width:100%;
+    max-width:420px;
+    height:auto;
+    margin:0 auto;
+    border-radius:12px;
+}
+
+
 #storyReset{
     display:none;
     width:100%;
@@ -677,6 +696,26 @@ function renderFlow(lines){
 
 
         /*
+         * SHOW CURRENT OUTFIT
+         */
+
+        if(isShowOutfitMarker(lines[i])){
+
+            flushNormal();
+
+
+            output +=
+                renderShowOutfit();
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
          * GAME
          *
          * A game is a progression gate.
@@ -851,15 +890,16 @@ function parseGame(
         );
 
 
-    var gameHTML =
+    var html =
         renderGame(
             gameLine
         );
 
 
     /*
-     * Everything after the game becomes
-     * the game's continuation.
+     * Everything after the game remains normal
+     * story content, but is placed inside one
+     * hidden continuation container.
      */
 
     var continuationLines =
@@ -868,32 +908,9 @@ function parseGame(
         );
 
 
-    var continuationHTML =
-        "";
-
-
     if(
         continuationLines.length
     ){
-
-        continuationHTML =
-            renderFlow(
-                continuationLines
-            );
-
-    }
-
-
-    var html =
-        gameHTML;
-
-
-    /*
-     * Put all story content after the game
-     * inside a hidden continuation container.
-     */
-
-    if(continuationHTML){
 
         html +=
 
@@ -903,7 +920,9 @@ function parseGame(
             escapeAttr(gameId) +
             '">' +
 
-            continuationHTML +
+            renderFlow(
+                continuationLines
+            ) +
 
             '</div>';
 
@@ -915,8 +934,8 @@ function parseGame(
         html:html,
 
         /*
-         * Everything after this game has already
-         * been placed inside the continuation.
+         * The continuation has already been
+         * captured above.
          */
 
         next:lines.length
@@ -967,6 +986,15 @@ function isChoiceStart(line){
 }
 
 
+function isShowOutfitMarker(line){
+
+    return /^\s*\*?\s*\[SHOWOUTFIT\]\s*$/.test(
+        line
+    );
+
+}
+
+
 function isNextMarker(line){
 
     return /^\s*\*?\s*\[NEXT:[^\]]+\]\s*$/.test(
@@ -989,6 +1017,86 @@ function isEndIfMarker(line){
 
     return /^\s*\*?\s*\[ENDIF\]\s*$/.test(
         line
+    );
+
+}
+
+
+/* =========================================================
+   SHOW OUTFIT
+   ========================================================= */
+
+function renderShowOutfit(){
+
+    var outfit =
+        "lexis_default";
+
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                "ceeqwinn_player_state"
+            );
+
+
+        if(saved){
+
+            var state =
+                JSON.parse(
+                    saved
+                );
+
+
+            if(
+                state &&
+                state.characters &&
+                state.characters.lexis &&
+                state.characters.lexis.currentOutfit
+            ){
+
+                outfit =
+                    state.characters.lexis.currentOutfit;
+
+            }
+
+        }
+
+    }catch(e){}
+
+
+    var images = {
+
+        lexis_default:
+            "/content/images/characters/lexis/outfits/lexis_default.png.jpeg",
+
+        lexis_red_dress:
+            "/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg",
+
+        lexis_black_dress:
+            "/content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg"
+
+    };
+
+
+    var src =
+        images[outfit] ||
+        images.lexis_default;
+
+
+    return (
+
+        '<div class="story-outfit">' +
+
+            '<img ' +
+            'src="' +
+            escapeAttr(src) +
+            '" ' +
+            'alt="Lexis outfit" ' +
+            'loading="lazy">' +
+
+        '</div>'
+
     );
 
 }
@@ -2066,7 +2174,9 @@ function getChoices(){
 
 
         var parsed =
-            JSON.parse(saved);
+            JSON.parse(
+                saved
+            );
 
 
         return parsed &&
@@ -2880,7 +2990,7 @@ function cleanPath(path){
         )
         .replace(
             /^\/+/,
-            ""
+            "" 
         );
 
 
