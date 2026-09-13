@@ -1494,6 +1494,34 @@ function parseConditional(
 
 /* =========================================================
    CHOICE PARSER
+   =========================================================
+
+   A choice contains:
+
+       [CHOICE:id]
+
+       [A] Option A
+       [B] Option B
+       [C] Option C
+
+       [CONSEQUENCE:A]
+       ...
+       [ENDCHOICE]
+
+       [CONSEQUENCE:B]
+       ...
+       [ENDCHOICE]
+
+       [CONSEQUENCE:C]
+       ...
+       [ENDCHOICE]
+
+   Each [ENDCHOICE] closes ONLY the current
+   consequence.
+
+   The choice itself ends after all option
+   consequences have been read.
+
    ========================================================= */
 
 function parseChoice(
@@ -1534,64 +1562,68 @@ function parseChoice(
         start + 1;
 
 
-    while(i < lines.length){
+    /*
+     * READ THE OPTIONS FIRST.
+     *
+     * [A] ...
+     * [B] ...
+     * [C] ...
+     */
 
-        var line =
-            lines[i];
+    while(
+        i < lines.length
+    ){
+
+        var option =
+            lines[i].match(
+                /^\s*\*?\s*\[([A-Z])\]\s*(.+?)\s*$/
+            );
 
 
-        /*
-         * END CHOICE
-         */
-
-        if(
-            /^\s*\*?\s*\[ENDCHOICE\]\s*$/.test(
-                line
-            )
-        ){
-
-            i++;
+        if(!option){
 
             break;
 
         }
 
 
+        options.push({
+
+            letter:
+                option[1],
+
+            label:
+                option[2]
+
+        });
+
+
+        i++;
+
+    }
+
+
+    /*
+     * READ EVERY CONSEQUENCE.
+     *
+     * Each [ENDCHOICE] closes ONE consequence,
+     * not the entire choice.
+     *
+     * The choice ends only after all of its
+     * options have been given their consequences.
+     */
+
+    while(
+        i < lines.length &&
+        branches.length < options.length
+    ){
+
+        var line =
+            lines[i];
+
+
         /*
-         * OPTION
-         */
-
-        var option =
-            line.match(
-                /^\s*\*?\s*\[([A-Z])\]\s*(.+?)\s*$/
-            );
-
-
-        if(
-            option &&
-            !current
-        ){
-
-            options.push({
-
-                letter:
-                    option[1],
-
-                label:
-                    option[2]
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        /*
-         * CONSEQUENCE
+         * CONSEQUENCE START
          */
 
         var consequence =
@@ -1625,7 +1657,27 @@ function parseChoice(
 
 
         /*
-         * BRANCH CONTENT
+         * END OF THIS CONSEQUENCE
+         */
+
+        if(
+            /^\s*\*?\s*\[ENDCHOICE\]\s*$/.test(
+                line
+            )
+        ){
+
+            current = null;
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * CONTENT INSIDE THE CURRENT
+         * CONSEQUENCE.
          */
 
         if(current){
@@ -1643,8 +1695,8 @@ function parseChoice(
 
 
     /*
-     * Everything after this choice becomes the
-     * continuation of this choice.
+     * Everything after the final consequence
+     * belongs to the normal story continuation.
      */
 
     var continuationLines =
@@ -1668,7 +1720,7 @@ function parseChoice(
 
 
     /*
-     * CHOICE
+     * CHOICE UI
      */
 
     var html =
@@ -1720,6 +1772,9 @@ function parseChoice(
 
     /*
      * CONSEQUENCES
+     *
+     * Every consequence exists in the DOM,
+     * but every one starts hidden.
      */
 
     for(
@@ -1755,7 +1810,7 @@ function parseChoice(
 
 
     /*
-     * CONTINUATION
+     * STORY CONTINUATION
      */
 
     if(continuationHTML){
@@ -1777,9 +1832,11 @@ function parseChoice(
 
     return {
 
-        html:html,
+        html:
+            html,
 
-        next:lines.length
+        next:
+            lines.length
 
     };
 
