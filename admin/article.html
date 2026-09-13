@@ -310,7 +310,6 @@ h2{
 
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
 
-
 <script>
 
 /* =========================================================
@@ -373,6 +372,29 @@ var returnGame =
 returnGame =
     String(returnGame)
     .trim();
+
+
+/*
+ * GAME RETURN SCROLL RESTORATION
+ *
+ * When returning from a completed game, the browser's
+ * own history restoration must not compete with the
+ * story engine's deterministic return position.
+ *
+ * Older browsers that do not support scrollRestoration
+ * are left completely untouched.
+ */
+
+if(
+    returnGame &&
+    window.history &&
+    "scrollRestoration" in window.history
+){
+
+    window.history.scrollRestoration =
+        "manual";
+
+}
 
 
 file =
@@ -1398,7 +1420,6 @@ function parseConditional(
 
                 depth++;
 
-
                 continue;
 
             }
@@ -1868,6 +1889,30 @@ function getCompletedGames(){
 
 /* =========================================================
    RESTORE COMPLETED GAMES
+   =========================================================
+
+   GAME DOOR MODEL:
+
+   Before completion:
+
+       STORY
+         ↓
+       GAME DOOR
+         ↓
+       hidden continuation
+
+   After completion:
+
+       STORY
+         ↓
+       consumed/hidden GAME DOOR
+         ↓
+       visible continuation
+
+   The continuation is already rendered by parseGame().
+   We only restore its visibility and consume the
+   immediately preceding game bridge.
+
    ========================================================= */
 
 function restoreCompletedGames(){
@@ -1888,19 +1933,66 @@ function restoreCompletedGames(){
         i++
     ){
 
+        var continuation =
+            continuations[i];
+
+
         var gameId =
-            continuations[i].getAttribute(
+            continuation.getAttribute(
                 "data-after-game"
             );
 
 
         if(
-            gameId &&
-            completedGames[gameId]
+            !gameId ||
+            !completedGames[gameId]
         ){
 
-            continuations[i].className =
-                "story-game-continuation";
+            continue;
+
+        }
+
+
+        /*
+         * The game has been completed.
+         *
+         * Reveal the continuation.
+         */
+
+        continuation.className =
+            "story-game-continuation";
+
+
+        /*
+         * The corresponding game bridge is the
+         * element immediately before the continuation.
+         *
+         * Because parseGame() creates the continuation
+         * immediately after renderGame(), this is the
+         * correct bridge for this game.
+         */
+
+        var gameBridge =
+            continuation.previousElementSibling;
+
+
+        /*
+         * Safety check:
+         *
+         * Never hide an unrelated element merely because
+         * it happens to precede the continuation.
+         */
+
+        if(
+            gameBridge &&
+            gameBridge.className &&
+            gameBridge.className.indexOf(
+                "story-game"
+            ) !== -1
+        ){
+
+            gameBridge.className =
+                "story-game story-hidden";
 
         }
 
@@ -1913,8 +2005,6 @@ function restoreCompletedGames(){
    RESTORE GAME RETURN POSITION
    =========================================================
 
-   THIS IS THE IMPORTANT RETURN FIX.
-
    The game does NOT create a new chapter.
 
    The reader loads the SAME article again,
@@ -1922,12 +2012,21 @@ function restoreCompletedGames(){
    moves the viewport to the continuation that
    was already present in that article.
 
-   We wait for the continuation to become visible
-   and for the browser to finish laying out the page
-   before calculating its position.
+   IMPORTANT:
 
-   This is more reliable than calling scrollIntoView()
-   only once immediately after the page loads.
+   There is deliberately ONLY ONE scrolling method
+   here: window.scrollTo().
+
+   We do NOT call scrollIntoView().
+
+   The continuation's document position is calculated
+   from getBoundingClientRect() + the current page
+   offset. This gives us a deterministic destination.
+
+   Several recalculations are allowed because images
+   and other layout elements may finish loading after
+   the Markdown has initially rendered.
+
    ========================================================= */
 
 function restoreGameReturnPosition(){
@@ -1970,8 +2069,9 @@ function restoreGameReturnPosition(){
 
 
     /*
-     * Make absolutely sure the completed game
-     * has unlocked this continuation.
+     * Confirm the game is genuinely completed.
+     *
+     * The URL parameter alone is not enough.
      */
 
     var completedGames =
@@ -1988,7 +2088,11 @@ function restoreGameReturnPosition(){
 
 
     /*
-     * The continuation must not still be hidden.
+     * The continuation must be visible.
+     *
+     * restoreCompletedGames() should already have
+     * made it visible, but this guard prevents an
+     * accidental scroll to a hidden element.
      */
 
     if(
@@ -2002,16 +2106,7 @@ function restoreGameReturnPosition(){
     }
 
 
-    /*
-     * Give the browser several layout opportunities.
-     *
-     * This matters because the article has just been
-     * rebuilt, and images / headings / Markdown content
-     * can affect the final page height.
-     */
-
-    var attempts =
-        0;
+    var attempts = 0;
 
 
     function scrollToContinuation(){
@@ -2020,7 +2115,8 @@ function restoreGameReturnPosition(){
 
 
         /*
-         * Stop after a reasonable number of attempts.
+         * Stop after a reasonable number of layout
+         * recalculations.
          */
 
         if(
@@ -2033,8 +2129,7 @@ function restoreGameReturnPosition(){
 
 
         /*
-         * If the continuation somehow became hidden
-         * again, wait for the next attempt.
+         * Do not scroll to a hidden continuation.
          */
 
         if(
@@ -2054,43 +2149,34 @@ function restoreGameReturnPosition(){
 
 
         /*
-         * Calculate the continuation's actual
+         * Calculate the continuation's current
          * document position.
-         *
-         * This avoids depending entirely on
-         * scrollIntoView(), which can be inconsistent
-         * across older browsers.
          */
 
         var rect =
             continuation.getBoundingClientRect();
 
 
-        var pageTop =
-            rect.top +
-            (
-                window.pageYOffset ||
-                document.documentElement.scrollTop ||
-                document.body.scrollTop ||
-                0
-            );
+        var scrollTop =
+            window.pageYOffset ||
+            document.documentElement.scrollTop ||
+            document.body.scrollTop ||
+            0;
 
-
-        /*
-         * Small breathing space above the continuation
-         * so the heading/prose is not pressed against
-         * the top edge of the screen.
-         */
 
         var targetPosition =
             Math.max(
                 0,
-                pageTop - 20
+                rect.top +
+                scrollTop -
+                20
             );
 
 
         /*
-         * First use the direct window scroll.
+         * SINGLE deterministic scroll method.
+         *
+         * Do NOT add scrollIntoView() here.
          */
 
         try{
@@ -2104,69 +2190,19 @@ function restoreGameReturnPosition(){
 
 
         /*
-         * Also use scrollIntoView as a compatibility
-         * fallback for browsers where window scrolling
-         * behaves differently.
-         */
-
-        try{
-
-            continuation.scrollIntoView(
-                false
-            );
-
-        }catch(e){}
-
-
-        /*
-         * One final correction after the browser has
-         * painted the new position.
-         *
-         * This prevents a late image/layout change
-         * from leaving the reader slightly above or
-         * below the continuation.
+         * Recalculate after layout has had another
+         * opportunity to settle.
          */
 
         if(
-            attempts < 4
+            attempts < 12
         ){
 
             setTimeout(
-                function(){
-
-                    var finalRect =
-                        continuation.getBoundingClientRect();
-
-
-                    var finalPageTop =
-                        finalRect.top +
-                        (
-                            window.pageYOffset ||
-                            document.documentElement.scrollTop ||
-                            document.body.scrollTop ||
-                            0
-                        );
-
-
-                    var finalPosition =
-                        Math.max(
-                            0,
-                            finalPageTop - 20
-                        );
-
-
-                    try{
-
-                        window.scrollTo(
-                            0,
-                            finalPosition
-                        );
-
-                    }catch(e){}
-
-
-                },
-                250
+                scrollToContinuation,
+                attempts < 4
+                    ? 250
+                    : 500
             );
 
         }
@@ -2182,6 +2218,64 @@ function restoreGameReturnPosition(){
         scrollToContinuation,
         100
     );
+
+
+    /*
+     * Images inside the continuation can change the
+     * layout after they load.
+     *
+     * Recalculate the target when that happens.
+     */
+
+    var images =
+        continuation.getElementsByTagName(
+            "img"
+        );
+
+
+    for(
+        var i = 0;
+        i < images.length;
+        i++
+    ){
+
+        if(
+            !images[i].complete
+        ){
+
+            images[i].addEventListener(
+                "load",
+                scrollToContinuation
+            );
+
+            images[i].addEventListener(
+                "error",
+                scrollToContinuation
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Also give the page a chance to settle after
+     * its complete load event.
+     *
+     * The listener is harmless if the page has
+     * already completed loading.
+     */
+
+    if(
+        document.readyState !== "complete"
+    ){
+
+        window.addEventListener(
+            "load",
+            scrollToContinuation
+        );
+
+    }
 
 }
 
@@ -2219,12 +2313,12 @@ function setupStory(){
      * 1. Unlock completed games first.
      * 2. Restore saved choices.
      * 3. Activate buttons.
-     * 4. Restore return position.
-     * 5. Update NEXT controls.
+     * 4. Update NEXT controls.
+     * 5. Restore game return position.
      *
-     * This ensures the game continuation exists
-     * in its visible state before we try to return
-     * the reader to it.
+     * The return scroll is deliberately last because
+     * all visibility/layout changes should be complete
+     * before the destination is calculated.
      */
 
     restoreCompletedGames();
@@ -2233,9 +2327,9 @@ function setupStory(){
 
     restoreChoices();
 
-    restoreGameReturnPosition();
-
     updateNextButtons();
+
+    restoreGameReturnPosition();
 
 }
 
@@ -2642,7 +2736,9 @@ function getChoiceIds(){
             ids.indexOf(id) === -1
         ){
 
-            ids.push(id);
+            ids.push(
+                id
+            );
 
         }
 
