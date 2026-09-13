@@ -205,15 +205,6 @@ h2{
 
 
 /* =========================================================
-   COMPLETED GAME / CHAPTER STATE 2
-   ========================================================= */
-
-.story-game-state-two{
-    margin-top:25px;
-}
-
-
-/* =========================================================
    SHOW OUTFIT
    ========================================================= */
 
@@ -345,45 +336,6 @@ var params =
 
 var file =
     params.get("file") || "";
-
-
-/*
- * GAME RETURN
- *
- * This is no longer used to restore the old page.
- *
- * It is now only a signal that the reader has just
- * entered the completed-game version of the chapter.
- */
-
-var returnGame =
-    params.get("return") || "";
-
-
-returnGame =
-    String(returnGame)
-    .trim();
-
-
-/*
- * When the reader has just returned from a game,
- * prevent the browser from restoring an unrelated
- * previous scroll position.
- *
- * The story engine will position the reader at the
- * newly rendered Chapter State 2 instead.
- */
-
-if(
-    returnGame &&
-    window.history &&
-    "scrollRestoration" in window.history
-){
-
-    window.history.scrollRestoration =
-        "manual";
-
-}
 
 
 file =
@@ -537,11 +489,11 @@ function buildStory(text){
 
 
     /*
-     * The SAME Chapter 3 Markdown is rendered.
+     * The SAME Chapter Markdown is rendered every time.
      *
-     * parseGame() decides whether the chapter is
-     * currently in State 1 or State 2 based on the
-     * persistent completed-game state.
+     * parseGame() decides whether the game marker
+     * is still blocking the chapter or has already
+     * been completed.
      */
 
     content.innerHTML =
@@ -749,16 +701,13 @@ function renderFlow(lines){
         /*
          * GAME
          *
-         * The game is now a true chapter-state gate.
-         *
          * STATE 1:
-         *     render the game door only.
+         *     show the game door and stop.
          *
          * STATE 2:
-         *     render the same chapter's post-game
-         *     continuation directly.
-         *
-         * Nothing is restored from the previous page.
+         *     the game is already complete, so
+         *     consume the game marker and continue
+         *     rendering the SAME chapter normally.
          */
 
         if(isGameMarker(lines[i])){
@@ -913,32 +862,27 @@ function renderFlow(lines){
    GAME PARSER
    =========================================================
 
-   THIS IS THE IMPORTANT CHANGE.
+   SAME CHAPTER / SAME READER
 
-   The same Chapter 3 source is used for both states.
+   If the game has NOT been completed:
 
-   STATE 1 — game incomplete:
+       [GAME:FASHION-01]
+                ↓
+       show game door
+                ↓
+       stop rendering
 
-       STORY
-         ↓
-       GAME DOOR
+   If the game HAS been completed:
 
-   STATE 2 — game complete:
+       [GAME:FASHION-01]
+                ↓
+       consume marker
+                ↓
+       continue rendering the next line
 
-       STORY
-         ↓
-       THE MOMENT
-         ↓
-       SHOW OUTFIT
-         ↓
-       CHOICE
-
-   The continuation is NOT kept hidden in State 1.
-   It is rendered only when the game is already
-   completed.
-
-   This removes the old "restore hidden continuation"
-   system completely.
+   There is NO second chapter state,
+   NO hidden continuation,
+   and NO return-scroll system.
 
    ========================================================= */
 
@@ -957,38 +901,17 @@ function parseGame(
         );
 
 
-    /*
-     * Everything after the game belongs to the
-     * post-game state of the same chapter.
-     */
-
-    var continuationLines =
-        lines.slice(
-            start + 1
-        );
-
-
-    /*
-     * Read the persistent game state.
-     */
-
     var completedGames =
         getCompletedGames();
 
 
     /*
-     * =====================================================
-     * STATE 2 — GAME ALREADY COMPLETED
-     * =====================================================
+     * GAME ALREADY COMPLETED
      *
-     * Do NOT render the game bridge.
+     * Consume only the [GAME:...] marker.
      *
-     * Do NOT render a useless copy of Chapter 3.
-     *
-     * Do NOT restore an old hidden container.
-     *
-     * Simply render the post-game portion of the
-     * SAME Chapter 3 now.
+     * renderFlow() will continue normally with
+     * the very next line of the SAME Chapter 3.
      */
 
     if(
@@ -996,28 +919,12 @@ function parseGame(
         completedGames[gameId]
     ){
 
-        var completedHTML =
-
-            '<div ' +
-            'class="story-game-state-two" ' +
-            'data-after-game="' +
-            escapeAttr(gameId) +
-            '">' +
-
-            renderFlow(
-                continuationLines
-            ) +
-
-            '</div>';
-
-
         return {
 
-            html:
-                completedHTML,
+            html:"",
 
             next:
-                lines.length
+                start + 1
 
         };
 
@@ -1025,14 +932,10 @@ function parseGame(
 
 
     /*
-     * =====================================================
-     * STATE 1 — GAME NOT COMPLETED
-     * =====================================================
+     * GAME NOT COMPLETED
      *
-     * Only the game door exists.
-     *
-     * The rest of the chapter is intentionally not
-     * rendered yet.
+     * Show the game door and stop rendering
+     * the rest of this chapter for now.
      */
 
     return {
@@ -1311,31 +1214,6 @@ document.addEventListener(
 
 /* =========================================================
    CONDITIONAL PARSER
-   =========================================================
-
-   Supports:
-
-   [IF:choice-03=A]
-
-   ...
-
-   [ELSE]
-
-   [IF:choice-03=B]
-
-   ...
-
-   [ELSE]
-
-   [IF:choice-03=C]
-
-   ...
-
-   [ENDIF]
-   [ENDIF]
-   [ENDIF]
-
-   The parser understands nesting.
    ========================================================= */
 
 function parseConditional(
@@ -1950,216 +1828,6 @@ function getCompletedGames(){
 
 
 /* =========================================================
-   RESTORE GAME STATE 2 POSITION
-   =========================================================
-
-   IMPORTANT:
-
-   This is NOT a return-to-the-old-page system.
-
-   Chapter 3 has already been rendered as State 2.
-
-   This function only positions the viewport at the
-   beginning of that newly rendered State 2 after the
-   user presses Continue in the game.
-
-   There is deliberately only ONE positioning method:
-   window.scrollTo().
-
-   No scrollIntoView() is used here.
-
-   ========================================================= */
-
-function restoreGameStateTwoPosition(){
-
-    if(!returnGame){
-
-        return;
-
-    }
-
-
-    var targetGame =
-        String(returnGame)
-        .trim()
-        .toUpperCase();
-
-
-    /*
-     * Confirm that the game is actually completed.
-     */
-
-    var completedGames =
-        getCompletedGames();
-
-
-    if(
-        !completedGames[targetGame]
-    ){
-
-        return;
-
-    }
-
-
-    /*
-     * Find the newly rendered State 2 container.
-     */
-
-    var stateTwo =
-        content.querySelector(
-            '.story-game-state-two[data-after-game="' +
-            cssEscape(targetGame) +
-            '"]'
-        );
-
-
-    if(!stateTwo){
-
-        return;
-
-    }
-
-
-    var attempts = 0;
-
-
-    function positionStateTwo(){
-
-        attempts++;
-
-
-        if(
-            attempts > 12
-        ){
-
-            return;
-
-        }
-
-
-        var rect =
-            stateTwo.getBoundingClientRect();
-
-
-        var scrollTop =
-            window.pageYOffset ||
-            document.documentElement.scrollTop ||
-            document.body.scrollTop ||
-            0;
-
-
-        var targetPosition =
-            Math.max(
-                0,
-                rect.top +
-                scrollTop -
-                20
-            );
-
-
-        /*
-         * The ONLY positioning operation.
-         */
-
-        try{
-
-            window.scrollTo(
-                0,
-                targetPosition
-            );
-
-        }catch(e){}
-
-
-        /*
-         * Give the layout time to settle.
-         */
-
-        if(
-            attempts < 12
-        ){
-
-            setTimeout(
-                positionStateTwo,
-                attempts < 4
-                    ? 250
-                    : 500
-            );
-
-        }
-
-    }
-
-
-    /*
-     * First positioning pass after State 2 has
-     * been inserted into the page.
-     */
-
-    setTimeout(
-        positionStateTwo,
-        100
-    );
-
-
-    /*
-     * If the State 2 content contains images,
-     * allow their final dimensions to trigger
-     * another positioning calculation.
-     */
-
-    var images =
-        stateTwo.getElementsByTagName(
-            "img"
-        );
-
-
-    for(
-        var i = 0;
-        i < images.length;
-        i++
-    ){
-
-        if(
-            !images[i].complete
-        ){
-
-            images[i].addEventListener(
-                "load",
-                positionStateTwo
-            );
-
-            images[i].addEventListener(
-                "error",
-                positionStateTwo
-            );
-
-        }
-
-    }
-
-
-    /*
-     * Give the complete page one final opportunity
-     * to settle.
-     */
-
-    if(
-        document.readyState !== "complete"
-    ){
-
-        window.addEventListener(
-            "load",
-            positionStateTwo
-        );
-
-    }
-
-}
-
-
-/* =========================================================
    SETUP STORY
    ========================================================= */
 
@@ -2186,32 +1854,11 @@ function setupStory(){
     }
 
 
-    /*
-     * IMPORTANT ORDER
-     *
-     * The game state has already been decided while
-     * renderStory() was building the chapter.
-     *
-     * There is therefore NO old completed-game
-     * restoration step here.
-     *
-     * We simply activate and restore the systems that
-     * actually belong to the rendered state.
-     */
-
     activateChoices();
 
     restoreChoices();
 
     updateNextButtons();
-
-    /*
-     * Only after the State 2 DOM exists and all normal
-     * story visibility has been restored do we position
-     * the reader.
-     */
-
-    restoreGameStateTwoPosition();
 
 }
 
@@ -2294,8 +1941,6 @@ function choose(
      * Put the selected consequence into view.
      *
      * This is the EXISTING CHOICE behavior.
-     *
-     * It is deliberately untouched.
      */
 
     var selected =
