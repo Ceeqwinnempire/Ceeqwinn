@@ -1108,10 +1108,13 @@ function parseConditionalNode(
     var thenLines = [];
     var elseLines = [];
 
+
     var current =
         thenLines;
 
+
     var depth = 1;
+
     var i =
         start + 1;
 
@@ -1218,32 +1221,21 @@ function parseConditionalNode(
    RENDER PROGRESS
    =========================================================
 
-   THIS IS THE MAIN FIX.
-
    The engine walks through the story
    from the beginning.
 
-   It renders normal story.
+   Completed choices are followed.
 
-   If it encounters a completed choice,
-   it follows that choice.
+   Incomplete choices stop the story.
 
-   If it encounters an incomplete choice,
-   it renders that choice and STOPS.
+   Completed games are passed through.
 
-   If it encounters a completed game,
-   it passes through the game and
-   continues.
+   Incomplete games stop the story.
 
-   If it encounters an incomplete game,
-   it renders the game gate and STOPS.
+   NEXT stops the story.
 
-   If it encounters NEXT,
-   it renders NEXT and STOPS.
-
-   Therefore the reader never renders
-   unreachable future story into hidden
-   containers.
+   Therefore unreachable future story
+   is never rendered.
    ========================================================= */
 
 function renderProgress(){
@@ -1281,19 +1273,19 @@ function renderProgress(){
 
 
     /*
-     * If we returned from a game,
-     * move the reader to the newly
-     * unlocked continuation.
+     * Legacy support:
+     *
+     * If an older URL contains
+     * ?return=FASHION-01, continue to
+     * support it.
+     *
+     * The new history-based game return
+     * does NOT depend on this.
      */
 
     if(returnGame){
 
         scrollToGameContinuation();
-
-        /*
-         * Only use the return marker
-         * once during this page load.
-         */
 
         returnGame = "";
 
@@ -1465,8 +1457,7 @@ function executeNodes(
              * Choice already completed.
              *
              * Execute ONLY the selected
-             * consequence and then continue
-             * with the story after the choice.
+             * consequence and continue.
              */
 
             if(savedLetter){
@@ -1541,12 +1532,8 @@ function executeNodes(
             /*
              * GAME ALREADY COMPLETED
              *
-             * This is the crucial
-             * bridge behavior.
-             *
-             * We simply PASS THROUGH
-             * the game and continue with
-             * the story after it.
+             * PASS THROUGH THE GAME
+             * AND CONTINUE WITH THE STORY.
              */
 
             if(
@@ -1728,38 +1715,109 @@ document.addEventListener(
 
         /*
          * Rebuild the reachable story.
-         *
-         * Because the choice is now
-         * saved, the engine passes through
-         * it, renders its selected
-         * consequence, and keeps going
-         * until the NEXT unresolved gate.
          */
 
         renderProgress();
 
 
         /*
-         * Put the newly rendered
-         * continuation into view.
+         * IMPORTANT FIX:
+         *
+         * The completed choice has just
+         * been removed from the DOM.
+         *
+         * Therefore we must NOT search for
+         * the old choice again.
+         *
+         * Instead, find the next currently
+         * reachable gate/continuation.
          */
 
         setTimeout(
             function(){
 
-                var firstChoice =
-                    content.querySelector(
-                        '.story-choice[data-choice="' +
-                        cssEscape(id) +
-                        '"]'
+                var nextChoice =
+                    null;
+
+                var choices =
+                    content.querySelectorAll(
+                        ".story-choice"
                     );
 
-                if(firstChoice){
 
-                    firstChoice.scrollIntoView({
+                for(
+                    var i = 0;
+                    i < choices.length;
+                    i++
+                ){
+
+                    var choiceId =
+                        choices[i].getAttribute(
+                            "data-choice"
+                        );
+
+
+                    if(
+                        choiceId !== id
+                    ){
+
+                        nextChoice =
+                            choices[i];
+
+                        break;
+
+                    }
+
+                }
+
+
+                var targetElement =
+                    nextChoice ||
+                    content.querySelector(
+                        ".story-game"
+                    ) ||
+                    content.querySelector(
+                        ".story-next"
+                    ) ||
+                    content.querySelector(
+                        ".story-outfit"
+                    );
+
+
+                if(!targetElement){
+
+                    return;
+
+                }
+
+
+                try{
+
+                    targetElement.scrollIntoView({
                         behavior:"smooth",
                         block:"start"
                     });
+
+                }catch(e){
+
+                    try{
+
+                        window.scrollTo(
+                            0,
+                            Math.max(
+                                0,
+                                targetElement.getBoundingClientRect().top +
+                                (
+                                    window.pageYOffset ||
+                                    document.documentElement.scrollTop ||
+                                    document.body.scrollTop ||
+                                    0
+                                ) -
+                                20
+                            )
+                        );
+
+                    }catch(ignore){}
 
                 }
 
@@ -1961,11 +2019,18 @@ document.addEventListener(
         ){
 
             /*
-             * Keep the existing separate
-             * fashion game page.
+             * IMPORTANT:
              *
-             * The game itself already knows
-             * how to return to Chapter 3.
+             * Use normal browser navigation.
+             *
+             * This creates a history entry for
+             * the separate game page.
+             *
+             * fashion-01.html will later call
+             * history.back() after completion.
+             *
+             * That returns to THIS SAME
+             * Chapter 3 history entry.
              */
 
             window.location.href =
@@ -1978,33 +2043,151 @@ document.addEventListener(
 
 
 /* =========================================================
+   GAME RETURN SIGNAL
+   =========================================================
+
+   The Fashion Game writes:
+
+       sessionStorage.setItem(
+           "ceeqwinn_return_from_game",
+           "FASHION-01"
+       );
+
+   immediately before calling:
+
+       history.back();
+
+   When Chapter 3 returns, this listener
+   sees that one-time signal and rebuilds
+   the existing story from its saved state.
+
+   This works whether the browser restores
+   the old page from bfcache OR reloads the
+   page while navigating backward.
+   ========================================================= */
+
+window.addEventListener(
+    "pageshow",
+    function(){
+
+        var returnedGame =
+            "";
+
+
+        try{
+
+            returnedGame =
+                sessionStorage.getItem(
+                    "ceeqwinn_return_from_game"
+                ) || "";
+
+        }catch(e){
+
+            returnedGame =
+                "";
+
+        }
+
+
+        returnedGame =
+            String(
+                returnedGame
+            )
+            .trim()
+            .toUpperCase();
+
+
+        /*
+         * Nothing to do unless we are
+         * specifically returning from
+         * the Fashion Game.
+         */
+
+        if(
+            returnedGame !==
+            "FASHION-01"
+        ){
+
+            return;
+
+        }
+
+
+        /*
+         * Consume the signal immediately.
+         *
+         * This prevents repeated renders
+         * if another pageshow event occurs.
+         */
+
+        try{
+
+            sessionStorage.removeItem(
+                "ceeqwinn_return_from_game"
+            );
+
+        }catch(e){}
+
+
+        /*
+         * The chapter must already have
+         * been parsed before we rebuild it.
+         *
+         * If this is a normal loaded page,
+         * wait until the story is ready.
+         */
+
+        if(
+            storyNodes &&
+            storyNodes.length
+        ){
+
+            renderProgress();
+
+
+            /*
+             * After the completed game is
+             * passed through, move the reader
+             * to the newly unlocked section.
+             */
+
+            setTimeout(
+                function(){
+
+                    scrollToGameContinuation();
+
+                },
+                100
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
    GAME RETURN SCROLL
+   =========================================================
+
+   This function is now independent of
+   the ?return= URL parameter.
+
+   It simply finds the first useful
+   continuation currently visible after
+   the completed game has been passed.
    ========================================================= */
 
 function scrollToGameContinuation(){
 
-    var targetGame =
-        String(returnGame)
-        .trim()
-        .toUpperCase();
-
-
-    if(!targetGame){
-
-        return;
-
-    }
-
-
     /*
-     * There is no hidden continuation
-     * anymore.
+     * There is no hidden continuation.
      *
-     * The story has already resumed
-     * after the completed game.
+     * renderProgress() has already rebuilt
+     * the reachable story.
      *
-     * Find a useful point near the
-     * resumed content instead.
+     * Find a useful point in the newly
+     * unlocked continuation.
      */
 
     var outfit =
