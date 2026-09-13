@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Lexis — Fashion Game</title>
 
 <style>
+
 body {
   margin: 0;
   background: #111;
@@ -41,7 +44,9 @@ button {
   margin: 15px 0;
   min-height: 24px;
 }
+
 </style>
+
 </head>
 
 <body>
@@ -71,14 +76,23 @@ button {
   <br>
 
   <button onclick="finishGame()">
-    Continue
+    Continue Story
+  </button>
+
+  <button onclick="leaveGame()">
+    Go Back
   </button>
 
 </div>
 
+
 <script>
 
-const OUTFIT_IMAGES = {
+/* =========================================================
+   OUTFIT IMAGES
+   ========================================================= */
+
+var OUTFIT_IMAGES = {
 
   lexis_default:
     "../content/images/characters/lexis/outfits/lexis_default.png.jpeg",
@@ -98,7 +112,7 @@ const OUTFIT_IMAGES = {
 
 function getPlayerState() {
 
-  let saved =
+  var saved =
     localStorage.getItem(
       "ceeqwinn_player_state"
     );
@@ -107,7 +121,40 @@ function getPlayerState() {
 
     try {
 
-      return JSON.parse(saved);
+      var parsed =
+        JSON.parse(saved);
+
+      /*
+       * Make sure older saved player
+       * states still receive the structures
+       * this game needs.
+       */
+
+      if (!parsed.characters) {
+        parsed.characters = {};
+      }
+
+      if (!parsed.characters.lexis) {
+        parsed.characters.lexis = {};
+      }
+
+      if (!parsed.characters.lexis.currentOutfit) {
+        parsed.characters.lexis.currentOutfit =
+          "lexis_default";
+      }
+
+      if (!parsed.games) {
+        parsed.games = {};
+      }
+
+      if (!parsed.games.fashion01) {
+        parsed.games.fashion01 = {
+          result: null,
+          score: null
+        };
+      }
+
+      return parsed;
 
     } catch (error) {
 
@@ -169,7 +216,7 @@ function savePlayerState(state) {
 
 function chooseOutfit(outfitId) {
 
-  const state =
+  var state =
     getPlayerState();
 
 
@@ -206,7 +253,7 @@ function chooseOutfit(outfitId) {
 
 function finishGame() {
 
-  const state =
+  var state =
     getPlayerState();
 
 
@@ -229,7 +276,7 @@ function finishGame() {
    * FASHION-01 has been completed.
    */
 
-  let completedGames = {};
+  var completedGames = {};
 
 
   try {
@@ -261,44 +308,53 @@ function finishGame() {
 
 
   /*
-   * Return to the SAME Chapter 3
-   * article reader.
+   * Tell the returning Chapter 3 page
+   * that this game was just completed.
    *
-   * URL is constructed explicitly from
-   * the current site location instead of
-   * relying on a plain relative href.
+   * This is only a small resume signal.
+   * The actual game completion remains
+   * ceeqwinn_completed_games.
    */
 
-  const returnUrl =
-    new URL(
-      "../article.html",
-      window.location.href
+  try {
+
+    sessionStorage.setItem(
+      "ceeqwinn_return_from_game",
+      "FASHION-01"
     );
 
-
-  returnUrl.searchParams.set(
-    "file",
-    "discordant-descendants-chapter-3"
-  );
-
-
-  returnUrl.searchParams.set(
-    "return",
-    "FASHION-01"
-  );
+  } catch (error) {}
 
 
   /*
-   * Replace the game page with the
-   * Chapter 3 reader.
+   * IMPORTANT:
    *
-   * This is still the SAME article.html
-   * reader. It is not a new chapter.
+   * Do NOT reconstruct article.html.
+   *
+   * Go back to the already-loaded
+   * Chapter 3 reader.
    */
 
-  window.location.replace(
-    returnUrl.href
-  );
+  history.back();
+
+}
+
+
+/* =========================================================
+   LEAVE GAME WITHOUT COMPLETING IT
+   ========================================================= */
+
+function leaveGame() {
+
+  /*
+   * No completion flag is written.
+   *
+   * Therefore Chapter 3 will still see
+   * FASHION-01 as incomplete when we
+   * return.
+   */
+
+  history.back();
 
 }
 
