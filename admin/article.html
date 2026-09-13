@@ -1,1041 +1,3742 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>CEEQWINN Reader</title>
+
 <style>
-body{max-width:800px;margin:auto;padding:35px 18px;font-family:Arial,sans-serif;line-height:1.8;background:#fafafa;color:#222}
-h1{font-size:2.2rem;margin-bottom:20px}
-h2{margin-top:35px}
-#cover{display:none;max-width:100%;height:auto;margin:0 auto 30px;border-radius:12px}
-#credits{color:#666;margin-bottom:25px}
-#status{color:#777}
-#content{overflow-wrap:break-word}
-#content img{display:block;max-width:100%;height:auto;margin:25px auto;border-radius:12px}
-#content video,#content audio{display:block;width:100%;max-width:100%;margin:25px auto}
-#content blockquote{margin:25px 0;padding:10px 18px;border-left:4px solid #999;background:#f0f0f0}
-#content table{width:100%;border-collapse:collapse;margin:25px 0}
-#content th,#content td{padding:8px;border:1px solid #ccc}
 
-.story-choice{margin:45px 0;padding:20px 0}
-.story-choice-title{font-weight:bold;font-size:1.1rem;margin-bottom:15px}
-.story-choice-button{display:block;width:100%;box-sizing:border-box;margin:10px 0;padding:15px;font:16px Arial,sans-serif;text-align:left;background:#fff;color:#222;border:1px solid #ccc;border-radius:8px;cursor:pointer}
-.story-choice-button:hover{background:#f2f2f2}
-.story-choice-button:disabled{cursor:default;opacity:.7}
+body{
+    max-width:800px;
+    margin:auto;
+    padding:35px 18px;
+    font-family:Arial,sans-serif;
+    line-height:1.8;
+    background:#fafafa;
+    color:#222;
+}
 
-.story-consequence{margin:25px 0}
-.story-continuation{margin-top:25px}
-.story-next{margin:55px 0 25px;padding:25px 0;text-align:center}
-.story-next-text{margin-bottom:18px;color:#555;font-size:1rem}
-.story-next-button{display:inline-block;padding:14px 22px;font:16px Arial,sans-serif;background:#222;color:#fff;border:none;border-radius:8px;cursor:pointer}
-.story-next-button:hover{opacity:.85}
+h1{
+    font-size:2.2rem;
+    margin-bottom:20px;
+}
 
-.story-game{margin:45px 0;padding:25px 0;text-align:center}
-.story-game-title{font-weight:bold;font-size:1.15rem;margin-bottom:10px}
-.story-game-text{color:#666;margin-bottom:18px}
-.story-game-button{display:inline-block;padding:15px 24px;font:16px Arial,sans-serif;background:#222;color:#fff;border:none;border-radius:8px;cursor:pointer}
-.story-game-button:hover{opacity:.85}
-.story-game-shell{margin:25px 0;padding:10px;background:#fff;border:1px solid #ddd;border-radius:12px}
-.story-game-frame{display:block;width:100%;height:720px;max-height:78vh;border:0;border-radius:8px;background:#fff}
-.story-game-close{display:block;width:100%;margin-top:10px;padding:12px;font:15px Arial,sans-serif;background:#f7f7f7;color:#555;border:1px solid #ccc;border-radius:8px;cursor:pointer}
-.story-game-close:hover{background:#eee}
+h2{
+    margin-top:35px;
+}
 
-.story-outfit{margin:35px 0;text-align:center}
-.story-outfit img{display:block;width:100%;max-width:420px;height:auto;margin:0 auto;border-radius:12px}
+#cover{
+    display:none;
+    max-width:100%;
+    height:auto;
+    margin:0 auto 30px;
+    border-radius:12px;
+}
 
-#storyReset{display:none;width:100%;margin:35px 0;padding:12px;background:#f7f7f7;color:#555;border:1px dashed #aaa;border-radius:8px;cursor:pointer}
-#storyReset:hover{background:#eee}
+#credits{
+    color:#666;
+    margin-bottom:25px;
+}
+
+#status{
+    color:#777;
+}
+
+#content{
+    overflow-wrap:break-word;
+}
+
+#content img{
+    display:block;
+    max-width:100%;
+    height:auto;
+    margin:25px auto;
+    border-radius:12px;
+}
+
+#content video,
+#content audio{
+    display:block;
+    width:100%;
+    max-width:100%;
+    margin:25px auto;
+}
+
+#content blockquote{
+    margin:25px 0;
+    padding:10px 18px;
+    border-left:4px solid #999;
+    background:#f0f0f0;
+}
+
+#content table{
+    width:100%;
+    border-collapse:collapse;
+    margin:25px 0;
+}
+
+#content th,
+#content td{
+    padding:8px;
+    border:1px solid #ccc;
+}
+
+
+/* =========================================================
+   STORY CHOICES
+   ========================================================= */
+
+.story-choice{
+    margin:45px 0;
+    padding:20px 0;
+}
+
+.story-choice-title{
+    font-weight:bold;
+    font-size:1.1rem;
+    margin-bottom:15px;
+}
+
+.story-choice-button{
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    margin:10px 0;
+    padding:15px;
+
+    font:16px Arial,sans-serif;
+
+    text-align:left;
+
+    background:#fff;
+    color:#222;
+
+    border:1px solid #ccc;
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.story-choice-button:hover{
+    background:#f2f2f2;
+}
+
+.story-choice-button:disabled{
+    cursor:default;
+    opacity:.7;
+}
+
+
+/* =========================================================
+   STORY CONSEQUENCE
+   ========================================================= */
+
+.story-consequence{
+    margin:25px 0;
+}
+
+
+/* =========================================================
+   NEXT CHAPTER
+   ========================================================= */
+
+.story-next{
+    margin:55px 0 25px;
+    padding:25px 0;
+    text-align:center;
+}
+
+.story-next-text{
+    margin-bottom:18px;
+    color:#555;
+    font-size:1rem;
+}
+
+.story-next-button{
+    display:inline-block;
+
+    padding:14px 22px;
+
+    font:16px Arial,sans-serif;
+
+    background:#222;
+    color:#fff;
+
+    border:none;
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.story-next-button:hover{
+    opacity:.85;
+}
+
+
+/* =========================================================
+   GAME BRIDGE
+   ========================================================= */
+
+.story-game{
+    margin:45px 0;
+    padding:25px 0;
+    text-align:center;
+}
+
+.story-game-title{
+    font-weight:bold;
+    font-size:1.15rem;
+    margin-bottom:10px;
+}
+
+.story-game-text{
+    color:#666;
+    margin-bottom:18px;
+}
+
+.story-game-button{
+    display:inline-block;
+
+    padding:15px 24px;
+
+    font:16px Arial,sans-serif;
+
+    background:#222;
+    color:#fff;
+
+    border:none;
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.story-game-button:hover{
+    opacity:.85;
+}
+
+.story-game-shell{
+    margin:25px 0;
+    padding:10px;
+
+    background:#fff;
+
+    border:1px solid #ddd;
+    border-radius:12px;
+}
+
+.story-game-frame{
+    display:block;
+
+    width:100%;
+    height:720px;
+    max-height:78vh;
+
+    border:0;
+    border-radius:8px;
+
+    background:#fff;
+}
+
+.story-game-close{
+    display:block;
+
+    width:100%;
+
+    margin-top:10px;
+    padding:12px;
+
+    font:15px Arial,sans-serif;
+
+    background:#f7f7f7;
+    color:#555;
+
+    border:1px solid #ccc;
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+.story-game-close:hover{
+    background:#eee;
+}
+
+
+/* =========================================================
+   SHOW OUTFIT
+   ========================================================= */
+
+.story-outfit{
+    margin:35px 0;
+    text-align:center;
+}
+
+.story-outfit img{
+    display:block;
+
+    width:100%;
+    max-width:420px;
+
+    height:auto;
+
+    margin:0 auto;
+
+    border-radius:12px;
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+#storyReset{
+    display:none;
+
+    width:100%;
+
+    margin:35px 0;
+    padding:12px;
+
+    background:#f7f7f7;
+    color:#555;
+
+    border:1px dashed #aaa;
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+#storyReset:hover{
+    background:#eee;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
 
 @media(max-width:600px){
-body{padding:25px 15px}
-h1{font-size:1.8rem}
-.story-choice-button{font-size:16px;padding:15px}
-.story-next-button,.story-game-button{width:100%;box-sizing:border-box}
-.story-game-frame{height:70vh;min-height:500px}
+
+    body{
+        padding:25px 15px;
+    }
+
+    h1{
+        font-size:1.8rem;
+    }
+
+    .story-choice-button{
+        font-size:16px;
+        padding:15px;
+    }
+
+    .story-next-button,
+    .story-game-button{
+        width:100%;
+        box-sizing:border-box;
+    }
+
+    .story-game-frame{
+        height:70vh;
+        min-height:500px;
+    }
+
 }
+
 </style>
+
 </head>
+
+
 <body>
+
 <img id="cover" alt="">
+
 <h1 id="title">Loading...</h1>
+
 <div id="credits"></div>
+
 <div id="status"></div>
+
 <div id="content"></div>
-<button id="storyReset" type="button">↺ Reset Story</button>
+
+<button id="storyReset" type="button">
+    ↺ Reset Story
+</button>
+
 <div id="media"></div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
+
+
 <script>
+
 /* =========================================================
    CEEQWINN READER
    PROGRESSIVE STORY ENGINE
+   =========================================================
 
-   IMPORTANT DESIGN RULE:
-   The reader does NOT render the whole future story into
-   hidden containers.
+   CORE RULE:
 
-   It renders only until the next gate:
-     STORY -> CHOICE -> RESULT -> NEXT CHOICE/GAME/NEXT
+   The reader NEVER renders the entire future story.
 
-   This is what makes the story genuinely progressive.
+   It processes the story as a sequence of steps.
+
+   Example:
+
+       STORY
+         ↓
+       CHOICE
+         ↓
+       PLAYER CHOOSES
+         ↓
+       SELECTED CONSEQUENCE
+         ↓
+       STORY CONTINUES
+         ↓
+       GAME / CHOICE / NEXT CHAPTER
+         ↓
+       STOP
+
+   This is what creates genuine progressive story flow.
    ========================================================= */
 
-var title = document.getElementById("title");
-var credits = document.getElementById("credits");
-var status = document.getElementById("status");
-var content = document.getElementById("content");
-var cover = document.getElementById("cover");
-var media = document.getElementById("media");
-var reset = document.getElementById("storyReset");
 
-var params = new URLSearchParams(window.location.search);
-var file = cleanPath(params.get("file") || "");
-var storyId = getStoryId(file);
-var storageKey = "ceeqwinn_story_history_" + storyId;
+/* =========================================================
+   BASIC ELEMENTS
+   ========================================================= */
 
-/* Current story runtime */
+var title =
+    document.getElementById("title");
+
+var credits =
+    document.getElementById("credits");
+
+var status =
+    document.getElementById("status");
+
+var content =
+    document.getElementById("content");
+
+var cover =
+    document.getElementById("cover");
+
+var media =
+    document.getElementById("media");
+
+var reset =
+    document.getElementById("storyReset");
+
+
+/* =========================================================
+   ARTICLE
+   ========================================================= */
+
+var params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+var file =
+    cleanPath(
+        params.get("file") || ""
+    );
+
+
+/* =========================================================
+   STORY-WIDE ID
+   =========================================================
+
+   These:
+
+       discordant-descendants
+       discordant-descendants-chapter-2
+       discordant-descendants-chapter-3
+
+   all become:
+
+       discordant-descendants
+
+   Therefore all chapters share one choice history.
+   ========================================================= */
+
+var storyId =
+    getStoryId(file);
+
+
+var storageKey =
+    "ceeqwinn_story_history_" +
+    storyId;
+
+
+/* =========================================================
+   LIVE STORY RUNTIME
+   ========================================================= */
+
 var storySteps = [];
+
 var flowStack = [];
+
 var activeGate = null;
+
 var activeGameTimer = null;
+
 var activeGameId = "";
 
+
+/* =========================================================
+   START
+   ========================================================= */
+
 if(!file){
-    title.textContent = "Article not found";
-    status.textContent = "No article was selected.";
+
+    title.textContent =
+        "Article not found";
+
+    status.textContent =
+        "No article was selected.";
+
 }else{
+
     loadStory();
+
 }
+
 
 /* =========================================================
    LOAD MARKDOWN
    ========================================================= */
+
 function loadStory(){
-    status.textContent = "Loading...";
+
+    status.textContent =
+        "Loading...";
+
     content.innerHTML = "";
+
     media.innerHTML = "";
-    cover.style.display = "none";
+
+    cover.style.display =
+        "none";
+
+
     storySteps = [];
+
     flowStack = [];
+
     activeGate = null;
+
     stopGameWatcher();
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "../content/articles/" + encodeURIComponent(file) + ".md", true);
 
-    xhr.onload = function(){
-        if(xhr.status !== 200 && xhr.status !== 0){
-            title.textContent = "Unable to load article";
-            status.textContent = "The article could not be loaded.";
-            return;
-        }
-        buildStory(xhr.responseText);
-    };
+    var xhr =
+        new XMLHttpRequest();
 
-    xhr.onerror = function(){
-        title.textContent = "Unable to load article";
-        status.textContent = "The article could not be loaded.";
-    };
+
+    xhr.open(
+        "GET",
+        "../content/articles/" +
+        encodeURIComponent(file) +
+        ".md",
+        true
+    );
+
+
+    xhr.onload =
+        function(){
+
+            if(
+                xhr.status !== 200 &&
+                xhr.status !== 0
+            ){
+
+                title.textContent =
+                    "Unable to load article";
+
+                status.textContent =
+                    "The article could not be loaded.";
+
+                return;
+
+            }
+
+
+            buildStory(
+                xhr.responseText
+            );
+
+        };
+
+
+    xhr.onerror =
+        function(){
+
+            title.textContent =
+                "Unable to load article";
+
+            status.textContent =
+                "The article could not be loaded.";
+
+        };
+
 
     xhr.send();
+
 }
+
 
 /* =========================================================
    BUILD STORY
    ========================================================= */
+
 function buildStory(text){
-    var data = parseFrontmatter(text);
 
-    title.textContent = data.title || file;
+    var data =
+        parseFrontmatter(text);
 
-    credits.innerHTML = data.credits
-        ? "<strong>Credits:</strong> " + escapeHtml(data.credits)
+
+    title.textContent =
+        data.title || file;
+
+
+    credits.innerHTML =
+        data.credits
+
+        ? "<strong>Credits:</strong> " +
+          escapeHtml(data.credits)
+
         : "";
 
+
     if(data.cover){
-        cover.src = mediaPath(data.cover);
-        cover.alt = data.title || file;
-        cover.style.display = "block";
-        cover.onerror = function(){ cover.style.display = "none"; };
+
+        cover.src =
+            mediaPath(
+                data.cover
+            );
+
+        cover.alt =
+            data.title || file;
+
+        cover.style.display =
+            "block";
+
+
+        cover.onerror =
+            function(){
+
+                cover.style.display =
+                    "none";
+
+            };
+
     }
 
-    /* Compile Markdown markers into a small story flow. */
-    storySteps = compileFlow(data.body.split(/\r?\n/));
+
+    /*
+       IMPORTANT:
+
+       We compile the Markdown into a small
+       internal story structure.
+
+       We DO NOT render the whole story here.
+    */
+
+    storySteps =
+        compileFlow(
+            data.body.split(/\r?\n/)
+        );
+
 
     content.innerHTML = "";
-    flowStack = [{steps: storySteps, index: 0}];
+
+
+    /*
+       Start the story at step zero.
+    */
+
+    flowStack = [
+
+        {
+            steps:storySteps,
+            index:0
+        }
+
+    ];
+
+
     activeGate = null;
 
-    /* Replay saved choices automatically until the first unfinished gate. */
+
+    /*
+       Resume saved choices automatically
+       until the first unfinished gate.
+    */
+
     renderUntilGate();
 
-    renderExtraMedia(data);
+
+    renderExtraMedia(
+        data
+    );
+
+
     updateResetButton();
+
+
     status.textContent = "";
+
 }
+
 
 /* =========================================================
    FRONTMATTER
    ========================================================= */
+
 function parseFrontmatter(text){
+
     var data = {
+
         title:"",
         cover:"",
         credits:"",
         video:"",
         audio:"",
         body:text
+
     };
 
-    var match = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
+
+    var match =
+        text.match(
+            /^---\s*\n([\s\S]*?)\n---\s*\n?/
+        );
+
 
     if(!match){
+
         return data;
+
     }
 
-    var front = match[1];
-    data.body = text.substring(match[0].length);
-    data.title = frontValue(front,"title");
-    data.cover = frontValue(front,"cover");
-    data.credits = frontValue(front,"credits");
-    data.video = frontValue(front,"video");
-    data.audio = frontValue(front,"audio");
+
+    var front =
+        match[1];
+
+
+    data.body =
+        text.substring(
+            match[0].length
+        );
+
+
+    data.title =
+        frontValue(
+            front,
+            "title"
+        );
+
+
+    data.cover =
+        frontValue(
+            front,
+            "cover"
+        );
+
+
+    data.credits =
+        frontValue(
+            front,
+            "credits"
+        );
+
+
+    data.video =
+        frontValue(
+            front,
+            "video"
+        );
+
+
+    data.audio =
+        frontValue(
+            front,
+            "audio"
+        );
+
+
     return data;
+
 }
 
-function frontValue(text,key){
-    var re = new RegExp("^" + key + "\\s*:\\s*[\\\"']?(.*?)[\\\"']?$","m");
-    var match = text.match(re);
-    return match ? match[1].trim() : "";
+
+/* =========================================================
+   FRONTMATTER VALUE
+   ========================================================= */
+
+function frontValue(
+    text,
+    key
+){
+
+    var re =
+        new RegExp(
+            "^" +
+            key +
+            "\\s*:\\s*[\"']?(.*?)[\"']?$",
+            "m"
+        );
+
+
+    var match =
+        text.match(
+            re
+        );
+
+
+    return match
+        ? match[1].trim()
+        : "";
+
 }
+
 
 /* =========================================================
    MARKER TESTS
    ========================================================= */
+
 function isGameMarker(line){
-    return /^\s*\[GAME:[A-Za-z0-9_-]+\]\s*$/.test(line);
+
+    return /^\s*\[GAME:[A-Za-z0-9_-]+\]\s*$/.test(
+        line
+    );
+
 }
+
 
 function isChoiceStart(line){
-    return /^\s*\[CHOICE:[\w-]+\]\s*$/.test(line);
+
+    return /^\s*\[CHOICE:[\w-]+\]\s*$/.test(
+        line
+    );
+
 }
+
 
 function isShowOutfitMarker(line){
-    return /^\s*\[SHOWOUTFIT\]\s*$/.test(line);
+
+    return /^\s*\[SHOWOUTFIT\]\s*$/.test(
+        line
+    );
+
 }
+
 
 function isNextMarker(line){
-    return /^\s*\[NEXT:[^\]]+\]\s*$/.test(line);
+
+    return /^\s*\[NEXT:[^\]]+\]\s*$/.test(
+        line
+    );
+
 }
+
 
 function isIfMarker(line){
-    return /^\s*\[IF:[\w-]+=[A-Z]\]\s*$/.test(line);
+
+    return /^\s*\[IF:[\w-]+=[A-Z]\]\s*$/.test(
+        line
+    );
+
 }
+
 
 function isEndIfMarker(line){
-    return /^\s*\[ENDIF\]\s*$/.test(line);
+
+    return /^\s*\[ENDIF\]\s*$/.test(
+        line
+    );
+
 }
+
 
 function isElseMarker(line){
-    return /^\s*\[ELSE\]\s*$/.test(line);
+
+    return /^\s*\[ELSE\]\s*$/.test(
+        line
+    );
+
 }
+
 
 function isEndChoiceMarker(line){
-    return /^\s*\[ENDCHOICE\]\s*$/.test(line);
+
+    return /^\s*\[ENDCHOICE\]\s*$/.test(
+        line
+    );
+
 }
+
 
 function isConsequenceMarker(line){
-    return /^\s*\[CONSEQUENCE:([A-Z])\]\s*$/.test(line);
+
+    return /^\s*\[CONSEQUENCE:([A-Z])\]\s*$/.test(
+        line
+    );
+
 }
 
-function isOptionLine(line){
-    return /^\s*\[([A-Z])\]\s*(.+?)\s*$/.test(line);
-}
 
 /* =========================================================
    STORY COMPILER
+   =========================================================
 
-   This converts the Markdown into a sequence of steps.
-   Future content is NOT rendered yet.
+   Markdown becomes:
+
+       markdown
+       choice
+       game
+       outfit
+       conditional
+       next
+
+   It does NOT become HTML yet.
    ========================================================= */
+
 function compileFlow(lines){
+
     var steps = [];
+
     var normal = [];
+
     var i = 0;
 
+
     function flushNormal(){
+
         if(normal.length){
-            steps.push({type:"markdown", text:normal.join("\n")});
-            normal = [];
-        }
-    }
 
-    while(i < lines.length){
-        if(isChoiceStart(lines[i])){
-            flushNormal();
-            var choice = parseChoiceBlock(lines,i);
-            steps.push(choice.step);
-            i = choice.nextIndex;
-            continue;
-        }
-
-        if(isGameMarker(lines[i])){
-            flushNormal();
             steps.push({
-                type:"game",
-                id:getGameId(lines[i])
+
+                type:"markdown",
+
+                text:
+                    normal.join("\n")
+
             });
-            i++;
-            continue;
+
+
+            normal = [];
+
         }
 
-        if(isShowOutfitMarker(lines[i])){
-            flushNormal();
-            steps.push({type:"outfit"});
-            i++;
-            continue;
-        }
-
-        if(isNextMarker(lines[i])){
-            flushNormal();
-            steps.push(parseNextStep(lines[i]));
-            i++;
-            continue;
-        }
-
-        if(isIfMarker(lines[i])){
-            flushNormal();
-            var conditional = parseConditionalBlock(lines,i);
-            steps.push(conditional.step);
-            i = conditional.nextIndex;
-            continue;
-        }
-
-        /* Stray engine markers should never become visible text. */
-        if(isEndIfMarker(lines[i]) || isEndChoiceMarker(lines[i]) || isElseMarker(lines[i]) || isConsequenceMarker(lines[i])){
-            i++;
-            continue;
-        }
-
-        normal.push(lines[i]);
-        i++;
     }
+
+
+    while(
+        i < lines.length
+    ){
+
+        /* -----------------------------------------
+           CHOICE
+           ----------------------------------------- */
+
+        if(
+            isChoiceStart(
+                lines[i]
+            )
+        ){
+
+            flushNormal();
+
+
+            var choice =
+                parseChoiceBlock(
+                    lines,
+                    i
+                );
+
+
+            steps.push(
+                choice.step
+            );
+
+
+            i =
+                choice.nextIndex;
+
+
+            continue;
+
+        }
+
+
+        /* -----------------------------------------
+           GAME
+           ----------------------------------------- */
+
+        if(
+            isGameMarker(
+                lines[i]
+            )
+        ){
+
+            flushNormal();
+
+
+            steps.push({
+
+                type:"game",
+
+                id:
+                    getGameId(
+                        lines[i]
+                    )
+
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /* -----------------------------------------
+           OUTFIT
+           ----------------------------------------- */
+
+        if(
+            isShowOutfitMarker(
+                lines[i]
+            )
+        ){
+
+            flushNormal();
+
+
+            steps.push({
+
+                type:"outfit"
+
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /* -----------------------------------------
+           NEXT CHAPTER
+           ----------------------------------------- */
+
+        if(
+            isNextMarker(
+                lines[i]
+            )
+        ){
+
+            flushNormal();
+
+
+            steps.push(
+                parseNextStep(
+                    lines[i]
+                )
+            );
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /* -----------------------------------------
+           CONDITIONAL
+           ----------------------------------------- */
+
+        if(
+            isIfMarker(
+                lines[i]
+            )
+        ){
+
+            flushNormal();
+
+
+            var conditional =
+                parseConditionalBlock(
+                    lines,
+                    i
+                );
+
+
+            steps.push(
+                conditional.step
+            );
+
+
+            i =
+                conditional.nextIndex;
+
+
+            continue;
+
+        }
+
+
+        /*
+           Engine markers that should never
+           become visible story text.
+        */
+
+        if(
+            isEndIfMarker(lines[i]) ||
+            isEndChoiceMarker(lines[i]) ||
+            isElseMarker(lines[i]) ||
+            isConsequenceMarker(lines[i])
+        ){
+
+            i++;
+
+            continue;
+
+        }
+
+
+        normal.push(
+            lines[i]
+        );
+
+
+        i++;
+
+    }
+
 
     flushNormal();
+
+
     return steps;
+
 }
+
 
 /* =========================================================
    CHOICE COMPILER
+   =========================================================
 
-   [CHOICE:id]
-   [A] ...
-   [B] ...
-   [CONSEQUENCE:A]
-   ...
-   [ENDCHOICE]
-   [CONSEQUENCE:B]
-   ...
-   [ENDCHOICE]
+   Markdown:
 
-   Only the selected branch is ever rendered.
+       [CHOICE:choice-01]
+
+       [A] Accept
+       [B] Reject
+       [C] Investigate
+
+       [CONSEQUENCE:A]
+       ...
+       [ENDCHOICE]
+
+       [CONSEQUENCE:B]
+       ...
+       [ENDCHOICE]
+
+       [CONSEQUENCE:C]
+       ...
+       [ENDCHOICE]
+
+   IMPORTANT:
+
+   We store the branches.
+
+   We DO NOT render them.
+
+   Only the selected branch will later be
+   placed into the live story.
    ========================================================= */
-function parseChoiceBlock(lines,startIndex){
-    var match = lines[startIndex].match(/^\s*\[CHOICE:([\w-]+)\]\s*$/);
+
+function parseChoiceBlock(
+    lines,
+    startIndex
+){
+
+    var match =
+        lines[startIndex].match(
+            /^\s*\[CHOICE:([\w-]+)\]\s*$/
+        );
+
 
     if(!match){
+
         return {
-            step:{type:"markdown",text:""},
-            nextIndex:startIndex + 1
+
+            step:{
+                type:"markdown",
+                text:""
+            },
+
+            nextIndex:
+                startIndex + 1
+
         };
+
     }
 
-    var choiceId = match[1];
+
+    var choiceId =
+        match[1];
+
+
     var options = [];
-    var branches = {};
-    var i = startIndex + 1;
 
-    /* Read option labels. */
-    while(i < lines.length){
-        var option = lines[i].match(/^\s*\[([A-Z])\]\s*(.+?)\s*$/);
-        if(!option){ break; }
-        options.push({letter:option[1],label:option[2]});
+    var branches = {};
+
+    var i =
+        startIndex + 1;
+
+
+    /* -----------------------------------------
+       READ OPTIONS
+       ----------------------------------------- */
+
+    while(
+        i < lines.length
+    ){
+
+        var option =
+            lines[i].match(
+                /^\s*\[([A-Z])\]\s*(.+?)\s*$/
+            );
+
+
+        if(!option){
+
+            break;
+
+        }
+
+
+        options.push({
+
+            letter:
+                option[1],
+
+            label:
+                option[2]
+
+        });
+
+
         i++;
+
     }
+
+
+    /* -----------------------------------------
+       READ CONSEQUENCES
+       ----------------------------------------- */
 
     var currentLetter = "";
+
     var currentLines = [];
-    var nestedChoiceDepth = 0;
 
-    while(i < lines.length){
-        var line = lines[i];
 
-        /* A nested choice belongs inside the current branch. */
-        if(isChoiceStart(line) && currentLetter){
-            nestedChoiceDepth++;
-            currentLines.push(line);
-            i++;
-            continue;
-        }
+    while(
+        i < lines.length
+    ){
 
-        if(isConsequenceMarker(line) && nestedChoiceDepth === 0){
-            if(currentLetter){
-                branches[currentLetter] = currentLines;
+        var line =
+            lines[i];
+
+
+        /*
+           A new consequence begins.
+        */
+
+        if(
+            isConsequenceMarker(
+                line
+            )
+        ){
+
+            /*
+               Save previous branch first.
+            */
+
+            if(
+                currentLetter
+            ){
+
+                branches[
+                    currentLetter
+                ] =
+                    currentLines;
+
             }
-            var consequence = line.match(/^\s*\[CONSEQUENCE:([A-Z])\]\s*$/);
-            currentLetter = consequence[1];
+
+
+            var consequence =
+                line.match(
+                    /^\s*\[CONSEQUENCE:([A-Z])\]\s*$/
+                );
+
+
+            currentLetter =
+                consequence[1];
+
+
             currentLines = [];
+
+
             i++;
+
             continue;
+
         }
 
-        if(isEndChoiceMarker(line)){
-            if(nestedChoiceDepth > 0){
-                nestedChoiceDepth--;
-                currentLines.push(line);
-                i++;
-                continue;
+
+        /*
+           ENDCHOICE closes the current
+           consequence.
+        */
+
+        if(
+            isEndChoiceMarker(
+                line
+            )
+        ){
+
+            if(
+                currentLetter
+            ){
+
+                branches[
+                    currentLetter
+                ] =
+                    currentLines;
+
             }
 
-            if(currentLetter){
-                branches[currentLetter] = currentLines;
-            }
 
             currentLetter = "";
+
             currentLines = [];
+
+
             i++;
 
-            /* The choice is complete once every declared option has a branch. */
-            var complete = true;
-            for(var o=0;o<options.length;o++){
-                if(!branches[options[o].letter]){
-                    complete = false;
+
+            /*
+               If every declared option
+               now has a branch, the choice
+               is complete.
+            */
+
+            var complete =
+                true;
+
+
+            for(
+                var o = 0;
+                o < options.length;
+                o++
+            ){
+
+                if(
+                    !branches[
+                        options[o].letter
+                    ]
+                ){
+
+                    complete =
+                        false;
+
                     break;
+
                 }
+
             }
-            if(complete){ break; }
+
+
+            if(complete){
+
+                break;
+
+            }
+
+
             continue;
+
         }
 
-        if(currentLetter){
-            currentLines.push(line);
+
+        /*
+           Everything else belongs to
+           the current consequence.
+        */
+
+        if(
+            currentLetter
+        ){
+
+            currentLines.push(
+                line
+            );
+
         }
+
 
         i++;
+
     }
+
+
+    /*
+       Compile every consequence as its
+       own mini story flow.
+
+       Again: NO HTML is generated here.
+    */
 
     var compiledBranches = {};
-    for(var b=0;b<options.length;b++){
-        var letter = options[b].letter;
-        compiledBranches[letter] = compileFlow(branches[letter] || []);
+
+
+    for(
+        var b = 0;
+        b < options.length;
+        b++
+    ){
+
+        var letter =
+            options[b].letter;
+
+
+        compiledBranches[
+            letter
+        ] =
+            compileFlow(
+                branches[letter] || []
+            );
+
     }
 
+
     return {
+
         step:{
+
             type:"choice",
-            id:choiceId,
-            options:options,
-            branches:compiledBranches
+
+            id:
+                choiceId,
+
+            options:
+                options,
+
+            branches:
+                compiledBranches
+
         },
-        nextIndex:i
+
+        nextIndex:
+            i
+
     };
+
 }
+
 
 /* =========================================================
    CONDITIONAL COMPILER
    ========================================================= */
-function parseConditionalBlock(lines,startIndex){
-    var first = lines[startIndex].match(/^\s*\[IF:([\w-]+)=([A-Z])\]\s*$/);
+
+function parseConditionalBlock(
+    lines,
+    startIndex
+){
+
+    var first =
+        lines[startIndex].match(
+            /^\s*\[IF:([\w-]+)=([A-Z])\]\s*$/
+        );
+
 
     if(!first){
+
         return {
-            step:{type:"markdown",text:""},
-            nextIndex:startIndex + 1
+
+            step:{
+                type:"markdown",
+                text:""
+            },
+
+            nextIndex:
+                startIndex + 1
+
         };
+
     }
 
-    var branches = [{id:first[1],letter:first[2],lines:[]}];
-    var current = branches[0];
+
+    var branches = [
+
+        {
+
+            id:
+                first[1],
+
+            letter:
+                first[2],
+
+            lines:[]
+
+        }
+
+    ];
+
+
+    var current =
+        branches[0];
+
+
     var depth = 1;
-    var i = startIndex + 1;
 
-    while(i < lines.length){
-        var line = lines[i];
+    var i =
+        startIndex + 1;
 
-        if(isIfMarker(line)){
+
+    while(
+        i < lines.length
+    ){
+
+        var line =
+            lines[i];
+
+
+        /*
+           Nested IF.
+        */
+
+        if(
+            isIfMarker(
+                line
+            )
+        ){
+
             depth++;
-            current.lines.push(line);
+
+
+            current.lines.push(
+                line
+            );
+
+
             i++;
+
             continue;
+
         }
 
-        if(isEndIfMarker(line)){
+
+        /*
+           ENDIF.
+        */
+
+        if(
+            isEndIfMarker(
+                line
+            )
+        ){
+
             depth--;
-            if(depth === 0){
+
+
+            if(
+                depth === 0
+            ){
+
                 i++;
+
                 break;
+
             }
-            current.lines.push(line);
+
+
+            current.lines.push(
+                line
+            );
+
+
             i++;
+
             continue;
+
         }
 
-        if(depth === 1 && isElseMarker(line)){
-            current = {id:"__ELSE__",letter:"ELSE",lines:[]};
-            branches.push(current);
+
+        /*
+           Plain ELSE.
+        */
+
+        if(
+            depth === 1 &&
+            isElseMarker(line)
+        ){
+
+            current = {
+
+                id:
+                    "__ELSE__",
+
+                letter:
+                    "ELSE",
+
+                lines:[]
+
+            };
+
+
+            branches.push(
+                current
+            );
+
+
             i++;
+
             continue;
+
         }
 
-        current.lines.push(line);
+
+        current.lines.push(
+            line
+        );
+
+
         i++;
+
     }
+
 
     var compiled = [];
-    for(var b=0;b<branches.length;b++){
+
+
+    for(
+        var b = 0;
+        b < branches.length;
+        b++
+    ){
+
         compiled.push({
-            id:branches[b].id,
-            letter:branches[b].letter,
-            steps:compileFlow(branches[b].lines)
+
+            id:
+                branches[b].id,
+
+            letter:
+                branches[b].letter,
+
+            steps:
+                compileFlow(
+                    branches[b].lines
+                )
+
         });
+
     }
 
+
     return {
-        step:{type:"conditional",branches:compiled},
-        nextIndex:i
+
+        step:{
+
+            type:
+                "conditional",
+
+            branches:
+                compiled
+
+        },
+
+        nextIndex:
+            i
+
     };
+
 }
 
+
 /* =========================================================
-   NEXT STEP
+   NEXT CHAPTER STEP
    ========================================================= */
-function parseNextStep(line){
-    var match = line.match(/^\s*\[NEXT:([^\]|]+)(?:\|([^\]]+))?\]\s*$/);
+
+function parseNextStep(
+    line
+){
+
+    var match =
+        line.match(
+            /^\s*\[NEXT:([^\]|]+)(?:\|([^\]]+))?\]\s*$/
+        );
+
+
     return {
-        type:"next",
-        file:match ? cleanPath(match[1]) : "",
-        label:match && match[2] ? match[2].trim() : "Enter the next chapter"
+
+        type:
+            "next",
+
+        file:
+            match
+            ? cleanPath(match[1])
+            : "",
+
+        label:
+            match && match[2]
+            ? match[2].trim()
+            : "Enter the next chapter"
+
     };
+
 }
 
+
 /* =========================================================
-   PROGRESSIVE RUNTIME
+   PROGRESSIVE STORY RUNTIME
+   =========================================================
 
-   This is the important part.
+   THIS IS THE HEART OF THE FIX.
 
-   It processes one step at a time.
-   When it reaches a gate, it stops.
-   When the player completes the gate, it continues from
-   the exact next point in the story.
+   The engine walks through story steps.
+
+   It keeps going until it reaches:
+
+       CHOICE
+       GAME
+       NEXT CHAPTER
+
+   Then it STOPS.
+
+   When the player completes that gate,
+   the same flow continues from exactly
+   where it stopped.
+
+   That is the missing behavior.
    ========================================================= */
+
 function renderUntilGate(){
+
     activeGate = null;
 
-    while(flowStack.length){
-        var frame = flowStack[flowStack.length - 1];
 
-        if(frame.index >= frame.steps.length){
+    while(
+        flowStack.length
+    ){
+
+        var frame =
+            flowStack[
+                flowStack.length - 1
+            ];
+
+
+        /*
+           This flow is finished.
+
+           Return to the parent flow.
+        */
+
+        if(
+            frame.index >=
+            frame.steps.length
+        ){
+
             flowStack.pop();
+
             continue;
+
         }
 
-        var step = frame.steps[frame.index];
+
+        /*
+           Get the next story step.
+
+           Increment immediately so that
+           when we pause at a gate, the
+           next call resumes AFTER it.
+        */
+
+        var step =
+            frame.steps[
+                frame.index
+            ];
+
+
         frame.index++;
 
-        if(step.type === "markdown"){
-            appendHtml(marked(step.text));
+
+        /* -----------------------------------------
+           NORMAL STORY
+           ----------------------------------------- */
+
+        if(
+            step.type ===
+            "markdown"
+        ){
+
+            appendHtml(
+                marked(
+                    step.text
+                )
+            );
+
+
             continue;
+
         }
 
-        if(step.type === "outfit"){
-            appendHtml(renderShowOutfit());
+
+        /* -----------------------------------------
+           SHOW OUTFIT
+           ----------------------------------------- */
+
+        if(
+            step.type ===
+            "outfit"
+        ){
+
+            appendHtml(
+                renderShowOutfit()
+            );
+
+
             continue;
+
         }
 
-        if(step.type === "conditional"){
-            var selected = chooseConditionalBranch(step.branches);
+
+        /* -----------------------------------------
+           CONDITIONAL
+           ----------------------------------------- */
+
+        if(
+            step.type ===
+            "conditional"
+        ){
+
+            var selected =
+                chooseConditionalBranch(
+                    step.branches
+                );
+
+
             if(selected){
-                flowStack.push({steps:selected,index:0});
+
+                flowStack.push({
+
+                    steps:
+                        selected,
+
+                    index:0
+
+                });
+
             }
+
+
             continue;
+
         }
 
-        if(step.type === "choice"){
-            var saved = getChoices()[step.id];
 
-            if(saved && step.branches[saved]){
-                appendSavedChoiceMarker(step.id,saved);
-                flowStack.push({steps:step.branches[saved],index:0});
+        /* -----------------------------------------
+           CHOICE GATE
+           ----------------------------------------- */
+
+        if(
+            step.type ===
+            "choice"
+        ){
+
+            var saved =
+                getChoices()[
+                    step.id
+                ];
+
+
+            /*
+               If this choice was already
+               made in a previous session,
+               automatically follow the
+               saved branch.
+            */
+
+            if(
+                saved &&
+                step.branches[saved]
+            ){
+
+                flowStack.push({
+
+                    steps:
+                        step.branches[
+                            saved
+                        ],
+
+                    index:0
+
+                });
+
+
                 continue;
+
             }
 
-            renderChoiceGate(step);
-            activeGate = {type:"choice",step:step};
+
+            /*
+               No saved answer.
+
+               STOP HERE.
+            */
+
+            renderChoiceGate(
+                step
+            );
+
+
+            activeGate = {
+
+                type:
+                    "choice",
+
+                step:
+                    step
+
+            };
+
+
             return;
+
         }
 
-        if(step.type === "game"){
-            if(isGameCompleted(step.id)){
+
+        /* -----------------------------------------
+           GAME GATE
+           ----------------------------------------- */
+
+        if(
+            step.type ===
+            "game"
+        ){
+
+            /*
+               Already completed?
+               Then silently pass through.
+            */
+
+            if(
+                isGameCompleted(
+                    step.id
+                )
+            ){
+
                 continue;
+
             }
 
-            renderGameGate(step);
-            activeGate = {type:"game",step:step};
+
+            renderGameGate(
+                step
+            );
+
+
+            activeGate = {
+
+                type:
+                    "game",
+
+                step:
+                    step
+
+            };
+
+
             return;
+
         }
 
-        if(step.type === "next"){
-            renderNextGate(step);
-            activeGate = {type:"next",step:step};
+
+        /* -----------------------------------------
+           NEXT CHAPTER GATE
+           ----------------------------------------- */
+
+        if(
+            step.type ===
+            "next"
+        ){
+
+            renderNextGate(
+                step
+            );
+
+
+            activeGate = {
+
+                type:
+                    "next",
+
+                step:
+                    step
+
+            };
+
+
             return;
+
         }
+
     }
 
+
+    /*
+       Nothing else remains.
+
+       Story is finished.
+    */
+
     activeGate = null;
+
+
     updateResetButton();
+
 }
 
-function appendHtml(html){
-    if(!html){ return; }
-    content.insertAdjacentHTML("beforeend",html);
+
+/* =========================================================
+   APPEND HTML
+   ========================================================= */
+
+function appendHtml(
+    html
+){
+
+    if(!html){
+
+        return;
+
+    }
+
+
+    content.insertAdjacentHTML(
+        "beforeend",
+        html
+    );
+
+
+    /*
+       Every time new story content is
+       inserted, repair media paths.
+    */
+
     fixMedia();
+
 }
 
-function appendSavedChoiceMarker(id,letter){
-    /* No visible development UI is added for a choice that has already been saved. */
-}
 
 /* =========================================================
    CHOICE GATE
    ========================================================= */
-function renderChoiceGate(step){
-    var html = '<div class="story-choice" data-choice="' + escapeAttr(step.id) + '">' +
-        '<div class="story-choice-title">What do you do?</div>';
 
-    for(var i=0;i<step.options.length;i++){
-        html += '<button type="button" class="story-choice-button" data-choice="' +
-            escapeAttr(step.id) + '" data-letter="' +
-            escapeAttr(step.options[i].letter) + '">' +
-            escapeHtml(step.options[i].letter + " — " + step.options[i].label) +
+function renderChoiceGate(
+    step
+){
+
+    var html =
+
+        '<div class="story-choice" ' +
+
+        'data-choice="' +
+        escapeAttr(
+            step.id
+        ) +
+        '">' +
+
+        '<div class="story-choice-title">' +
+
+        'What do you do?' +
+
+        '</div>';
+
+
+    for(
+        var i = 0;
+        i < step.options.length;
+        i++
+    ){
+
+        html +=
+
+            '<button ' +
+
+            'type="button" ' +
+
+            'class="story-choice-button" ' +
+
+            'data-choice="' +
+            escapeAttr(
+                step.id
+            ) +
+            '" ' +
+
+            'data-letter="' +
+            escapeAttr(
+                step.options[i].letter
+            ) +
+            '">' +
+
+            escapeHtml(
+
+                step.options[i].letter +
+                " — " +
+                step.options[i].label
+
+            ) +
+
             '</button>';
+
     }
 
-    html += '</div>';
-    appendHtml(html);
+
+    html +=
+        '</div>';
+
+
+    appendHtml(
+        html
+    );
+
 }
 
-function handleChoice(id,letter){
-    var gate = activeGate;
 
-    if(!gate || gate.type !== "choice" || gate.step.id !== id){
+/* =========================================================
+   HANDLE CHOICE
+   ========================================================= */
+
+function handleChoice(
+    id,
+    letter
+){
+
+    var gate =
+        activeGate;
+
+
+    /*
+       Ignore clicks that do not belong
+       to the currently active choice.
+    */
+
+    if(
+        !gate ||
+        gate.type !== "choice" ||
+        gate.step.id !== id
+    ){
+
         return;
+
     }
 
-    var step = gate.step;
-    if(!step.branches[letter]){
+
+    var step =
+        gate.step;
+
+
+    if(
+        !step.branches[letter]
+    ){
+
         return;
+
     }
 
-    saveChoice(id,letter);
 
-    /* Remove only the active choice UI. Nothing else has been pre-rendered. */
-    var choiceUI = content.querySelector('.story-choice[data-choice="' + cssEscape(id) + '"]');
+    /*
+       Save player's decision.
+    */
+
+    saveChoice(
+        id,
+        letter
+    );
+
+
+    /*
+       Remove ONLY the choice buttons.
+    */
+
+    var choiceUI =
+        content.querySelector(
+            '.story-choice[data-choice="' +
+            cssEscape(id) +
+            '"]'
+        );
+
+
     if(choiceUI){
-        choiceUI.parentNode.removeChild(choiceUI);
+
+        choiceUI.parentNode.removeChild(
+            choiceUI
+        );
+
     }
 
-    /* Add only the selected consequence to the live story. */
-    var consequenceWrap = document.createElement("div");
-    consequenceWrap.className = "story-consequence";
-    consequenceWrap.setAttribute("data-choice-result",id);
-    content.appendChild(consequenceWrap);
 
-    flowStack.push({steps:step.branches[letter],index:0});
+    /*
+       Create a real live consequence
+       container.
 
-    /* Render the consequence, then keep going until the NEXT real gate. */
+       This container is empty initially.
+    */
+
+    var consequenceWrap =
+        document.createElement(
+            "div"
+        );
+
+
+    consequenceWrap.className =
+        "story-consequence";
+
+
+    consequenceWrap.setAttribute(
+        "data-choice-result",
+        id
+    );
+
+
+    content.appendChild(
+        consequenceWrap
+    );
+
+
+    /*
+       IMPORTANT:
+
+       Push ONLY the selected consequence
+       into the live flow.
+
+       We do NOT render A+B+C.
+    */
+
+    flowStack.push({
+
+        steps:
+            step.branches[
+                letter
+            ],
+
+        index:0
+
+    });
+
+
+    /*
+       Continue from that exact point
+       until another real gate appears.
+    */
+
     renderUntilGate();
 
+
+    /*
+       Move the reader toward the
+       newly revealed consequence.
+    */
+
     try{
-        consequenceWrap.scrollIntoView({behavior:"smooth",block:"start"});
+
+        consequenceWrap.scrollIntoView({
+
+            behavior:"smooth",
+
+            block:"start"
+
+        });
+
     }catch(e){
+
         consequenceWrap.scrollIntoView();
+
     }
+
 }
+
 
 /* =========================================================
    CONDITIONAL STATE
    ========================================================= */
-function chooseConditionalBranch(branches){
-    var choices = getChoices();
 
-    for(var i=0;i<branches.length;i++){
-        var branch = branches[i];
+function chooseConditionalBranch(
+    branches
+){
 
-        if(branch.id === "__ELSE__"){
+    var choices =
+        getChoices();
+
+
+    for(
+        var i = 0;
+        i < branches.length;
+        i++
+    ){
+
+        var branch =
+            branches[i];
+
+
+        /*
+           ELSE is the fallback.
+        */
+
+        if(
+            branch.id ===
+            "__ELSE__"
+        ){
+
             return branch.steps;
+
         }
 
-        if(choices[branch.id] === branch.letter){
+
+        /*
+           Example:
+
+               [IF:choice-01=A]
+
+           becomes:
+
+               choices["choice-01"] === "A"
+        */
+
+        if(
+            choices[
+                branch.id
+            ] ===
+            branch.letter
+        ){
+
             return branch.steps;
+
         }
+
     }
 
+
     return null;
+
 }
+
 
 /* =========================================================
    GAME BRIDGE
+   =========================================================
 
-   The game is loaded inside the reader instead of throwing
-   the player out of the story.
+   Markdown:
 
-   The fashion game already uses the shared localStorage key:
-       ceeqwinn_completed_games
+       [GAME:FASHION-01]
 
-   The reader watches that key. Once FASHION-01 is complete,
-   the iframe closes and the story continues automatically.
+   The reader pauses.
+
+   The game opens inside an iframe.
+
+   The game writes:
+
+       localStorage["ceeqwinn_completed_games"]
+
+   When the reader sees that FASHION-01
+   is complete, it removes the game and
+   resumes the story automatically.
    ========================================================= */
-function getGameId(line){
-    var match = String(line).match(/^\s*\[GAME:([A-Za-z0-9_-]+)\]\s*$/);
-    return match ? match[1] : "";
+
+function getGameId(
+    line
+){
+
+    var match =
+        String(line).match(
+            /^\s*\[GAME:([A-Za-z0-9_-]+)\]\s*$/
+        );
+
+
+    return match
+        ? match[1]
+        : "";
+
 }
+
+
+/* =========================================================
+   COMPLETED GAMES
+   ========================================================= */
 
 function getCompletedGames(){
+
     try{
-        var saved = localStorage.getItem("ceeqwinn_completed_games");
-        if(!saved){ return {}; }
-        var parsed = JSON.parse(saved);
-        return parsed && typeof parsed === "object" ? parsed : {};
+
+        var saved =
+            localStorage.getItem(
+                "ceeqwinn_completed_games"
+            );
+
+
+        if(!saved){
+
+            return {};
+
+        }
+
+
+        var parsed =
+            JSON.parse(
+                saved
+            );
+
+
+        return (
+
+            parsed &&
+            typeof parsed ===
+            "object"
+
+        )
+
+        ? parsed
+        : {};
+
     }catch(e){
+
         return {};
+
     }
+
 }
 
-function isGameCompleted(gameId){
-    var completed = getCompletedGames();
-    return !!(gameId && completed[gameId]);
+
+/* =========================================================
+   CHECK GAME
+   ========================================================= */
+
+function isGameCompleted(
+    gameId
+){
+
+    var completed =
+        getCompletedGames();
+
+
+    return !!(
+
+        gameId &&
+        completed[gameId]
+
+    );
+
 }
 
-function renderGameGate(step){
-    var titleText = step.id === "FASHION-01"
+
+/* =========================================================
+   RENDER GAME GATE
+   ========================================================= */
+
+function renderGameGate(
+    step
+){
+
+    var titleText =
+
+        step.id ===
+        "FASHION-01"
+
         ? "Lexis needs to choose her outfit."
+
         : "An interactive scene is waiting.";
 
-    var description = step.id === "FASHION-01"
+
+    var description =
+
+        step.id ===
+        "FASHION-01"
+
         ? "Choose how she wants to face the evening."
+
         : "Complete the interactive scene to continue the story.";
 
-    var html = '<div class="story-game" data-game-gate="' + escapeAttr(step.id) + '">' +
-        '<div class="story-game-title">' + escapeHtml(titleText) + '</div>' +
-        '<div class="story-game-text">' + escapeHtml(description) + '</div>' +
-        '<button type="button" class="story-game-button" data-game="' + escapeAttr(step.id) + '">Open Game</button>' +
+
+    var html =
+
+        '<div class="story-game" ' +
+
+        'data-game-gate="' +
+        escapeAttr(
+            step.id
+        ) +
+        '">' +
+
+        '<div class="story-game-title">' +
+
+        escapeHtml(
+            titleText
+        ) +
+
+        '</div>' +
+
+        '<div class="story-game-text">' +
+
+        escapeHtml(
+            description
+        ) +
+
+        '</div>' +
+
+        '<button ' +
+
+        'type="button" ' +
+
+        'class="story-game-button" ' +
+
+        'data-game="' +
+        escapeAttr(
+            step.id
+        ) +
+        '">' +
+
+        'Open Game' +
+
+        '</button>' +
+
         '</div>';
 
-    appendHtml(html);
+
+    appendHtml(
+        html
+    );
+
 }
 
-function openGame(gameId){
-    if(!gameId){ return; }
 
-    var gate = content.querySelector('.story-game[data-game-gate="' + cssEscape(gameId) + '"]');
-    if(!gate){ return; }
+/* =========================================================
+   OPEN GAME
+   ========================================================= */
 
-    var button = gate.querySelector(".story-game-button");
-    if(button){ button.style.display = "none"; }
+function openGame(
+    gameId
+){
 
-    var shell = document.createElement("div");
-    shell.className = "story-game-shell";
-    shell.setAttribute("data-active-game",gameId);
+    if(!gameId){
 
-    var frame = document.createElement("iframe");
-    frame.className = "story-game-frame";
-    frame.title = "CEEQWINN interactive game";
-    frame.src = "/games/fashion-01.html";
+        return;
 
-    var close = document.createElement("button");
-    close.type = "button";
-    close.className = "story-game-close";
-    close.textContent = "Return to story";
-    close.onclick = function(){
-        stopGameWatcher();
-        shell.parentNode.removeChild(shell);
-        if(button){ button.style.display = "inline-block"; }
-    };
+    }
 
-    shell.appendChild(frame);
-    shell.appendChild(close);
-    gate.appendChild(shell);
 
-    activeGameId = gameId;
+    var gate =
+        content.querySelector(
+            '.story-game[data-game-gate="' +
+            cssEscape(gameId) +
+            '"]'
+        );
+
+
+    if(!gate){
+
+        return;
+
+    }
+
+
+    var button =
+        gate.querySelector(
+            ".story-game-button"
+        );
+
+
+    if(button){
+
+        button.style.display =
+            "none";
+
+    }
+
+
+    var shell =
+        document.createElement(
+            "div"
+        );
+
+
+    shell.className =
+        "story-game-shell";
+
+
+    shell.setAttribute(
+        "data-active-game",
+        gameId
+    );
+
+
+    var frame =
+        document.createElement(
+            "iframe"
+        );
+
+
+    frame.className =
+        "story-game-frame";
+
+
+    frame.title =
+        "CEEQWINN interactive game";
+
+
+    /*
+       Keep the existing fashion game
+       outside article.html.
+
+       article.html is the bridge.
+    */
+
+    frame.src =
+        "/games/fashion-01.html";
+
+
+    var close =
+        document.createElement(
+            "button"
+        );
+
+
+    close.type =
+        "button";
+
+
+    close.className =
+        "story-game-close";
+
+
+    close.textContent =
+        "Return to story";
+
+
+    close.onclick =
+        function(){
+
+            stopGameWatcher();
+
+
+            if(
+                shell.parentNode
+            ){
+
+                shell.parentNode.removeChild(
+                    shell
+                );
+
+            }
+
+
+            if(button){
+
+                button.style.display =
+                    "inline-block";
+
+            }
+
+        };
+
+
+    shell.appendChild(
+        frame
+    );
+
+
+    shell.appendChild(
+        close
+    );
+
+
+    gate.appendChild(
+        shell
+    );
+
+
+    activeGameId =
+        gameId;
+
+
     startGameWatcher();
 
+
     try{
-        shell.scrollIntoView({behavior:"smooth",block:"start"});
+
+        shell.scrollIntoView({
+
+            behavior:"smooth",
+
+            block:"start"
+
+        });
+
     }catch(e){
+
         shell.scrollIntoView();
+
     }
+
 }
+
+
+/* =========================================================
+   GAME WATCHER
+   ========================================================= */
 
 function startGameWatcher(){
+
     stopGameWatcher();
 
-    activeGameTimer = window.setInterval(function(){
-        if(activeGameId && isGameCompleted(activeGameId)){
-            finishActiveGame();
-        }
-    },500);
+
+    activeGameTimer =
+        window.setInterval(
+
+            function(){
+
+                if(
+
+                    activeGameId &&
+
+                    isGameCompleted(
+                        activeGameId
+                    )
+
+                ){
+
+                    finishActiveGame();
+
+                }
+
+            },
+
+            500
+
+        );
+
 }
+
+
+/* =========================================================
+   STOP GAME WATCHER
+   ========================================================= */
 
 function stopGameWatcher(){
-    if(activeGameTimer){
-        window.clearInterval(activeGameTimer);
-        activeGameTimer = null;
+
+    if(
+        activeGameTimer
+    ){
+
+        window.clearInterval(
+            activeGameTimer
+        );
+
+
+        activeGameTimer =
+            null;
+
     }
-    activeGameId = "";
+
+
+    activeGameId =
+        "";
+
 }
+
+
+/* =========================================================
+   FINISH GAME
+   ========================================================= */
 
 function finishActiveGame(){
-    var gameId = activeGameId;
+
+    var gameId =
+        activeGameId;
+
+
     stopGameWatcher();
 
-    var shell = content.querySelector('.story-game-shell[data-active-game="' + cssEscape(gameId) + '"]');
-    if(shell && shell.parentNode){
-        shell.parentNode.removeChild(shell);
+
+    var shell =
+        content.querySelector(
+            '.story-game-shell[data-active-game="' +
+            cssEscape(gameId) +
+            '"]'
+        );
+
+
+    if(
+        shell &&
+        shell.parentNode
+    ){
+
+        shell.parentNode.removeChild(
+            shell
+        );
+
     }
 
-    var gate = content.querySelector('.story-game[data-game-gate="' + cssEscape(gameId) + '"]');
-    if(gate && gate.parentNode){
-        gate.parentNode.removeChild(gate);
+
+    var gate =
+        content.querySelector(
+            '.story-game[data-game-gate="' +
+            cssEscape(gameId) +
+            '"]'
+        );
+
+
+    if(
+        gate &&
+        gate.parentNode
+    ){
+
+        gate.parentNode.removeChild(
+            gate
+        );
+
     }
 
-    /* The GAME step has already been consumed from the flow stack. */
-    activeGate = null;
+
+    /*
+       The GAME step was already consumed
+       before the reader stopped.
+
+       Therefore renderUntilGate()
+       naturally continues with the
+       next story step.
+    */
+
+    activeGate =
+        null;
+
+
     renderUntilGate();
+
 }
+
 
 /* =========================================================
    NEXT CHAPTER GATE
    ========================================================= */
-function renderNextGate(step){
-    if(!step.file){ return; }
 
-    var html = '<div class="story-next" data-next-gate="' + escapeAttr(step.file) + '">' +
-        '<div class="story-next-text">The story continues...</div>' +
-        '<button type="button" class="story-next-button" data-next="' +
-        escapeAttr(step.file) + '">' +
-        escapeHtml(step.label) +
+function renderNextGate(
+    step
+){
+
+    if(
+        !step.file
+    ){
+
+        return;
+
+    }
+
+
+    var html =
+
+        '<div class="story-next" ' +
+
+        'data-next-gate="' +
+        escapeAttr(
+            step.file
+        ) +
+        '">' +
+
+        '<div class="story-next-text">' +
+
+        'The story continues...' +
+
+        '</div>' +
+
+        '<button ' +
+
+        'type="button" ' +
+
+        'class="story-next-button" ' +
+
+        'data-next="' +
+        escapeAttr(
+            step.file
+        ) +
+        '">' +
+
+        escapeHtml(
+            step.label
+        ) +
+
         '</button>' +
+
         '</div>';
 
-    appendHtml(html);
+
+    appendHtml(
+        html
+    );
+
 }
 
-function goToNextChapter(nextFile){
-    if(!nextFile){ return; }
-
-    nextFile = cleanPath(nextFile).replace(/\.md$/i,"");
-    window.location.href = "article.html?file=" + encodeURIComponent(nextFile);
-}
 
 /* =========================================================
-   SHOW OUTFIT
+   GO TO NEXT CHAPTER
    ========================================================= */
+
+function goToNextChapter(
+    nextFile
+){
+
+    if(!nextFile){
+
+        return;
+
+    }
+
+
+    nextFile =
+        cleanPath(
+            nextFile
+        );
+
+
+    nextFile =
+        nextFile.replace(
+            /\.md$/i,
+            ""
+        );
+
+
+    window.location.href =
+        "article.html?file=" +
+        encodeURIComponent(
+            nextFile
+        );
+
+}
+
+
+/* =========================================================
+   SHOW CURRENT OUTFIT
+   ========================================================= */
+
 function renderShowOutfit(){
-    var outfit = "lexis_default";
+
+    var outfit =
+        "lexis_default";
+
 
     try{
-        var saved = localStorage.getItem("ceeqwinn_player_state");
+
+        var saved =
+            localStorage.getItem(
+                "ceeqwinn_player_state"
+            );
+
+
         if(saved){
-            var state = JSON.parse(saved);
-            if(state && state.characters && state.characters.lexis && state.characters.lexis.currentOutfit){
-                outfit = state.characters.lexis.currentOutfit;
+
+            var state =
+                JSON.parse(
+                    saved
+                );
+
+
+            if(
+
+                state &&
+
+                state.characters &&
+
+                state.characters.lexis &&
+
+                state.characters.lexis.currentOutfit
+
+            ){
+
+                outfit =
+                    state.characters.lexis.currentOutfit;
+
             }
+
         }
+
     }catch(e){}
+
 
     var images = {
-        lexis_default:"/content/images/characters/lexis/outfits/lexis_default.png.jpeg",
-        lexis_red_dress:"/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg",
-        lexis_black_dress:"/content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg"
+
+        lexis_default:
+            "/content/images/characters/lexis/outfits/lexis_default.png.jpeg",
+
+        lexis_red_dress:
+            "/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg",
+
+        lexis_black_dress:
+            "/content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg"
+
     };
 
-    var src = images[outfit] || images.lexis_default;
 
-    return '<div class="story-outfit"><img src="' + escapeAttr(src) + '" alt="Lexis outfit" loading="lazy"></div>';
+    var src =
+        images[outfit] ||
+        images.lexis_default;
+
+
+    return
+
+        '<div class="story-outfit">' +
+
+            '<img ' +
+
+            'src="' +
+            escapeAttr(
+                src
+            ) +
+            '" ' +
+
+            'alt="Lexis outfit" ' +
+
+            'loading="lazy">' +
+
+        '</div>';
+
 }
+
 
 /* =========================================================
-   CHOICES STORAGE
+   CHOICE STORAGE
    ========================================================= */
-function saveChoice(id,letter){
-    var choices = getChoices();
-    choices[id] = letter;
+
+function saveChoice(
+    id,
+    letter
+){
+
+    var choices =
+        getChoices();
+
+
+    choices[id] =
+        letter;
+
 
     try{
-        localStorage.setItem(storageKey,JSON.stringify(choices));
+
+        localStorage.setItem(
+
+            storageKey,
+
+            JSON.stringify(
+                choices
+            )
+
+        );
+
     }catch(e){}
+
 }
+
+
+/* =========================================================
+   GET CHOICES
+   ========================================================= */
 
 function getChoices(){
+
     try{
-        var saved = localStorage.getItem(storageKey);
-        if(!saved){ return {}; }
-        var parsed = JSON.parse(saved);
-        return parsed && typeof parsed === "object" ? parsed : {};
+
+        var saved =
+            localStorage.getItem(
+                storageKey
+            );
+
+
+        if(!saved){
+
+            return {};
+
+        }
+
+
+        var parsed =
+            JSON.parse(
+                saved
+            );
+
+
+        return (
+
+            parsed &&
+            typeof parsed ===
+            "object"
+
+        )
+
+        ? parsed
+        : {};
+
     }catch(e){
+
         return {};
+
     }
+
 }
+
 
 /* =========================================================
    RESET
    ========================================================= */
-function updateResetButton(){
-    var hasInteractive = false;
 
-    for(var i=0;i<storySteps.length;i++){
-        if(storySteps[i].type === "choice" || storySteps[i].type === "game"){
-            hasInteractive = true;
+function updateResetButton(){
+
+    var hasInteractive =
+        false;
+
+
+    for(
+        var i = 0;
+        i < storySteps.length;
+        i++
+    ){
+
+        if(
+
+            storySteps[i].type ===
+            "choice"
+
+            ||
+
+            storySteps[i].type ===
+            "game"
+
+        ){
+
+            hasInteractive =
+                true;
+
             break;
+
         }
+
     }
 
-    reset.style.display = hasInteractive ? "block" : "none";
+
+    reset.style.display =
+        hasInteractive
+        ? "block"
+        : "none";
+
 }
 
-reset.onclick = function(){
-    try{
-        localStorage.removeItem(storageKey);
-        localStorage.removeItem("ceeqwinn_completed_games");
-    }catch(e){}
 
-    loadStory();
-    window.scrollTo(0,0);
-};
+reset.onclick =
+    function(){
+
+        try{
+
+            localStorage.removeItem(
+                storageKey
+            );
+
+
+            localStorage.removeItem(
+                "ceeqwinn_completed_games"
+            );
+
+        }catch(e){}
+
+
+        loadStory();
+
+
+        window.scrollTo(
+            0,
+            0
+        );
+
+    };
+
 
 /* =========================================================
    EVENT DELEGATION
+   =========================================================
+
+   This is important because story buttons
+   are created AFTER the page loads.
+
+   We therefore listen at document level.
    ========================================================= */
-document.addEventListener("click",function(event){
-    var target = event.target;
 
-    if(target.classList.contains("story-choice-button")){
-        handleChoice(
-            target.getAttribute("data-choice"),
-            target.getAttribute("data-letter")
-        );
-        return;
-    }
+document.addEventListener(
+    "click",
+    function(event){
 
-    if(target.classList.contains("story-game-button")){
-        openGame(target.getAttribute("data-game"));
-        return;
-    }
+        var target =
+            event.target;
 
-    if(target.classList.contains("story-next-button")){
-        goToNextChapter(target.getAttribute("data-next"));
+
+        /* -----------------------------------------
+           CHOICE
+           ----------------------------------------- */
+
+        if(
+            target.classList.contains(
+                "story-choice-button"
+            )
+        ){
+
+            handleChoice(
+
+                target.getAttribute(
+                    "data-choice"
+                ),
+
+                target.getAttribute(
+                    "data-letter"
+                )
+
+            );
+
+
+            return;
+
+        }
+
+
+        /* -----------------------------------------
+           GAME
+           ----------------------------------------- */
+
+        if(
+            target.classList.contains(
+                "story-game-button"
+            )
+        ){
+
+            openGame(
+                target.getAttribute(
+                    "data-game"
+                )
+            );
+
+
+            return;
+
+        }
+
+
+        /* -----------------------------------------
+           NEXT CHAPTER
+           ----------------------------------------- */
+
+        if(
+            target.classList.contains(
+                "story-next-button"
+            )
+        ){
+
+            goToNextChapter(
+                target.getAttribute(
+                    "data-next"
+                )
+            );
+
+
+            return;
+
+        }
+
     }
-});
+);
+
 
 /* =========================================================
-   MEDIA
+   MEDIA PATH
    ========================================================= */
-function mediaPath(src){
-    if(!src){ return ""; }
-    src = String(src).trim();
 
-    if(/^https?:\/\//i.test(src) || /^data:/i.test(src) || src.charAt(0) === "/"){
-        return src;
+function mediaPath(
+    src
+){
+
+    if(!src){
+
+        return "";
+
     }
 
-    while(src.indexOf("../") === 0){ src = src.substring(3); }
-    while(src.indexOf("./") === 0){ src = src.substring(2); }
 
-    if(src.indexOf("content/") === 0){ return "/" + src; }
+    src =
+        String(src).trim();
+
+
+    /*
+       Absolute/external path.
+    */
+
+    if(
+
+        /^https?:\/\//i.test(src)
+
+        ||
+
+        /^data:/i.test(src)
+
+        ||
+
+        src.charAt(0) === "/"
+
+    ){
+
+        return src;
+
+    }
+
+
+    /*
+       Remove relative prefixes.
+    */
+
+    while(
+        src.indexOf("../") === 0
+    ){
+
+        src =
+            src.substring(3);
+
+    }
+
+
+    while(
+        src.indexOf("./") === 0
+    ){
+
+        src =
+            src.substring(2);
+
+    }
+
+
+    /*
+       Already points into content.
+    */
+
+    if(
+        src.indexOf("content/") === 0
+    ){
+
+        return "/" + src;
+
+    }
+
+
+    /*
+       Default image directory.
+    */
+
     return "/content/images/" + src;
+
 }
+
+
+/* =========================================================
+   FIX MEDIA
+   ========================================================= */
 
 function fixMedia(){
-    var images = content.getElementsByTagName("img");
-    var videos = content.getElementsByTagName("video");
-    var audios = content.getElementsByTagName("audio");
+
+    var images =
+        content.getElementsByTagName(
+            "img"
+        );
+
+
+    var videos =
+        content.getElementsByTagName(
+            "video"
+        );
+
+
+    var audios =
+        content.getElementsByTagName(
+            "audio"
+        );
+
+
     var i;
 
-    for(i=0;i<images.length;i++){
-        var imageSrc = images[i].getAttribute("src");
-        if(imageSrc){ images[i].src = mediaPath(imageSrc); }
-        images[i].setAttribute("loading","lazy");
+
+    /* -----------------------------------------
+       IMAGES
+       ----------------------------------------- */
+
+    for(
+        i = 0;
+        i < images.length;
+        i++
+    ){
+
+        var imageSrc =
+            images[i].getAttribute(
+                "src"
+            );
+
+
+        if(imageSrc){
+
+            images[i].src =
+                mediaPath(
+                    imageSrc
+                );
+
+        }
+
+
+        images[i].setAttribute(
+            "loading",
+            "lazy"
+        );
+
     }
 
-    for(i=0;i<videos.length;i++){
-        var videoSrc = videos[i].getAttribute("src");
-        if(videoSrc){ videos[i].src = mediaPath(videoSrc); }
-        videos[i].controls = true;
+
+    /* -----------------------------------------
+       VIDEO
+       ----------------------------------------- */
+
+    for(
+        i = 0;
+        i < videos.length;
+        i++
+    ){
+
+        var videoSrc =
+            videos[i].getAttribute(
+                "src"
+            );
+
+
+        if(videoSrc){
+
+            videos[i].src =
+                mediaPath(
+                    videoSrc
+                );
+
+        }
+
+
+        videos[i].controls =
+            true;
+
     }
 
-    for(i=0;i<audios.length;i++){
-        var audioSrc = audios[i].getAttribute("src");
-        if(audioSrc){ audios[i].src = mediaPath(audioSrc); }
-        audios[i].controls = true;
+
+    /* -----------------------------------------
+       AUDIO
+       ----------------------------------------- */
+
+    for(
+        i = 0;
+        i < audios.length;
+        i++
+    ){
+
+        var audioSrc =
+            audios[i].getAttribute(
+                "src"
+            );
+
+
+        if(audioSrc){
+
+            audios[i].src =
+                mediaPath(
+                    audioSrc
+                );
+
+        }
+
+
+        audios[i].controls =
+            true;
+
     }
+
 }
 
-function renderExtraMedia(data){
-    var html = "";
-
-    if(data.video){
-        html += '<h2>Video</h2><video controls preload="metadata"><source src="' +
-            escapeAttr(mediaPath(data.video)) + '"></video>';
-    }
-
-    if(data.audio){
-        html += '<h2>Audio</h2><audio controls preload="metadata"><source src="' +
-            escapeAttr(mediaPath(data.audio)) + '"></audio>';
-    }
-
-    media.innerHTML = html;
-}
 
 /* =========================================================
-   PATH + ESCAPING
+   EXTRA MEDIA
    ========================================================= */
-function cleanPath(path){
-    path = String(path).replace(/\\/g,"/").replace(/^\/+/,"");
-    var parts = path.split("/");
-    var clean = [];
 
-    for(var i=0;i<parts.length;i++){
-        if(parts[i] && parts[i] !== "." && parts[i] !== ".."){
-            clean.push(parts[i]);
-        }
+function renderExtraMedia(
+    data
+){
+
+    var html =
+        "";
+
+
+    if(
+        data.video
+    ){
+
+        html +=
+
+            '<h2>Video</h2>' +
+
+            '<video ' +
+
+            'controls ' +
+
+            'preload="metadata">' +
+
+            '<source src="' +
+
+            escapeAttr(
+
+                mediaPath(
+                    data.video
+                )
+
+            ) +
+
+            '">' +
+
+            '</video>';
+
     }
 
-    return clean.join("/");
+
+    if(
+        data.audio
+    ){
+
+        html +=
+
+            '<h2>Audio</h2>' +
+
+            '<audio ' +
+
+            'controls ' +
+
+            'preload="metadata">' +
+
+            '<source src="' +
+
+            escapeAttr(
+
+                mediaPath(
+                    data.audio
+                )
+
+            ) +
+
+            '">' +
+
+            '</audio>';
+
+    }
+
+
+    media.innerHTML =
+        html;
+
 }
 
-function getStoryId(path){
-    path = String(path).replace(/\.md$/i,"");
-    path = path.replace(/-chapter-\d+$/i,"");
+
+/* =========================================================
+   STORY ID
+   ========================================================= */
+
+function getStoryId(
+    path
+){
+
+    path =
+        String(path);
+
+
+    path =
+        path.replace(
+            /\.md$/i,
+            ""
+        );
+
+
+    path =
+        path.replace(
+            /-chapter-\d+$/i,
+            ""
+        );
+
+
     return path;
+
 }
 
-function escapeHtml(value){
+
+/* =========================================================
+   CLEAN PATH
+   ========================================================= */
+
+function cleanPath(
+    path
+){
+
+    path =
+        String(path)
+
+        .replace(
+            /\\/g,
+            "/"
+        )
+
+        .replace(
+            /^\/+/,
+            ""
+        );
+
+
+    var parts =
+        path.split("/");
+
+
+    var clean =
+        [];
+
+
+    for(
+        var i = 0;
+        i < parts.length;
+        i++
+    ){
+
+        if(
+
+            parts[i]
+
+            &&
+
+            parts[i] !== "."
+
+            &&
+
+            parts[i] !== ".."
+
+        ){
+
+            clean.push(
+                parts[i]
+            );
+
+        }
+
+    }
+
+
+    return clean.join(
+        "/"
+    );
+
+}
+
+
+/* =========================================================
+   HTML ESCAPING
+   ========================================================= */
+
+function escapeHtml(
+    value
+){
+
     return String(value)
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#39;");
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#39;"
+        );
+
 }
 
-function escapeAttr(value){
-    return escapeHtml(value);
+
+function escapeAttr(
+    value
+){
+
+    return escapeHtml(
+        value
+    );
+
 }
 
-function cssEscape(value){
-    return String(value).replace(/\\/g,"\\\\").replace(/"/g,'\\"');
+
+/* =========================================================
+   SIMPLE CSS ESCAPE
+   ========================================================= */
+
+function cssEscape(
+    value
+){
+
+    return String(value)
+
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+
+        .replace(
+            /"/g,
+            '\\"'
+        );
+
 }
+
 </script>
+
 </body>
+
 </html>
