@@ -1,17 +1,9 @@
 ---
 title: DISCORDANT DESCENDANTS — CHAPTER 2
 ---
-## title: DISCORDANT DESCENDANTS — CHAPTER 2
+## **title: DISCORDANT DESCENDANTS — CHAPTER 2**
 
----
-
-# ---
-
-title: DISCORDANT DESCENDANTS — CHAPTER 2
-
----
-
-# DISCORDANT DESCENDANTS
+**DISCORDANT DESCENDANTS**
 
 *Chapter 2 — The Gathering*
 
@@ -21,7 +13,7 @@ title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 [IF:choice-03=A]
 
-## THE MORNING AFTER THE QUESTION
+**THE MORNING AFTER THE QUESTION**
 
 Lexis barely slept.
 
@@ -47,7 +39,7 @@ If the Okoye family wanted to keep its secrets, Lexis intended to make them work
 
 [IF:choice-03=B]
 
-## THE MORNING AFTER THE SECRET
+**THE MORNING AFTER THE SECRET**
 
 Lexis woke with one thought already fixed in her mind.
 
@@ -71,7 +63,7 @@ And Lexis could watch them.
 
 [IF:choice-03=C]
 
-## THE MORNING AFTER THE WARNING
+**THE MORNING AFTER THE WARNING**
 
 Lexis couldn't forget her father's expression.
 
@@ -103,7 +95,7 @@ and more like a trap.
 
 ---
 
-## THE NIGHT OF THE GATHERING
+**THE NIGHT OF THE GATHERING**
 
 The Okoye residence had never looked more intimidating.
 
@@ -239,141 +231,9 @@ And for the first time that night—
 
 he looked afraid.
 
-Golden lights lined the enormous driveway.
-
-Luxury vehicles arrived one after another.
-
-Music drifted through the open doors of the mansion, mixing with the sound of conversation, laughter, and the occasional clinking of glasses.
-
-Lexis stood at the bottom of the staircase.
-
-She stared at the crowd.
-
-“This is supposed to be a family gathering?”
-
-Her father adjusted his jacket.
-
-“Yes.”
-
-Lexis looked around.
-
-“There are enough people here to form a small government.”
-
-He laughed.
-
-“Just behave yourself.”
-
-“I always behave.”
-
-Her father gave her a look.
-
-Lexis sighed.
-
-“Fine. I usually behave.”
-
-He smiled.
-
-But the moment he looked toward the entrance, his expression changed.
-
-Lexis noticed.
-
-“Dad?”
-
-He didn't answer.
-
-Someone had just entered.
-
-A tall woman in a dark emerald dress walked slowly into the mansion.
-
-Several conversations stopped.
-
-Lexis frowned.
-
-“Who is that?”
-
-Her father looked at her.
-
-“You don't need to know.”
-
-That answer immediately made Lexis more interested.
-
-“Then obviously I need to know.”
-
-“Lexis.”
-
-“What?”
-
-“Stay close to me tonight.”
-
-She stared at him.
-
-“You're making this sound incredibly normal.”
-
-Before he could respond, a voice came from behind them.
-
-“Well, well.”
-
-Sirena.
-
-She smiled.
-
-“Look who finally arrived.”
-
-Lexis turned.
-
-“Sirena.”
-
-Sirena's eyes moved briefly toward Lexis's father.
-
-Then toward Lexis.
-
-“Enjoying the evening?”
-
-“Ask me again when I know what I'm supposed to be enjoying.”
-
-Sirena laughed.
-
-“You'll understand soon enough.”
-
-She walked away.
-
-Lexis watched her go.
-
-Then she looked at her father.
-
-“Okay.”
-
-She folded her arms.
-
-“What is happening?”
-
-Her father didn't answer.
-
-Instead, he looked toward the staircase.
-
-The music stopped.
-
-Everyone turned.
-
-An elderly man stepped onto the balcony above them.
-
-The room fell completely silent.
-
-“Ladies and gentlemen,” he said.
-
-“Tonight, the Okoye family welcomes its next heir.”
-
-Lexis's heart skipped.
-
-Her father slowly reached for her hand.
-
-And for the first time that night—
-
-he looked afraid.
-
 ---
 
-## THE ANNOUNCEMENT
+**THE ANNOUNCEMENT**
 
 The elderly man continued.
 
@@ -588,11 +448,11 @@ Lexis turned toward the entrance.
 
 “No.”
 
-Her father grabbed her wrist gently.
+Her father reached toward her.
 
 “Lexis, wait.”
 
-She pulled her hand away.
+She stepped away.
 
 “You knew this was going to happen.”
 
@@ -642,7 +502,7 @@ Watching her.
 
 ---
 
-## THE WOMAN IN GREEN
+**THE WOMAN IN GREEN**
 
 Lexis returned to the mansion.
 
@@ -865,7 +725,7 @@ She read the first sentence.
 
 **THE FIRST HEIR MUST NEVER LEARN ABOUT THE SECOND LINE.**
 
-Lexis stopped breathing for a moment.
+Lexis stopped.
 
 “What?”
 
@@ -921,7 +781,7 @@ A small metal key.
 
 ---
 
-## THE KEY
+**THE KEY**
 
 Lexis held the key between two fingers.
 
@@ -1027,7 +887,7 @@ a lock clicked somewhere beneath the floor.
 
 Lexis looked down at the key in her hand.
 
-The crest began to glow faintly beneath the darkness.
+The crest seemed to catch the faint light from her phone.
 
 And somewhere inside the mansion—
 
@@ -1035,6 +895,146 @@ something opened.
 
 ---
 
-## END OF CHAPTER 2
+**THE DOOR**
+
+Lexis stared into the darkness.
+
+“What just opened?”
+
+Sirena didn't answer.
+
+“Sirena.”
+
+Nothing.
+
+Lexis took a step toward the sound.
+
+Her father appeared at the end of the corridor.
+
+“Lexis!”
+
+She turned.
+
+“Dad?”
+
+He looked at the key in her hand.
+
+His face changed.
+
+“You found it.”
+
+Lexis tightened her grip.
+
+“You knew about this?”
+
+He didn't answer.
+
+Sirena stepped backward.
+
+“It's happening again.”
+
+Lexis looked between them.
+
+“What is happening?”
+
+Her father finally spoke.
+
+“The door beneath the mansion.”
+
+Lexis stared at him.
+
+“You said there was nothing else.”
+
+“I was wrong.”
+
+The floor beneath them gave a faint shudder.
+
+A distant metallic sound echoed from below.
+
+Lexis looked toward the floor.
+
+Her father moved toward her.
+
+“Whatever happens next, stay with me.”
+
+Lexis frowned.
+
+“You've said that before.”
+
+“This time, I'm serious.”
+
+He looked at the key.
+
+“That key belongs to the room your aunt disappeared from.”
+
+Silence.
+
+Lexis stared at him.
+
+“My aunt disappeared from a room underneath this house?”
+
+Her father nodded.
+
+“And tonight, someone has opened it.”
+
+Lexis looked toward the darkness.
+
+For the first time, she understood.
+
+The gathering had never been about simply naming an heir.
+
+Someone had been waiting for her to arrive.
+
+Someone had been waiting for the key.
+
+And now—
+
+the door was open.
+
+---
+
+**CHAPTER 2 — THE CHOICE THAT FOLLOWS**
+
+The mansion remained strangely quiet.
+
+Lexis looked at her father.
+
+Then at Sirena.
+
+Then at the dark corridor leading toward the hidden room.
+
+She had two questions.
+
+Who had opened the door?
+
+And why had they been waiting for her?
+
+Her phone vibrated.
+
+A new message appeared.
+
+**COME ALONE.**
+
+Lexis stared at the screen.
+
+Another message appeared beneath it.
+
+**OR ASK YOUR FATHER WHAT HAPPENED TO THE SECOND LINE.**
+
+She slowly lowered the phone.
+
+The mystery had just become bigger.
+
+And this time, she couldn't simply walk away.
+
+---
+
+**[NEXT:discordant-descendants-chapter-3|Continue to Chapter 3.]**
+
+**END OF CHAPTER 2**
+
+*The door has opened.*
+
+*The heir has awakened.*
 
 *To be continued…*
