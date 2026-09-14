@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -578,14 +577,46 @@ function parseFrontmatter(text){
     };
 
 
+    /*
+     * Remove a possible UTF-8 BOM.
+     *
+     * Some editors/exporters place this invisible
+     * character before the opening ---.
+     *
+     * Without removing it, the frontmatter regex
+     * can fail completely.
+     */
+
+    text =
+        String(text || "")
+        .replace(/^\uFEFF/, "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n");
+
+
+    /*
+     * The actual YAML frontmatter must be the
+     * first block in the Markdown file.
+     */
+
     var match =
         text.match(
-            /^---\s*\n([\s\S]*?)\n---\s*\n?/
+            /^---[ \t]*\n([\s\S]*?)\n---[ \t]*(?:\n|$)/
         );
 
 
     if(!match){
+
+        /*
+         * Even without frontmatter, clean obvious
+         * metadata residue from the beginning.
+         */
+
+        data.body =
+            cleanLeadingArticleMetadata(text);
+
         return data;
+
     }
 
 
@@ -630,7 +661,136 @@ function parseFrontmatter(text){
         );
 
 
+    /*
+     * Clean duplicate CMS/frontmatter material that
+     * may have been accidentally left immediately
+     * after the real frontmatter.
+     */
+
+    data.body =
+        cleanLeadingArticleMetadata(
+            data.body
+        );
+
+
     return data;
+
+}
+
+
+/* =========================================================
+   CLEAN LEADING ARTICLE METADATA
+   ========================================================= */
+
+function cleanLeadingArticleMetadata(text){
+
+    var body =
+        String(text || "")
+        .replace(/^\uFEFF/, "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n");
+
+
+    /*
+     * Remove blank lines at the very beginning.
+     */
+
+    body =
+        body.replace(
+            /^\s*\n/,
+            ""
+        );
+
+
+    /*
+     * Remove repeated YAML-style frontmatter blocks
+     * accidentally placed after the real frontmatter.
+     *
+     * This is intentionally limited to the TOP of the
+     * article so normal --- separators later in the story
+     * remain untouched.
+     */
+
+    var changed = true;
+
+    while(changed){
+
+        changed = false;
+
+
+        var duplicateFront =
+            body.match(
+                /^---[ \t]*\n([\s\S]*?)\n---[ \t]*(?:\n|$)/
+            );
+
+
+        if(duplicateFront){
+
+            var possibleMeta =
+                duplicateFront[1];
+
+
+            /*
+             * Only remove the block if it actually looks
+             * like article metadata.
+             */
+
+            if(
+                /^\s*(title|cover|credits|video|audio)\s*:/mi.test(
+                    possibleMeta
+                )
+            ){
+
+                body =
+                    body.substring(
+                        duplicateFront[0].length
+                    );
+
+                body =
+                    body.replace(
+                        /^\s*\n/,
+                        ""
+                    );
+
+                changed = true;
+
+            }
+
+        }
+
+    }
+
+
+    /*
+     * Some of the existing article files contain a
+     * duplicated Markdown title such as:
+     *
+     * ## title: DISCORDANT DESCENDANTS — CHAPTER 1
+     *
+     * immediately after the real frontmatter.
+     *
+     * Remove ONLY that specific metadata-shaped heading.
+     */
+
+    body =
+        body.replace(
+            /^##[ \t]+title\s*:[^\n]*\n+/i,
+            ""
+        );
+
+
+    /*
+     * Remove one or more blank lines left behind.
+     */
+
+    body =
+        body.replace(
+            /^\s*\n/,
+            ""
+        );
+
+
+    return body;
 
 }
 
@@ -649,7 +809,7 @@ function frontValue(
             "^" +
             key +
             "\\s*:\\s*[\"']?(.*?)[\"']?$",
-            "m"
+            "mi"
         );
 
     var match =
@@ -664,13 +824,28 @@ function frontValue(
 
 
 /* =========================================================
+   CLEAN CONTROL LINE
+   ========================================================= */
+
+function cleanControlLine(line){
+
+    return String(line || "")
+        .trim()
+        .replace(/^\*+\s*/, "")
+        .replace(/\s*\*+$/, "")
+        .trim();
+
+}
+
+
+/* =========================================================
    MARKER TESTS
    ========================================================= */
 
 function isGameMarker(line){
 
-    return /^\s*\[GAME:[A-Z0-9_-]+\]\s*$/.test(
-        line
+    return /^\[GAME:[A-Z0-9_-]+\]$/.test(
+        cleanControlLine(line)
     );
 
 }
@@ -678,8 +853,8 @@ function isGameMarker(line){
 
 function isChoiceStart(line){
 
-    return /^\s*\[CHOICE:[\w-]+\]\s*$/.test(
-        line
+    return /^\[CHOICE:[\w-]+\]$/.test(
+        cleanControlLine(line)
     );
 
 }
@@ -687,8 +862,8 @@ function isChoiceStart(line){
 
 function isShowOutfitMarker(line){
 
-    return /^\s*\[SHOWOUTFIT\]\s*$/.test(
-        line
+    return /^\[SHOWOUTFIT\]$/.test(
+        cleanControlLine(line)
     );
 
 }
@@ -696,8 +871,8 @@ function isShowOutfitMarker(line){
 
 function isNextMarker(line){
 
-    return /^\s*\[NEXT:[^\]]+\]\s*$/.test(
-        line
+    return /^\[NEXT:[^\]]+\]$/.test(
+        cleanControlLine(line)
     );
 
 }
@@ -705,8 +880,8 @@ function isNextMarker(line){
 
 function isIfMarker(line){
 
-    return /^\s*\[IF:[\w-]+=[A-Z]\]\s*$/.test(
-        line
+    return /^\[IF:[\w-]+=[A-Z]\]$/.test(
+        cleanControlLine(line)
     );
 
 }
@@ -714,8 +889,8 @@ function isIfMarker(line){
 
 function isElseMarker(line){
 
-    return /^\s*\[ELSE\]\s*$/.test(
-        line
+    return /^\[ELSE\]$/.test(
+        cleanControlLine(line)
     );
 
 }
@@ -723,8 +898,8 @@ function isElseMarker(line){
 
 function isEndIfMarker(line){
 
-    return /^\s*\[ENDIF\]\s*$/.test(
-        line
+    return /^\[ENDIF\]$/.test(
+        cleanControlLine(line)
     );
 
 }
@@ -732,8 +907,8 @@ function isEndIfMarker(line){
 
 function isEndChoiceMarker(line){
 
-    return /^\s*\[ENDCHOICE\]\s*$/.test(
-        line
+    return /^\[ENDCHOICE\]$/.test(
+        cleanControlLine(line)
     );
 
 }
@@ -746,8 +921,8 @@ function isEndChoiceMarker(line){
 function getGameId(line){
 
     var match =
-        line.match(
-            /^\s*\[GAME:([A-Z0-9_-]+)\]\s*$/
+        cleanControlLine(line).match(
+            /^\[GAME:([A-Z0-9_-]+)\]$/
         );
 
     return match
@@ -931,8 +1106,10 @@ function parseChoiceNode(
 ){
 
     var match =
-        lines[start].match(
-            /^\s*\[CHOICE:([\w-]+)\]\s*$/
+        cleanControlLine(
+            lines[start]
+        ).match(
+            /^\[CHOICE:([\w-]+)\]$/
         );
 
 
@@ -963,6 +1140,9 @@ function parseChoiceNode(
     var i =
         start + 1;
 
+    var choiceStarted =
+        false;
+
 
     function saveBranch(){
 
@@ -974,6 +1154,9 @@ function parseChoiceNode(
                 parseStoryNodes(
                     currentLines
                 );
+
+            choiceStarted =
+                true;
 
         }
 
@@ -987,27 +1170,89 @@ function parseChoiceNode(
         var line =
             lines[i];
 
+        var cleaned =
+            cleanControlLine(line);
+
 
         /*
+         * -----------------------------------------------------
+         * CONSEQUENCE
+         * -----------------------------------------------------
+         *
+         * A new consequence starts a new branch.
+         *
+         * Therefore:
+         *
+         * [CONSEQUENCE:A]
+         * ...
+         * [ENDCHOICE]
+         *
+         * does NOT mean the whole choice is finished.
+         *
+         * It means only branch A is finished.
+         *
+         * The parser must keep going because B/C may follow.
+         */
+
+        var consequence =
+            cleaned.match(
+                /^\[CONSEQUENCE:([A-Z])\]$/
+            );
+
+
+        if(consequence){
+
+            saveBranch();
+
+            currentLetter =
+                consequence[1];
+
+            currentLines = [];
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * -----------------------------------------------------
          * ENDCHOICE
+         * -----------------------------------------------------
+         *
+         * IMPORTANT:
+         *
+         * ENDCHOICE closes ONLY the current consequence.
+         *
+         * We do NOT break here.
+         *
+         * This is the critical fix for the A/B/C bug.
          */
 
         if(isEndChoiceMarker(line)){
 
             saveBranch();
 
+            currentLetter =
+                null;
+
+            currentLines = [];
+
             i++;
 
-            break;
+            continue;
 
         }
 
 
         /*
+         * -----------------------------------------------------
          * OPTIONS
+         * -----------------------------------------------------
          *
-         * These are read only before
-         * the first CONSEQUENCE marker.
+         * Options are only read before any consequence
+         * has started.
          */
 
         var option =
@@ -1018,6 +1263,7 @@ function parseChoiceNode(
 
         if(
             option &&
+            !choiceStarted &&
             currentLetter === null
         ){
 
@@ -1034,34 +1280,73 @@ function parseChoiceNode(
 
 
         /*
-         * CONSEQUENCE
+         * -----------------------------------------------------
+         * AFTER A CLOSED BRANCH
+         * -----------------------------------------------------
+         *
+         * We have already encountered [ENDCHOICE].
+         *
+         * Blank lines are still part of the spacing between
+         * branches, so skip them.
+         *
+         * A new [CONSEQUENCE:X] is handled above.
+         *
+         * Anything else means the choice block itself is over.
          */
 
-        var consequence =
-            line.match(
-                /^\s*\[CONSEQUENCE:([A-Z])\]\s*$/
-            );
+        if(
+            currentLetter === null &&
+            choiceStarted
+        ){
+
+            if(
+                cleaned === ""
+            ){
+
+                i++;
+
+                continue;
+
+            }
 
 
-        if(consequence){
+            /*
+             * A new major story marker belongs to the outer
+             * story parser, so stop here without consuming it.
+             */
 
-            saveBranch();
+            if(
+                isChoiceStart(line) ||
+                isGameMarker(line) ||
+                isShowOutfitMarker(line) ||
+                isNextMarker(line) ||
+                isIfMarker(line)
+            ){
 
-            currentLetter =
-                consequence[1];
+                break;
 
-            i++;
+            }
 
-            continue;
+
+            /*
+             * Normal Markdown means the choice is finished.
+             * Leave this line for parseStoryNodes().
+             */
+
+            break;
 
         }
 
 
         /*
-         * Branch content
+         * -----------------------------------------------------
+         * BRANCH CONTENT
+         * -----------------------------------------------------
          */
 
-        if(currentLetter !== null){
+        if(
+            currentLetter !== null
+        ){
 
             currentLines.push(line);
 
@@ -1071,6 +1356,10 @@ function parseChoiceNode(
 
     }
 
+
+    /*
+     * Save any final branch that did not have ENDCHOICE.
+     */
 
     saveBranch();
 
@@ -1101,8 +1390,10 @@ function parseConditionalNode(
 ){
 
     var first =
-        lines[start].match(
-            /^\s*\[IF:([\w-]+)=([A-Z])\]\s*$/
+        cleanControlLine(
+            lines[start]
+        ).match(
+            /^\[IF:([\w-]+)=([A-Z])\]$/
         );
 
 
@@ -1356,14 +1647,6 @@ function executeNodes(
                         '"></span>'
                     );
 
-                    /*
-                     * Only the first reachable
-                     * content after the game gets
-                     * the anchor.
-                     */
-
-                    var savedResumeGame =
-                        resumeAfterGameId;
 
                     resumeAfterGameId = "";
 
@@ -1516,9 +1799,6 @@ function executeNodes(
                 /*
                  * Put a semantic continuation
                  * wrapper around the selected branch.
-                 *
-                 * This gives the click handler a
-                 * precise place to scroll to.
                  */
 
                 var branchTarget =
@@ -1533,6 +1813,7 @@ function executeNodes(
                     "data-choice-result",
                     node.id
                 );
+
 
                 target.appendChild(
                     branchTarget
@@ -1565,8 +1846,6 @@ function executeNodes(
 
             /*
              * CHOICE NOT YET MADE
-             *
-             * This is the current gate.
              */
 
             target.insertAdjacentHTML(
@@ -1622,8 +1901,6 @@ function executeNodes(
 
             /*
              * GAME NOT COMPLETED
-             *
-             * Stop the story here.
              */
 
             target.insertAdjacentHTML(
@@ -1780,15 +2057,6 @@ document.addEventListener(
         }
 
 
-        /*
-         * Remember the current scroll position.
-         *
-         * We do NOT use it as the final target.
-         * It simply gives the reader a stable
-         * fallback if the selected branch has
-         * no visible content.
-         */
-
         var previousTop =
             window.pageYOffset ||
             document.documentElement.scrollTop ||
@@ -1804,10 +2072,6 @@ document.addEventListener(
 
         /*
          * Rebuild the reachable story.
-         *
-         * Because getChoices() now contains ONLY
-         * the selected letter, executeNodes()
-         * executes ONLY that branch.
          */
 
         renderProgress();
@@ -1815,10 +2079,6 @@ document.addEventListener(
 
         /*
          * Find the exact selected branch result.
-         *
-         * Never search for .story-outfit here.
-         * Never search for .story-game here.
-         * Never search for an unrelated future choice.
          */
 
         setTimeout(
@@ -1834,12 +2094,6 @@ document.addEventListener(
 
                 if(branchResult){
 
-                    /*
-                     * If the selected branch contains
-                     * real content, scroll to that
-                     * selected consequence.
-                     */
-
                     scrollToElement(
                         branchResult
                     );
@@ -1848,13 +2102,6 @@ document.addEventListener(
 
                 }
 
-
-                /*
-                 * If the selected consequence is empty,
-                 * remain approximately where the user
-                 * made the choice rather than jumping
-                 * back to the outfit image.
-                 */
 
                 try{
 
@@ -2838,5 +3085,3 @@ function cssEscape(value){
 </body>
 
 </html>
-```
-
