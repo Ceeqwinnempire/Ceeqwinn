@@ -359,15 +359,29 @@ var file =
 var returnGame =
     params.get("return") || "";
 
-returnGame =
-    String(returnGame).trim();
-
 file =
     cleanPath(file);
+
+returnGame =
+    String(returnGame).trim();
 
 
 /* =========================================================
    STORY ID
+   =========================================================
+   
+   ALL CHAPTERS OF THE SAME STORY MUST USE
+   THE SAME STORAGE KEY.
+   
+   Examples:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   ALL become:
+   
+   discordant-descendants
    ========================================================= */
 
 var storyId =
@@ -375,7 +389,7 @@ var storyId =
 
 
 /* =========================================================
-   STORY STORAGE
+   SHARED STORY STORAGE
    ========================================================= */
 
 var storageKey =
@@ -388,13 +402,6 @@ var storageKey =
    ========================================================= */
 
 var storyNodes = [];
-
-
-/*
- * When true, the next renderProgress()
- * will create a semantic resume anchor
- * immediately after the completed game.
- */
 
 var resumeAfterGameId = "";
 
@@ -434,8 +441,10 @@ function loadStory(){
     cover.style.display =
         "none";
 
+
     var xhr =
         new XMLHttpRequest();
+
 
     xhr.open(
         "GET",
@@ -444,6 +453,7 @@ function loadStory(){
         ".md",
         true
     );
+
 
     xhr.onload =
         function(){
@@ -460,13 +470,16 @@ function loadStory(){
                     "The article could not be loaded.";
 
                 return;
+
             }
+
 
             buildStory(
                 xhr.responseText
             );
 
         };
+
 
     xhr.onerror =
         function(){
@@ -478,6 +491,7 @@ function loadStory(){
                 "The article could not be loaded.";
 
         };
+
 
     xhr.send();
 
@@ -516,6 +530,7 @@ function buildStory(text){
         cover.style.display =
             "block";
 
+
         cover.onerror =
             function(){
 
@@ -527,6 +542,15 @@ function buildStory(text){
     }
 
 
+    /*
+     * Convert Markdown into the internal story-node
+     * structure.
+     *
+     * This is what allows ordinary Markdown,
+     * choices, conditions, games and NEXT markers
+     * to coexist.
+     */
+
     storyNodes =
         parseStoryNodes(
             data.body.split(/\r?\n/)
@@ -534,9 +558,7 @@ function buildStory(text){
 
 
     /*
-     * If an old URL contains ?return=FASHION-01,
-     * treat it exactly like the modern game-return
-     * signal.
+     * Game return support.
      */
 
     if(returnGame){
@@ -550,7 +572,6 @@ function buildStory(text){
 
 
     renderProgress();
-
 
     fixMedia();
 
@@ -577,27 +598,12 @@ function parseFrontmatter(text){
     };
 
 
-    /*
-     * Remove a possible UTF-8 BOM.
-     *
-     * Some editors/exporters place this invisible
-     * character before the opening ---.
-     *
-     * Without removing it, the frontmatter regex
-     * can fail completely.
-     */
-
     text =
         String(text || "")
         .replace(/^\uFEFF/, "")
         .replace(/\r\n/g, "\n")
         .replace(/\r/g, "\n");
 
-
-    /*
-     * The actual YAML frontmatter must be the
-     * first block in the Markdown file.
-     */
 
     var match =
         text.match(
@@ -606,11 +612,6 @@ function parseFrontmatter(text){
 
 
     if(!match){
-
-        /*
-         * Even without frontmatter, clean obvious
-         * metadata residue from the beginning.
-         */
 
         data.body =
             cleanLeadingArticleMetadata(text);
@@ -661,12 +662,6 @@ function parseFrontmatter(text){
         );
 
 
-    /*
-     * Clean duplicate CMS/frontmatter material that
-     * may have been accidentally left immediately
-     * after the real frontmatter.
-     */
-
     data.body =
         cleanLeadingArticleMetadata(
             data.body
@@ -691,10 +686,6 @@ function cleanLeadingArticleMetadata(text){
         .replace(/\r/g, "\n");
 
 
-    /*
-     * Remove blank lines at the very beginning.
-     */
-
     body =
         body.replace(
             /^\s*\n/,
@@ -702,16 +693,8 @@ function cleanLeadingArticleMetadata(text){
         );
 
 
-    /*
-     * Remove repeated YAML-style frontmatter blocks
-     * accidentally placed after the real frontmatter.
-     *
-     * This is intentionally limited to the TOP of the
-     * article so normal --- separators later in the story
-     * remain untouched.
-     */
-
     var changed = true;
+
 
     while(changed){
 
@@ -730,11 +713,6 @@ function cleanLeadingArticleMetadata(text){
                 duplicateFront[1];
 
 
-            /*
-             * Only remove the block if it actually looks
-             * like article metadata.
-             */
-
             if(
                 /^\s*(title|cover|credits|video|audio)\s*:/mi.test(
                     possibleMeta
@@ -746,11 +724,13 @@ function cleanLeadingArticleMetadata(text){
                         duplicateFront[0].length
                     );
 
+
                 body =
                     body.replace(
                         /^\s*\n/,
                         ""
                     );
+
 
                 changed = true;
 
@@ -761,27 +741,12 @@ function cleanLeadingArticleMetadata(text){
     }
 
 
-    /*
-     * Some of the existing article files contain a
-     * duplicated Markdown title such as:
-     *
-     * ## title: DISCORDANT DESCENDANTS — CHAPTER 1
-     *
-     * immediately after the real frontmatter.
-     *
-     * Remove ONLY that specific metadata-shaped heading.
-     */
-
     body =
         body.replace(
             /^##[ \t]+title\s*:[^\n]*\n+/i,
             ""
         );
 
-
-    /*
-     * Remove one or more blank lines left behind.
-     */
 
     body =
         body.replace(
@@ -811,6 +776,7 @@ function frontValue(
             "\\s*:\\s*[\"']?(.*?)[\"']?$",
             "mi"
         );
+
 
     var match =
         text.match(re);
@@ -844,7 +810,7 @@ function cleanControlLine(line){
 
 function isGameMarker(line){
 
-    return /^\[GAME:[A-Z0-9_-]+\]$/.test(
+    return /^\[GAME:\s*[A-Z0-9_-]+\s*\]$/i.test(
         cleanControlLine(line)
     );
 
@@ -853,7 +819,7 @@ function isGameMarker(line){
 
 function isChoiceStart(line){
 
-    return /^\[CHOICE:[\w-]+\]$/.test(
+    return /^\[CHOICE:\s*[\w-]+\s*\]$/i.test(
         cleanControlLine(line)
     );
 
@@ -862,16 +828,26 @@ function isChoiceStart(line){
 
 function isShowOutfitMarker(line){
 
-    return /^\[SHOWOUTFIT\]$/.test(
+    return /^\[SHOWOUTFIT\]$/i.test(
         cleanControlLine(line)
     );
 
 }
 
 
+/*
+ * NEXT is deliberately tolerant:
+ *
+ * [NEXT:file]
+ * [NEXT:file|Label]
+ * [NEXT: file | Label]
+ *
+ * all work.
+ */
+
 function isNextMarker(line){
 
-    return /^\[NEXT:[^\]]+\]$/.test(
+    return /^\[NEXT:\s*[^|\]]+(?:\|[^\]]+)?\s*\]$/i.test(
         cleanControlLine(line)
     );
 
@@ -880,7 +856,7 @@ function isNextMarker(line){
 
 function isIfMarker(line){
 
-    return /^\[IF:[\w-]+=[A-Z]\]$/.test(
+    return /^\[IF:\s*[\w-]+\s*=\s*[A-Z]\s*\]$/i.test(
         cleanControlLine(line)
     );
 
@@ -889,7 +865,7 @@ function isIfMarker(line){
 
 function isElseMarker(line){
 
-    return /^\[ELSE\]$/.test(
+    return /^\[ELSE\]$/i.test(
         cleanControlLine(line)
     );
 
@@ -898,7 +874,7 @@ function isElseMarker(line){
 
 function isEndIfMarker(line){
 
-    return /^\[ENDIF\]$/.test(
+    return /^\[ENDIF\]$/i.test(
         cleanControlLine(line)
     );
 
@@ -907,7 +883,7 @@ function isEndIfMarker(line){
 
 function isEndChoiceMarker(line){
 
-    return /^\[ENDCHOICE\]$/.test(
+    return /^\[ENDCHOICE\]$/i.test(
         cleanControlLine(line)
     );
 
@@ -922,11 +898,12 @@ function getGameId(line){
 
     var match =
         cleanControlLine(line).match(
-            /^\[GAME:([A-Z0-9_-]+)\]$/
+            /^\[GAME:\s*([A-Z0-9_-]+)\s*\]$/i
         );
 
+
     return match
-        ? match[1]
+        ? match[1].toUpperCase()
         : "";
 
 }
@@ -939,7 +916,9 @@ function getGameId(line){
 function parseStoryNodes(lines){
 
     var result = [];
+
     var normal = [];
+
     var i = 0;
 
 
@@ -971,15 +950,18 @@ function parseStoryNodes(lines){
 
             flushNormal();
 
+
             var conditional =
                 parseConditionalNode(
                     lines,
                     i
                 );
 
+
             result.push(
                 conditional.node
             );
+
 
             i =
                 conditional.next;
@@ -995,15 +977,18 @@ function parseStoryNodes(lines){
 
             flushNormal();
 
+
             var choice =
                 parseChoiceNode(
                     lines,
                     i
                 );
 
+
             result.push(
                 choice.node
             );
+
 
             i =
                 choice.next;
@@ -1019,10 +1004,12 @@ function parseStoryNodes(lines){
 
             flushNormal();
 
+
             result.push({
                 type:"game",
                 id:getGameId(line)
             });
+
 
             i++;
 
@@ -1037,9 +1024,11 @@ function parseStoryNodes(lines){
 
             flushNormal();
 
+
             result.push({
                 type:"outfit"
             });
+
 
             i++;
 
@@ -1048,16 +1037,18 @@ function parseStoryNodes(lines){
         }
 
 
-        /* NEXT */
+        /* NEXT CHAPTER */
 
         if(isNextMarker(line)){
 
             flushNormal();
 
+
             result.push({
                 type:"next",
-                line:line
+                line:cleanControlLine(line)
             });
+
 
             i++;
 
@@ -1067,7 +1058,8 @@ function parseStoryNodes(lines){
 
 
         /*
-         * Stray control markers are ignored.
+         * These markers belong to a structure already
+         * being parsed. Ignore them here.
          */
 
         if(
@@ -1077,6 +1069,7 @@ function parseStoryNodes(lines){
         ){
 
             i++;
+
             continue;
 
         }
@@ -1090,6 +1083,7 @@ function parseStoryNodes(lines){
 
 
     flushNormal();
+
 
     return result;
 
@@ -1109,7 +1103,7 @@ function parseChoiceNode(
         cleanControlLine(
             lines[start]
         ).match(
-            /^\[CHOICE:([\w-]+)\]$/
+            /^\[CHOICE:\s*([\w-]+)\s*\]$/i
         );
 
 
@@ -1129,7 +1123,9 @@ function parseChoiceNode(
     var id =
         match[1];
 
+
     var options = [];
+
     var branches = {};
 
     var currentLetter =
@@ -1150,7 +1146,9 @@ function parseChoiceNode(
             currentLetter !== null
         ){
 
-            branches[currentLetter] =
+            branches[
+                currentLetter
+            ] =
                 parseStoryNodes(
                     currentLines
                 );
@@ -1159,6 +1157,7 @@ function parseChoiceNode(
                 true;
 
         }
+
 
         currentLines = [];
 
@@ -1175,28 +1174,12 @@ function parseChoiceNode(
 
 
         /*
-         * -----------------------------------------------------
          * CONSEQUENCE
-         * -----------------------------------------------------
-         *
-         * A new consequence starts a new branch.
-         *
-         * Therefore:
-         *
-         * [CONSEQUENCE:A]
-         * ...
-         * [ENDCHOICE]
-         *
-         * does NOT mean the whole choice is finished.
-         *
-         * It means only branch A is finished.
-         *
-         * The parser must keep going because B/C may follow.
          */
 
         var consequence =
             cleaned.match(
-                /^\[CONSEQUENCE:([A-Z])\]$/
+                /^\[CONSEQUENCE:\s*([A-Z])\s*\]$/i
             );
 
 
@@ -1204,8 +1187,10 @@ function parseChoiceNode(
 
             saveBranch();
 
+
             currentLetter =
-                consequence[1];
+                consequence[1].toUpperCase();
+
 
             currentLines = [];
 
@@ -1217,22 +1202,16 @@ function parseChoiceNode(
 
 
         /*
-         * -----------------------------------------------------
          * ENDCHOICE
-         * -----------------------------------------------------
          *
-         * IMPORTANT:
-         *
-         * ENDCHOICE closes ONLY the current consequence.
-         *
-         * We do NOT break here.
-         *
-         * This is the critical fix for the A/B/C bug.
+         * It closes the current branch, NOT the
+         * entire A/B/C collection.
          */
 
         if(isEndChoiceMarker(line)){
 
             saveBranch();
+
 
             currentLetter =
                 null;
@@ -1247,17 +1226,12 @@ function parseChoiceNode(
 
 
         /*
-         * -----------------------------------------------------
          * OPTIONS
-         * -----------------------------------------------------
-         *
-         * Options are only read before any consequence
-         * has started.
          */
 
         var option =
-            line.match(
-                /^\s*\[([A-Z])\]\s*(.+?)\s*$/
+            cleaned.match(
+                /^\[([A-Z])\]\s*(.+?)\s*$/i
             );
 
 
@@ -1268,9 +1242,13 @@ function parseChoiceNode(
         ){
 
             options.push({
-                letter:option[1],
-                label:option[2]
+                letter:
+                    option[1].toUpperCase(),
+
+                label:
+                    option[2]
             });
+
 
             i++;
 
@@ -1280,18 +1258,7 @@ function parseChoiceNode(
 
 
         /*
-         * -----------------------------------------------------
          * AFTER A CLOSED BRANCH
-         * -----------------------------------------------------
-         *
-         * We have already encountered [ENDCHOICE].
-         *
-         * Blank lines are still part of the spacing between
-         * branches, so skip them.
-         *
-         * A new [CONSEQUENCE:X] is handled above.
-         *
-         * Anything else means the choice block itself is over.
          */
 
         if(
@@ -1299,9 +1266,7 @@ function parseChoiceNode(
             choiceStarted
         ){
 
-            if(
-                cleaned === ""
-            ){
+            if(cleaned === ""){
 
                 i++;
 
@@ -1311,8 +1276,7 @@ function parseChoiceNode(
 
 
             /*
-             * A new major story marker belongs to the outer
-             * story parser, so stop here without consuming it.
+             * These belong to the outer story parser.
              */
 
             if(
@@ -1329,8 +1293,8 @@ function parseChoiceNode(
 
 
             /*
-             * Normal Markdown means the choice is finished.
-             * Leave this line for parseStoryNodes().
+             * Normal Markdown also means the choice
+             * block has ended.
              */
 
             break;
@@ -1339,9 +1303,7 @@ function parseChoiceNode(
 
 
         /*
-         * -----------------------------------------------------
-         * BRANCH CONTENT
-         * -----------------------------------------------------
+         * CURRENT BRANCH CONTENT
          */
 
         if(
@@ -1352,13 +1314,15 @@ function parseChoiceNode(
 
         }
 
+
         i++;
 
     }
 
 
     /*
-     * Save any final branch that did not have ENDCHOICE.
+     * Save a final branch if the author omitted
+     * [ENDCHOICE].
      */
 
     saveBranch();
@@ -1393,7 +1357,7 @@ function parseConditionalNode(
         cleanControlLine(
             lines[start]
         ).match(
-            /^\[IF:([\w-]+)=([A-Z])\]$/
+            /^\[IF:\s*([\w-]+)\s*=\s*([A-Z])\s*\]$/i
         );
 
 
@@ -1414,9 +1378,11 @@ function parseConditionalNode(
         first[1];
 
     var letter =
-        first[2];
+        first[2].toUpperCase();
+
 
     var thenLines = [];
+
     var elseLines = [];
 
     var current =
@@ -1451,6 +1417,7 @@ function parseConditionalNode(
 
             depth--;
 
+
             if(depth === 0){
 
                 i++;
@@ -1458,6 +1425,7 @@ function parseConditionalNode(
                 break;
 
             }
+
 
             current.push(line);
 
@@ -1496,10 +1464,12 @@ function parseConditionalNode(
             type:"conditional",
             id:id,
             letter:letter,
+
             thenNodes:
                 parseStoryNodes(
                     thenLines
                 ),
+
             elseNodes:
                 parseStoryNodes(
                     elseLines
@@ -1547,16 +1517,9 @@ function renderProgress(){
 
     /*
      * GAME RETURN
-     *
-     * executeNodes() creates the
-     * .story-resume-anchor at the exact
-     * point immediately AFTER the completed
-     * game.
      */
 
-    if(
-        resumeAfterGameId
-    ){
+    if(resumeAfterGameId){
 
         var gameAnchor =
             content.querySelector(
@@ -1567,11 +1530,6 @@ function renderProgress(){
                 '"]'
             );
 
-
-        /*
-         * Consume the request before
-         * performing the scroll.
-         */
 
         resumeAfterGameId = "";
 
@@ -1623,19 +1581,9 @@ function executeNodes(
             "markdown"
         ){
 
-            if(
-                node.text.trim()
-            ){
+            if(node.text.trim()){
 
-                /*
-                 * If we are returning from a game,
-                 * place the resume anchor BEFORE the
-                 * first continuation block.
-                 */
-
-                if(
-                    resumeAfterGameId
-                ){
+                if(resumeAfterGameId){
 
                     target.insertAdjacentHTML(
                         "beforeend",
@@ -1666,6 +1614,7 @@ function executeNodes(
                 }
 
             }
+
 
             continue;
 
@@ -1703,9 +1652,24 @@ function executeNodes(
             var choices =
                 getChoices();
 
-            var selected =
-                choices[node.id];
 
+            var selected =
+                normalizeChoiceLetter(
+                    choices[node.id]
+                );
+
+
+            /*
+             * IMPORTANT:
+             *
+             * If the requested choice matches,
+             * render THEN.
+             *
+             * Otherwise render ELSE.
+             *
+             * This allows Chapter 2 to react to
+             * Chapter 1's saved choice.
+             */
 
             if(
                 selected ===
@@ -1718,9 +1682,8 @@ function executeNodes(
                         target
                     );
 
-                if(
-                    branchResult.stopped
-                ){
+
+                if(branchResult.stopped){
 
                     result.stopped =
                         true;
@@ -1740,9 +1703,8 @@ function executeNodes(
                         target
                     );
 
-                if(
-                    elseResult.stopped
-                ){
+
+                if(elseResult.stopped){
 
                     result.stopped =
                         true;
@@ -1755,6 +1717,7 @@ function executeNodes(
                 }
 
             }
+
 
             continue;
 
@@ -1777,15 +1740,15 @@ function executeNodes(
             var savedChoices =
                 getChoices();
 
+
             var savedLetter =
-                savedChoices[node.id];
+                normalizeChoiceLetter(
+                    savedChoices[node.id]
+                );
 
 
             /*
-             * CHOICE ALREADY COMPLETED
-             *
-             * ONLY the selected branch is
-             * executed.
+             * CHOICE ALREADY MADE
              */
 
             if(savedLetter){
@@ -1796,18 +1759,15 @@ function executeNodes(
                     ] || [];
 
 
-                /*
-                 * Put a semantic continuation
-                 * wrapper around the selected branch.
-                 */
-
                 var branchTarget =
                     document.createElement(
                         "div"
                     );
 
+
                 branchTarget.className =
                     "story-choice-result";
+
 
                 branchTarget.setAttribute(
                     "data-choice-result",
@@ -1827,9 +1787,7 @@ function executeNodes(
                     );
 
 
-                if(
-                    branchResult.stopped
-                ){
+                if(branchResult.stopped){
 
                     result.stopped =
                         true;
@@ -1857,6 +1815,7 @@ function executeNodes(
             result.stopped =
                 true;
 
+
             return result;
 
         }
@@ -1879,15 +1838,6 @@ function executeNodes(
                 getCompletedGames();
 
 
-            /*
-             * GAME ALREADY COMPLETED
-             *
-             * Do not render the game again.
-             *
-             * The NEXT reachable story content
-             * will receive the resume anchor.
-             */
-
             if(
                 completedGames[
                     node.id
@@ -1899,10 +1849,6 @@ function executeNodes(
             }
 
 
-            /*
-             * GAME NOT COMPLETED
-             */
-
             target.insertAdjacentHTML(
                 "beforeend",
                 renderGame(
@@ -1913,6 +1859,7 @@ function executeNodes(
 
             result.stopped =
                 true;
+
 
             return result;
 
@@ -1932,6 +1879,15 @@ function executeNodes(
                 true;
 
 
+            /*
+             * At this exact point ALL choices already
+             * encountered in the chapter have been
+             * stored in localStorage.
+             *
+             * Therefore clicking NEXT can safely
+             * move to the next chapter.
+             */
+
             target.insertAdjacentHTML(
                 "beforeend",
                 renderNext(
@@ -1942,6 +1898,7 @@ function executeNodes(
 
             result.stopped =
                 true;
+
 
             return result;
 
@@ -2041,9 +1998,12 @@ document.addEventListener(
                 "data-choice"
             );
 
+
         var letter =
-            target.getAttribute(
-                "data-letter"
+            normalizeChoiceLetter(
+                target.getAttribute(
+                    "data-letter"
+                )
             );
 
 
@@ -2064,6 +2024,14 @@ document.addEventListener(
             0;
 
 
+        /*
+         * SAVE FIRST.
+         *
+         * This is critical because the next render,
+         * conditional branches and NEXT chapter all
+         * depend on this state.
+         */
+
         saveChoice(
             id,
             letter
@@ -2078,7 +2046,7 @@ document.addEventListener(
 
 
         /*
-         * Find the exact selected branch result.
+         * Scroll to the selected branch.
          */
 
         setTimeout(
@@ -2134,7 +2102,9 @@ function saveChoice(
 
 
     choices[id] =
-        letter;
+        normalizeChoiceLetter(
+            letter
+        );
 
 
     try{
@@ -2147,6 +2117,29 @@ function saveChoice(
         );
 
     }catch(e){}
+
+}
+
+
+/* =========================================================
+   NORMALIZE CHOICE LETTER
+   ========================================================= */
+
+function normalizeChoiceLetter(value){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .trim()
+        .toUpperCase();
 
 }
 
@@ -2178,10 +2171,18 @@ function getChoices(){
             );
 
 
-        return parsed &&
-               typeof parsed === "object"
-            ? parsed
-            : {};
+        if(
+            parsed &&
+            typeof parsed === "object" &&
+            !Array.isArray(parsed)
+        ){
+
+            return parsed;
+
+        }
+
+
+        return {};
 
     }catch(e){
 
@@ -2309,15 +2310,6 @@ document.addEventListener(
             "FASHION-01"
         ){
 
-            /*
-             * Keep the existing navigation model.
-             *
-             * The game creates a normal browser
-             * history entry.
-             *
-             * fashion-01.html later calls history.back().
-             */
-
             window.location.href =
                 "/games/fashion-01.html";
 
@@ -2372,10 +2364,6 @@ window.addEventListener(
         }
 
 
-        /*
-         * Consume the signal immediately.
-         */
-
         try{
 
             sessionStorage.removeItem(
@@ -2384,11 +2372,6 @@ window.addEventListener(
 
         }catch(e){}
 
-
-        /*
-         * Ask renderProgress() to create
-         * the exact continuation anchor.
-         */
 
         if(
             storyNodes &&
@@ -2545,9 +2528,23 @@ function renderShowOutfit(){
 
 function renderNext(line){
 
+    /*
+     * Accept:
+     *
+     * [NEXT:discordant-descendants-chapter-2]
+     *
+     * [NEXT:discordant-descendants-chapter-2|Step into the gathering.]
+     *
+     * [NEXT: discordant-descendants-chapter-2 | Step into the gathering. ]
+     */
+
+    var cleaned =
+        cleanControlLine(line);
+
+
     var match =
-        line.match(
-            /^\s*\[NEXT:([^]|]+)(?:\|([^\]]+))?\]\s*$/
+        cleaned.match(
+            /^\[NEXT:\s*([^|\]]+?)\s*(?:\|\s*([^\]]+?)\s*)?\]$/i
         );
 
 
@@ -2575,6 +2572,13 @@ function renderNext(line){
         match[2]
         ? match[2].trim()
         : "Enter the next chapter";
+
+
+    if(!nextFile){
+
+        return "";
+
+    }
 
 
     return (
@@ -2626,9 +2630,7 @@ document.addEventListener(
         }
 
 
-        if(
-            target.disabled
-        ){
+        if(target.disabled){
 
             return;
 
@@ -2660,6 +2662,15 @@ document.addEventListener(
                 ""
             );
 
+
+        /*
+         * The story history is NOT cleared here.
+         *
+         * That is the important part.
+         *
+         * Chapter 2 will use the exact same
+         * ceeqwinn_story_history_<base-story> key.
+         */
 
         window.location.href =
             "article.html?file=" +
@@ -2698,12 +2709,25 @@ reset.onclick =
 
 /* =========================================================
    STORY ID
+   =========================================================
+   
+   This is the bridge between chapters.
+   
+   Example:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   all become:
+   
+   discordant-descendants
    ========================================================= */
 
 function getStoryId(path){
 
     path =
-        String(path);
+        String(path || "");
 
 
     path =
@@ -2714,8 +2738,18 @@ function getStoryId(path){
 
 
     /*
-     * Chapter-specific files share the
-     * same base story history.
+     * Remove chapter numbering from the END only.
+     *
+     * This means:
+     *
+     * discordant-descendants-chapter-2
+     *
+     * becomes:
+     *
+     * discordant-descendants
+     *
+     * while unrelated names containing the word
+     * "chapter" elsewhere remain untouched.
      */
 
     path =
@@ -2812,6 +2846,7 @@ function fixMedia(){
         content.getElementsByTagName(
             "audio"
         );
+
 
     var i;
 
@@ -2972,7 +3007,7 @@ function renderExtraMedia(data){
 function cleanPath(path){
 
     path =
-        String(path)
+        String(path || "")
         .replace(
             /\\/g,
             "/"
@@ -2985,6 +3020,7 @@ function cleanPath(path){
 
     var parts =
         path.split("/");
+
 
     var clean = [];
 
@@ -3085,4 +3121,3 @@ function cssEscape(value){
 </body>
 
 </html>
->
