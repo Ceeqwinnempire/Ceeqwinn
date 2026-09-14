@@ -359,11 +359,27 @@ var file =
 var returnGame =
     params.get("return") || "";
 
+
+/*
+ * NEW:
+ *
+ * When NEXT opens another chapter, it sends
+ * resume=1 so that chapter can automatically
+ * scroll to its actual story starting point.
+ */
+
+var resumeChapter =
+    params.get("resume") || "";
+
+
 file =
     cleanPath(file);
 
 returnGame =
     String(returnGame).trim();
+
+resumeChapter =
+    String(resumeChapter).trim();
 
 
 /* =========================================================
@@ -578,6 +594,36 @@ function buildStory(text){
     renderExtraMedia(data);
 
     status.textContent = "";
+
+
+    /*
+     * CHAPTER RESUME SCROLL
+     *
+     * When this chapter was opened by a NEXT button,
+     * wait until the story has been fully rendered,
+     * then scroll directly to the first real story
+     * element in the chapter.
+     *
+     * This does not affect normal chapter loading,
+     * choice scrolling, or game-return scrolling.
+     */
+
+    if(
+        resumeChapter === "1"
+    ){
+
+        setTimeout(
+            function(){
+
+                scrollToStoryStart();
+
+                resumeChapter = "";
+
+            },
+            150
+        );
+
+    }
 
 }
 
@@ -2443,6 +2489,38 @@ function scrollToElement(element){
 
 
 /* =========================================================
+   CHAPTER RESUME SCROLL
+   =========================================================
+   
+   Used only when a chapter was opened through
+   the NEXT CHAPTER button.
+   
+   Because #content contains only the rendered
+   story itself, its first element is the exact
+   beginning of the reachable story content.
+   ========================================================= */
+
+function scrollToStoryStart(){
+
+    var firstStoryElement =
+        content.firstElementChild;
+
+
+    if(!firstStoryElement){
+
+        return;
+
+    }
+
+
+    scrollToElement(
+        firstStoryElement
+    );
+
+}
+
+
+/* =========================================================
    SHOW OUTFIT
    ========================================================= */
 
@@ -2670,13 +2748,18 @@ document.addEventListener(
          *
          * Chapter 2 will use the exact same
          * ceeqwinn_story_history_<base-story> key.
+         *
+         * resume=1 tells the newly opened chapter
+         * to scroll to the beginning of its actual
+         * rendered story content.
          */
 
         window.location.href =
             "article.html?file=" +
             encodeURIComponent(
                 nextFile
-            );
+            ) +
+            "&resume=1";
 
     }
 );
