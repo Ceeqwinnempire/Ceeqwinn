@@ -1227,7 +1227,7 @@ function parseChoiceNode(
          *
          * We do NOT break here.
          *
-         * This allows A/B/C consequences to be parsed.
+         * This is the critical fix for the A/B/C bug.
          */
 
         if(isEndChoiceMarker(line)){
@@ -1283,6 +1283,15 @@ function parseChoiceNode(
          * -----------------------------------------------------
          * AFTER A CLOSED BRANCH
          * -----------------------------------------------------
+         *
+         * We have already encountered [ENDCHOICE].
+         *
+         * Blank lines are still part of the spacing between
+         * branches, so skip them.
+         *
+         * A new [CONSEQUENCE:X] is handled above.
+         *
+         * Anything else means the choice block itself is over.
          */
 
         if(
@@ -1698,51 +1707,6 @@ function executeNodes(
                 choices[node.id];
 
 
-            /*
-             * IMPORTANT CROSS-CHAPTER SAFETY
-             *
-             * If the referenced choice has not been made,
-             * do NOT treat the ELSE branch as though a choice
-             * was made.
-             *
-             * This is what allows Chapter 2 to safely depend
-             * on Chapter 1 state.
-             *
-             * Example:
-             *
-             * [IF:choice-03=A]
-             *     A branch
-             * [ELSE]
-             *     [IF:choice-03=B]
-             *         B branch
-             *     [ELSE]
-             *         C branch
-             *     [ENDIF]
-             * [ENDIF]
-             *
-             * If choice-03 is missing, nothing is selected.
-             *
-             * If choice-03=A, only A executes.
-             *
-             * If choice-03=B, the outer ELSE executes and
-             * the nested B conditional executes.
-             *
-             * If choice-03=C, the nested ELSE executes.
-             */
-
-            if(
-                !selected
-            ){
-
-                continue;
-
-            }
-
-
-            /*
-             * The stored choice matches this IF condition.
-             */
-
             if(
                 selected ===
                 node.letter
@@ -1769,14 +1733,6 @@ function executeNodes(
                 }
 
             }else{
-
-                /*
-                 * The stored choice does not match this
-                 * condition, so evaluate its ELSE branch.
-                 *
-                 * Nested IF nodes can therefore continue
-                 * resolving the same shared story state.
-                 */
 
                 var elseResult =
                     executeNodes(
@@ -2116,9 +2072,6 @@ document.addEventListener(
 
         /*
          * Rebuild the reachable story.
-         *
-         * Because all chapters use the same storyId,
-         * this immediately uses the shared story state.
          */
 
         renderProgress();
@@ -2763,16 +2716,6 @@ function getStoryId(path){
     /*
      * Chapter-specific files share the
      * same base story history.
-     *
-     * Therefore:
-     *
-     * discordant-descendants-chapter-1
-     * discordant-descendants-chapter-2
-     * discordant-descendants-chapter-3
-     *
-     * all become:
-     *
-     * discordant-descendants
      */
 
     path =
@@ -3142,3 +3085,4 @@ function cssEscape(value){
 </body>
 
 </html>
+>
