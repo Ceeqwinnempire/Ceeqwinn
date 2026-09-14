@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -128,6 +129,23 @@ h2{
 .story-branch{
     margin-top:25px;
 }
+
+.story-choice-result{
+    margin-top:25px;
+}
+
+.story-resume-anchor{
+    display:block;
+    width:100%;
+    height:1px;
+    margin:0;
+    padding:0;
+}
+
+
+/* =========================================================
+   NEXT CHAPTER
+   ========================================================= */
 
 .story-next{
     margin:55px 0 25px;
@@ -367,6 +385,22 @@ var storageKey =
 
 
 /* =========================================================
+   STORY STATE
+   ========================================================= */
+
+var storyNodes = [];
+
+
+/*
+ * When true, the next renderProgress()
+ * will create a semantic resume anchor
+ * immediately after the completed game.
+ */
+
+var resumeAfterGameId = "";
+
+
+/* =========================================================
    START
    ========================================================= */
 
@@ -494,15 +528,6 @@ function buildStory(text){
     }
 
 
-    /*
-     * Parse the chapter ONCE into a
-     * sequential story structure.
-     *
-     * The engine no longer renders
-     * the entire future story into
-     * hidden containers.
-     */
-
     storyNodes =
         parseStoryNodes(
             data.body.split(/\r?\n/)
@@ -510,9 +535,20 @@ function buildStory(text){
 
 
     /*
-     * Render only the story that is
-     * currently reachable.
+     * If an old URL contains ?return=FASHION-01,
+     * treat it exactly like the modern game-return
+     * signal.
      */
+
+    if(returnGame){
+
+        resumeAfterGameId =
+            returnGame;
+
+        returnGame = "";
+
+    }
+
 
     renderProgress();
 
@@ -628,19 +664,12 @@ function frontValue(
 
 
 /* =========================================================
-   STORY STATE
-   ========================================================= */
-
-var storyNodes = [];
-
-
-/* =========================================================
    MARKER TESTS
    ========================================================= */
 
 function isGameMarker(line){
 
-    return /^\s*\*?\s*\[GAME:[A-Z0-9_-]+\]\s*$/.test(
+    return /^\s*\[GAME:[A-Z0-9_-]+\]\s*$/.test(
         line
     );
 
@@ -649,7 +678,7 @@ function isGameMarker(line){
 
 function isChoiceStart(line){
 
-    return /^\s*\*?\s*\[CHOICE:[\w-]+\]\s*$/.test(
+    return /^\s*\[CHOICE:[\w-]+\]\s*$/.test(
         line
     );
 
@@ -658,7 +687,7 @@ function isChoiceStart(line){
 
 function isShowOutfitMarker(line){
 
-    return /^\s*\*?\s*\[SHOWOUTFIT\]\s*$/.test(
+    return /^\s*\[SHOWOUTFIT\]\s*$/.test(
         line
     );
 
@@ -667,7 +696,7 @@ function isShowOutfitMarker(line){
 
 function isNextMarker(line){
 
-    return /^\s*\*?\s*\[NEXT:[^\]]+\]\s*$/.test(
+    return /^\s*\[NEXT:[^\]]+\]\s*$/.test(
         line
     );
 
@@ -676,7 +705,7 @@ function isNextMarker(line){
 
 function isIfMarker(line){
 
-    return /^\s*\*?\s*\[IF:[\w-]+=[A-Z]\]\s*$/.test(
+    return /^\s*\[IF:[\w-]+=[A-Z]\]\s*$/.test(
         line
     );
 
@@ -685,7 +714,7 @@ function isIfMarker(line){
 
 function isElseMarker(line){
 
-    return /^\s*\*?\s*\[ELSE\]\s*$/.test(
+    return /^\s*\[ELSE\]\s*$/.test(
         line
     );
 
@@ -694,7 +723,7 @@ function isElseMarker(line){
 
 function isEndIfMarker(line){
 
-    return /^\s*\*?\s*\[ENDIF\]\s*$/.test(
+    return /^\s*\[ENDIF\]\s*$/.test(
         line
     );
 
@@ -703,7 +732,7 @@ function isEndIfMarker(line){
 
 function isEndChoiceMarker(line){
 
-    return /^\s*\*?\s*\[ENDCHOICE\]\s*$/.test(
+    return /^\s*\[ENDCHOICE\]\s*$/.test(
         line
     );
 
@@ -718,7 +747,7 @@ function getGameId(line){
 
     var match =
         line.match(
-            /^\s*\*?\s*\[GAME:([A-Z0-9_-]+)\]\s*$/
+            /^\s*\[GAME:([A-Z0-9_-]+)\]\s*$/
         );
 
     return match
@@ -761,9 +790,7 @@ function parseStoryNodes(lines){
             lines[i];
 
 
-        /*
-         * CONDITIONAL
-         */
+        /* CONDITIONAL */
 
         if(isIfMarker(line)){
 
@@ -787,9 +814,7 @@ function parseStoryNodes(lines){
         }
 
 
-        /*
-         * CHOICE
-         */
+        /* CHOICE */
 
         if(isChoiceStart(line)){
 
@@ -813,9 +838,7 @@ function parseStoryNodes(lines){
         }
 
 
-        /*
-         * GAME
-         */
+        /* GAME */
 
         if(isGameMarker(line)){
 
@@ -833,9 +856,7 @@ function parseStoryNodes(lines){
         }
 
 
-        /*
-         * SHOW OUTFIT
-         */
+        /* SHOW OUTFIT */
 
         if(isShowOutfitMarker(line)){
 
@@ -852,9 +873,7 @@ function parseStoryNodes(lines){
         }
 
 
-        /*
-         * NEXT
-         */
+        /* NEXT */
 
         if(isNextMarker(line)){
 
@@ -913,7 +932,7 @@ function parseChoiceNode(
 
     var match =
         lines[start].match(
-            /^\s*\*?\s*\[CHOICE:([\w-]+)\]\s*$/
+            /^\s*\[CHOICE:([\w-]+)\]\s*$/
         );
 
 
@@ -932,7 +951,6 @@ function parseChoiceNode(
 
     var id =
         match[1];
-
 
     var options = [];
     var branches = {};
@@ -986,12 +1004,15 @@ function parseChoiceNode(
 
 
         /*
-         * OPTION
+         * OPTIONS
+         *
+         * These are read only before
+         * the first CONSEQUENCE marker.
          */
 
         var option =
             line.match(
-                /^\s*\*?\s*\[([A-Z])\]\s*(.+?)\s*$/
+                /^\s*\[([A-Z])\]\s*(.+?)\s*$/
             );
 
 
@@ -1018,7 +1039,7 @@ function parseChoiceNode(
 
         var consequence =
             line.match(
-                /^\s*\*?\s*\[CONSEQUENCE:([A-Z])\]\s*$/
+                /^\s*\[CONSEQUENCE:([A-Z])\]\s*$/
             );
 
 
@@ -1081,7 +1102,7 @@ function parseConditionalNode(
 
     var first =
         lines[start].match(
-            /^\s*\*?\s*\[IF:([\w-]+)=([A-Z])\]\s*$/
+            /^\s*\[IF:([\w-]+)=([A-Z])\]\s*$/
         );
 
 
@@ -1104,14 +1125,11 @@ function parseConditionalNode(
     var letter =
         first[2];
 
-
     var thenLines = [];
     var elseLines = [];
 
-
     var current =
         thenLines;
-
 
     var depth = 1;
 
@@ -1125,10 +1143,6 @@ function parseConditionalNode(
             lines[i];
 
 
-        /*
-         * Nested IF
-         */
-
         if(isIfMarker(line)){
 
             depth++;
@@ -1141,10 +1155,6 @@ function parseConditionalNode(
 
         }
 
-
-        /*
-         * ENDIF
-         */
 
         if(isEndIfMarker(line)){
 
@@ -1166,11 +1176,6 @@ function parseConditionalNode(
 
         }
 
-
-        /*
-         * ELSE belonging to
-         * this IF.
-         */
 
         if(
             depth === 1 &&
@@ -1219,28 +1224,12 @@ function parseConditionalNode(
 
 /* =========================================================
    RENDER PROGRESS
-   =========================================================
-
-   The engine walks through the story
-   from the beginning.
-
-   Completed choices are followed.
-
-   Incomplete choices stop the story.
-
-   Completed games are passed through.
-
-   Incomplete games stop the story.
-
-   NEXT stops the story.
-
-   Therefore unreachable future story
-   is never rendered.
    ========================================================= */
 
 function renderProgress(){
 
     content.innerHTML = "";
+
 
     var result =
         executeNodes(
@@ -1249,14 +1238,7 @@ function renderProgress(){
         );
 
 
-    /*
-     * Show reset whenever this chapter
-     * contains story progression controls.
-     */
-
-    if(
-        result.hasProgress
-    ){
+    if(result.hasProgress){
 
         reset.style.display =
             "block";
@@ -1273,21 +1255,43 @@ function renderProgress(){
 
 
     /*
-     * Legacy support:
+     * GAME RETURN
      *
-     * If an older URL contains
-     * ?return=FASHION-01, continue to
-     * support it.
-     *
-     * The new history-based game return
-     * does NOT depend on this.
+     * executeNodes() creates the
+     * .story-resume-anchor at the exact
+     * point immediately AFTER the completed
+     * game.
      */
 
-    if(returnGame){
+    if(
+        resumeAfterGameId
+    ){
 
-        scrollToGameContinuation();
+        var gameAnchor =
+            content.querySelector(
+                '[data-resume-game="' +
+                cssEscape(
+                    resumeAfterGameId
+                ) +
+                '"]'
+            );
 
-        returnGame = "";
+
+        /*
+         * Consume the request before
+         * performing the scroll.
+         */
+
+        resumeAfterGameId = "";
+
+
+        if(gameAnchor){
+
+            scrollToElement(
+                gameAnchor
+            );
+
+        }
 
     }
 
@@ -1319,9 +1323,9 @@ function executeNodes(
             nodes[i];
 
 
-        /*
-         * MARKDOWN
-         */
+        /* =================================================
+           MARKDOWN
+           ================================================= */
 
         if(
             node.type ===
@@ -1332,10 +1336,51 @@ function executeNodes(
                 node.text.trim()
             ){
 
-                target.insertAdjacentHTML(
-                    "beforeend",
-                    marked(node.text)
-                );
+                /*
+                 * If we are returning from a game,
+                 * place the resume anchor BEFORE the
+                 * first continuation block.
+                 */
+
+                if(
+                    resumeAfterGameId
+                ){
+
+                    target.insertAdjacentHTML(
+                        "beforeend",
+                        '<span class="story-resume-anchor" ' +
+                        'data-resume-game="' +
+                        escapeAttr(
+                            resumeAfterGameId
+                        ) +
+                        '"></span>'
+                    );
+
+                    /*
+                     * Only the first reachable
+                     * content after the game gets
+                     * the anchor.
+                     */
+
+                    var savedResumeGame =
+                        resumeAfterGameId;
+
+                    resumeAfterGameId = "";
+
+
+                    target.insertAdjacentHTML(
+                        "beforeend",
+                        marked(node.text)
+                    );
+
+                }else{
+
+                    target.insertAdjacentHTML(
+                        "beforeend",
+                        marked(node.text)
+                    );
+
+                }
 
             }
 
@@ -1344,9 +1389,9 @@ function executeNodes(
         }
 
 
-        /*
-         * SHOW OUTFIT
-         */
+        /* =================================================
+           SHOW OUTFIT
+           ================================================= */
 
         if(
             node.type ===
@@ -1363,9 +1408,9 @@ function executeNodes(
         }
 
 
-        /*
-         * CONDITIONAL
-         */
+        /* =================================================
+           CONDITIONAL
+           ================================================= */
 
         if(
             node.type ===
@@ -1433,9 +1478,9 @@ function executeNodes(
         }
 
 
-        /*
-         * CHOICE
-         */
+        /* =================================================
+           CHOICE
+           ================================================= */
 
         if(
             node.type ===
@@ -1454,10 +1499,10 @@ function executeNodes(
 
 
             /*
-             * Choice already completed.
+             * CHOICE ALREADY COMPLETED
              *
-             * Execute ONLY the selected
-             * consequence and continue.
+             * ONLY the selected branch is
+             * executed.
              */
 
             if(savedLetter){
@@ -1468,10 +1513,36 @@ function executeNodes(
                     ] || [];
 
 
+                /*
+                 * Put a semantic continuation
+                 * wrapper around the selected branch.
+                 *
+                 * This gives the click handler a
+                 * precise place to scroll to.
+                 */
+
+                var branchTarget =
+                    document.createElement(
+                        "div"
+                    );
+
+                branchTarget.className =
+                    "story-choice-result";
+
+                branchTarget.setAttribute(
+                    "data-choice-result",
+                    node.id
+                );
+
+                target.appendChild(
+                    branchTarget
+                );
+
+
                 var branchResult =
                     executeNodes(
                         savedBranch,
-                        target
+                        branchTarget
                     );
 
 
@@ -1493,7 +1564,7 @@ function executeNodes(
 
 
             /*
-             * Choice has not been made.
+             * CHOICE NOT YET MADE
              *
              * This is the current gate.
              */
@@ -1512,9 +1583,9 @@ function executeNodes(
         }
 
 
-        /*
-         * GAME
-         */
+        /* =================================================
+           GAME
+           ================================================= */
 
         if(
             node.type ===
@@ -1532,8 +1603,10 @@ function executeNodes(
             /*
              * GAME ALREADY COMPLETED
              *
-             * PASS THROUGH THE GAME
-             * AND CONTINUE WITH THE STORY.
+             * Do not render the game again.
+             *
+             * The NEXT reachable story content
+             * will receive the resume anchor.
              */
 
             if(
@@ -1569,9 +1642,9 @@ function executeNodes(
         }
 
 
-        /*
-         * NEXT CHAPTER
-         */
+        /* =================================================
+           NEXT CHAPTER
+           ================================================= */
 
         if(
             node.type ===
@@ -1707,6 +1780,22 @@ document.addEventListener(
         }
 
 
+        /*
+         * Remember the current scroll position.
+         *
+         * We do NOT use it as the final target.
+         * It simply gives the reader a stable
+         * fallback if the selected branch has
+         * no visible content.
+         */
+
+        var previousTop =
+            window.pageYOffset ||
+            document.documentElement.scrollTop ||
+            document.body.scrollTop ||
+            0;
+
+
         saveChoice(
             id,
             letter
@@ -1715,114 +1804,69 @@ document.addEventListener(
 
         /*
          * Rebuild the reachable story.
+         *
+         * Because getChoices() now contains ONLY
+         * the selected letter, executeNodes()
+         * executes ONLY that branch.
          */
 
         renderProgress();
 
 
         /*
-         * IMPORTANT FIX:
+         * Find the exact selected branch result.
          *
-         * The completed choice has just
-         * been removed from the DOM.
-         *
-         * Therefore we must NOT search for
-         * the old choice again.
-         *
-         * Instead, find the next currently
-         * reachable gate/continuation.
+         * Never search for .story-outfit here.
+         * Never search for .story-game here.
+         * Never search for an unrelated future choice.
          */
 
         setTimeout(
             function(){
 
-                var nextChoice =
-                    null;
-
-                var choices =
-                    content.querySelectorAll(
-                        ".story-choice"
+                var branchResult =
+                    content.querySelector(
+                        '[data-choice-result="' +
+                        cssEscape(id) +
+                        '"]'
                     );
 
 
-                for(
-                    var i = 0;
-                    i < choices.length;
-                    i++
-                ){
+                if(branchResult){
 
-                    var choiceId =
-                        choices[i].getAttribute(
-                            "data-choice"
-                        );
+                    /*
+                     * If the selected branch contains
+                     * real content, scroll to that
+                     * selected consequence.
+                     */
 
-
-                    if(
-                        choiceId !== id
-                    ){
-
-                        nextChoice =
-                            choices[i];
-
-                        break;
-
-                    }
-
-                }
-
-
-                var targetElement =
-                    nextChoice ||
-                    content.querySelector(
-                        ".story-game"
-                    ) ||
-                    content.querySelector(
-                        ".story-next"
-                    ) ||
-                    content.querySelector(
-                        ".story-outfit"
+                    scrollToElement(
+                        branchResult
                     );
-
-
-                if(!targetElement){
 
                     return;
 
                 }
 
 
+                /*
+                 * If the selected consequence is empty,
+                 * remain approximately where the user
+                 * made the choice rather than jumping
+                 * back to the outfit image.
+                 */
+
                 try{
 
-                    targetElement.scrollIntoView({
-                        behavior:"smooth",
-                        block:"start"
-                    });
+                    window.scrollTo(
+                        0,
+                        previousTop
+                    );
 
-                }catch(e){
-
-                    try{
-
-                        window.scrollTo(
-                            0,
-                            Math.max(
-                                0,
-                                targetElement.getBoundingClientRect().top +
-                                (
-                                    window.pageYOffset ||
-                                    document.documentElement.scrollTop ||
-                                    document.body.scrollTop ||
-                                    0
-                                ) -
-                                20
-                            )
-                        );
-
-                    }catch(ignore){}
-
-                }
+                }catch(e){}
 
             },
-            50
+            60
         );
 
     }
@@ -2019,18 +2063,12 @@ document.addEventListener(
         ){
 
             /*
-             * IMPORTANT:
+             * Keep the existing navigation model.
              *
-             * Use normal browser navigation.
+             * The game creates a normal browser
+             * history entry.
              *
-             * This creates a history entry for
-             * the separate game page.
-             *
-             * fashion-01.html will later call
-             * history.back() after completion.
-             *
-             * That returns to THIS SAME
-             * Chapter 3 history entry.
+             * fashion-01.html later calls history.back().
              */
 
             window.location.href =
@@ -2044,26 +2082,6 @@ document.addEventListener(
 
 /* =========================================================
    GAME RETURN SIGNAL
-   =========================================================
-
-   The Fashion Game writes:
-
-       sessionStorage.setItem(
-           "ceeqwinn_return_from_game",
-           "FASHION-01"
-       );
-
-   immediately before calling:
-
-       history.back();
-
-   When Chapter 3 returns, this listener
-   sees that one-time signal and rebuilds
-   the existing story from its saved state.
-
-   This works whether the browser restores
-   the old page from bfcache OR reloads the
-   page while navigating backward.
    ========================================================= */
 
 window.addEventListener(
@@ -2097,12 +2115,6 @@ window.addEventListener(
             .toUpperCase();
 
 
-        /*
-         * Nothing to do unless we are
-         * specifically returning from
-         * the Fashion Game.
-         */
-
         if(
             returnedGame !==
             "FASHION-01"
@@ -2115,9 +2127,6 @@ window.addEventListener(
 
         /*
          * Consume the signal immediately.
-         *
-         * This prevents repeated renders
-         * if another pageshow event occurs.
          */
 
         try{
@@ -2130,11 +2139,8 @@ window.addEventListener(
 
 
         /*
-         * The chapter must already have
-         * been parsed before we rebuild it.
-         *
-         * If this is a normal loaded page,
-         * wait until the story is ready.
+         * Ask renderProgress() to create
+         * the exact continuation anchor.
          */
 
         if(
@@ -2142,23 +2148,10 @@ window.addEventListener(
             storyNodes.length
         ){
 
+            resumeAfterGameId =
+                returnedGame;
+
             renderProgress();
-
-
-            /*
-             * After the completed game is
-             * passed through, move the reader
-             * to the newly unlocked section.
-             */
-
-            setTimeout(
-                function(){
-
-                    scrollToGameContinuation();
-
-                },
-                100
-            );
 
         }
 
@@ -2167,54 +2160,12 @@ window.addEventListener(
 
 
 /* =========================================================
-   GAME RETURN SCROLL
-   =========================================================
-
-   This function is now independent of
-   the ?return= URL parameter.
-
-   It simply finds the first useful
-   continuation currently visible after
-   the completed game has been passed.
+   SCROLL TO ELEMENT
    ========================================================= */
 
-function scrollToGameContinuation(){
+function scrollToElement(element){
 
-    /*
-     * There is no hidden continuation.
-     *
-     * renderProgress() has already rebuilt
-     * the reachable story.
-     *
-     * Find a useful point in the newly
-     * unlocked continuation.
-     */
-
-    var outfit =
-        content.querySelector(
-            ".story-outfit"
-        );
-
-
-    var choice =
-        content.querySelector(
-            ".story-choice"
-        );
-
-
-    var next =
-        content.querySelector(
-            ".story-next"
-        );
-
-
-    var target =
-        outfit ||
-        choice ||
-        next;
-
-
-    if(!target){
+    if(!element){
 
         return;
 
@@ -2226,7 +2177,7 @@ function scrollToGameContinuation(){
 
             try{
 
-                target.scrollIntoView({
+                element.scrollIntoView({
                     behavior:"smooth",
                     block:"start"
                 });
@@ -2239,7 +2190,7 @@ function scrollToGameContinuation(){
                         0,
                         Math.max(
                             0,
-                            target.getBoundingClientRect().top +
+                            element.getBoundingClientRect().top +
                             (
                                 window.pageYOffset ||
                                 document.documentElement.scrollTop ||
@@ -2255,7 +2206,7 @@ function scrollToGameContinuation(){
             }
 
         },
-        150
+        100
     );
 
 }
@@ -2349,7 +2300,7 @@ function renderNext(line){
 
     var match =
         line.match(
-            /^\s*\*?\s*\[NEXT:([^]|]+)(?:\|([^\]]+))?\]\s*$/
+            /^\s*\[NEXT:([^]|]+)(?:\|([^\]]+))?\]\s*$/
         );
 
 
@@ -2485,12 +2436,6 @@ reset.onclick =
             localStorage.removeItem(
                 storageKey
             );
-
-            /*
-             * Keep the old behavior:
-             * resetting the story also resets
-             * completed games.
-             */
 
             localStorage.removeItem(
                 "ceeqwinn_completed_games"
@@ -2794,7 +2739,6 @@ function cleanPath(path){
     var parts =
         path.split("/");
 
-
     var clean = [];
 
 
@@ -2894,3 +2838,5 @@ function cssEscape(value){
 </body>
 
 </html>
+```
+
