@@ -389,6 +389,13 @@ var storageKey =
 
 var storyNodes = [];
 
+
+/*
+ * When true, the next renderProgress()
+ * will create a semantic resume anchor
+ * immediately after the completed game.
+ */
+
 var resumeAfterGameId = "";
 
 
@@ -427,10 +434,8 @@ function loadStory(){
     cover.style.display =
         "none";
 
-
     var xhr =
         new XMLHttpRequest();
-
 
     xhr.open(
         "GET",
@@ -439,7 +444,6 @@ function loadStory(){
         ".md",
         true
     );
-
 
     xhr.onload =
         function(){
@@ -456,16 +460,13 @@ function loadStory(){
                     "The article could not be loaded.";
 
                 return;
-
             }
-
 
             buildStory(
                 xhr.responseText
             );
 
         };
-
 
     xhr.onerror =
         function(){
@@ -477,7 +478,6 @@ function loadStory(){
                 "The article could not be loaded.";
 
         };
-
 
     xhr.send();
 
@@ -516,7 +516,6 @@ function buildStory(text){
         cover.style.display =
             "block";
 
-
         cover.onerror =
             function(){
 
@@ -528,24 +527,17 @@ function buildStory(text){
     }
 
 
-    /*
-     * Parse the CURRENT chapter into a
-     * sequential story structure.
-     *
-     * Important:
-     *
-     * Chapter 1 and Chapter 2 are separate
-     * Markdown files, but they intentionally
-     * share the SAME story storage key.
-     *
-     * That is handled by getStoryId().
-     */
-
     storyNodes =
         parseStoryNodes(
             data.body.split(/\r?\n/)
         );
 
+
+    /*
+     * If an old URL contains ?return=FASHION-01,
+     * treat it exactly like the modern game-return
+     * signal.
+     */
 
     if(returnGame){
 
@@ -585,12 +577,27 @@ function parseFrontmatter(text){
     };
 
 
+    /*
+     * Remove a possible UTF-8 BOM.
+     *
+     * Some editors/exporters place this invisible
+     * character before the opening ---.
+     *
+     * Without removing it, the frontmatter regex
+     * can fail completely.
+     */
+
     text =
         String(text || "")
         .replace(/^\uFEFF/, "")
         .replace(/\r\n/g, "\n")
         .replace(/\r/g, "\n");
 
+
+    /*
+     * The actual YAML frontmatter must be the
+     * first block in the Markdown file.
+     */
 
     var match =
         text.match(
@@ -599,6 +606,11 @@ function parseFrontmatter(text){
 
 
     if(!match){
+
+        /*
+         * Even without frontmatter, clean obvious
+         * metadata residue from the beginning.
+         */
 
         data.body =
             cleanLeadingArticleMetadata(text);
@@ -649,6 +661,12 @@ function parseFrontmatter(text){
         );
 
 
+    /*
+     * Clean duplicate CMS/frontmatter material that
+     * may have been accidentally left immediately
+     * after the real frontmatter.
+     */
+
     data.body =
         cleanLeadingArticleMetadata(
             data.body
@@ -673,6 +691,10 @@ function cleanLeadingArticleMetadata(text){
         .replace(/\r/g, "\n");
 
 
+    /*
+     * Remove blank lines at the very beginning.
+     */
+
     body =
         body.replace(
             /^\s*\n/,
@@ -680,8 +702,16 @@ function cleanLeadingArticleMetadata(text){
         );
 
 
-    var changed = true;
+    /*
+     * Remove repeated YAML-style frontmatter blocks
+     * accidentally placed after the real frontmatter.
+     *
+     * This is intentionally limited to the TOP of the
+     * article so normal --- separators later in the story
+     * remain untouched.
+     */
 
+    var changed = true;
 
     while(changed){
 
@@ -700,6 +730,11 @@ function cleanLeadingArticleMetadata(text){
                 duplicateFront[1];
 
 
+            /*
+             * Only remove the block if it actually looks
+             * like article metadata.
+             */
+
             if(
                 /^\s*(title|cover|credits|video|audio)\s*:/mi.test(
                     possibleMeta
@@ -711,13 +746,11 @@ function cleanLeadingArticleMetadata(text){
                         duplicateFront[0].length
                     );
 
-
                 body =
                     body.replace(
                         /^\s*\n/,
                         ""
                     );
-
 
                 changed = true;
 
@@ -728,12 +761,27 @@ function cleanLeadingArticleMetadata(text){
     }
 
 
+    /*
+     * Some of the existing article files contain a
+     * duplicated Markdown title such as:
+     *
+     * ## title: DISCORDANT DESCENDANTS — CHAPTER 1
+     *
+     * immediately after the real frontmatter.
+     *
+     * Remove ONLY that specific metadata-shaped heading.
+     */
+
     body =
         body.replace(
             /^##[ \t]+title\s*:[^\n]*\n+/i,
             ""
         );
 
+
+    /*
+     * Remove one or more blank lines left behind.
+     */
 
     body =
         body.replace(
@@ -763,7 +811,6 @@ function frontValue(
             "\\s*:\\s*[\"']?(.*?)[\"']?$",
             "mi"
         );
-
 
     var match =
         text.match(re);
@@ -878,7 +925,6 @@ function getGameId(line){
             /^\[GAME:([A-Z0-9_-]+)\]$/
         );
 
-
     return match
         ? match[1]
         : "";
@@ -887,15 +933,13 @@ function getGameId(line){
 
 
 /* =========================================================
-   PARSE STORY NODES
+   PARSE COMPLETE STORY INTO NODES
    ========================================================= */
 
 function parseStoryNodes(lines){
 
     var result = [];
-
     var normal = [];
-
     var i = 0;
 
 
@@ -927,18 +971,15 @@ function parseStoryNodes(lines){
 
             flushNormal();
 
-
             var conditional =
                 parseConditionalNode(
                     lines,
                     i
                 );
 
-
             result.push(
                 conditional.node
             );
-
 
             i =
                 conditional.next;
@@ -954,18 +995,15 @@ function parseStoryNodes(lines){
 
             flushNormal();
 
-
             var choice =
                 parseChoiceNode(
                     lines,
                     i
                 );
 
-
             result.push(
                 choice.node
             );
-
 
             i =
                 choice.next;
@@ -981,12 +1019,10 @@ function parseStoryNodes(lines){
 
             flushNormal();
 
-
             result.push({
                 type:"game",
                 id:getGameId(line)
             });
-
 
             i++;
 
@@ -1001,11 +1037,9 @@ function parseStoryNodes(lines){
 
             flushNormal();
 
-
             result.push({
                 type:"outfit"
             });
-
 
             i++;
 
@@ -1014,18 +1048,16 @@ function parseStoryNodes(lines){
         }
 
 
-        /* NEXT CHAPTER */
+        /* NEXT */
 
         if(isNextMarker(line)){
 
             flushNormal();
 
-
             result.push({
                 type:"next",
-                line:cleanControlLine(line)
+                line:line
             });
-
 
             i++;
 
@@ -1035,8 +1067,7 @@ function parseStoryNodes(lines){
 
 
         /*
-         * Stray structural markers are ignored
-         * by the outer parser.
+         * Stray control markers are ignored.
          */
 
         if(
@@ -1046,7 +1077,6 @@ function parseStoryNodes(lines){
         ){
 
             i++;
-
             continue;
 
         }
@@ -1060,7 +1090,6 @@ function parseStoryNodes(lines){
 
 
     flushNormal();
-
 
     return result;
 
@@ -1100,9 +1129,7 @@ function parseChoiceNode(
     var id =
         match[1];
 
-
     var options = [];
-
     var branches = {};
 
     var currentLetter =
@@ -1149,8 +1176,22 @@ function parseChoiceNode(
 
         /*
          * -----------------------------------------------------
-         * NEW CONSEQUENCE
+         * CONSEQUENCE
          * -----------------------------------------------------
+         *
+         * A new consequence starts a new branch.
+         *
+         * Therefore:
+         *
+         * [CONSEQUENCE:A]
+         * ...
+         * [ENDCHOICE]
+         *
+         * does NOT mean the whole choice is finished.
+         *
+         * It means only branch A is finished.
+         *
+         * The parser must keep going because B/C may follow.
          */
 
         var consequence =
@@ -1163,13 +1204,10 @@ function parseChoiceNode(
 
             saveBranch();
 
-
             currentLetter =
                 consequence[1];
 
-
             currentLines = [];
-
 
             i++;
 
@@ -1181,26 +1219,25 @@ function parseChoiceNode(
         /*
          * -----------------------------------------------------
          * ENDCHOICE
-         *
-         * In this story format ENDCHOICE closes the
-         * CURRENT CONSEQUENCE.
-         *
-         * It does NOT necessarily mean that the whole
-         * CHOICE is over, because B and C may follow.
          * -----------------------------------------------------
+         *
+         * IMPORTANT:
+         *
+         * ENDCHOICE closes ONLY the current consequence.
+         *
+         * We do NOT break here.
+         *
+         * This is the critical fix for the A/B/C bug.
          */
 
         if(isEndChoiceMarker(line)){
 
             saveBranch();
 
-
             currentLetter =
                 null;
 
-
             currentLines = [];
-
 
             i++;
 
@@ -1211,15 +1248,16 @@ function parseChoiceNode(
 
         /*
          * -----------------------------------------------------
-         * OPTION LABELS
-         *
-         * Only read options before consequences begin.
+         * OPTIONS
          * -----------------------------------------------------
+         *
+         * Options are only read before any consequence
+         * has started.
          */
 
         var option =
-            cleaned.match(
-                /^\[([A-Z])\]\s*(.+?)\s*$/
+            line.match(
+                /^\s*\[([A-Z])\]\s*(.+?)\s*$/
             );
 
 
@@ -1234,7 +1272,6 @@ function parseChoiceNode(
                 label:option[2]
             });
 
-
             i++;
 
             continue;
@@ -1244,16 +1281,17 @@ function parseChoiceNode(
 
         /*
          * -----------------------------------------------------
-         * AFTER A CLOSED CONSEQUENCE
+         * AFTER A CLOSED BRANCH
          * -----------------------------------------------------
          *
-         * Skip spacing.
+         * We have already encountered [ENDCHOICE].
          *
-         * A new consequence is handled above.
+         * Blank lines are still part of the spacing between
+         * branches, so skip them.
          *
-         * A new structural marker belongs to the OUTER
-         * story parser, so do not consume it.
-         * -----------------------------------------------------
+         * A new [CONSEQUENCE:X] is handled above.
+         *
+         * Anything else means the choice block itself is over.
          */
 
         if(
@@ -1261,7 +1299,9 @@ function parseChoiceNode(
             choiceStarted
         ){
 
-            if(cleaned === ""){
+            if(
+                cleaned === ""
+            ){
 
                 i++;
 
@@ -1269,6 +1309,11 @@ function parseChoiceNode(
 
             }
 
+
+            /*
+             * A new major story marker belongs to the outer
+             * story parser, so stop here without consuming it.
+             */
 
             if(
                 isChoiceStart(line) ||
@@ -1284,8 +1329,8 @@ function parseChoiceNode(
 
 
             /*
-             * Any ordinary Markdown after a closed branch
-             * means the choice block is finished.
+             * Normal Markdown means the choice is finished.
+             * Leave this line for parseStoryNodes().
              */
 
             break;
@@ -1295,7 +1340,7 @@ function parseChoiceNode(
 
         /*
          * -----------------------------------------------------
-         * CURRENT BRANCH CONTENT
+         * BRANCH CONTENT
          * -----------------------------------------------------
          */
 
@@ -1307,14 +1352,13 @@ function parseChoiceNode(
 
         }
 
-
         i++;
 
     }
 
 
     /*
-     * Save a final branch if one is still open.
+     * Save any final branch that did not have ENDCHOICE.
      */
 
     saveBranch();
@@ -1372,15 +1416,11 @@ function parseConditionalNode(
     var letter =
         first[2];
 
-
     var thenLines = [];
-
     var elseLines = [];
-
 
     var current =
         thenLines;
-
 
     var depth = 1;
 
@@ -1393,10 +1433,6 @@ function parseConditionalNode(
         var line =
             lines[i];
 
-
-        /*
-         * Nested IF
-         */
 
         if(isIfMarker(line)){
 
@@ -1411,14 +1447,9 @@ function parseConditionalNode(
         }
 
 
-        /*
-         * ENDIF
-         */
-
         if(isEndIfMarker(line)){
 
             depth--;
-
 
             if(depth === 0){
 
@@ -1427,7 +1458,6 @@ function parseConditionalNode(
                 break;
 
             }
-
 
             current.push(line);
 
@@ -1438,11 +1468,6 @@ function parseConditionalNode(
         }
 
 
-        /*
-         * ELSE belongs to the OUTERMOST IF
-         * currently being parsed.
-         */
-
         if(
             depth === 1 &&
             isElseMarker(line)
@@ -1450,7 +1475,6 @@ function parseConditionalNode(
 
             current =
                 elseLines;
-
 
             i++;
 
@@ -1472,12 +1496,10 @@ function parseConditionalNode(
             type:"conditional",
             id:id,
             letter:letter,
-
             thenNodes:
                 parseStoryNodes(
                     thenLines
                 ),
-
             elseNodes:
                 parseStoryNodes(
                     elseLines
@@ -1524,10 +1546,17 @@ function renderProgress(){
 
 
     /*
-     * Game continuation.
+     * GAME RETURN
+     *
+     * executeNodes() creates the
+     * .story-resume-anchor at the exact
+     * point immediately AFTER the completed
+     * game.
      */
 
-    if(resumeAfterGameId){
+    if(
+        resumeAfterGameId
+    ){
 
         var gameAnchor =
             content.querySelector(
@@ -1538,6 +1567,11 @@ function renderProgress(){
                 '"]'
             );
 
+
+        /*
+         * Consume the request before
+         * performing the scroll.
+         */
 
         resumeAfterGameId = "";
 
@@ -1593,11 +1627,18 @@ function executeNodes(
                 node.text.trim()
             ){
 
-                if(resumeAfterGameId){
+                /*
+                 * If we are returning from a game,
+                 * place the resume anchor BEFORE the
+                 * first continuation block.
+                 */
+
+                if(
+                    resumeAfterGameId
+                ){
 
                     target.insertAdjacentHTML(
                         "beforeend",
-
                         '<span class="story-resume-anchor" ' +
                         'data-resume-game="' +
                         escapeAttr(
@@ -1662,20 +1703,9 @@ function executeNodes(
             var choices =
                 getChoices();
 
-
             var selected =
                 choices[node.id];
 
-
-            /*
-             * Example:
-             *
-             * [IF:choice-03=A]
-             *
-             * Chapter 2 sees the SAME choice-03
-             * because Chapter 1 and Chapter 2
-             * share the same storage key.
-             */
 
             if(
                 selected ===
@@ -1688,8 +1718,9 @@ function executeNodes(
                         target
                     );
 
-
-                if(branchResult.stopped){
+                if(
+                    branchResult.stopped
+                ){
 
                     result.stopped =
                         true;
@@ -1709,8 +1740,9 @@ function executeNodes(
                         target
                     );
 
-
-                if(elseResult.stopped){
+                if(
+                    elseResult.stopped
+                ){
 
                     result.stopped =
                         true;
@@ -1723,7 +1755,6 @@ function executeNodes(
                 }
 
             }
-
 
             continue;
 
@@ -1746,16 +1777,15 @@ function executeNodes(
             var savedChoices =
                 getChoices();
 
-
             var savedLetter =
                 savedChoices[node.id];
 
 
             /*
-             * COMPLETED CHOICE
+             * CHOICE ALREADY COMPLETED
              *
-             * Follow ONLY the selected branch,
-             * then continue through the story.
+             * ONLY the selected branch is
+             * executed.
              */
 
             if(savedLetter){
@@ -1766,15 +1796,18 @@ function executeNodes(
                     ] || [];
 
 
+                /*
+                 * Put a semantic continuation
+                 * wrapper around the selected branch.
+                 */
+
                 var branchTarget =
                     document.createElement(
                         "div"
                     );
 
-
                 branchTarget.className =
                     "story-choice-result";
-
 
                 branchTarget.setAttribute(
                     "data-choice-result",
@@ -1794,7 +1827,9 @@ function executeNodes(
                     );
 
 
-                if(branchResult.stopped){
+                if(
+                    branchResult.stopped
+                ){
 
                     result.stopped =
                         true;
@@ -1810,9 +1845,7 @@ function executeNodes(
 
 
             /*
-             * UNRESOLVED CHOICE
-             *
-             * This is the current story gate.
+             * CHOICE NOT YET MADE
              */
 
             target.insertAdjacentHTML(
@@ -1823,7 +1856,6 @@ function executeNodes(
 
             result.stopped =
                 true;
-
 
             return result;
 
@@ -1847,6 +1879,15 @@ function executeNodes(
                 getCompletedGames();
 
 
+            /*
+             * GAME ALREADY COMPLETED
+             *
+             * Do not render the game again.
+             *
+             * The NEXT reachable story content
+             * will receive the resume anchor.
+             */
+
             if(
                 completedGames[
                     node.id
@@ -1858,6 +1899,10 @@ function executeNodes(
             }
 
 
+            /*
+             * GAME NOT COMPLETED
+             */
+
             target.insertAdjacentHTML(
                 "beforeend",
                 renderGame(
@@ -1868,7 +1913,6 @@ function executeNodes(
 
             result.stopped =
                 true;
-
 
             return result;
 
@@ -1898,7 +1942,6 @@ function executeNodes(
 
             result.stopped =
                 true;
-
 
             return result;
 
@@ -1998,7 +2041,6 @@ document.addEventListener(
                 "data-choice"
             );
 
-
         var letter =
             target.getAttribute(
                 "data-letter"
@@ -2015,6 +2057,13 @@ document.addEventListener(
         }
 
 
+        var previousTop =
+            window.pageYOffset ||
+            document.documentElement.scrollTop ||
+            document.body.scrollTop ||
+            0;
+
+
         saveChoice(
             id,
             letter
@@ -2022,84 +2071,20 @@ document.addEventListener(
 
 
         /*
-         * Rebuild the story from the beginning.
-         *
-         * This is what allows:
-         *
-         * Chapter 1 choice
-         *       ↓
-         * saved state
-         *       ↓
-         * later Chapter 1 content
-         *       ↓
-         * NEXT
-         *       ↓
-         * Chapter 2
-         *       ↓
-         * IF reads previous choice
+         * Rebuild the reachable story.
          */
 
         renderProgress();
 
 
         /*
-         * Find the next reachable progression point.
+         * Find the exact selected branch result.
          */
 
         setTimeout(
             function(){
 
-                var nextChoice =
-                    null;
-
-
-                var choices =
-                    content.querySelectorAll(
-                        ".story-choice"
-                    );
-
-
-                for(
-                    var i = 0;
-                    i < choices.length;
-                    i++
-                ){
-
-                    var choiceId =
-                        choices[i].getAttribute(
-                            "data-choice"
-                        );
-
-
-                    if(
-                        choiceId !== id
-                    ){
-
-                        nextChoice =
-                            choices[i];
-
-                        break;
-
-                    }
-
-                }
-
-
-                var targetElement =
-                    nextChoice ||
-
-                    content.querySelector(
-                        ".story-game"
-                    ) ||
-
-                    content.querySelector(
-                        ".story-next"
-                    ) ||
-
-                    content.querySelector(
-                        ".story-outfit"
-                    ) ||
-
+                var branchResult =
                     content.querySelector(
                         '[data-choice-result="' +
                         cssEscape(id) +
@@ -2107,16 +2092,25 @@ document.addEventListener(
                     );
 
 
-                if(!targetElement){
+                if(branchResult){
+
+                    scrollToElement(
+                        branchResult
+                    );
 
                     return;
 
                 }
 
 
-                scrollToElement(
-                    targetElement
-                );
+                try{
+
+                    window.scrollTo(
+                        0,
+                        previousTop
+                    );
+
+                }catch(e){}
 
             },
             60
@@ -2315,6 +2309,15 @@ document.addEventListener(
             "FASHION-01"
         ){
 
+            /*
+             * Keep the existing navigation model.
+             *
+             * The game creates a normal browser
+             * history entry.
+             *
+             * fashion-01.html later calls history.back().
+             */
+
             window.location.href =
                 "/games/fashion-01.html";
 
@@ -2369,6 +2372,10 @@ window.addEventListener(
         }
 
 
+        /*
+         * Consume the signal immediately.
+         */
+
         try{
 
             sessionStorage.removeItem(
@@ -2378,6 +2385,11 @@ window.addEventListener(
         }catch(e){}
 
 
+        /*
+         * Ask renderProgress() to create
+         * the exact continuation anchor.
+         */
+
         if(
             storyNodes &&
             storyNodes.length
@@ -2385,7 +2397,6 @@ window.addEventListener(
 
             resumeAfterGameId =
                 returnedGame;
-
 
             renderProgress();
 
@@ -2535,8 +2546,8 @@ function renderShowOutfit(){
 function renderNext(line){
 
     var match =
-        cleanControlLine(line).match(
-            /^\[NEXT:([^]|]+)(?:\|([^\]]+))?\]$/
+        line.match(
+            /^\s*\[NEXT:([^]|]+)(?:\|([^\]]+))?\]\s*$/
         );
 
 
@@ -2615,7 +2626,9 @@ document.addEventListener(
         }
 
 
-        if(target.disabled){
+        if(
+            target.disabled
+        ){
 
             return;
 
@@ -2648,27 +2661,7 @@ document.addEventListener(
             );
 
 
-        /*
-         * Keep the public reader as the destination.
-         *
-         * Chapter state is NOT placed in the URL.
-         * It remains in localStorage under the shared
-         * CEEQWINN story history key.
-         */
-
-        var readerPath =
-            window.location.pathname;
-
-
-        readerPath =
-            readerPath.substring(
-                0,
-                readerPath.lastIndexOf("/") + 1
-            );
-
-
         window.location.href =
-            readerPath +
             "article.html?file=" +
             encodeURIComponent(
                 nextFile
@@ -2691,7 +2684,6 @@ reset.onclick =
                 storageKey
             );
 
-
             localStorage.removeItem(
                 "ceeqwinn_completed_games"
             );
@@ -2711,7 +2703,7 @@ reset.onclick =
 function getStoryId(path){
 
     path =
-        String(path || "");
+        String(path);
 
 
     path =
@@ -2722,18 +2714,8 @@ function getStoryId(path){
 
 
     /*
-     * THIS IS CRITICAL.
-     *
-     * These:
-     *
-     * discordant-descendants-chapter-1
-     * discordant-descendants-chapter-2
-     *
-     * BOTH become:
-     *
-     * discordant-descendants
-     *
-     * Therefore the same localStorage record is used.
+     * Chapter-specific files share the
+     * same base story history.
      */
 
     path =
@@ -2990,7 +2972,7 @@ function renderExtraMedia(data){
 function cleanPath(path){
 
     path =
-        String(path || "")
+        String(path)
         .replace(
             /\\/g,
             "/"
@@ -3103,3 +3085,4 @@ function cssEscape(value){
 </body>
 
 </html>
+>
