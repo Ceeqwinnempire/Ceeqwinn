@@ -359,21 +359,29 @@ var file =
 var returnGame =
     params.get("return") || "";
 
-var resumeChapter =
-    params.get("resume") || "";
-
 file =
     cleanPath(file);
 
 returnGame =
     String(returnGame).trim();
 
-resumeChapter =
-    String(resumeChapter).trim();
-
 
 /* =========================================================
    STORY ID
+   =========================================================
+   
+   ALL CHAPTERS OF THE SAME STORY MUST USE
+   THE SAME STORAGE KEY.
+   
+   Examples:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   ALL become:
+   
+   discordant-descendants
    ========================================================= */
 
 var storyId =
@@ -396,8 +404,6 @@ var storageKey =
 var storyNodes = [];
 
 var resumeAfterGameId = "";
-
-var resumeAfterGameScroll = null;
 
 
 /* =========================================================
@@ -536,6 +542,15 @@ function buildStory(text){
     }
 
 
+    /*
+     * Convert Markdown into the internal story-node
+     * structure.
+     *
+     * This is what allows ordinary Markdown,
+     * choices, conditions, games and NEXT markers
+     * to coexist.
+     */
+
     storyNodes =
         parseStoryNodes(
             data.body.split(/\r?\n/)
@@ -563,29 +578,6 @@ function buildStory(text){
     renderExtraMedia(data);
 
     status.textContent = "";
-
-
-    /*
-     * Chapter return support.
-     *
-     * This keeps the existing Chapter 1/2/3
-     * transition behavior.
-     */
-
-    if(resumeChapter === "1"){
-
-        setTimeout(
-            function(){
-
-                scrollToStoryStart();
-
-                resumeChapter = "";
-
-            },
-            150
-        );
-
-    }
 
 }
 
@@ -843,6 +835,16 @@ function isShowOutfitMarker(line){
 }
 
 
+/*
+ * NEXT is deliberately tolerant:
+ *
+ * [NEXT:file]
+ * [NEXT:file|Label]
+ * [NEXT: file | Label]
+ *
+ * all work.
+ */
+
 function isNextMarker(line){
 
     return /^\[NEXT:\s*[^|\]]+(?:\|[^\]]+)?\s*\]$/i.test(
@@ -1057,7 +1059,7 @@ function parseStoryNodes(lines){
 
         /*
          * These markers belong to a structure already
-         * being parsed.
+         * being parsed. Ignore them here.
          */
 
         if(
@@ -1201,6 +1203,9 @@ function parseChoiceNode(
 
         /*
          * ENDCHOICE
+         *
+         * It closes the current branch, NOT the
+         * entire A/B/C collection.
          */
 
         if(isEndChoiceMarker(line)){
@@ -1270,6 +1275,10 @@ function parseChoiceNode(
             }
 
 
+            /*
+             * These belong to the outer story parser.
+             */
+
             if(
                 isChoiceStart(line) ||
                 isGameMarker(line) ||
@@ -1282,6 +1291,11 @@ function parseChoiceNode(
 
             }
 
+
+            /*
+             * Normal Markdown also means the choice
+             * block has ended.
+             */
 
             break;
 
@@ -1305,6 +1319,11 @@ function parseChoiceNode(
 
     }
 
+
+    /*
+     * Save a final branch if the author omitted
+     * [ENDCHOICE].
+     */
 
     saveBranch();
 
@@ -1498,9 +1517,6 @@ function renderProgress(){
 
     /*
      * GAME RETURN
-     *
-     * The anchor is now placed at the exact
-     * position where the game lived.
      */
 
     if(resumeAfterGameId){
@@ -1515,28 +1531,13 @@ function renderProgress(){
             );
 
 
-        var gameScroll =
-            resumeAfterGameScroll;
-
-
         resumeAfterGameId = "";
-
-        resumeAfterGameScroll = null;
 
 
         if(gameAnchor){
 
             scrollToElement(
                 gameAnchor
-            );
-
-        }else if(
-            gameScroll !== null &&
-            gameScroll !== undefined
-        ){
-
-            scrollToPosition(
-                gameScroll
             );
 
         }
@@ -1657,6 +1658,18 @@ function executeNodes(
                     choices[node.id]
                 );
 
+
+            /*
+             * IMPORTANT:
+             *
+             * If the requested choice matches,
+             * render THEN.
+             *
+             * Otherwise render ELSE.
+             *
+             * This allows Chapter 2 to react to
+             * Chapter 1's saved choice.
+             */
 
             if(
                 selected ===
@@ -1825,77 +1838,13 @@ function executeNodes(
                 getCompletedGames();
 
 
-            /*
-             * GAME ALREADY COMPLETED
-             *
-             * If we are returning from this game,
-             * place the resume anchor exactly where
-             * the game used to be before continuing.
-             */
-
             if(
                 completedGames[
                     node.id
                 ]
             ){
 
-                if(
-                    resumeAfterGameId &&
-                    normalizeGameId(
-                        resumeAfterGameId
-                    ) ===
-                    normalizeGameId(
-                        node.id
-                    )
-                ){
-
-                    target.insertAdjacentHTML(
-                        "beforeend",
-                        '<span class="story-resume-anchor" ' +
-                        'data-resume-game="' +
-                        escapeAttr(
-                            resumeAfterGameId
-                        ) +
-                        '"></span>'
-                    );
-
-
-                    resumeAfterGameId = "";
-
-                }
-
-
                 continue;
-
-            }
-
-
-            /*
-             * If a return signal exists but the
-             * game has not yet been marked complete,
-             * still give the return system a precise
-             * location.
-             */
-
-            if(
-                resumeAfterGameId &&
-                normalizeGameId(
-                    resumeAfterGameId
-                ) ===
-                normalizeGameId(
-                    node.id
-                )
-            ){
-
-                target.insertAdjacentHTML(
-                    "beforeend",
-                    '<span class="story-resume-anchor" ' +
-                    'data-resume-game="' +
-                    escapeAttr(
-                        resumeAfterGameId
-                    ) +
-                    '"></span>'
-                );
 
             }
 
@@ -1929,6 +1878,15 @@ function executeNodes(
             result.hasProgress =
                 true;
 
+
+            /*
+             * At this exact point ALL choices already
+             * encountered in the chapter have been
+             * stored in localStorage.
+             *
+             * Therefore clicking NEXT can safely
+             * move to the next chapter.
+             */
 
             target.insertAdjacentHTML(
                 "beforeend",
@@ -2068,6 +2026,10 @@ document.addEventListener(
 
         /*
          * SAVE FIRST.
+         *
+         * This is critical because the next render,
+         * conditional branches and NEXT chapter all
+         * depend on this state.
          */
 
         saveChoice(
@@ -2348,34 +2310,6 @@ document.addEventListener(
             "FASHION-01"
         ){
 
-            /*
-             * SAVE THE EXACT STORY POSITION BEFORE
-             * LEAVING FOR THE GAME.
-             *
-             * This is the game equivalent of the
-             * choice resume anchor.
-             */
-
-            saveGameReturnPosition(
-                gameId
-            );
-
-
-            /*
-             * The existing return signal remains
-             * unchanged.
-             */
-
-            try{
-
-                sessionStorage.setItem(
-                    "ceeqwinn_return_from_game",
-                    normalizeGameId(gameId)
-                );
-
-            }catch(e){}
-
-
             window.location.href =
                 "/games/fashion-01.html";
 
@@ -2383,108 +2317,6 @@ document.addEventListener(
 
     }
 );
-
-
-/* =========================================================
-   SAVE GAME RETURN POSITION
-   ========================================================= */
-
-function saveGameReturnPosition(gameId){
-
-    var scrollTop =
-        window.pageYOffset ||
-        document.documentElement.scrollTop ||
-        document.body.scrollTop ||
-        0;
-
-
-    try{
-
-        sessionStorage.setItem(
-            getGameScrollKey(gameId),
-            String(scrollTop)
-        );
-
-    }catch(e){}
-
-}
-
-
-/* =========================================================
-   GET GAME RETURN POSITION
-   ========================================================= */
-
-function getGameReturnPosition(gameId){
-
-    var saved =
-        null;
-
-
-    try{
-
-        saved =
-            sessionStorage.getItem(
-                getGameScrollKey(gameId)
-            );
-
-    }catch(e){
-
-        saved =
-            null;
-
-    }
-
-
-    if(
-        saved === null ||
-        saved === ""
-    ){
-
-        return null;
-
-    }
-
-
-    var number =
-        parseFloat(saved);
-
-
-    return isFinite(number)
-        ? number
-        : null;
-
-}
-
-
-/* =========================================================
-   GAME SCROLL STORAGE KEY
-   ========================================================= */
-
-function getGameScrollKey(gameId){
-
-    return (
-        "ceeqwinn_game_scroll_" +
-        storyId +
-        "_" +
-        normalizeGameId(gameId)
-    );
-
-}
-
-
-/* =========================================================
-   NORMALIZE GAME ID
-   ========================================================= */
-
-function normalizeGameId(value){
-
-    return String(
-        value || ""
-    )
-    .trim()
-    .toUpperCase();
-
-}
 
 
 /* =========================================================
@@ -2540,22 +2372,6 @@ window.addEventListener(
 
         }catch(e){}
 
-
-        /*
-         * Recover the exact scroll position as a
-         * secondary fallback.
-         */
-
-        resumeAfterGameScroll =
-            getGameReturnPosition(
-                returnedGame
-            );
-
-
-        /*
-         * Primary restoration uses the same kind
-         * of story anchor used by choices.
-         */
 
         if(
             storyNodes &&
@@ -2621,76 +2437,6 @@ function scrollToElement(element){
 
         },
         100
-    );
-
-}
-
-
-/* =========================================================
-   SCROLL TO SAVED POSITION
-   ========================================================= */
-
-function scrollToPosition(position){
-
-    if(
-        position === null ||
-        position === undefined
-    ){
-
-        return;
-
-    }
-
-
-    setTimeout(
-        function(){
-
-            try{
-
-                window.scrollTo({
-                    top:position,
-                    behavior:"smooth"
-                });
-
-            }catch(e){
-
-                try{
-
-                    window.scrollTo(
-                        0,
-                        position
-                    );
-
-                }catch(ignore){}
-
-            }
-
-        },
-        100
-    );
-
-}
-
-
-/* =========================================================
-   SCROLL TO STORY START
-   ========================================================= */
-
-function scrollToStoryStart(){
-
-    var firstStoryElement =
-        content.firstElementChild;
-
-
-    if(!firstStoryElement){
-
-        return;
-
-    }
-
-
-    scrollToElement(
-        firstStoryElement
     );
 
 }
@@ -2781,6 +2527,16 @@ function renderShowOutfit(){
    ========================================================= */
 
 function renderNext(line){
+
+    /*
+     * Accept:
+     *
+     * [NEXT:discordant-descendants-chapter-2]
+     *
+     * [NEXT:discordant-descendants-chapter-2|Step into the gathering.]
+     *
+     * [NEXT: discordant-descendants-chapter-2 | Step into the gathering. ]
+     */
 
     var cleaned =
         cleanControlLine(line);
@@ -2908,18 +2664,19 @@ document.addEventListener(
 
 
         /*
-         * Story history is intentionally preserved.
+         * The story history is NOT cleared here.
          *
-         * Chapter 3 uses the same story storage key
-         * as Chapter 1 and Chapter 2.
+         * That is the important part.
+         *
+         * Chapter 2 will use the exact same
+         * ceeqwinn_story_history_<base-story> key.
          */
 
         window.location.href =
             "article.html?file=" +
             encodeURIComponent(
                 nextFile
-            ) +
-            "&resume=1";
+            );
 
     }
 );
@@ -2952,6 +2709,19 @@ reset.onclick =
 
 /* =========================================================
    STORY ID
+   =========================================================
+   
+   This is the bridge between chapters.
+   
+   Example:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   all become:
+   
+   discordant-descendants
    ========================================================= */
 
 function getStoryId(path){
@@ -2966,6 +2736,21 @@ function getStoryId(path){
             ""
         );
 
+
+    /*
+     * Remove chapter numbering from the END only.
+     *
+     * This means:
+     *
+     * discordant-descendants-chapter-2
+     *
+     * becomes:
+     *
+     * discordant-descendants
+     *
+     * while unrelated names containing the word
+     * "chapter" elsewhere remain untouched.
+     */
 
     path =
         path.replace(
