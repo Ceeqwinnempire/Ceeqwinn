@@ -380,6 +380,7 @@ body{
     50%{
         transform:translateY(-4px);
     }
+
 }
 
 /* ---------- DRESSING PANEL ---------- */
@@ -579,6 +580,7 @@ body{
             translateY(0)
             scale(1);
     }
+
 }
 
 .reveal-eyebrow{
@@ -969,7 +971,7 @@ body{
             <img
                 id="characterImage"
                 class="character-image idle"
-                src="assets/characters/lexis/outfits/lexis_outfit_01.png"
+                src="../content/images/characters/lexis/outfits/lexis_default.png"
                 alt="Lexis"
             >
 
@@ -1242,7 +1244,7 @@ const DEFAULT_STATE = {
         lexis: {
 
             currentOutfit:
-                "lexis_outfit_01",
+                "lexis_default",
 
             currentHair:
                 "hair_default",
@@ -1376,16 +1378,17 @@ let playerState =
    OUTFIT DATA
    ---------------------------------------------------------
 
-   Replace these image paths later with your
-   final AI-generated assets.
+   THESE ARE THE REAL CEEQWINN LEXIS ASSETS.
 
-   For the FIRST TEST, the same placeholder image
-   may be used temporarily if necessary.
+   They are stored in:
+
+   content/images/characters/lexis/outfits/
+
 --------------------------------------------------------- */
 
 const outfits = {
 
-    lexis_outfit_01: {
+    lexis_default: {
 
         character:"lexis",
 
@@ -1393,7 +1396,7 @@ const outfits = {
             "Midnight Tailoring",
 
         image:
-            "assets/characters/lexis/outfits/lexis_outfit_01.png",
+            "../content/images/characters/lexis/outfits/lexis_default.png",
 
         briefMatch:24,
 
@@ -1405,7 +1408,7 @@ const outfits = {
 
     },
 
-    lexis_outfit_02: {
+    lexis_red_dress: {
 
         character:"lexis",
 
@@ -1413,7 +1416,7 @@ const outfits = {
             "Ivory Evening",
 
         image:
-            "assets/characters/lexis/outfits/lexis_outfit_02.png",
+            "../content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg",
 
         briefMatch:27,
 
@@ -1425,7 +1428,7 @@ const outfits = {
 
     },
 
-    lexis_outfit_03: {
+    lexis_black_dress: {
 
         character:"lexis",
 
@@ -1433,7 +1436,7 @@ const outfits = {
             "Crimson Drama",
 
         image:
-            "assets/characters/lexis/outfits/lexis_outfit_03.png",
+            "../content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg",
 
         briefMatch:30,
 
@@ -1449,11 +1452,80 @@ const outfits = {
 
 
 /* ---------------------------------------------------------
+   OLD OUTFIT ID COMPATIBILITY
+   ---------------------------------------------------------
+
+   If Fashion-02 was previously tested with the
+   placeholder IDs, translate them into the real
+   CEEQWINN outfit IDs.
+
+--------------------------------------------------------- */
+
+const OUTFIT_ID_MIGRATION = {
+
+    lexis_outfit_01:
+        "lexis_default",
+
+    lexis_outfit_02:
+        "lexis_red_dress",
+
+    lexis_outfit_03:
+        "lexis_black_dress"
+
+};
+
+
+/* ---------------------------------------------------------
    CURRENT OUTFIT
    --------------------------------------------------------- */
 
 let currentOutfit =
     playerState.characters.lexis.currentOutfit;
+
+
+/*
+   Convert any old Fashion-02 test ID.
+*/
+
+if(
+    OUTFIT_ID_MIGRATION[currentOutfit]
+){
+
+    currentOutfit =
+        OUTFIT_ID_MIGRATION[currentOutfit];
+
+    playerState
+        .characters
+        .lexis
+        .currentOutfit =
+            currentOutfit;
+
+    savePlayerState();
+
+}
+
+
+/*
+   If the saved outfit is completely unknown,
+   safely fall back to Lexis default.
+*/
+
+if(
+    !outfits[currentOutfit]
+){
+
+    currentOutfit =
+        "lexis_default";
+
+    playerState
+        .characters
+        .lexis
+        .currentOutfit =
+            currentOutfit;
+
+    savePlayerState();
+
+}
 
 
 /* ---------------------------------------------------------
@@ -1722,6 +1794,31 @@ document
                     .currentOutfit;
 
 
+            /*
+               Safety conversion for any
+               old test ID.
+            */
+
+            if(
+                OUTFIT_ID_MIGRATION[currentOutfit]
+            ){
+
+                currentOutfit =
+                    OUTFIT_ID_MIGRATION[
+                        currentOutfit
+                    ];
+
+                playerState
+                    .characters
+                    .lexis
+                    .currentOutfit =
+                        currentOutfit;
+
+                savePlayerState();
+
+            }
+
+
             const outfit =
                 outfits[currentOutfit];
 
@@ -1731,7 +1828,13 @@ document
                 characterImage.src =
                     outfit.image;
 
+                characterImage.alt =
+                    outfit.name;
+
             }
+
+
+            refreshSelectedCard();
 
 
             showScreen(
@@ -2041,16 +2144,7 @@ document
 
 /* ---------------------------------------------------------
    SAVE LOOK
-   ---------------------------------------------------------
-
-   First MVP:
-   Use browser-native image saving
-   when possible.
-
-   Actual image-card generation will
-   be added after the visual assets are
-   finalized.
---------------------------------------------------------- */
+   --------------------------------------------------------- */
 
 document
     .getElementById(
@@ -2067,15 +2161,6 @@ document
                 return;
             }
 
-
-            /*
-               Open the selected artwork
-               so the user can save it.
-
-               Later this becomes a true
-               generated CEEQWINN Lookbook
-               card using canvas.
-            */
 
             window.open(
                 outfit.image,
@@ -2113,10 +2198,6 @@ document
                 " on CEEQWINN Lookbook.";
 
 
-            /*
-               Native share where supported.
-            */
-
             if(
                 navigator.share
             ){
@@ -2149,10 +2230,6 @@ document
 
             }
 
-
-            /*
-               Desktop / unsupported fallback.
-            */
 
             try{
 
@@ -2246,22 +2323,11 @@ function completeGame(){
 
 /* ---------------------------------------------------------
    LOOKBOOK = COMPLETION MOMENT
-   ---------------------------------------------------------
-
-   For this first prototype we mark the
-   game complete when the player reaches
-   the Lookbook.
-
---------------------------------------------------------- */
+   --------------------------------------------------------- */
 
 const originalOpenLookbook =
     openLookbook;
 
-
-/*
-   Replace button listener with
-   completion-aware version.
-*/
 
 document
     .getElementById(
@@ -2294,6 +2360,9 @@ if(
     characterImage.src =
         outfits[currentOutfit].image;
 
+    characterImage.alt =
+        outfits[currentOutfit].name;
+
 }
 
 
@@ -2311,7 +2380,11 @@ console.log(
             currentOutfit,
 
         gameId:
-            GAME_ID
+            GAME_ID,
+
+        availableOutfits:
+            Object.keys(outfits)
+
     }
 );
 
