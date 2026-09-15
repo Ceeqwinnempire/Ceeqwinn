@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
+
+<title>Fashion-02 | CEEQWINN</title>
+
+<style>
+
+/* =========================================================
+   CEEQWINN FASHION-02
+   MVP VISUAL STORY GAME
+   ========================================================= */
+
+:root{
+    --wine:#651f3a;
+    --crimson:#a52c4f;
+    --pink:#d65a83;
+    --gold:#d6ad63;
+    --cream:#f8f3ef;
+    --ink:#211c20;
+    --muted:#746b70;
+    --glass:rgba(255,255,255,.78);
+}
+
+/* ---------- BASE ---------- */
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    margin:0;
+    width:100%;
+    min-height:100%;
+    font-family:Inter,Outfit,system-ui,-apple-system,
+                 BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:
+        radial-gradient(circle at 20% 10%,
+        rgba(214,173,99,.13),
+        transparent 30%),
+        radial-gradient(circle at 85% 90%,
+        rgba(165,44,79,.12),
+        transparent 35%),
+        #eee9e7;
+    color:var(--ink);
+}
+
+/* ---------- GAME SHELL ---------- */
+
+.game-shell{
+    min-height:100vh;
+    min-height:100dvh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:12px;
+}
+
+/*
+   The actual game remains portrait-first.
+   Desktop gets the same 9:16 stage.
+*/
+
+.game{
+    position:relative;
+
+    width:min(100%,430px);
+    aspect-ratio:9 / 16;
+
+    max-height:calc(100vh - 24px);
+    max-height:calc(100dvh - 24px);
+
+    overflow:hidden;
+
+    border-radius:28px;
+
+    background:
+        radial-gradient(circle at 50% 20%,
+        rgba(255,255,255,.9),
+        transparent 35%),
+        linear-gradient(
+            145deg,
+            #3d1828,
+            #711f3d 55%,
+            #1d1117
+        );
+
+    box-shadow:
+        0 30px 80px rgba(30,15,22,.25);
+
+    isolation:isolate;
+}
+
+/* ---------- ATMOSPHERE ---------- */
+
+.game::before{
+    content:"";
+
+    position:absolute;
+    inset:-20%;
+
+    background:
+        radial-gradient(circle at 25% 25%,
+        rgba(255,220,170,.18),
+        transparent 20%),
+        radial-gradient(circle at 80% 60%,
+        rgba(255,255,255,.08),
+        transparent 22%);
+
+    animation:
+        atmosphereMove 8s ease-in-out infinite alternate;
+
+    pointer-events:none;
+    z-index:-1;
+}
+
+@keyframes atmosphereMove{
+
+    from{
+        transform:translate3d(-2%,-1%,0) scale(1);
+    }
+
+    to{
+        transform:translate3d(2%,2%,0) scale(1.04);
+    }
+}
+
+/* ---------- SCREENS ---------- */
+
+.screen{
+    position:absolute;
+    inset:0;
+
+    display:none;
+    flex-direction:column;
+
+    opacity:0;
+    transform:scale(.985);
+
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+}
+
+.screen.active{
+    display:flex;
+    opacity:1;
+    transform:scale(1);
+}
+
+/* ---------- TOP BAR ---------- */
+
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:
+        max(16px, env(safe-area-inset-top))
+        18px
+        10px;
+
+    color:white;
+
+    z-index:20;
+}
+
+.brand{
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+}
+
+.challenge-label{
+    font-size:11px;
+    opacity:.72;
+}
+
+/* ---------- GLASS ---------- */
+
+.glass{
+    background:var(--glass);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+
+    border:1px solid rgba(255,255,255,.42);
+
+    box-shadow:
+        0 14px 35px rgba(0,0,0,.12);
+}
+
+/* =========================================================
+   SCREEN 1 — BRIEF
+   ========================================================= */
+
+.brief-screen{
+    padding:0 18px 18px;
+    justify-content:center;
+}
+
+.brief-content{
+    text-align:center;
+    color:white;
+    padding:18px;
+}
+
+.eyebrow{
+    font-size:10px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    opacity:.7;
+    margin-bottom:12px;
+}
+
+.brief-title{
+    margin:0;
+
+    font-size:
+        clamp(30px,9vw,48px);
+
+    line-height:.95;
+
+    letter-spacing:-.045em;
+}
+
+.brief-description{
+    max-width:310px;
+    margin:18px auto 0;
+
+    font-size:14px;
+    line-height:1.65;
+
+    color:rgba(255,255,255,.78);
+}
+
+.requirements{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:8px;
+
+    margin:24px auto;
+}
+
+.requirement{
+    padding:8px 13px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.15);
+
+    font-size:11px;
+}
+
+/* ---------- BUTTON ---------- */
+
+.primary-button{
+    border:0;
+
+    padding:14px 22px;
+
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            100deg,
+            #e26991,
+            #b84d72,
+            #d6ad63
+        );
+
+    color:white;
+
+    font-size:13px;
+    font-weight:800;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.2);
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+.primary-button:hover{
+    transform:translateY(-2px) scale(1.02);
+
+    box-shadow:
+        0 14px 30px rgba(0,0,0,.25);
+}
+
+.primary-button:active{
+    transform:scale(.97);
+}
+
+/* =========================================================
+   SCREEN 2 — DRESS
+   ========================================================= */
+
+.dress-screen{
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.05),
+            rgba(0,0,0,.35)
+        );
+}
+
+.character-stage{
+    position:relative;
+
+    flex:1;
+
+    min-height:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:
+        10px
+        18px
+        4px;
+}
+
+/* Character image */
+
+.character-image{
+    width:92%;
+    height:92%;
+
+    object-fit:contain;
+
+    filter:
+        drop-shadow(
+            0 25px 25px rgba(0,0,0,.28)
+        );
+
+    transition:
+        opacity .3s ease,
+        transform .45s cubic-bezier(.2,.8,.2,1);
+
+    user-select:none;
+    pointer-events:none;
+}
+
+.character-image.outfit-changing{
+    opacity:.15;
+    transform:scale(.96) translateY(8px);
+}
+
+/* subtle idle movement */
+
+.character-image.idle{
+    animation:
+        characterIdle 4s ease-in-out infinite;
+}
+
+@keyframes characterIdle{
+
+    0%,
+    100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-4px);
+    }
+}
+
+/* ---------- DRESSING PANEL ---------- */
+
+.dress-panel{
+    padding:10px 12px 14px;
+
+    border-radius:
+        24px
+        24px
+        0
+        0;
+
+    background:
+        rgba(255,255,255,.9);
+
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+
+    box-shadow:
+        0 -10px 35px rgba(0,0,0,.12);
+}
+
+.panel-heading{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:8px;
+}
+
+.panel-title{
+    font-size:12px;
+    font-weight:800;
+}
+
+.panel-hint{
+    font-size:10px;
+    color:var(--muted);
+}
+
+.outfit-carousel{
+    display:flex;
+    gap:9px;
+
+    overflow-x:auto;
+
+    padding:2px 1px 7px;
+
+    scrollbar-width:none;
+}
+
+.outfit-carousel::-webkit-scrollbar{
+    display:none;
+}
+
+.outfit-card{
+    flex:0 0 92px;
+
+    border:0;
+
+    border-radius:16px;
+
+    padding:5px;
+
+    background:#f1eded;
+
+    cursor:pointer;
+
+    transition:
+        transform .18s ease,
+        box-shadow .18s ease,
+        background .18s ease;
+}
+
+.outfit-card:hover{
+    transform:translateY(-2px);
+}
+
+.outfit-card.selected{
+    background:
+        linear-gradient(
+            145deg,
+            #d65a83,
+            #d6ad63
+        );
+
+    box-shadow:
+        0 7px 20px rgba(165,44,79,.25);
+}
+
+.outfit-thumb{
+    width:100%;
+    height:76px;
+
+    border-radius:12px;
+
+    object-fit:contain;
+
+    background:
+        linear-gradient(
+            145deg,
+            #e7dfe0,
+            #faf7f4
+        );
+}
+
+.outfit-name{
+    display:block;
+
+    margin-top:5px;
+
+    font-size:9px;
+    font-weight:700;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
+    color:#40383c;
+}
+
+.outfit-card.selected .outfit-name{
+    color:white;
+}
+
+.finish-row{
+    display:flex;
+    gap:8px;
+
+    margin-top:7px;
+}
+
+.secondary-button{
+    flex:1;
+
+    border:0;
+
+    padding:11px;
+
+    border-radius:999px;
+
+    background:#eee9e9;
+
+    color:#554d51;
+
+    font-size:11px;
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+.finish-button{
+    flex:1.5;
+}
+
+/* =========================================================
+   SCREEN 3 — REVEAL
+   ========================================================= */
+
+.reveal-screen{
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    color:white;
+}
+
+.reveal-image{
+    width:82%;
+    height:62%;
+
+    object-fit:contain;
+
+    filter:
+        drop-shadow(
+            0 30px 35px rgba(0,0,0,.4)
+        );
+
+    animation:
+        revealIn .9s cubic-bezier(.16,1,.3,1) both;
+}
+
+@keyframes revealIn{
+
+    from{
+        opacity:0;
+        transform:
+            translateY(35px)
+            scale(.92);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+.reveal-eyebrow{
+    margin-top:-5px;
+
+    font-size:10px;
+    letter-spacing:.3em;
+    text-transform:uppercase;
+
+    opacity:.7;
+}
+
+.reveal-title{
+    margin:9px 18px 4px;
+
+    font-size:31px;
+    letter-spacing:-.04em;
+}
+
+.reveal-name{
+    font-size:12px;
+    opacity:.65;
+}
+
+/* =========================================================
+   SCREEN 4 — SCORE
+   ========================================================= */
+
+.score-screen{
+    padding:18px;
+
+    justify-content:center;
+}
+
+.score-card{
+    border-radius:26px;
+    padding:22px;
+
+    text-align:center;
+}
+
+.score-kicker{
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--muted);
+}
+
+.score-number{
+    margin:4px 0;
+
+    font-size:64px;
+    line-height:1;
+
+    font-weight:900;
+
+    background:
+        linear-gradient(
+            110deg,
+            var(--crimson),
+            var(--gold)
+        );
+
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+
+.score-label{
+    font-size:11px;
+    color:var(--muted);
+}
+
+.score-list{
+    margin:20px 0;
+
+    text-align:left;
+}
+
+.score-row{
+    display:flex;
+    justify-content:space-between;
+
+    padding:10px 0;
+
+    border-bottom:1px solid rgba(0,0,0,.06);
+
+    font-size:11px;
+}
+
+.score-row strong{
+    color:var(--wine);
+}
+
+.score-actions{
+    display:flex;
+    gap:8px;
+}
+
+.score-actions button{
+    flex:1;
+}
+
+/* =========================================================
+   SCREEN 5 — LOOKBOOK
+   ========================================================= */
+
+.lookbook-screen{
+    background:#eee8e5;
+    color:var(--ink);
+
+    padding-bottom:12px;
+}
+
+.lookbook-top{
+    padding:18px 18px 8px;
+}
+
+.lookbook-kicker{
+    font-size:10px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+
+    color:var(--muted);
+}
+
+.lookbook-title{
+    margin:3px 0 0;
+
+    font-size:27px;
+    letter-spacing:-.04em;
+}
+
+.lookbook-stage{
+    position:relative;
+
+    flex:1;
+    min-height:0;
+
+    margin:8px 14px;
+
+    overflow:hidden;
+
+    border-radius:24px;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(255,255,255,.9),
+            transparent 30%
+        ),
+        linear-gradient(
+            145deg,
+            #5c1d37,
+            #9d3155
+        );
+
+    box-shadow:
+        0 20px 45px rgba(60,30,40,.2);
+}
+
+.lookbook-stage::after{
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            180deg,
+            transparent 55%,
+            rgba(0,0,0,.28)
+        );
+}
+
+.lookbook-image{
+    width:100%;
+    height:100%;
+
+    object-fit:contain;
+
+    filter:
+        drop-shadow(
+            0 25px 25px rgba(0,0,0,.25)
+        );
+}
+
+.lookbook-caption{
+    position:absolute;
+
+    left:16px;
+    right:16px;
+    bottom:15px;
+
+    z-index:2;
+
+    color:white;
+}
+
+.lookbook-character{
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+}
+
+.lookbook-outfit{
+    margin-top:3px;
+
+    font-size:23px;
+    font-weight:800;
+
+    letter-spacing:-.03em;
+}
+
+.lookbook-brand{
+    margin-top:5px;
+
+    font-size:8px;
+    letter-spacing:.2em;
+    opacity:.7;
+    text-transform:uppercase;
+}
+
+.lookbook-controls{
+    display:flex;
+    gap:7px;
+
+    padding:4px 14px 0;
+}
+
+.lookbook-controls button{
+    flex:1;
+
+    border:0;
+
+    padding:10px 7px;
+
+    border-radius:999px;
+
+    background:white;
+
+    font-size:10px;
+    font-weight:800;
+
+    color:#4b4145;
+
+    cursor:pointer;
+}
+
+.lookbook-controls .share-button{
+    background:
+        linear-gradient(
+            100deg,
+            #d65a83,
+            #d6ad63
+        );
+
+    color:white;
+}
+
+/* =========================================================
+   SMALL SCREEN SAFETY
+   ========================================================= */
+
+@media(max-height:650px){
+
+    .brief-title{
+        font-size:34px;
+    }
+
+    .character-image{
+        width:82%;
+        height:82%;
+    }
+
+    .outfit-thumb{
+        height:60px;
+    }
+
+    .outfit-card{
+        flex-basis:82px;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="game-shell">
+
+<div class="game" id="game">
+
+    <!-- =====================================================
+         SCREEN 1 — FASHION BRIEF
+         ===================================================== -->
+
+    <section
+        class="screen brief-screen active"
+        id="briefScreen"
+    >
+
+        <div class="topbar">
+
+            <div class="brand">
+                CEEQWINN
+            </div>
+
+            <div class="challenge-label">
+                FASHION-02
+            </div>
+
+        </div>
+
+        <div class="brief-content">
+
+            <div class="eyebrow">
+                Fashion Challenge
+            </div>
+
+            <h1 class="brief-title">
+                Crimson<br>
+                Evening
+            </h1>
+
+            <p class="brief-description">
+                Create a look that feels elegant,
+                dramatic and unforgettable.
+            </p>
+
+            <div class="requirements">
+
+                <span class="requirement">
+                    Elegant
+                </span>
+
+                <span class="requirement">
+                    Dramatic
+                </span>
+
+                <span class="requirement">
+                    Memorable
+                </span>
+
+            </div>
+
+            <button
+                class="primary-button"
+                id="startButton"
+            >
+                Begin Styling
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SCREEN 2 — DRESS
+         ===================================================== -->
+
+    <section
+        class="screen dress-screen"
+        id="dressScreen"
+    >
+
+        <div class="topbar">
+
+            <div class="brand">
+                CEEQWINN
+            </div>
+
+            <div class="challenge-label">
+                CRIMSON EVENING
+            </div>
+
+        </div>
+
+
+        <div class="character-stage">
+
+            <img
+                id="characterImage"
+                class="character-image idle"
+                src="assets/characters/lexis/outfits/lexis_outfit_01.png"
+                alt="Lexis"
+            >
+
+        </div>
+
+
+        <div class="dress-panel">
+
+            <div class="panel-heading">
+
+                <div class="panel-title">
+                    Choose the look
+                </div>
+
+                <div class="panel-hint">
+                    Swipe
+                </div>
+
+            </div>
+
+
+            <div
+                class="outfit-carousel"
+                id="outfitCarousel"
+            ></div>
+
+
+            <div class="finish-row">
+
+                <button
+                    class="secondary-button"
+                    id="backToBrief"
+                >
+                    Brief
+                </button>
+
+                <button
+                    class="primary-button finish-button"
+                    id="finishButton"
+                >
+                    Finish Look
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SCREEN 3 — REVEAL
+         ===================================================== -->
+
+    <section
+        class="screen reveal-screen"
+        id="revealScreen"
+    >
+
+        <img
+            id="revealImage"
+            class="reveal-image"
+            src=""
+            alt="Final fashion look"
+        >
+
+        <div class="reveal-eyebrow">
+            CEEQWINN LOOKBOOK
+        </div>
+
+        <h2 class="reveal-title">
+            The Look Is In.
+        </h2>
+
+        <div
+            class="reveal-name"
+            id="revealName"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SCREEN 4 — SCORE
+         ===================================================== -->
+
+    <section
+        class="screen score-screen"
+        id="scoreScreen"
+    >
+
+        <div class="score-card glass">
+
+            <div class="score-kicker">
+                Fashion Result
+            </div>
+
+            <div
+                class="score-number"
+                id="scoreNumber"
+            >
+                0
+            </div>
+
+            <div class="score-label">
+                STYLE SCORE
+            </div>
+
+
+            <div class="score-list">
+
+                <div class="score-row">
+                    <span>Brief Match</span>
+                    <strong id="briefScore">
+                        0/30
+                    </strong>
+                </div>
+
+                <div class="score-row">
+                    <span>Color Harmony</span>
+                    <strong id="colorScore">
+                        0/20
+                    </strong>
+                </div>
+
+                <div class="score-row">
+                    <span>Styling</span>
+                    <strong id="styleScore">
+                        0/20
+                    </strong>
+                </div>
+
+                <div class="score-row">
+                    <span>Overall Impact</span>
+                    <strong id="impactScore">
+                        0/30
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="score-actions">
+
+                <button
+                    class="secondary-button"
+                    id="replayButton"
+                >
+                    Style Again
+                </button>
+
+                <button
+                    class="primary-button"
+                    id="lookbookButton"
+                >
+                    View Lookbook
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SCREEN 5 — LOOKBOOK
+         ===================================================== -->
+
+    <section
+        class="screen lookbook-screen"
+        id="lookbookScreen"
+    >
+
+        <div class="lookbook-top">
+
+            <div class="lookbook-kicker">
+                CEEQWINN LOOKBOOK
+            </div>
+
+            <h2 class="lookbook-title">
+                Your Look
+            </h2>
+
+        </div>
+
+
+        <div class="lookbook-stage">
+
+            <img
+                id="lookbookImage"
+                class="lookbook-image"
+                src=""
+                alt="Lexis fashion look"
+            >
+
+            <div class="lookbook-caption">
+
+                <div class="lookbook-character">
+                    Lexis Azunna
+                </div>
+
+                <div
+                    class="lookbook-outfit"
+                    id="lookbookOutfit"
+                >
+                    Crimson Evening
+                </div>
+
+                <div class="lookbook-brand">
+                    CEEQWINN
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="lookbook-controls">
+
+            <button id="backToScore">
+                Result
+            </button>
+
+            <button id="saveLook">
+                Save Look
+            </button>
+
+            <button
+                class="share-button"
+                id="shareLook"
+            >
+                Share
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   CEEQWINN FASHION-02
+   JAVASCRIPT
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   STORAGE
+   --------------------------------------------------------- */
+
+const STORAGE_KEY = "ceeqwinn_player_state";
+
+const GAME_ID = "FASHION-02";
+
+
+/* ---------------------------------------------------------
+   DEFAULT PLAYER STATE
+   --------------------------------------------------------- */
+
+const DEFAULT_STATE = {
+
+    characters: {
+
+        lexis: {
+
+            currentOutfit:
+                "lexis_outfit_01",
+
+            currentHair:
+                "hair_default",
+
+            currentAccessory:
+                "none"
+
+        }
+
+    }
+
+};
+
+
+/* ---------------------------------------------------------
+   LOAD PLAYER STATE
+   --------------------------------------------------------- */
+
+function getPlayerState(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(
+                STORAGE_KEY
+            );
+
+        if(saved){
+
+            const parsed =
+                JSON.parse(saved);
+
+            return mergeState(
+                DEFAULT_STATE,
+                parsed
+            );
+
+        }
+
+    }catch(error){
+
+        console.warn(
+            "Could not load player state.",
+            error
+        );
+
+    }
+
+    return structuredCloneSafe(
+        DEFAULT_STATE
+    );
+
+}
+
+
+/* ---------------------------------------------------------
+   SIMPLE STATE MERGE
+   --------------------------------------------------------- */
+
+function mergeState(defaults, saved){
+
+    const result =
+        structuredCloneSafe(defaults);
+
+    if(
+        saved &&
+        saved.characters &&
+        saved.characters.lexis
+    ){
+
+        result.characters.lexis =
+            Object.assign(
+                result.characters.lexis,
+                saved.characters.lexis
+            );
+
+    }
+
+    return result;
+
+}
+
+
+/* ---------------------------------------------------------
+   SIMPLE CLONE
+   --------------------------------------------------------- */
+
+function structuredCloneSafe(object){
+
+    return JSON.parse(
+        JSON.stringify(object)
+    );
+
+}
+
+
+/* ---------------------------------------------------------
+   SAVE PLAYER STATE
+   --------------------------------------------------------- */
+
+function savePlayerState(){
+
+    try{
+
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(playerState)
+        );
+
+    }catch(error){
+
+        console.warn(
+            "Could not save player state.",
+            error
+        );
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   PLAYER STATE
+   --------------------------------------------------------- */
+
+let playerState =
+    getPlayerState();
+
+
+/* ---------------------------------------------------------
+   OUTFIT DATA
+   ---------------------------------------------------------
+
+   Replace these image paths later with your
+   final AI-generated assets.
+
+   For the FIRST TEST, the same placeholder image
+   may be used temporarily if necessary.
+--------------------------------------------------------- */
+
+const outfits = {
+
+    lexis_outfit_01: {
+
+        character:"lexis",
+
+        name:
+            "Midnight Tailoring",
+
+        image:
+            "assets/characters/lexis/outfits/lexis_outfit_01.png",
+
+        briefMatch:24,
+
+        color:17,
+
+        styling:17,
+
+        impact:23
+
+    },
+
+    lexis_outfit_02: {
+
+        character:"lexis",
+
+        name:
+            "Ivory Evening",
+
+        image:
+            "assets/characters/lexis/outfits/lexis_outfit_02.png",
+
+        briefMatch:27,
+
+        color:18,
+
+        styling:18,
+
+        impact:25
+
+    },
+
+    lexis_outfit_03: {
+
+        character:"lexis",
+
+        name:
+            "Crimson Drama",
+
+        image:
+            "assets/characters/lexis/outfits/lexis_outfit_03.png",
+
+        briefMatch:30,
+
+        color:20,
+
+        styling:20,
+
+        impact:30
+
+    }
+
+};
+
+
+/* ---------------------------------------------------------
+   CURRENT OUTFIT
+   --------------------------------------------------------- */
+
+let currentOutfit =
+    playerState.characters.lexis.currentOutfit;
+
+
+/* ---------------------------------------------------------
+   DOM
+   --------------------------------------------------------- */
+
+const screens = {
+
+    brief:
+        document.getElementById(
+            "briefScreen"
+        ),
+
+    dress:
+        document.getElementById(
+            "dressScreen"
+        ),
+
+    reveal:
+        document.getElementById(
+            "revealScreen"
+        ),
+
+    score:
+        document.getElementById(
+            "scoreScreen"
+        ),
+
+    lookbook:
+        document.getElementById(
+            "lookbookScreen"
+        )
+
+};
+
+
+const characterImage =
+    document.getElementById(
+        "characterImage"
+    );
+
+const revealImage =
+    document.getElementById(
+        "revealImage"
+    );
+
+const lookbookImage =
+    document.getElementById(
+        "lookbookImage"
+    );
+
+const outfitCarousel =
+    document.getElementById(
+        "outfitCarousel"
+    );
+
+
+/* ---------------------------------------------------------
+   SCREEN SWITCHING
+   --------------------------------------------------------- */
+
+function showScreen(screen){
+
+    Object.values(screens)
+        .forEach(
+            currentScreen => {
+
+                currentScreen.classList
+                    .remove("active");
+
+            }
+        );
+
+    screen.classList.add("active");
+
+}
+
+
+/* ---------------------------------------------------------
+   BUILD OUTFIT CARDS
+   --------------------------------------------------------- */
+
+function buildOutfitCards(){
+
+    outfitCarousel.innerHTML = "";
+
+    Object.entries(outfits)
+        .forEach(
+            ([id,outfit]) => {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+                button.className =
+                    "outfit-card";
+
+                button.dataset.outfit =
+                    id;
+
+
+                const image =
+                    document.createElement(
+                        "img"
+                    );
+
+                image.className =
+                    "outfit-thumb";
+
+                image.src =
+                    outfit.image;
+
+                image.alt =
+                    outfit.name;
+
+
+                const name =
+                    document.createElement(
+                        "span"
+                    );
+
+                name.className =
+                    "outfit-name";
+
+                name.textContent =
+                    outfit.name;
+
+
+                button.appendChild(image);
+
+                button.appendChild(name);
+
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        selectOutfit(id);
+
+                    }
+                );
+
+
+                outfitCarousel
+                    .appendChild(button);
+
+            }
+        );
+
+
+    refreshSelectedCard();
+
+}
+
+
+/* ---------------------------------------------------------
+   REFRESH SELECTED CARD
+   --------------------------------------------------------- */
+
+function refreshSelectedCard(){
+
+    document
+        .querySelectorAll(
+            ".outfit-card"
+        )
+        .forEach(card => {
+
+            card.classList.toggle(
+                "selected",
+                card.dataset.outfit ===
+                    currentOutfit
+            );
+
+        });
+
+}
+
+
+/* ---------------------------------------------------------
+   SELECT OUTFIT
+   --------------------------------------------------------- */
+
+function selectOutfit(outfitId){
+
+    const outfit =
+        outfits[outfitId];
+
+    if(!outfit){
+        return;
+    }
+
+
+    currentOutfit =
+        outfitId;
+
+
+    playerState
+        .characters
+        .lexis
+        .currentOutfit =
+            outfitId;
+
+
+    savePlayerState();
+
+
+    /*
+       Visual transition.
+    */
+
+    characterImage
+        .classList
+        .add(
+            "outfit-changing"
+        );
+
+
+    setTimeout(
+        () => {
+
+            characterImage.src =
+                outfit.image;
+
+            characterImage.alt =
+                outfit.name;
+
+
+            characterImage
+                .classList
+                .remove(
+                    "outfit-changing"
+                );
+
+        },
+        180
+    );
+
+
+    refreshSelectedCard();
+
+}
+
+
+/* ---------------------------------------------------------
+   START GAME
+   --------------------------------------------------------- */
+
+document
+    .getElementById(
+        "startButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            /*
+               Always begin using the
+               currently saved outfit.
+            */
+
+            currentOutfit =
+                playerState
+                    .characters
+                    .lexis
+                    .currentOutfit;
+
+
+            const outfit =
+                outfits[currentOutfit];
+
+
+            if(outfit){
+
+                characterImage.src =
+                    outfit.image;
+
+            }
+
+
+            showScreen(
+                screens.dress
+            );
+
+        }
+    );
+
+
+/* ---------------------------------------------------------
+   BACK TO BRIEF
+   --------------------------------------------------------- */
+
+document
+    .getElementById(
+        "backToBrief"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            showScreen(
+                screens.brief
+            );
+
+        }
+    );
+
+
+/* ---------------------------------------------------------
+   FINISH LOOK
+   --------------------------------------------------------- */
+
+document
+    .getElementById(
+        "finishButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            const outfit =
+                outfits[currentOutfit];
+
+            if(!outfit){
+                return;
+            }
+
+
+            revealImage.src =
+                outfit.image;
+
+            document
+                .getElementById(
+                    "revealName"
+                )
+                .textContent =
+                    outfit.name;
+
+
+            /*
+               Reset reveal animation.
+            */
+
+            revealImage.style.animation =
+                "none";
+
+            void revealImage.offsetWidth;
+
+            revealImage.style.animation =
+                "";
+
+
+            showScreen(
+                screens.reveal
+            );
+
+
+            /*
+               Give the reveal a moment
+               before showing the score.
+            */
+
+            setTimeout(
+                () => {
+
+                    calculateScore();
+
+                    showScreen(
+                        screens.score
+                    );
+
+                },
+                1700
+            );
+
+        }
+    );
+
+
+/* ---------------------------------------------------------
+   SCORE
+   --------------------------------------------------------- */
+
+function calculateScore(){
+
+    const outfit =
+        outfits[currentOutfit];
+
+    if(!outfit){
+        return;
+    }
+
+
+    const total =
+        outfit.briefMatch +
+        outfit.color +
+        outfit.styling +
+        outfit.impact;
+
+
+    animateNumber(
+        document.getElementById(
+            "scoreNumber"
+        ),
+        total
+    );
+
+
+    document
+        .getElementById(
+            "briefScore"
+        )
+        .textContent =
+            outfit.briefMatch +
+            "/30";
+
+
+    document
+        .getElementById(
+            "colorScore"
+        )
+        .textContent =
+            outfit.color +
+            "/20";
+
+
+    document
+        .getElementById(
+            "styleScore"
+        )
+        .textContent =
+            outfit.styling +
+            "/20";
+
+
+    document
+        .getElementById(
+            "impactScore"
+        )
+        .textContent =
+            outfit.impact +
+            "/30";
+
+}
+
+
+/* ---------------------------------------------------------
+   SCORE NUMBER ANIMATION
+   --------------------------------------------------------- */
+
+function animateNumber(
+    element,
+    target
+){
+
+    let value = 0;
+
+    const duration = 700;
+
+    const start =
+        performance.now();
+
+
+    function frame(now){
+
+        const progress =
+            Math.min(
+                (now - start) /
+                duration,
+                1
+            );
+
+
+        value =
+            Math.round(
+                target *
+                progress
+            );
+
+
+        element.textContent =
+            value;
+
+
+        if(progress < 1){
+
+            requestAnimationFrame(
+                frame
+            );
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        frame
+    );
+
+}
+
+
+/* ---------------------------------------------------------
+   REPLAY
+   --------------------------------------------------------- */
+
+document
+    .getElementById(
+        "replayButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            showScreen(
+                screens.dress
+            );
+
+        }
+    );
+
+
+/* ---------------------------------------------------------
+   LOOKBOOK
+   --------------------------------------------------------- */
+
+document
+    .getElementById(
+        "lookbookButton"
+    )
+    .addEventListener(
+        "click",
+        openLookbook
+    );
+
+
+function openLookbook(){
+
+    const outfit =
+        outfits[currentOutfit];
+
+    if(!outfit){
+        return;
+    }
+
+
+    lookbookImage.src =
+        outfit.image;
+
+
+    document
+        .getElementById(
+            "lookbookOutfit"
+        )
+        .textContent =
+            outfit.name;
+
+
+    showScreen(
+        screens.lookbook
+    );
+
+}
+
+
+/* ---------------------------------------------------------
+   BACK TO SCORE
+   --------------------------------------------------------- */
+
+document
+    .getElementById(
+        "backToScore"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            showScreen(
+                screens.score
+            );
+
+        }
+    );
+
+
+/* ---------------------------------------------------------
+   SAVE LOOK
+   ---------------------------------------------------------
+
+   First MVP:
+   Use browser-native image saving
+   when possible.
+
+   Actual image-card generation will
+   be added after the visual assets are
+   finalized.
+--------------------------------------------------------- */
+
+document
+    .getElementById(
+        "saveLook"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            const outfit =
+                outfits[currentOutfit];
+
+            if(!outfit){
+                return;
+            }
+
+
+            /*
+               Open the selected artwork
+               so the user can save it.
+
+               Later this becomes a true
+               generated CEEQWINN Lookbook
+               card using canvas.
+            */
+
+            window.open(
+                outfit.image,
+                "_blank"
+            );
+
+        }
+    );
+
+
+/* ---------------------------------------------------------
+   SHARE LOOK
+   --------------------------------------------------------- */
+
+document
+    .getElementById(
+        "shareLook"
+    )
+    .addEventListener(
+        "click",
+        async () => {
+
+            const outfit =
+                outfits[currentOutfit];
+
+            if(!outfit){
+                return;
+            }
+
+
+            const shareText =
+                "I styled " +
+                "Lexis Azunna in " +
+                outfit.name +
+                " on CEEQWINN Lookbook.";
+
+
+            /*
+               Native share where supported.
+            */
+
+            if(
+                navigator.share
+            ){
+
+                try{
+
+                    await navigator.share({
+
+                        title:
+                            "CEEQWINN Lookbook",
+
+                        text:
+                            shareText,
+
+                        url:
+                            window.location.href
+
+                    });
+
+                }catch(error){
+
+                    /*
+                       User may simply have
+                       cancelled the share sheet.
+                    */
+
+                }
+
+                return;
+
+            }
+
+
+            /*
+               Desktop / unsupported fallback.
+            */
+
+            try{
+
+                await navigator.clipboard
+                    .writeText(
+                        shareText +
+                        "\n" +
+                        window.location.href
+                    );
+
+
+                alert(
+                    "Look link copied."
+                );
+
+            }catch(error){
+
+                alert(
+                    shareText
+                );
+
+            }
+
+        }
+    );
+
+
+/* ---------------------------------------------------------
+   GAME COMPLETION
+   --------------------------------------------------------- */
+
+function completeGame(){
+
+    /*
+       This follows the existing
+       CEEQWINN game-completion idea.
+
+       We do NOT modify wallet,
+       diamonds or payment state here.
+    */
+
+    try{
+
+        const completed =
+            JSON.parse(
+                localStorage.getItem(
+                    "ceeqwinn_completed_games"
+                ) || "{}"
+            );
+
+
+        completed[GAME_ID] = {
+
+            completed:true,
+
+            completedAt:
+                new Date().toISOString()
+
+        };
+
+
+        localStorage.setItem(
+            "ceeqwinn_completed_games",
+            JSON.stringify(
+                completed
+            )
+        );
+
+
+        /*
+           Existing story return signal.
+        */
+
+        sessionStorage.setItem(
+            "ceeqwinn_return_from_game",
+            GAME_ID
+        );
+
+
+    }catch(error){
+
+        console.warn(
+            "Could not save completion state.",
+            error
+        );
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   LOOKBOOK = COMPLETION MOMENT
+   ---------------------------------------------------------
+
+   For this first prototype we mark the
+   game complete when the player reaches
+   the Lookbook.
+
+--------------------------------------------------------- */
+
+const originalOpenLookbook =
+    openLookbook;
+
+
+/*
+   Replace button listener with
+   completion-aware version.
+*/
+
+document
+    .getElementById(
+        "lookbookButton"
+    )
+    .onclick = () => {
+
+        completeGame();
+
+        originalOpenLookbook();
+
+    };
+
+
+/* ---------------------------------------------------------
+   INITIALIZE
+   --------------------------------------------------------- */
+
+buildOutfitCards();
+
+
+/*
+   Restore saved outfit immediately.
+*/
+
+if(
+    outfits[currentOutfit]
+){
+
+    characterImage.src =
+        outfits[currentOutfit].image;
+
+}
+
+
+/* ---------------------------------------------------------
+   DEBUG INFORMATION
+   --------------------------------------------------------- */
+
+console.log(
+    "FASHION-02 loaded.",
+    {
+        character:
+            "lexis",
+
+        currentOutfit:
+            currentOutfit,
+
+        gameId:
+            GAME_ID
+    }
+);
+
+</script>
+
+</body>
+</html>
