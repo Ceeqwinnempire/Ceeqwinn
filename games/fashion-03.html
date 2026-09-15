@@ -1,0 +1,1130 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
+
+<title>CEEQWINN — Fashion 03</title>
+
+<style>
+
+/* =========================================================
+   FASHION-03
+   PORTRAIT-FIRST 9:16 GAME
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #090909;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+
+/* =========================================================
+   OUTER GAME AREA
+   ========================================================= */
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* =========================================================
+   TRUE 9:16 GAME STAGE
+   ========================================================= */
+
+.game {
+
+  position: relative;
+
+  width: min(100vw, 56.25vh);
+
+  height: min(100vh, 177.7777778vw);
+
+  aspect-ratio: 9 / 16;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      #292020 0%,
+      #111 42%,
+      #070707 100%
+    );
+
+  box-shadow:
+    0 0 50px rgba(0,0,0,0.7);
+
+}
+
+
+/* =========================================================
+   CINEMATIC BACKGROUND
+   ========================================================= */
+
+.background-glow {
+
+  position: absolute;
+
+  width: 130%;
+  height: 55%;
+
+  left: -15%;
+  top: 10%;
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(120, 20, 35, 0.32),
+      rgba(0,0,0,0) 70%
+    );
+
+  pointer-events: none;
+
+}
+
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+
+.top {
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 15%;
+
+  padding:
+    max(16px, env(safe-area-inset-top))
+    6%
+    0;
+
+  z-index: 20;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+
+  text-align: left;
+
+}
+
+.brand {
+
+  font-size: clamp(10px, 2.7vw, 14px);
+
+  letter-spacing: 0.25em;
+
+  text-transform: uppercase;
+
+  opacity: 0.65;
+
+}
+
+.title {
+
+  margin-top: 7px;
+
+  font-size: clamp(22px, 6vw, 34px);
+
+  font-weight: 700;
+
+  letter-spacing: 0.02em;
+
+}
+
+.subtitle {
+
+  margin-top: 4px;
+
+  font-size: clamp(11px, 3vw, 15px);
+
+  opacity: 0.65;
+
+}
+
+
+/* =========================================================
+   CHARACTER AREA
+   ========================================================= */
+
+.character-area {
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  top: 14%;
+  bottom: 31%;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  overflow: hidden;
+
+}
+
+
+/* =========================================================
+   CHARACTER IMAGE
+   ========================================================= */
+
+#lexis {
+
+  display: block;
+
+  width: auto;
+
+  height: 100%;
+
+  max-width: 100%;
+
+  object-fit: contain;
+
+  object-position: center bottom;
+
+  transition:
+    opacity 0.22s ease,
+    transform 0.35s ease;
+
+  filter:
+    drop-shadow(
+      0 18px 25px rgba(0,0,0,0.45)
+    );
+
+}
+
+
+/* =========================================================
+   IMAGE CHANGE ANIMATION
+   ========================================================= */
+
+#lexis.changing {
+
+  opacity: 0;
+
+  transform: scale(0.985);
+
+}
+
+
+/* =========================================================
+   LOOK INFORMATION
+   ========================================================= */
+
+.look-info {
+
+  position: absolute;
+
+  left: 6%;
+  right: 6%;
+
+  bottom: 27%;
+
+  z-index: 15;
+
+  text-align: center;
+
+  pointer-events: none;
+
+}
+
+.look-label {
+
+  display: inline-block;
+
+  padding: 7px 13px;
+
+  border-radius: 999px;
+
+  background: rgba(0,0,0,0.55);
+
+  border: 1px solid rgba(255,255,255,0.16);
+
+  backdrop-filter: blur(8px);
+
+  font-size: clamp(9px, 2.5vw, 12px);
+
+  letter-spacing: 0.16em;
+
+  text-transform: uppercase;
+
+  opacity: 0.85;
+
+}
+
+#message {
+
+  margin-top: 8px;
+
+  font-size: clamp(11px, 3vw, 14px);
+
+  line-height: 1.35;
+
+  min-height: 19px;
+
+  text-shadow:
+    0 2px 8px #000;
+
+}
+
+
+/* =========================================================
+   OUTFIT SELECTOR
+   ========================================================= */
+
+.controls {
+
+  position: absolute;
+
+  left: 5%;
+  right: 5%;
+
+  bottom: 9%;
+
+  z-index: 20;
+
+}
+
+.outfit-row {
+
+  display: flex;
+
+  gap: 9px;
+
+  justify-content: center;
+
+  width: 100%;
+
+}
+
+
+/* =========================================================
+   OUTFIT BUTTON
+   ========================================================= */
+
+.outfit-button {
+
+  flex: 1;
+
+  min-width: 0;
+
+  min-height: 52px;
+
+  padding: 8px 6px;
+
+  border-radius: 12px;
+
+  border: 1px solid rgba(255,255,255,0.18);
+
+  background: rgba(255,255,255,0.07);
+
+  color: #fff;
+
+  cursor: pointer;
+
+  font-size: clamp(10px, 2.8vw, 13px);
+
+  font-weight: 600;
+
+  letter-spacing: 0.03em;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+
+}
+
+.outfit-button:active {
+
+  transform: scale(0.96);
+
+}
+
+.outfit-button.selected {
+
+  background: rgba(150, 20, 40, 0.7);
+
+  border-color: rgba(255,255,255,0.7);
+
+}
+
+
+/* =========================================================
+   BOTTOM ACTIONS
+   ========================================================= */
+
+.actions {
+
+  margin-top: 9px;
+
+  display: flex;
+
+  gap: 9px;
+
+}
+
+.action-button {
+
+  flex: 1;
+
+  min-height: 45px;
+
+  border: 0;
+
+  border-radius: 12px;
+
+  cursor: pointer;
+
+  font-size: clamp(10px, 2.8vw, 13px);
+
+  font-weight: 700;
+
+  letter-spacing: 0.04em;
+
+}
+
+.continue {
+
+  background: #fff;
+
+  color: #111;
+
+}
+
+.back {
+
+  background: rgba(255,255,255,0.08);
+
+  color: #fff;
+
+  border: 1px solid rgba(255,255,255,0.18);
+
+}
+
+
+/* =========================================================
+   SMALL SCREEN SAFETY
+   ========================================================= */
+
+@media (max-height: 620px) {
+
+  .top {
+    height: 13%;
+  }
+
+  .character-area {
+    top: 13%;
+    bottom: 30%;
+  }
+
+  .look-info {
+    bottom: 26%;
+  }
+
+  .controls {
+    bottom: 6%;
+  }
+
+  .outfit-button {
+    min-height: 43px;
+  }
+
+  .action-button {
+    min-height: 39px;
+  }
+
+}
+
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+@media (min-width: 700px) {
+
+  .game {
+
+    border-radius: 12px;
+
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="game">
+
+  <div class="background-glow"></div>
+
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <div class="top">
+
+    <div class="brand">
+      CEEQWINN
+    </div>
+
+    <div class="title">
+      Fashion 03
+    </div>
+
+    <div class="subtitle">
+      Choose Lexis's look.
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       CHARACTER
+       ===================================================== -->
+
+  <div class="character-area">
+
+    <img
+      id="lexis"
+      src="../content/images/characters/lexis/outfits/lexis_default.png.jpeg"
+      alt="Lexis"
+    >
+
+  </div>
+
+
+  <!-- =====================================================
+       CURRENT LOOK
+       ===================================================== -->
+
+  <div class="look-info">
+
+    <div
+      id="lookLabel"
+      class="look-label"
+    >
+      CURRENT LOOK
+    </div>
+
+    <div id="message">
+      Choose a look for Lexis.
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       CONTROLS
+       ===================================================== -->
+
+  <div class="controls">
+
+    <div class="outfit-row">
+
+      <button
+        id="defaultButton"
+        class="outfit-button"
+        onclick="chooseOutfit('lexis_default')"
+      >
+        Default
+      </button>
+
+      <button
+        id="redButton"
+        class="outfit-button"
+        onclick="chooseOutfit('lexis_red_dress')"
+      >
+        Crimson Dress
+      </button>
+
+    </div>
+
+
+    <div class="actions">
+
+      <button
+        class="action-button back"
+        onclick="leaveGame()"
+      >
+        Go Back
+      </button>
+
+      <button
+        class="action-button continue"
+        onclick="finishGame()"
+      >
+        Continue
+      </button>
+
+    </div>
+
+  </div>
+
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   FASHION-03
+   OUTFIT IMAGES
+
+   These filenames are the REAL GitHub filenames.
+   Do not rename them.
+   ========================================================= */
+
+var OUTFIT_IMAGES = {
+
+  lexis_default:
+    "../content/images/characters/lexis/outfits/lexis_default.png.jpeg",
+
+  lexis_red_dress:
+    "../content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg"
+
+};
+
+
+/* =========================================================
+   OUTFIT DISPLAY NAMES
+   ========================================================= */
+
+var OUTFIT_NAMES = {
+
+  lexis_default:
+    "Default Look",
+
+  lexis_red_dress:
+    "Crimson Dress"
+
+};
+
+
+/* =========================================================
+   PLAYER STATE
+   ========================================================= */
+
+function getPlayerState() {
+
+  var saved =
+    localStorage.getItem(
+      "ceeqwinn_player_state"
+    );
+
+
+  if (saved) {
+
+    try {
+
+      var parsed =
+        JSON.parse(saved);
+
+
+      /*
+       * Protect older player states.
+       */
+
+      if (!parsed.characters) {
+
+        parsed.characters = {};
+
+      }
+
+
+      if (!parsed.characters.lexis) {
+
+        parsed.characters.lexis = {};
+
+      }
+
+
+      if (!parsed.characters.lexis.currentOutfit) {
+
+        parsed.characters.lexis.currentOutfit =
+          "lexis_default";
+
+      }
+
+
+      if (!parsed.games) {
+
+        parsed.games = {};
+
+      }
+
+
+      /*
+       * Fashion-03 gets its own
+       * game state.
+       *
+       * FASHION-01 remains untouched.
+       */
+
+      if (!parsed.games.fashion03) {
+
+        parsed.games.fashion03 = {
+
+          result: null,
+
+          score: null
+
+        };
+
+      }
+
+
+      return parsed;
+
+    }
+
+    catch (error) {
+
+      console.log(
+        "Could not read player state."
+      );
+
+    }
+
+  }
+
+
+  /*
+   * New player state.
+   */
+
+  return {
+
+    characters: {
+
+      lexis: {
+
+        currentOutfit:
+          "lexis_default"
+
+      }
+
+    },
+
+    games: {
+
+      fashion03: {
+
+        result: null,
+
+        score: null
+
+      }
+
+    }
+
+  };
+
+}
+
+
+/* =========================================================
+   SAVE PLAYER STATE
+   ========================================================= */
+
+function savePlayerState(state) {
+
+  localStorage.setItem(
+
+    "ceeqwinn_player_state",
+
+    JSON.stringify(state)
+
+  );
+
+}
+
+
+/* =========================================================
+   UPDATE BUTTON STATE
+   ========================================================= */
+
+function updateSelectedButton(outfitId) {
+
+  document
+    .getElementById("defaultButton")
+    .classList
+    .remove("selected");
+
+  document
+    .getElementById("redButton")
+    .classList
+    .remove("selected");
+
+
+  if (outfitId === "lexis_default") {
+
+    document
+      .getElementById("defaultButton")
+      .classList
+      .add("selected");
+
+  }
+
+
+  if (outfitId === "lexis_red_dress") {
+
+    document
+      .getElementById("redButton")
+      .classList
+      .add("selected");
+
+  }
+
+}
+
+
+/* =========================================================
+   DISPLAY OUTFIT
+   ========================================================= */
+
+function displayOutfit(outfitId, message) {
+
+  var image =
+    document.getElementById("lexis");
+
+  var imagePath =
+    OUTFIT_IMAGES[outfitId];
+
+
+  if (!imagePath) {
+
+    return;
+
+  }
+
+
+  /*
+   * Small transition instead of
+   * rebuilding the page.
+   */
+
+  image.classList.add("changing");
+
+
+  setTimeout(function() {
+
+    image.src =
+      imagePath;
+
+    image.onload =
+      function() {
+
+        image.classList.remove(
+          "changing"
+        );
+
+      };
+
+  }, 120);
+
+
+  document
+    .getElementById("lookLabel")
+    .textContent =
+      OUTFIT_NAMES[outfitId] ||
+      "CURRENT LOOK";
+
+
+  document
+    .getElementById("message")
+    .textContent =
+      message ||
+      "Lexis is wearing this look.";
+
+
+  updateSelectedButton(
+    outfitId
+  );
+
+}
+
+
+/* =========================================================
+   CHOOSE OUTFIT
+   ========================================================= */
+
+function chooseOutfit(outfitId) {
+
+  if (!OUTFIT_IMAGES[outfitId]) {
+
+    return;
+
+  }
+
+
+  var state =
+    getPlayerState();
+
+
+  /*
+   * THIS IS THE IMPORTANT PART:
+   *
+   * Fashion-03 writes to the same
+   * authoritative character state
+   * used by the rest of CEEQWINN.
+   */
+
+  state.characters.lexis.currentOutfit =
+    outfitId;
+
+
+  /*
+   * Fashion-03 records its own result.
+   */
+
+  state.games.fashion03.result =
+    outfitId;
+
+
+  savePlayerState(
+    state
+  );
+
+
+  displayOutfit(
+
+    outfitId,
+
+    "Lexis is now wearing this look."
+
+  );
+
+}
+
+
+/* =========================================================
+   LOAD CURRENT SHARED OUTFIT
+   ========================================================= */
+
+function loadCurrentOutfit() {
+
+  var state =
+    getPlayerState();
+
+
+  var outfitId =
+    state.characters.lexis.currentOutfit;
+
+
+  /*
+   * Safety fallback.
+   */
+
+  if (!OUTFIT_IMAGES[outfitId]) {
+
+    outfitId =
+      "lexis_default";
+
+  }
+
+
+  /*
+   * Do not overwrite the player's
+   * existing outfit simply because
+   * Fashion-03 opened.
+   */
+
+  displayOutfit(
+
+    outfitId,
+
+    "Your current Lexis look."
+
+  );
+
+}
+
+
+/* =========================================================
+   COMPLETE FASHION-03
+   ========================================================= */
+
+function finishGame() {
+
+  var state =
+    getPlayerState();
+
+
+  /*
+   * Preserve the currently selected
+   * outfit as the final result.
+   */
+
+  var finalOutfit =
+    state.characters.lexis.currentOutfit;
+
+
+  if (!OUTFIT_IMAGES[finalOutfit]) {
+
+    finalOutfit =
+      "lexis_default";
+
+    state.characters.lexis.currentOutfit =
+      finalOutfit;
+
+  }
+
+
+  state.games.fashion03.result =
+    finalOutfit;
+
+
+  savePlayerState(
+    state
+  );
+
+
+  /* =======================================================
+     COMPLETED GAME FLAG
+     ======================================================= */
+
+  var completedGames = {};
+
+
+  try {
+
+    completedGames =
+      JSON.parse(
+
+        localStorage.getItem(
+          "ceeqwinn_completed_games"
+        ) || "{}"
+
+      );
+
+  }
+
+  catch (error) {
+
+    completedGames = {};
+
+  }
+
+
+  /*
+   * Fashion-03 gets its own completion flag.
+   *
+   * FASHION-01 is NOT touched.
+   */
+
+  completedGames["FASHION-03"] =
+    true;
+
+
+  localStorage.setItem(
+
+    "ceeqwinn_completed_games",
+
+    JSON.stringify(
+      completedGames
+    )
+
+  );
+
+
+  /* =======================================================
+     RETURN SIGNAL
+     ======================================================= */
+
+  try {
+
+    sessionStorage.setItem(
+
+      "ceeqwinn_return_from_game",
+
+      "FASHION-03"
+
+    );
+
+  }
+
+  catch (error) {}
+
+
+  /*
+   * IMPORTANT:
+   *
+   * Return to the already-loaded
+   * story page.
+   *
+   * Do not reconstruct article.html.
+   */
+
+  history.back();
+
+}
+
+
+/* =========================================================
+   LEAVE WITHOUT COMPLETING
+   ========================================================= */
+
+function leaveGame() {
+
+  /*
+   * No FASHION-03 completion flag.
+   *
+   * Any outfit selected before leaving
+   * remains in shared player state,
+   * because changing an outfit is a
+   * legitimate persistent character action.
+   */
+
+  history.back();
+
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+loadCurrentOutfit();
+
+</script>
+
+</body>
+
+</html>
+```
