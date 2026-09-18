@@ -1,0 +1,2749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
+
+<title>Fashion Runner 02 | CEEQWINN</title>
+
+<style>
+/* =========================================================
+   CEEQWINN — FASHION RUNNER 02
+   THIRD-PERSON FASHION RUNNER
+   LOW-SPEC FIRST / PROGRESSIVE ENHANCEMENT
+   ========================================================= */
+
+html,
+body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#08040a;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    -webkit-user-select:none;
+    user-select:none;
+    touch-action:none;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* ---------------------------------------------------------
+   GAME SHELL
+   --------------------------------------------------------- */
+
+#game{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    max-width:700px;
+    overflow:hidden;
+    background:#08040a;
+}
+
+canvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+/* ---------------------------------------------------------
+   HUD
+   --------------------------------------------------------- */
+
+#hud{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    z-index:10;
+    padding:14px;
+    pointer-events:none;
+}
+
+.hud-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+}
+
+.hud-box{
+    min-width:90px;
+    padding:9px 11px;
+    border:1px solid rgba(255,255,255,.16);
+    border-radius:14px;
+    background:rgba(15,7,17,.72);
+    box-shadow:0 8px 30px rgba(0,0,0,.28);
+}
+
+.hud-label{
+    font-size:9px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    opacity:.65;
+}
+
+.hud-value{
+    margin-top:3px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+#objective{
+    position:absolute;
+    top:82px;
+    left:50%;
+    transform:translateX(-50%);
+    width:calc(100% - 42px);
+    max-width:430px;
+    box-sizing:border-box;
+    padding:9px 13px;
+    border:1px solid rgba(220,165,70,.25);
+    border-radius:999px;
+    background:rgba(12,5,14,.76);
+    text-align:center;
+    font-size:11px;
+    letter-spacing:.5px;
+    pointer-events:none;
+}
+
+#objective strong{
+    color:#f3d68b;
+}
+
+/* ---------------------------------------------------------
+   START / PAUSE / REVEAL PANELS
+   --------------------------------------------------------- */
+
+.overlay{
+    position:absolute;
+    inset:0;
+    z-index:30;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:22px;
+    box-sizing:border-box;
+    background:rgba(5,2,7,.78);
+}
+
+.panel{
+    width:min(440px,100%);
+    box-sizing:border-box;
+    padding:28px 22px;
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:26px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(45,13,39,.96),
+            rgba(10,5,14,.97)
+        );
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.55),
+        inset 0 1px rgba(255,255,255,.08);
+    text-align:center;
+}
+
+.eyebrow{
+    font-size:10px;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    color:#d9b56c;
+}
+
+.title{
+    margin:9px 0 7px;
+    font-size:38px;
+    line-height:1;
+    letter-spacing:-1px;
+}
+
+.subtitle{
+    margin:0 auto 20px;
+    max-width:330px;
+    line-height:1.5;
+    font-size:14px;
+    opacity:.78;
+}
+
+.button{
+    border:0;
+    border-radius:999px;
+    padding:13px 23px;
+    background:linear-gradient(135deg,#d7b05e,#fff0b4);
+    color:#170b12;
+    font-weight:bold;
+    letter-spacing:.8px;
+    cursor:pointer;
+    min-width:170px;
+}
+
+.button.secondary{
+    margin-top:9px;
+    background:rgba(255,255,255,.08);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.14);
+}
+
+/* ---------------------------------------------------------
+   TOUCH CONTROLS
+   --------------------------------------------------------- */
+
+#controls{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:14px;
+    z-index:15;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    padding:0 14px;
+    pointer-events:none;
+}
+
+.control-cluster{
+    display:flex;
+    gap:9px;
+    pointer-events:auto;
+}
+
+.ctrl{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(12,5,14,.62);
+    color:#fff;
+    font-size:19px;
+    box-shadow:0 6px 25px rgba(0,0,0,.3);
+}
+
+.ctrl:active{
+    transform:scale(.93);
+}
+
+#jump{
+    width:58px;
+    height:58px;
+    border-color:rgba(225,183,92,.35);
+    color:#f4d989;
+}
+
+/* ---------------------------------------------------------
+   REVEAL
+   --------------------------------------------------------- */
+
+#reveal{
+    background:#050207;
+}
+
+#revealImage{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    opacity:0;
+    transform:scale(1.08);
+    transition:
+        opacity 700ms ease,
+        transform 1300ms ease;
+}
+
+#revealImage.show{
+    opacity:1;
+    transform:scale(1);
+}
+
+.reveal-shade{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(
+            to top,
+            rgba(4,1,6,.9),
+            rgba(4,1,6,.1) 65%,
+            rgba(4,1,6,.05)
+        );
+}
+
+.reveal-copy{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    padding:35px 24px 28px;
+    text-align:center;
+}
+
+.reveal-copy h2{
+    margin:5px 0;
+    font-size:35px;
+}
+
+.reveal-copy p{
+    margin:8px auto 17px;
+    max-width:380px;
+    font-size:13px;
+    line-height:1.5;
+    opacity:.8;
+}
+
+/* ---------------------------------------------------------
+   UTILITY
+   --------------------------------------------------------- */
+
+.hidden{
+    display:none !important;
+}
+
+#performance{
+    position:absolute;
+    bottom:4px;
+    left:8px;
+    z-index:40;
+    font-size:7px;
+    opacity:.18;
+    pointer-events:none;
+}
+
+/* ---------------------------------------------------------
+   DESKTOP
+   --------------------------------------------------------- */
+
+@media (min-width:800px){
+
+    #game{
+        height:min(100vh,900px);
+        width:min(100vw,560px);
+        border-left:1px solid rgba(255,255,255,.08);
+        border-right:1px solid rgba(255,255,255,.08);
+        box-shadow:0 0 80px rgba(0,0,0,.55);
+    }
+
+}
+
+@media (prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+        scroll-behavior:auto !important;
+        transition:none !important;
+        animation:none !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <canvas id="canvas"></canvas>
+
+    <div id="hud">
+
+        <div class="hud-row">
+
+            <div class="hud-box">
+                <div class="hud-label">Score</div>
+                <div class="hud-value" id="score">0</div>
+            </div>
+
+            <div class="hud-box">
+                <div class="hud-label">Jewels</div>
+                <div class="hud-value" id="jewels">0</div>
+            </div>
+
+            <div class="hud-box">
+                <div class="hud-label">Style</div>
+                <div class="hud-value" id="styleScore">0</div>
+            </div>
+
+        </div>
+
+        <div id="objective">
+            <strong>RUN OBJECTIVE</strong>
+            · Collect 12 jewels
+            · Pass 2 style gates
+        </div>
+
+    </div>
+
+    <div id="controls">
+
+        <div class="control-cluster">
+            <button class="ctrl" id="leftBtn" aria-label="Move left">‹</button>
+            <button class="ctrl" id="rightBtn" aria-label="Move right">›</button>
+        </div>
+
+        <div class="control-cluster">
+            <button class="ctrl" id="jump" aria-label="Jump">↑</button>
+        </div>
+
+    </div>
+
+    <div id="startScreen" class="overlay">
+
+        <div class="panel">
+
+            <div class="eyebrow">CEEQWINN · FASHION RUNNER 02</div>
+
+            <div class="title">
+                RUN THE LOOK
+            </div>
+
+            <p class="subtitle">
+                Move through the jewel district, collect style energy,
+                pass fashion gates and build your final look.
+            </p>
+
+            <button class="button" id="startBtn">
+                START RUN
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="gameOver" class="overlay hidden">
+
+        <div class="panel">
+
+            <div class="eyebrow">RUN COMPLETE</div>
+
+            <div class="title" id="finalTitle">
+                LOOK COMPLETE
+            </div>
+
+            <p class="subtitle" id="finalStats"></p>
+
+            <button class="button" id="revealBtn">
+                CHECK THE LOOK
+            </button>
+
+            <button class="button secondary" id="retryBtn">
+                RUN AGAIN
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="reveal" class="overlay hidden">
+
+        <img id="revealImage" alt="Lexis fashion reveal">
+
+        <div class="reveal-shade"></div>
+
+        <div class="reveal-copy">
+
+            <div class="eyebrow">
+                STYLE UNLOCKED
+            </div>
+
+            <h2 id="revealTitle">
+                THE LOOK
+            </h2>
+
+            <p id="revealText">
+                Your run shaped the final fashion reveal.
+            </p>
+
+            <button class="button" id="continueBtn">
+                RUN AGAIN
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="performance">
+        FASHION RUNNER 02
+    </div>
+
+</div>
+
+<script>
+/* =========================================================
+   FASHION RUNNER 02
+   ========================================================= */
+
+(function(){
+
+"use strict";
+
+/* ---------------------------------------------------------
+   CONSTANTS
+   --------------------------------------------------------- */
+
+var GAME_ID = "FASHION-RUNNER-02";
+
+var PLAYER_KEY = "ceeqwinn_player_state";
+var COMPLETED_KEY = "ceeqwinn_completed_games";
+var RETURN_KEY = "ceeqwinn_return_from_game";
+var WALLET_KEY = "ceeqwinn_wallet";
+
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+
+var game = document.getElementById("game");
+
+var scoreEl = document.getElementById("score");
+var jewelsEl = document.getElementById("jewels");
+var styleScoreEl = document.getElementById("styleScore");
+
+var objectiveEl = document.getElementById("objective");
+
+var startScreen = document.getElementById("startScreen");
+var gameOver = document.getElementById("gameOver");
+var reveal = document.getElementById("reveal");
+
+var finalStats = document.getElementById("finalStats");
+
+var revealImage = document.getElementById("revealImage");
+var revealTitle = document.getElementById("revealTitle");
+var revealText = document.getElementById("revealText");
+
+/* ---------------------------------------------------------
+   DEVICE / PERFORMANCE DETECTION
+   --------------------------------------------------------- */
+
+var screenArea = window.innerWidth * window.innerHeight;
+
+var memory =
+    navigator.deviceMemory ||
+    2;
+
+var cores =
+    navigator.hardwareConcurrency ||
+    2;
+
+/*
+   We do NOT make modern devices slower.
+   They simply receive richer effects.
+*/
+
+var LOW_MODE =
+    memory <= 2 ||
+    cores <= 2 ||
+    screenArea < 500000;
+
+var ENHANCED_MODE =
+    !LOW_MODE &&
+    (memory >= 4 || cores >= 4);
+
+/* ---------------------------------------------------------
+   INTERNAL CANVAS
+   --------------------------------------------------------- */
+
+var BASE_W = 360;
+var BASE_H = 640;
+
+var DPR = LOW_MODE ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
+
+function resize(){
+
+    var rect = game.getBoundingClientRect();
+
+    var ratio = BASE_W / BASE_H;
+
+    var w = rect.width;
+    var h = rect.height;
+
+    var targetRatio = w / h;
+
+    if(targetRatio > ratio){
+        w = h * ratio;
+    }else{
+        h = w / ratio;
+    }
+
+    canvas.style.width = rect.width + "px";
+    canvas.style.height = rect.height + "px";
+
+    canvas.width = Math.floor(BASE_W * DPR);
+    canvas.height = Math.floor(BASE_H * DPR);
+
+    ctx.setTransform(
+        DPR,
+        0,
+        0,
+        DPR,
+        0,
+        0
+    );
+}
+
+resize();
+
+window.addEventListener(
+    "resize",
+    resize
+);
+
+/* ---------------------------------------------------------
+   GAME STATE
+   --------------------------------------------------------- */
+
+var running = false;
+var finished = false;
+
+var score = 0;
+var jewels = 0;
+var styleScore = 0;
+var gatesPassed = 0;
+
+var lane = 1;
+var targetLane = 1;
+
+var playerZ = 0;
+
+var speed = 0.34;
+
+var distance = 0;
+
+var jump = 0;
+var jumpVelocity = 0;
+
+var lastTime = 0;
+
+var objects = [];
+
+var particles = [];
+
+var scenery = [];
+
+var cameraBob = 0;
+
+var flash = 0;
+
+var spawnTimer = 0;
+
+var gateTimer = 0;
+
+var combo = 0;
+
+/* ---------------------------------------------------------
+   LEXIS REVEALS
+   --------------------------------------------------------- */
+
+var imageBase =
+    "../../content/images/characters/lexis/outfits/";
+
+var rawBase =
+    "https://raw.githubusercontent.com/" +
+    "Ceeqwinnempire/Ceeqwinn/main/" +
+    "content/images/characters/lexis/outfits/";
+
+var looks = [
+
+    {
+        file:"lexis_default.png.jpeg",
+        title:"THE EMERALD BEGINNING",
+        text:"A clean beginning. The run has only just started."
+    },
+
+    {
+        file:"lexis_red_dress.png.jpeg",
+        title:"THE CRIMSON LOOK",
+        text:"A bold fashion finish built from your run."
+    },
+
+    {
+        file:"lexis_black_dress.png.jpeg",
+        title:"THE MIDNIGHT LOOK",
+        text:"Quiet, polished and unmistakably dramatic."
+    },
+
+    {
+        file:"Lexis_Azunna_militarily.jpg.jpeg",
+        title:"THE COMMAND LOOK",
+        text:"Structured energy with a powerful fashion attitude."
+    },
+
+    {
+        file:"Lexis_Azunna_ministry.jpg.jpeg",
+        title:"THE EXECUTIVE LOOK",
+        text:"Refined movement. Controlled presence."
+    },
+
+    {
+        file:"Lexis_Azunna_soft.jpg.jpeg",
+        title:"THE SOFT LOOK",
+        text:"A softer finish shaped by a graceful run."
+    },
+
+    {
+        file:"Lexis_Azunna_street.jpg.jpeg",
+        title:"THE STREET LOOK",
+        text:"Movement, confidence and effortless energy."
+    }
+
+];
+
+/* ---------------------------------------------------------
+   HELPERS
+   --------------------------------------------------------- */
+
+function clamp(value,min,max){
+
+    return Math.max(
+        min,
+        Math.min(max,value)
+    );
+
+}
+
+function random(min,max){
+
+    return Math.random() * (max-min) + min;
+
+}
+
+function laneX(laneIndex,z){
+
+    /*
+      Perspective:
+      distant lanes are close together.
+      nearby lanes spread dramatically.
+    */
+
+    var perspective =
+        0.22 +
+        z * 0.78;
+
+    var spread =
+        82 * perspective;
+
+    return BASE_W/2 +
+        (laneIndex-1) * spread;
+
+}
+
+function roadY(z){
+
+    /*
+      Horizon around 34%.
+    */
+
+    return 210 +
+        z * 480;
+
+}
+
+/* ---------------------------------------------------------
+   DRAW BACKGROUND
+   --------------------------------------------------------- */
+
+function drawBackground(){
+
+    var gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            BASE_H
+        );
+
+    gradient.addColorStop(
+        0,
+        "#100713"
+    );
+
+    gradient.addColorStop(
+        .45,
+        "#2a0b22"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#08040a"
+    );
+
+    ctx.fillStyle = gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        BASE_W,
+        BASE_H
+    );
+
+    /* moon / jewel */
+
+    ctx.globalAlpha = LOW_MODE ? .55 : .9;
+
+    ctx.fillStyle = "#f1d58b";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        285,
+        105,
+        25,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
+
+    drawBuildings();
+
+    if(ENHANCED_MODE){
+        drawLightColumns();
+    }
+
+}
+
+/* ---------------------------------------------------------
+   BUILDINGS
+   --------------------------------------------------------- */
+
+function drawBuildings(){
+
+    var horizon = 225;
+
+    var buildings = [
+
+        [0,145,42],
+        [46,175,48],
+        [97,155,37],
+        [138,180,42],
+        [184,160,46],
+        [235,175,45],
+        [286,145,55],
+        [326,170,42]
+
+    ];
+
+    for(var i=0;i<buildings.length;i++){
+
+        var b = buildings[i];
+
+        var x = b[0];
+        var y = horizon - b[2];
+        var w = b[1]-b[0];
+        var h = b[2];
+
+        ctx.fillStyle =
+            i % 2 === 0
+            ? "#170b1b"
+            : "#210c20";
+
+        ctx.fillRect(
+            x,
+            y,
+            w,
+            h
+        );
+
+        if(!LOW_MODE){
+
+            ctx.fillStyle =
+                "rgba(231,190,101,.28)";
+
+            for(
+                var wy=y+10;
+                wy<y+h-7;
+                wy+=15
+            ){
+
+                if(
+                    ((i*5)+(wy|0)) % 3 !== 0
+                ){
+
+                    ctx.fillRect(
+                        x+7,
+                        wy,
+                        4,
+                        6
+                    );
+
+                    if(w>25){
+
+                        ctx.fillRect(
+                            x+w-11,
+                            wy,
+                            4,
+                            6
+                        );
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+/* ---------------------------------------------------------
+   ENHANCED LIGHTS
+   --------------------------------------------------------- */
+
+function drawLightColumns(){
+
+    ctx.globalAlpha = .22;
+
+    for(var i=0;i<5;i++){
+
+        var x =
+            35 +
+            i*75;
+
+        ctx.fillStyle =
+            "#d9a9d4";
+
+        ctx.fillRect(
+            x,
+            175,
+            2,
+            55
+        );
+
+    }
+
+    ctx.globalAlpha = 1;
+
+}
+
+/* ---------------------------------------------------------
+   ROAD
+   --------------------------------------------------------- */
+
+function drawRoad(){
+
+    var horizonY = 225;
+
+    ctx.fillStyle = "#0c070d";
+
+    ctx.beginPath();
+
+    ctx.moveTo(105,horizonY);
+    ctx.lineTo(255,horizonY);
+    ctx.lineTo(430,BASE_H);
+    ctx.lineTo(-70,BASE_H);
+    ctx.closePath();
+
+    ctx.fill();
+
+    /* road glow */
+
+    if(!LOW_MODE){
+
+        var roadGlow =
+            ctx.createLinearGradient(
+                0,
+                horizonY,
+                0,
+                BASE_H
+            );
+
+        roadGlow.addColorStop(
+            0,
+            "rgba(174,53,125,.03)"
+        );
+
+        roadGlow.addColorStop(
+            1,
+            "rgba(174,53,125,.14)"
+        );
+
+        ctx.fillStyle = roadGlow;
+
+        ctx.beginPath();
+
+        ctx.moveTo(105,horizonY);
+        ctx.lineTo(255,horizonY);
+        ctx.lineTo(430,BASE_H);
+        ctx.lineTo(-70,BASE_H);
+
+        ctx.closePath();
+
+        ctx.fill();
+
+    }
+
+    /*
+      Perspective lane lines.
+    */
+
+    for(var l=0;l<2;l++){
+
+        var topX =
+            105 +
+            (l+1)*50;
+
+        var bottomX =
+            180 +
+            (l+1)*0;
+
+        ctx.strokeStyle =
+            LOW_MODE
+            ? "rgba(220,170,90,.25)"
+            : "rgba(236,198,121,.38)";
+
+        ctx.lineWidth = LOW_MODE ? 1 : 2;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            topX,
+            horizonY
+        );
+
+        ctx.lineTo(
+            180 + l*0,
+            BASE_H
+        );
+
+        ctx.stroke();
+
+    }
+
+    /*
+      Moving runway markings.
+    */
+
+    var offset =
+        (distance * 1.9) % 80;
+
+    for(
+        var y=230-offset;
+        y<BASE_H;
+        y+=80
+    ){
+
+        if(y<230){
+            continue;
+        }
+
+        var z =
+            clamp(
+                (y-225)/415,
+                0,
+                1
+            );
+
+        var half =
+            15 + z*155;
+
+        ctx.fillStyle =
+            "rgba(242,210,145,.16)";
+
+        ctx.fillRect(
+            BASE_W/2-half*.18,
+            y,
+            half*.36,
+            Math.max(2,z*8)
+        );
+
+    }
+
+}
+
+/* ---------------------------------------------------------
+   PLAYER
+   --------------------------------------------------------- */
+
+function drawPlayer(){
+
+    var x =
+        laneX(
+            lane +
+            (targetLane-lane)*0.05,
+            .98
+        );
+
+    /*
+      Smooth lane interpolation happens separately.
+    */
+
+    x =
+        laneX(
+            lane,
+            .98
+        );
+
+    var y =
+        510 -
+        jump*85;
+
+    var bob =
+        Math.sin(
+            distance*.15
+        ) * 2;
+
+    cameraBob =
+        Math.sin(
+            distance*.11
+        ) * (
+            LOW_MODE ? 1 : 2.5
+        );
+
+    y += bob + cameraBob;
+
+    var scale = 1;
+
+    /*
+      Shadow.
+    */
+
+    ctx.globalAlpha = .35;
+
+    ctx.fillStyle = "#000";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        559,
+        25 + jump*8,
+        7,
+        0,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
+
+    /*
+      Hair shadow behind body.
+    */
+
+    drawHair(
+        x,
+        y,
+        scale
+    );
+
+    /*
+      Legs.
+    */
+
+    var run =
+        Math.sin(distance*.22);
+
+    ctx.strokeStyle = "#171017";
+    ctx.lineWidth = 8;
+    ctx.lineCap = "round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-7,
+        y+49
+    );
+
+    ctx.lineTo(
+        x-10-run*10,
+        y+88
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x+7,
+        y+49
+    );
+
+    ctx.lineTo(
+        x+10+run*10,
+        y+88
+    );
+
+    ctx.stroke();
+
+    /*
+      Shoes.
+    */
+
+    ctx.strokeStyle = "#e5c47b";
+    ctx.lineWidth = 5;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-10-run*10,
+        y+88
+    );
+
+    ctx.lineTo(
+        x-17-run*10,
+        y+88
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x+10+run*10,
+        y+88
+    );
+
+    ctx.lineTo(
+        x+17+run*10,
+        y+88
+    );
+
+    ctx.stroke();
+
+    /*
+      Dress/body.
+    */
+
+    var dress =
+        ctx.createLinearGradient(
+            x,
+            y+15,
+            x,
+            y+68
+        );
+
+    dress.addColorStop(
+        0,
+        "#8c153f"
+    );
+
+    dress.addColorStop(
+        1,
+        "#27091b"
+    );
+
+    ctx.fillStyle = dress;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-14,
+        y+17
+    );
+
+    ctx.lineTo(
+        x+14,
+        y+17
+    );
+
+    ctx.lineTo(
+        x+28,
+        y+66
+    );
+
+    ctx.lineTo(
+        x-28,
+        y+66
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    /*
+      Gold belt detail.
+    */
+
+    ctx.fillStyle = "#d9b66c";
+
+    ctx.fillRect(
+        x-13,
+        y+37,
+        26,
+        3
+    );
+
+    /*
+      Arms.
+    */
+
+    var arm =
+        Math.sin(distance*.22);
+
+    ctx.strokeStyle = "#a96554";
+    ctx.lineWidth = 7;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-12,
+        y+21
+    );
+
+    ctx.lineTo(
+        x-25-arm*7,
+        y+47
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x+12,
+        y+21
+    );
+
+    ctx.lineTo(
+        x+25+arm*7,
+        y+47
+    );
+
+    ctx.stroke();
+
+    /*
+      Neck.
+    */
+
+    ctx.fillStyle = "#a96554";
+
+    ctx.fillRect(
+        x-5,
+        y+5,
+        10,
+        13
+    );
+
+    /*
+      Head.
+    */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        18,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /*
+      Hair over head.
+    */
+
+    ctx.fillStyle = "#09070a";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y-4,
+        20,
+        Math.PI,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    /*
+      Hair swoosh.
+    */
+
+    var hairWave =
+        Math.sin(distance*.13)*7;
+
+    ctx.strokeStyle = "#09070a";
+    ctx.lineWidth = 10;
+    ctx.lineCap = "round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-14,
+        y-4
+    );
+
+    ctx.quadraticCurveTo(
+        x-36-hairWave,
+        y+12,
+        x-23-hairWave,
+        y+35
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x+14,
+        y-4
+    );
+
+    ctx.quadraticCurveTo(
+        x+37+hairWave,
+        y+9,
+        x+28+hairWave,
+        y+33
+    );
+
+    ctx.stroke();
+
+}
+
+/* ---------------------------------------------------------
+   HAIR
+   --------------------------------------------------------- */
+
+function drawHair(x,y,scale){
+
+    var wave =
+        Math.sin(distance*.13)*5;
+
+    ctx.strokeStyle = "#09070a";
+    ctx.lineWidth = 12;
+    ctx.lineCap = "round";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x-12,
+        y-1
+    );
+
+    ctx.quadraticCurveTo(
+        x-38-wave,
+        y+18,
+        x-25-wave,
+        y+45
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x+12,
+        y-1
+    );
+
+    ctx.quadraticCurveTo(
+        x+38+wave,
+        y+17,
+        x+26+wave,
+        y+43
+    );
+
+    ctx.stroke();
+
+}
+
+/* ---------------------------------------------------------
+   OBJECTS
+   --------------------------------------------------------- */
+
+function spawnObject(){
+
+    var typeRoll =
+        Math.random();
+
+    var type;
+
+    if(typeRoll < .52){
+
+        type = "jewel";
+
+    }else if(typeRoll < .75){
+
+        type = "obstacle";
+
+    }else{
+
+        type = "style";
+
+    }
+
+    objects.push({
+
+        type:type,
+
+        lane:
+            Math.floor(
+                Math.random()*3
+            ),
+
+        z:0,
+
+        collected:false,
+
+        passed:false
+
+    });
+
+}
+
+/* ---------------------------------------------------------
+   DRAW OBJECTS
+   --------------------------------------------------------- */
+
+function drawObjects(){
+
+    for(
+        var i=0;
+        i<objects.length;
+        i++
+    ){
+
+        var o = objects[i];
+
+        if(o.z<0 || o.z>1.1){
+            continue;
+        }
+
+        var x =
+            laneX(
+                o.lane,
+                o.z
+            );
+
+        var y =
+            roadY(o.z);
+
+        var size =
+            5 +
+            o.z*20;
+
+        if(o.type === "jewel"){
+
+            drawJewel(
+                x,
+                y-20-o.z*15,
+                size
+            );
+
+        }else if(o.type === "obstacle"){
+
+            drawObstacle(
+                x,
+                y-16-o.z*10,
+                size
+            );
+
+        }else{
+
+            drawGate(
+                x,
+                y-25-o.z*15,
+                size
+            );
+
+        }
+
+    }
+
+}
+
+/* ---------------------------------------------------------
+   JEWEL
+   --------------------------------------------------------- */
+
+function drawJewel(x,y,size){
+
+    ctx.save();
+
+    ctx.translate(
+        x,
+        y
+    );
+
+    var spin =
+        Math.sin(
+            distance*.25
+        );
+
+    ctx.rotate(spin*.25);
+
+    ctx.fillStyle =
+        "#e6c36f";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        -size
+    );
+
+    ctx.lineTo(
+        size*.7,
+        0
+    );
+
+    ctx.lineTo(
+        0,
+        size
+    );
+
+    ctx.lineTo(
+        -size*.7,
+        0
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    if(!LOW_MODE){
+
+        ctx.fillStyle =
+            "rgba(255,255,255,.8)";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            -size*.2,
+            -size*.25,
+            Math.max(1,size*.15),
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    }
+
+    ctx.restore();
+
+}
+
+/* ---------------------------------------------------------
+   OBSTACLE
+   --------------------------------------------------------- */
+
+function drawObstacle(x,y,size){
+
+    ctx.fillStyle = "#3a112a";
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        x-size,
+        y-size,
+        size*2,
+        size*1.6,
+        size*.25
+    );
+
+    ctx.fill();
+
+    ctx.strokeStyle =
+        "rgba(236,198,121,.55)";
+
+    ctx.lineWidth = 1;
+
+    ctx.stroke();
+
+}
+
+/* ---------------------------------------------------------
+   STYLE GATE
+   --------------------------------------------------------- */
+
+function drawGate(x,y,size){
+
+    ctx.strokeStyle =
+        "#dcb66d";
+
+    ctx.lineWidth =
+        Math.max(
+            2,
+            size*.12
+        );
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        size*1.35,
+        Math.PI,
+        0
+    );
+
+    ctx.stroke();
+
+    ctx.fillStyle =
+        "rgba(225,184,101,.13)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        size*1.15,
+        Math.PI,
+        0
+    );
+
+    ctx.fill();
+
+}
+
+/* ---------------------------------------------------------
+   PARTICLES
+   --------------------------------------------------------- */
+
+function addParticle(x,y){
+
+    if(LOW_MODE){
+        return;
+    }
+
+    particles.push({
+
+        x:x,
+        y:y,
+
+        vx:random(-.7,.7),
+        vy:random(-1.7,-.4),
+
+        life:1,
+
+        size:random(1,3)
+
+    });
+
+}
+
+function updateParticles(dt){
+
+    if(LOW_MODE){
+        particles.length = 0;
+        return;
+    }
+
+    for(
+        var i=particles.length-1;
+        i>=0;
+        i--
+    ){
+
+        var p = particles[i];
+
+        p.x += p.vx * dt * 60;
+        p.y += p.vy * dt * 60;
+
+        p.life -= .035 * dt * 60;
+
+        if(p.life<=0){
+
+            particles.splice(i,1);
+
+        }
+
+    }
+
+}
+
+function drawParticles(){
+
+    if(LOW_MODE){
+        return;
+    }
+
+    for(
+        var i=0;
+        i<particles.length;
+        i++
+    ){
+
+        var p = particles[i];
+
+        ctx.globalAlpha =
+            Math.max(0,p.life);
+
+        ctx.fillStyle =
+            "#e7c875";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    }
+
+    ctx.globalAlpha = 1;
+
+}
+
+/* ---------------------------------------------------------
+   PLAYER LANE MOVEMENT
+   --------------------------------------------------------- */
+
+function updatePlayer(dt){
+
+    /*
+      Smoothly approach target lane.
+    */
+
+    lane +=
+        (targetLane-lane) *
+        Math.min(
+            1,
+            dt*9
+        );
+
+    if(jump>0){
+
+        jumpVelocity -=
+            1.8*dt;
+
+        jump +=
+            jumpVelocity*dt;
+
+        if(jump<=0){
+
+            jump = 0;
+            jumpVelocity = 0;
+
+        }
+
+    }
+
+}
+
+/* ---------------------------------------------------------
+   OBJECT COLLISION
+   --------------------------------------------------------- */
+
+function checkObjects(){
+
+    for(
+        var i=objects.length-1;
+        i>=0;
+        i--
+    ){
+
+        var o = objects[i];
+
+        /*
+          Collision happens when object reaches player.
+        */
+
+        if(
+            !o.collected &&
+            o.z>.82 &&
+            o.z<1.04 &&
+            Math.abs(
+                o.lane-Math.round(lane)
+            )===0
+        ){
+
+            if(o.type === "jewel"){
+
+                collectJewel(o);
+
+            }else if(o.type === "style"){
+
+                passGate(o);
+
+            }else{
+
+                /*
+                  Jumping avoids the obstacle.
+                */
+
+                if(jump < .42){
+
+                    hitObstacle(o);
+
+                }else{
+
+                    o.collected = true;
+
+                    combo++;
+
+                    score += 40;
+
+                }
+
+            }
+
+        }
+
+        if(o.z>1.12){
+
+            objects.splice(
+                i,
+                1
+            );
+
+        }
+
+    }
+
+}
+
+/* ---------------------------------------------------------
+   JEWEL COLLECTION
+   --------------------------------------------------------- */
+
+function collectJewel(o){
+
+    o.collected = true;
+
+    jewels++;
+
+    score += 100;
+
+    styleScore += 10;
+
+    combo++;
+
+    flash = .08;
+
+    var x =
+        laneX(
+            o.lane,
+            1
+        );
+
+    addParticle(
+        x,
+        500
+    );
+
+    updateHUD();
+
+}
+
+/* ---------------------------------------------------------
+   STYLE GATE
+   --------------------------------------------------------- */
+
+function passGate(o){
+
+    o.collected = true;
+
+    gatesPassed++;
+
+    score += 250;
+
+    styleScore += 100;
+
+    combo++;
+
+    flash = .14;
+
+    for(
+        var i=0;
+        i<8;
+        i++
+    ){
+
+        addParticle(
+            laneX(
+                o.lane,
+                1
+            ),
+            480
+        );
+
+    }
+
+    updateHUD();
+
+}
+
+/* ---------------------------------------------------------
+   OBSTACLE HIT
+   --------------------------------------------------------- */
+
+function hitObstacle(o){
+
+    o.collected = true;
+
+    combo = 0;
+
+    score =
+        Math.max(
+            0,
+            score-80
+        );
+
+    flash = .22;
+
+    updateHUD();
+
+}
+
+/* ---------------------------------------------------------
+   UPDATE HUD
+   --------------------------------------------------------- */
+
+function updateHUD(){
+
+    scoreEl.textContent =
+        Math.floor(score);
+
+    jewelsEl.textContent =
+        jewels;
+
+    styleScoreEl.textContent =
+        styleScore;
+
+    objectiveEl.innerHTML =
+        "<strong>RUN OBJECTIVE</strong>" +
+        " · " +
+        jewels +
+        "/12 jewels" +
+        " · " +
+        gatesPassed +
+        "/2 style gates";
+
+}
+
+/* ---------------------------------------------------------
+   START GAME
+   --------------------------------------------------------- */
+
+function startGame(){
+
+    startScreen.classList.add(
+        "hidden"
+    );
+
+    gameOver.classList.add(
+        "hidden"
+    );
+
+    reveal.classList.add(
+        "hidden"
+    );
+
+    resetGame();
+
+    running = true;
+
+    finished = false;
+
+    lastTime =
+        performance.now();
+
+    requestAnimationFrame(
+        loop
+    );
+
+}
+
+/* ---------------------------------------------------------
+   RESET
+   --------------------------------------------------------- */
+
+function resetGame(){
+
+    score = 0;
+    jewels = 0;
+    styleScore = 0;
+    gatesPassed = 0;
+
+    lane = 1;
+    targetLane = 1;
+
+    playerZ = 0;
+
+    jump = 0;
+    jumpVelocity = 0;
+
+    distance = 0;
+
+    objects = [];
+    particles = [];
+
+    spawnTimer = .2;
+
+    combo = 0;
+
+    speed = .34;
+
+    updateHUD();
+
+}
+
+/* ---------------------------------------------------------
+   GAME LOOP
+   --------------------------------------------------------- */
+
+function loop(now){
+
+    if(!running){
+        return;
+    }
+
+    var dt =
+        Math.min(
+            .035,
+            (now-lastTime)/1000
+        );
+
+    lastTime = now;
+
+    update(dt);
+
+    draw();
+
+    requestAnimationFrame(
+        loop
+    );
+
+}
+
+/* ---------------------------------------------------------
+   UPDATE
+   --------------------------------------------------------- */
+
+function update(dt){
+
+    distance +=
+        speed *
+        dt *
+        60;
+
+    /*
+      Slight progression.
+    */
+
+    speed =
+        Math.min(
+            .52,
+            .34 +
+            distance/30000
+        );
+
+    updatePlayer(dt);
+
+    /*
+      Spawn objects.
+    */
+
+    spawnTimer -= dt;
+
+    if(spawnTimer<=0){
+
+        spawnObject();
+
+        spawnTimer =
+            LOW_MODE
+            ? random(.75,1.05)
+            : random(.55,.9);
+
+    }
+
+    /*
+      Move objects toward player.
+    */
+
+    for(
+        var i=0;
+        i<objects.length;
+        i++
+    ){
+
+        objects[i].z +=
+            speed *
+            dt *
+            1.7;
+
+    }
+
+    checkObjects();
+
+    updateParticles(dt);
+
+    /*
+      Passive score.
+    */
+
+    score +=
+        speed *
+        dt *
+        8;
+
+    if(flash>0){
+
+        flash -= dt;
+
+    }
+
+    /*
+      Finish objective after enough distance.
+      We don't force an endless run forever.
+    */
+
+    if(
+        distance>1150 &&
+        jewels>=12 &&
+        gatesPassed>=2
+    ){
+
+        endRun();
+
+    }
+
+}
+
+/* ---------------------------------------------------------
+   DRAW
+   --------------------------------------------------------- */
+
+function draw(){
+
+    ctx.clearRect(
+        0,
+        0,
+        BASE_W,
+        BASE_H
+    );
+
+    ctx.save();
+
+    drawBackground();
+
+    drawRoad();
+
+    drawObjects();
+
+    drawPlayer();
+
+    drawParticles();
+
+    ctx.restore();
+
+    /*
+      Small impact flash.
+    */
+
+    if(flash>0){
+
+        ctx.fillStyle =
+            "rgba(255,225,180," +
+            Math.min(.25,flash) +
+            ")";
+
+        ctx.fillRect(
+            0,
+            0,
+            BASE_W,
+            BASE_H
+        );
+
+    }
+
+}
+
+/* ---------------------------------------------------------
+   END RUN
+   --------------------------------------------------------- */
+
+function endRun(){
+
+    if(finished){
+        return;
+    }
+
+    finished = true;
+
+    running = false;
+
+    /*
+      Determine whether the objective
+      was fully completed.
+    */
+
+    var objectiveComplete =
+        jewels>=12 &&
+        gatesPassed>=2;
+
+    if(objectiveComplete){
+
+        finalTitle.textContent =
+            "LOOK COMPLETE";
+
+    }else{
+
+        finalTitle.textContent =
+            "RUN COMPLETE";
+
+    }
+
+    finalStats.innerHTML =
+        "Score: <strong>" +
+        Math.floor(score) +
+        "</strong><br>" +
+        "Jewels: <strong>" +
+        jewels +
+        "</strong><br>" +
+        "Style Score: <strong>" +
+        styleScore +
+        "</strong><br>" +
+        "Style Gates: <strong>" +
+        gatesPassed +
+        "/2</strong>";
+
+    markCompleted();
+
+    gameOver.classList.remove(
+        "hidden"
+    );
+
+}
+
+/* ---------------------------------------------------------
+   COMPLETED GAME STORAGE
+   --------------------------------------------------------- */
+
+function markCompleted(){
+
+    try{
+
+        var completed =
+            JSON.parse(
+                localStorage.getItem(
+                    COMPLETED_KEY
+                ) || "{}"
+            );
+
+        completed[GAME_ID] = {
+
+            completed:true,
+
+            score:Math.floor(score),
+
+            jewels:jewels,
+
+            styleScore:styleScore,
+
+            gatesPassed:gatesPassed,
+
+            timestamp:
+                Date.now()
+
+        };
+
+        localStorage.setItem(
+            COMPLETED_KEY,
+            JSON.stringify(completed)
+        );
+
+        /*
+          Reward:
+          transparent skill-based reward.
+        */
+
+        var earned =
+            Math.floor(
+                jewels*5 +
+                gatesPassed*25
+            );
+
+        var wallet =
+            JSON.parse(
+                localStorage.getItem(
+                    WALLET_KEY
+                ) || '{"thrilly":0}'
+            );
+
+        if(typeof wallet.thrilly !== "number"){
+
+            wallet.thrilly = 0;
+
+        }
+
+        wallet.thrilly += earned;
+
+        localStorage.setItem(
+            WALLET_KEY,
+            JSON.stringify(wallet)
+        );
+
+    }catch(error){
+
+        /* Storage failure should not break game. */
+
+    }
+
+}
+
+/* ---------------------------------------------------------
+   REVEAL
+   --------------------------------------------------------- */
+
+function showReveal(){
+
+    gameOver.classList.add(
+        "hidden"
+    );
+
+    reveal.classList.remove(
+        "hidden"
+    );
+
+    var index =
+        Math.min(
+            looks.length-1,
+            Math.max(
+                0,
+                Math.floor(
+                    styleScore/100
+                )
+            )
+        );
+
+    var look =
+        looks[index];
+
+    revealTitle.textContent =
+        look.title;
+
+    revealText.textContent =
+        look.text +
+        " Score: " +
+        Math.floor(score) +
+        ".";
+
+    revealImage.classList.remove(
+        "show"
+    );
+
+    revealImage.src =
+        imageBase +
+        look.file;
+
+    revealImage.onerror =
+        function(){
+
+            revealImage.onerror = null;
+
+            revealImage.src =
+                rawBase +
+                look.file;
+
+        };
+
+    setTimeout(
+        function(){
+
+            revealImage.classList.add(
+                "show"
+            );
+
+        },
+        80
+    );
+
+}
+
+/* ---------------------------------------------------------
+   STORY RETURN
+   --------------------------------------------------------- */
+
+function returnToStory(){
+
+    try{
+
+        sessionStorage.setItem(
+            RETURN_KEY,
+            GAME_ID
+        );
+
+    }catch(error){}
+
+    if(
+        document.referrer &&
+        document.referrer.indexOf(
+            window.location.host
+        ) !== -1
+    ){
+
+        history.back();
+
+    }else{
+
+        window.location.href =
+            "../index.html";
+
+    }
+
+}
+
+/* ---------------------------------------------------------
+   CONTROLS
+   --------------------------------------------------------- */
+
+function moveLeft(){
+
+    targetLane =
+        Math.max(
+            0,
+            targetLane-1
+        );
+
+}
+
+function moveRight(){
+
+    targetLane =
+        Math.min(
+            2,
+            targetLane+1
+        );
+
+}
+
+function doJump(){
+
+    if(jump===0){
+
+        jump = .01;
+
+        jumpVelocity = 1.18;
+
+    }
+
+}
+
+/* ---------------------------------------------------------
+   BUTTONS
+   --------------------------------------------------------- */
+
+document.getElementById(
+    "startBtn"
+).addEventListener(
+    "click",
+    startGame
+);
+
+document.getElementById(
+    "retryBtn"
+).addEventListener(
+    "click",
+    startGame
+);
+
+document.getElementById(
+    "revealBtn"
+).addEventListener(
+    "click",
+    showReveal
+);
+
+document.getElementById(
+    "continueBtn"
+).addEventListener(
+    "click",
+    startGame
+);
+
+document.getElementById(
+    "leftBtn"
+).addEventListener(
+    "click",
+    moveLeft
+);
+
+document.getElementById(
+    "rightBtn"
+).addEventListener(
+    "click",
+    moveRight
+);
+
+document.getElementById(
+    "jump"
+).addEventListener(
+    "click",
+    doJump
+);
+
+/* ---------------------------------------------------------
+   KEYBOARD
+   --------------------------------------------------------- */
+
+document.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key === "ArrowLeft" ||
+            event.key === "a"
+        ){
+
+            moveLeft();
+
+        }
+
+        if(
+            event.key === "ArrowRight" ||
+            event.key === "d"
+        ){
+
+            moveRight();
+
+        }
+
+        if(
+            event.key === "ArrowUp" ||
+            event.key === "w" ||
+            event.key === " "
+        ){
+
+            doJump();
+
+        }
+
+    }
+);
+
+/* ---------------------------------------------------------
+   SWIPE CONTROLS
+   --------------------------------------------------------- */
+
+var touchStartX = 0;
+var touchStartY = 0;
+
+game.addEventListener(
+    "touchstart",
+    function(event){
+
+        if(
+            event.target.tagName === "BUTTON"
+        ){
+            return;
+        }
+
+        var touch =
+            event.touches[0];
+
+        touchStartX =
+            touch.clientX;
+
+        touchStartY =
+            touch.clientY;
+
+    },
+    {
+        passive:true
+    }
+);
+
+game.addEventListener(
+    "touchend",
+    function(event){
+
+        if(
+            event.target.tagName === "BUTTON"
+        ){
+            return;
+        }
+
+        var touch =
+            event.changedTouches[0];
+
+        var dx =
+            touch.clientX-touchStartX;
+
+        var dy =
+            touch.clientY-touchStartY;
+
+        var distanceMoved =
+            Math.sqrt(
+                dx*dx +
+                dy*dy
+            );
+
+        if(distanceMoved<25){
+            return;
+        }
+
+        if(
+            Math.abs(dx) >
+            Math.abs(dy)
+        ){
+
+            if(dx>0){
+
+                moveRight();
+
+            }else{
+
+                moveLeft();
+
+            }
+
+        }else{
+
+            if(dy<0){
+
+                doJump();
+
+            }
+
+        }
+
+    },
+    {
+        passive:true
+    }
+);
+
+/* ---------------------------------------------------------
+   PREVENT PAGE GESTURES
+   --------------------------------------------------------- */
+
+document.addEventListener(
+    "touchmove",
+    function(event){
+
+        event.preventDefault();
+
+    },
+    {
+        passive:false
+    }
+);
+
+/* ---------------------------------------------------------
+   FIRST PAINT
+   --------------------------------------------------------- */
+
+draw();
+
+})();
+</script>
+
+</body>
+</html>
