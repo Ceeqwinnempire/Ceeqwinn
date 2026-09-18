@@ -1,0 +1,3189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1.0,
+               maximum-scale=1.0,
+               user-scalable=no">
+
+<meta name="theme-color" content="#09070c">
+
+<title>Fashion Runner 01 | CEEQWINN</title>
+
+<style>
+
+/* =========================================================
+   CEEQWINN
+   FASHION RUNNER 01
+   LOW-SPEC FIRST
+   ========================================================= */
+
+html,
+body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#08060a;
+    color:#fff;
+    font-family:Georgia,"Times New Roman",serif;
+    -webkit-text-size-adjust:100%;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+button{
+    font-family:Georgia,"Times New Roman",serif;
+}
+
+#page{
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:#08060a;
+    overflow:hidden;
+}
+
+#game{
+    position:absolute;
+    left:50%;
+    top:50%;
+
+    width:360px;
+    height:640px;
+
+    margin-left:-180px;
+    margin-top:-320px;
+
+    overflow:hidden;
+
+    background:#110914;
+}
+
+/* =========================================================
+   CANVAS
+   ========================================================= */
+
+#runnerCanvas{
+    position:absolute;
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    background:#100914;
+}
+
+/* =========================================================
+   HTML HUD
+   ========================================================= */
+
+.hud{
+    position:absolute;
+    left:0;
+    top:0;
+
+    width:100%;
+
+    padding:16px;
+
+    z-index:20;
+
+    pointer-events:none;
+}
+
+.brand{
+    font-family:Arial,sans-serif;
+    font-size:8px;
+    letter-spacing:3px;
+    color:#e4c37b;
+}
+
+.hudRow{
+    margin-top:9px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.stat{
+    min-width:74px;
+
+    padding:7px 9px;
+
+    background:rgba(8,5,10,.55);
+
+    border:1px solid rgba(221,184,106,.25);
+}
+
+.statLabel{
+    font-family:Arial,sans-serif;
+    font-size:6px;
+    letter-spacing:2px;
+    color:#958895;
+    text-transform:uppercase;
+}
+
+.statValue{
+    margin-top:2px;
+    font-family:Arial,sans-serif;
+    font-size:12px;
+    color:#f2dfb7;
+}
+
+/* =========================================================
+   START SCREEN
+   ========================================================= */
+
+.screen{
+    position:absolute;
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+
+    z-index:50;
+
+    background:
+        radial-gradient(
+            circle at 50% 38%,
+            #382033 0%,
+            #160d18 43%,
+            #08060a 86%
+        );
+
+    display:none;
+}
+
+.screen.active{
+    display:block;
+}
+
+.startContent{
+    position:absolute;
+
+    left:8%;
+    top:19%;
+
+    width:84%;
+
+    text-align:center;
+}
+
+.kicker{
+    font-family:Arial,sans-serif;
+    font-size:8px;
+    letter-spacing:4px;
+    color:#d6b56f;
+    text-transform:uppercase;
+}
+
+.startTitle{
+    margin-top:16px;
+
+    font-size:45px;
+    line-height:.9;
+
+    color:#fff0d4;
+}
+
+.startTitle span{
+    display:block;
+    color:#d6b56f;
+}
+
+.rule{
+    width:70px;
+    height:1px;
+
+    margin:23px auto 18px;
+
+    background:#b79557;
+}
+
+.startText{
+    width:84%;
+    margin:0 auto;
+
+    font-family:Arial,sans-serif;
+    font-size:11px;
+    line-height:1.7;
+
+    color:#bdb0bb;
+}
+
+.startButton{
+    width:78%;
+    height:48px;
+
+    margin-top:30px;
+
+    border:1px solid #c5a15e;
+
+    background:#21121e;
+
+    color:#f5e6c8;
+
+    font-family:Arial,sans-serif;
+    font-size:9px;
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+}
+
+.startButton:active{
+    transform:scale(.97);
+}
+
+.instructions{
+    margin-top:18px;
+
+    font-family:Arial,sans-serif;
+    font-size:8px;
+    line-height:1.6;
+
+    color:#756a74;
+}
+
+/* =========================================================
+   GAME OVER
+   ========================================================= */
+
+.gameOver{
+    position:absolute;
+    left:7%;
+    top:17%;
+
+    width:86%;
+
+    padding:24px 18px;
+
+    background:rgba(12,7,13,.95);
+
+    border:1px solid rgba(216,182,106,.48);
+
+    box-shadow:0 18px 55px rgba(0,0,0,.65);
+
+    text-align:center;
+}
+
+.gameOverTitle{
+    font-size:31px;
+    color:#f5e5c5;
+}
+
+.gameOverSubtitle{
+    margin-top:7px;
+
+    font-family:Arial,sans-serif;
+    font-size:8px;
+    letter-spacing:2px;
+
+    color:#a395a2;
+
+    text-transform:uppercase;
+}
+
+.finalScore{
+    margin-top:20px;
+
+    font-size:43px;
+    color:#d7b66d;
+}
+
+.finalLabel{
+    font-family:Arial,sans-serif;
+    font-size:7px;
+    letter-spacing:2px;
+    color:#847782;
+    text-transform:uppercase;
+}
+
+.reward{
+    margin-top:17px;
+
+    font-family:Arial,sans-serif;
+    font-size:10px;
+
+    color:#d8c39a;
+}
+
+.gameButton{
+    display:block;
+
+    width:100%;
+    height:43px;
+
+    margin-top:17px;
+
+    border:1px solid #b9985c;
+
+    background:#20111d;
+
+    color:#f0ddbb;
+
+    font-family:Arial,sans-serif;
+    font-size:8px;
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+}
+
+.gameButton.secondary{
+    background:#0f090e;
+    border-color:rgba(255,255,255,.14);
+    color:#958995;
+}
+
+/* =========================================================
+   FASHION REVEAL
+   ========================================================= */
+
+#fashionReveal{
+    position:absolute;
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+
+    z-index:80;
+
+    display:none;
+
+    background:#08060a;
+}
+
+#fashionReveal.show{
+    display:block;
+}
+
+.revealImage{
+    position:absolute;
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    opacity:0;
+
+    transform:scale(1.04);
+
+    transition:
+        opacity .65s ease,
+        transform 3.5s ease;
+}
+
+.revealImage.show{
+    opacity:1;
+    transform:scale(1);
+}
+
+.revealShade{
+    position:absolute;
+    left:0;
+    top:0;
+
+    width:100%;
+    height:100%;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0,0,0,.12),
+            rgba(0,0,0,.56)
+        );
+}
+
+.revealText{
+    position:absolute;
+
+    left:0;
+    bottom:12%;
+
+    width:100%;
+
+    text-align:center;
+
+    text-shadow:
+        0 3px 18px rgba(0,0,0,.9);
+}
+
+.revealKicker{
+    font-family:Arial,sans-serif;
+    font-size:8px;
+    letter-spacing:4px;
+    color:#ead29b;
+}
+
+.revealName{
+    margin-top:8px;
+
+    font-size:31px;
+
+    color:#fff0d5;
+}
+
+.revealScore{
+    margin-top:9px;
+
+    font-family:Arial,sans-serif;
+    font-size:9px;
+
+    color:#d7bd88;
+    letter-spacing:2px;
+}
+
+.revealClose{
+    position:absolute;
+
+    left:12%;
+    bottom:4%;
+
+    width:76%;
+    height:40px;
+
+    border:1px solid rgba(225,193,124,.55);
+
+    background:rgba(12,7,12,.72);
+
+    color:#ead7ae;
+
+    font-family:Arial,sans-serif;
+    font-size:8px;
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+}
+
+/* =========================================================
+   PERFORMANCE MESSAGE
+   ========================================================= */
+
+.performance{
+    position:absolute;
+
+    left:50%;
+    bottom:18px;
+
+    transform:translateX(-50%);
+
+    z-index:30;
+
+    padding:5px 8px;
+
+    background:rgba(7,5,8,.42);
+
+    font-family:Arial,sans-serif;
+    font-size:6px;
+    letter-spacing:1px;
+
+    color:rgba(255,255,255,.38);
+
+    pointer-events:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="game">
+
+<canvas id="runnerCanvas"></canvas>
+
+
+<!-- =====================================================
+     HUD
+     ===================================================== -->
+
+<div class="hud">
+
+    <div class="brand">
+        CEEQWINN · FASHION RUNNER 01
+    </div>
+
+    <div class="hudRow">
+
+        <div class="stat">
+
+            <div class="statLabel">
+                Score
+            </div>
+
+            <div
+                id="scoreText"
+                class="statValue">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="statLabel">
+                Jewels
+            </div>
+
+            <div
+                id="jewelText"
+                class="statValue">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div class="statLabel">
+                Thrilly
+            </div>
+
+            <div
+                id="thrillyText"
+                class="statValue">
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     START
+     ===================================================== -->
+
+<section
+    id="startScreen"
+    class="screen active">
+
+    <div class="startContent">
+
+        <div class="kicker">
+            CEEQWINN LABS
+        </div>
+
+        <div class="startTitle">
+            FASHION
+            <span>RUNNER 01</span>
+        </div>
+
+        <div class="rule"></div>
+
+        <div class="startText">
+            Run through the fashion corridor.
+            Collect jewels. Avoid the barriers.
+            Build your score and discover the look.
+        </div>
+
+        <button
+            id="startButton"
+            class="startButton">
+            Enter the Runway
+        </button>
+
+        <div class="instructions">
+            Swipe left / right to change lanes.<br>
+            Swipe upward to jump.
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     GAME OVER
+     ===================================================== -->
+
+<section
+    id="gameOverScreen"
+    class="screen">
+
+    <div class="gameOver">
+
+        <div class="gameOverTitle">
+            Run Complete
+        </div>
+
+        <div class="gameOverSubtitle">
+            Your Fashion Run
+        </div>
+
+        <div
+            id="finalScore"
+            class="finalScore">
+            0
+        </div>
+
+        <div class="finalLabel">
+            Final Score
+        </div>
+
+        <div
+            id="rewardText"
+            class="reward">
+            +0 Thrilly
+        </div>
+
+        <button
+            id="againButton"
+            class="gameButton">
+            Run Again
+        </button>
+
+        <button
+            id="lookButton"
+            class="gameButton secondary">
+            Reveal Fashion Look
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FASHION REVEAL
+     ===================================================== -->
+
+<div id="fashionReveal">
+
+    <img
+        id="revealImage"
+        class="revealImage"
+        src=""
+        alt="Lexis fashion reveal">
+
+    <div class="revealShade"></div>
+
+    <div class="revealText">
+
+        <div class="revealKicker">
+            RUNWAY REWARD
+        </div>
+
+        <div
+            id="revealName"
+            class="revealName">
+            Fashion Look
+        </div>
+
+        <div
+            id="revealScore"
+            class="revealScore">
+            LOOK DISCOVERED
+        </div>
+
+    </div>
+
+    <button
+        id="revealClose"
+        class="revealClose">
+        Return to Runner
+    </button>
+
+</div>
+
+
+<div class="performance">
+    LOW-SPEC MODE READY
+</div>
+
+
+</div>
+</div>
+
+
+<script>
+
+/* =========================================================
+   FASHION RUNNER 01
+   VANILLA JS
+   LOW-SPEC FIRST
+   ========================================================= */
+
+
+/* =========================================================
+   GAME CONSTANTS
+   ========================================================= */
+
+var GAME_ID =
+    "FASHION-RUNNER-01";
+
+var PLAYER_KEY =
+    "ceeqwinn_player_state";
+
+var COMPLETED_KEY =
+    "ceeqwinn_completed_games";
+
+var RETURN_KEY =
+    "ceeqwinn_return_from_game";
+
+var WALLET_KEY =
+    "ceeqwinn_wallet";
+
+
+/* =========================================================
+   CANVAS
+   ========================================================= */
+
+var canvas =
+    document.getElementById(
+        "runnerCanvas"
+    );
+
+var ctx =
+    canvas.getContext("2d");
+
+
+/* =========================================================
+   DEVICE / STAGE
+   ========================================================= */
+
+var stageWidth = 360;
+var stageHeight = 640;
+
+
+/* =========================================================
+   PLAYER
+   ========================================================= */
+
+var player = {
+
+    lane:1,
+
+    x:0,
+    y:0,
+
+    width:34,
+    height:52,
+
+    targetX:0,
+
+    jumping:false,
+    jumpVelocity:0,
+    jumpY:0
+
+};
+
+
+/* =========================================================
+   RUNNER STATE
+   ========================================================= */
+
+var running = false;
+
+var score = 0;
+var jewels = 0;
+
+var speed = 4.0;
+
+var distance = 0;
+
+var spawnTimer = 0;
+
+var jewelTimer = 0;
+
+var roadOffset = 0;
+
+var lastTime = 0;
+
+var animationFrame = null;
+
+var obstacles = [];
+var collectibles = [];
+
+var touchStartX = 0;
+var touchStartY = 0;
+
+var selectedRevealIndex = 0;
+
+
+/* =========================================================
+   OUTFITS
+   ========================================================= */
+
+var outfits = [
+
+    {
+        id:"lexis_default",
+        name:"Midnight Tailoring",
+        file:"lexis_default.png.jpeg",
+        fallback:"lexis_default.png"
+    },
+
+    {
+        id:"lexis_red_dress",
+        name:"Ivory Evening",
+        file:"lexis_red_dress.png.jpeg",
+        fallback:"lexis_red_dress.png"
+    },
+
+    {
+        id:"lexis_black_dress",
+        name:"Crimson Drama",
+        file:"lexis_black_dress.png.jpeg",
+        fallback:"lexis_black_dress.png"
+    },
+
+    {
+        id:"lexis_militarily",
+        name:"Militarily",
+        file:"Lexis_Azunna_militarily.jpg.jpeg",
+        fallback:null
+    },
+
+    {
+        id:"lexis_ministry",
+        name:"Ministry",
+        file:"Lexis_Azunna_ministry.jpg.jpeg",
+        fallback:null
+    },
+
+    {
+        id:"lexis_soft",
+        name:"Soft",
+        file:"Lexis_Azunna_soft.jpg.jpeg",
+        fallback:null
+    },
+
+    {
+        id:"lexis_street",
+        name:"Street",
+        file:"Lexis_Azunna_street.jpg.jpeg",
+        fallback:null
+    }
+
+];
+
+
+var LOCAL_BASE =
+    "../content/images/characters/lexis/outfits/";
+
+var RAW_BASE =
+    "https://raw.githubusercontent.com/" +
+    "Ceeqwinnempire/Ceeqwinn/main/" +
+    "content/images/characters/lexis/outfits/";
+
+
+/* =========================================================
+   SAFE STORAGE
+   ========================================================= */
+
+function safeGet(
+    key,
+    fallback
+){
+
+    try{
+
+        var value =
+            localStorage.getItem(key);
+
+        if(value === null){
+            return fallback;
+        }
+
+        return value;
+
+    }catch(e){
+
+        return fallback;
+    }
+
+}
+
+
+function safeSet(
+    key,
+    value
+){
+
+    try{
+
+        localStorage.setItem(
+            key,
+            value
+        );
+
+    }catch(e){
+
+        /* Continue without storage. */
+
+    }
+
+}
+
+
+/* =========================================================
+   IMAGE CANDIDATES
+   ========================================================= */
+
+function imageCandidates(
+    outfit
+){
+
+    var list = [];
+
+    list.push(
+        LOCAL_BASE +
+        outfit.file
+    );
+
+    if(outfit.fallback){
+
+        list.push(
+            LOCAL_BASE +
+            outfit.fallback
+        );
+
+    }
+
+    list.push(
+        RAW_BASE +
+        outfit.file
+    );
+
+    if(outfit.fallback){
+
+        list.push(
+            RAW_BASE +
+            outfit.fallback
+        );
+
+    }
+
+    return list;
+
+}
+
+
+/* =========================================================
+   IMAGE LOADER
+   ========================================================= */
+
+function loadImage(
+    outfit,
+    callback
+){
+
+    var candidates =
+        imageCandidates(
+            outfit
+        );
+
+    var index = 0;
+
+    function next(){
+
+        if(
+            index >=
+            candidates.length
+        ){
+
+            callback(
+                null
+            );
+
+            return;
+        }
+
+        var image =
+            new Image();
+
+        var url =
+            candidates[index];
+
+        index++;
+
+        image.onload =
+            function(){
+
+                callback(
+                    image
+                );
+
+            };
+
+        image.onerror =
+            function(){
+
+                next();
+
+            };
+
+        image.src =
+            url;
+
+    }
+
+    next();
+
+}
+
+
+/* =========================================================
+   RESIZE CANVAS
+   ========================================================= */
+
+function resizeCanvas(){
+
+    var width =
+        window.innerWidth ||
+        360;
+
+    var height =
+        window.innerHeight ||
+        640;
+
+    var game =
+        document.getElementById(
+            "game"
+        );
+
+    var stageW =
+        height * 9 / 16;
+
+    var stageH =
+        height;
+
+    if(stageW > width){
+
+        stageW =
+            width;
+
+        stageH =
+            width * 16 / 9;
+
+    }
+
+    if(stageW > 430){
+
+        stageW = 430;
+
+        stageH =
+            stageW * 16 / 9;
+
+    }
+
+    stageWidth =
+        stageW;
+
+    stageHeight =
+        stageH;
+
+
+    game.style.width =
+        Math.floor(stageW) +
+        "px";
+
+    game.style.height =
+        Math.floor(stageH) +
+        "px";
+
+    game.style.marginLeft =
+        (-stageW / 2) +
+        "px";
+
+    game.style.marginTop =
+        (-stageH / 2) +
+        "px";
+
+
+    /*
+       Low internal canvas resolution.
+
+       This is intentional.
+
+       The canvas is displayed larger than its internal
+       resolution so older phones have less work to do.
+    */
+
+    canvas.width =
+        Math.floor(
+            stageW * .75
+        );
+
+    canvas.height =
+        Math.floor(
+            stageH * .75
+        );
+
+}
+
+
+/* =========================================================
+   CANVAS SCALE
+   ========================================================= */
+
+function sx(){
+
+    return canvas.width /
+        stageWidth;
+
+}
+
+function sy(){
+
+    return canvas.height /
+        stageHeight;
+
+}
+
+
+/* =========================================================
+   SCREEN MANAGEMENT
+   ========================================================= */
+
+function showScreen(
+    id
+){
+
+    var screens =
+        document.getElementsByClassName(
+            "screen"
+        );
+
+    var i;
+
+    for(
+        i=0;
+        i<screens.length;
+        i++
+    ){
+
+        screens[i].className =
+            screens[i].className.replace(
+                " active",
+                ""
+            );
+
+    }
+
+    var target =
+        document.getElementById(
+            id
+        );
+
+    if(target){
+
+        target.className +=
+            " active";
+
+    }
+
+}
+
+
+/* =========================================================
+   HUD
+   ========================================================= */
+
+function updateHUD(){
+
+    document.getElementById(
+        "scoreText"
+    ).innerHTML =
+        Math.floor(score);
+
+    document.getElementById(
+        "jewelText"
+    ).innerHTML =
+        jewels;
+
+    document.getElementById(
+        "thrillyText"
+    ).innerHTML =
+        Math.floor(
+            jewels / 5
+        );
+
+}
+
+
+/* =========================================================
+   ROAD
+   ========================================================= */
+
+function drawBackground(){
+
+    var w =
+        stageWidth;
+
+    var h =
+        stageHeight;
+
+
+    /*
+       Deep fashion-night gradient.
+    */
+
+    var gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            canvas.height
+        );
+
+    gradient.addColorStop(
+        0,
+        "#12091a"
+    );
+
+    gradient.addColorStop(
+        .45,
+        "#1b0d20"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#070509"
+    );
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    /*
+       Convert logical coordinates into
+       canvas coordinates.
+    */
+
+    ctx.save();
+
+    ctx.scale(
+        sx(),
+        sy()
+    );
+
+
+    /*
+       Distant lights.
+    */
+
+    var i;
+
+    for(
+        i=0;
+        i<9;
+        i++
+    ){
+
+        var lx =
+            (i * 53 + 18) %
+            w;
+
+        var ly =
+            95 +
+            ((i * 71) % 150);
+
+        ctx.fillStyle =
+            "rgba(211,174,91,.10)";
+
+        ctx.fillRect(
+            lx,
+            ly,
+            2,
+            8
+        );
+
+    }
+
+
+    /*
+       Road.
+    */
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        w * .18,
+        h
+    );
+
+    ctx.lineTo(
+        w * .82,
+        h
+    );
+
+    ctx.lineTo(
+        w * .67,
+        h * .35
+    );
+
+    ctx.lineTo(
+        w * .33,
+        h * .35
+    );
+
+    ctx.closePath();
+
+    ctx.fillStyle =
+        "#130d17";
+
+    ctx.fill();
+
+
+    /*
+       Road edge.
+    */
+
+    ctx.strokeStyle =
+        "rgba(217,183,111,.25)";
+
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        w * .18,
+        h
+    );
+
+    ctx.lineTo(
+        w * .33,
+        h * .35
+    );
+
+    ctx.moveTo(
+        w * .82,
+        h
+    );
+
+    ctx.lineTo(
+        w * .67,
+        h * .35
+    );
+
+    ctx.stroke();
+
+
+    /*
+       Lane lines.
+
+       The perspective makes them feel like
+       a runway rather than a generic road.
+    */
+
+    var lane;
+
+    for(
+        lane=1;
+        lane<3;
+        lane++
+    ){
+
+        var bottomX =
+            w * (
+                .18 +
+                lane * .213
+            );
+
+        var topX =
+            w * (
+                .33 +
+                lane * .17
+            );
+
+        var segments = 9;
+
+        var j;
+
+        for(
+            j=0;
+            j<segments;
+            j++
+        ){
+
+            var p =
+                (
+                    j * 75 +
+                    roadOffset
+                ) % 675;
+
+            var t1 =
+                p / 675;
+
+            var t2 =
+                Math.min(
+                    1,
+                    t1 + .075
+                );
+
+            var y1 =
+                h * (
+                    .35 +
+                    t1 * .65
+                );
+
+            var y2 =
+                h * (
+                    .35 +
+                    t2 * .65
+                );
+
+            var x1 =
+                topX +
+                (
+                    bottomX -
+                    topX
+                ) * t1;
+
+            var x2 =
+                topX +
+                (
+                    bottomX -
+                    topX
+                ) * t2;
+
+            ctx.strokeStyle =
+                "rgba(218,188,116,.23)";
+
+            ctx.lineWidth =
+                1 +
+                t1 * 2;
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                x1,
+                y1
+            );
+
+            ctx.lineTo(
+                x2,
+                y2
+            );
+
+            ctx.stroke();
+
+        }
+
+    }
+
+
+    /*
+       Small jewel lights along the runway.
+    */
+
+    for(
+        i=0;
+        i<7;
+        i++
+    ){
+
+        var lp =
+            (
+                i * 112 +
+                roadOffset
+            ) % 700;
+
+        var lt =
+            lp / 700;
+
+        var ly2 =
+            h * (
+                .37 +
+                lt * .60
+            );
+
+        var leftX =
+            w * (
+                .33 +
+                lt * .18
+            );
+
+        var rightX =
+            w * (
+                .67 -
+                lt * .18
+            );
+
+        ctx.fillStyle =
+            "rgba(220,180,93,.65)";
+
+        ctx.fillRect(
+            leftX,
+            ly2,
+            2 + lt * 2,
+            2 + lt * 2
+        );
+
+        ctx.fillRect(
+            rightX,
+            ly2,
+            2 + lt * 2,
+            2 + lt * 2
+        );
+
+    }
+
+    ctx.restore();
+
+}
+
+
+/* =========================================================
+   LANE X POSITION
+   ========================================================= */
+
+function laneX(
+    lane
+){
+
+    /*
+       Three logical lanes.
+    */
+
+    if(lane === 0){
+        return stageWidth * .31;
+    }
+
+    if(lane === 2){
+        return stageWidth * .69;
+    }
+
+    return stageWidth * .50;
+
+}
+
+
+/* =========================================================
+   PLAYER DRAW
+   ========================================================= */
+
+function drawPlayer(){
+
+    var w =
+        player.width;
+
+    var h =
+        player.height;
+
+    var x =
+        player.x;
+
+    var y =
+        stageHeight - 116 -
+        player.jumpY;
+
+
+    ctx.save();
+
+    ctx.scale(
+        sx(),
+        sy()
+    );
+
+
+    /*
+       Shadow.
+    */
+
+    ctx.fillStyle =
+        "rgba(0,0,0,.38)";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        x,
+        stageHeight - 58,
+        19,
+        5,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Abstract fashion runner.
+
+       This is intentionally simple so it stays
+       extremely light on old phones.
+    */
+
+    ctx.fillStyle =
+        "#24121f";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x - 11,
+        y + 17
+    );
+
+    ctx.lineTo(
+        x + 11,
+        y + 17
+    );
+
+    ctx.lineTo(
+        x + 16,
+        y + 47
+    );
+
+    ctx.lineTo(
+        x - 16,
+        y + 47
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    /*
+       Jacket / dress highlight.
+    */
+
+    ctx.strokeStyle =
+        "#d4b06a";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x,
+        y + 17
+    );
+
+    ctx.lineTo(
+        x,
+        y + 45
+    );
+
+    ctx.stroke();
+
+
+    /*
+       Head.
+    */
+
+    ctx.fillStyle =
+        "#70462f";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y + 8,
+        8,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Hair.
+    */
+
+    ctx.fillStyle =
+        "#120b0c";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y + 6,
+        9,
+        Math.PI,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    /*
+       Small gold accessory.
+    */
+
+    ctx.fillStyle =
+        "#d9b76e";
+
+    ctx.fillRect(
+        x + 7,
+        y + 18,
+        2,
+        5
+    );
+
+
+    ctx.restore();
+
+}
+
+
+/* =========================================================
+   OBSTACLE CREATION
+   ========================================================= */
+
+function spawnObstacle(){
+
+    var lane =
+        Math.floor(
+            Math.random() * 3
+        );
+
+    obstacles.push({
+
+        lane:lane,
+
+        y:-40,
+
+        width:35,
+
+        height:42,
+
+        type:
+            Math.random() < .5
+            ? "pillar"
+            : "gate"
+
+    });
+
+}
+
+
+/* =========================================================
+   JEWEL CREATION
+   ========================================================= */
+
+function spawnJewel(){
+
+    var lane =
+        Math.floor(
+            Math.random() * 3
+        );
+
+    collectibles.push({
+
+        lane:lane,
+
+        y:-20,
+
+        size:7
+
+    });
+
+}
+
+
+/* =========================================================
+   DRAW OBSTACLES
+   ========================================================= */
+
+function drawObstacles(){
+
+    var i;
+
+    ctx.save();
+
+    ctx.scale(
+        sx(),
+        sy()
+    );
+
+
+    for(
+        i=0;
+        i<obstacles.length;
+        i++
+    ){
+
+        var o =
+            obstacles[i];
+
+        var x =
+            laneX(o.lane);
+
+        var perspective =
+            Math.min(
+                1,
+                o.y /
+                stageHeight
+            );
+
+        var scale =
+            .65 +
+            perspective * .55;
+
+        var width =
+            o.width *
+            scale;
+
+        var height =
+            o.height *
+            scale;
+
+
+        if(o.type === "pillar"){
+
+            ctx.fillStyle =
+                "#21131f";
+
+            ctx.fillRect(
+                x - width/2,
+                o.y,
+                width,
+                height
+            );
+
+            ctx.strokeStyle =
+                "rgba(214,179,103,.75)";
+
+            ctx.strokeRect(
+                x - width/2,
+                o.y,
+                width,
+                height
+            );
+
+            ctx.fillStyle =
+                "#d5b16a";
+
+            ctx.fillRect(
+                x - 2,
+                o.y + 5,
+                4,
+                height - 10
+            );
+
+        }else{
+
+            ctx.strokeStyle =
+                "#b99758";
+
+            ctx.lineWidth =
+                3;
+
+            ctx.strokeRect(
+                x - width/2,
+                o.y,
+                width,
+                height
+            );
+
+            ctx.fillStyle =
+                "rgba(111,31,65,.75)";
+
+            ctx.fillRect(
+                x - width/2 + 3,
+                o.y + 3,
+                width - 6,
+                height - 6
+            );
+
+        }
+
+    }
+
+    ctx.restore();
+
+}
+
+
+/* =========================================================
+   DRAW JEWELS
+   ========================================================= */
+
+function drawJewels(){
+
+    var i;
+
+    ctx.save();
+
+    ctx.scale(
+        sx(),
+        sy()
+    );
+
+
+    for(
+        i=0;
+        i<collectibles.length;
+        i++
+    ){
+
+        var c =
+            collectibles[i];
+
+        var x =
+            laneX(c.lane);
+
+        var pulse =
+            1 +
+            Math.sin(
+                distance * .08 +
+                i
+            ) * .12;
+
+        ctx.save();
+
+        ctx.translate(
+            x,
+            c.y
+        );
+
+        ctx.scale(
+            pulse,
+            pulse
+        );
+
+
+        /*
+           Diamond.
+        */
+
+        ctx.fillStyle =
+            "#d8b66e";
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            -c.size
+        );
+
+        ctx.lineTo(
+            c.size,
+            0
+        );
+
+        ctx.lineTo(
+            0,
+            c.size
+        );
+
+        ctx.lineTo(
+            -c.size,
+            0
+        );
+
+        ctx.closePath();
+
+        ctx.fill();
+
+
+        ctx.strokeStyle =
+            "#fff0c5";
+
+        ctx.lineWidth = 1;
+
+        ctx.stroke();
+
+        ctx.restore();
+
+    }
+
+    ctx.restore();
+
+}
+
+
+/* =========================================================
+   UPDATE PLAYER
+   ========================================================= */
+
+function updatePlayer(){
+
+    var target =
+        laneX(
+            player.lane
+        );
+
+    player.targetX =
+        target;
+
+    /*
+       Smooth movement.
+
+       Very small amount of interpolation so
+       low-end phones don't need complicated physics.
+    */
+
+    player.x +=
+        (
+            player.targetX -
+            player.x
+        ) * .22;
+
+
+    if(player.jumping){
+
+        player.jumpY +=
+            player.jumpVelocity;
+
+        player.jumpVelocity -=
+            .72;
+
+        if(
+            player.jumpY <= 0
+        ){
+
+            player.jumpY = 0;
+
+            player.jumpVelocity = 0;
+
+            player.jumping = false;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE OBJECTS
+   ========================================================= */
+
+function updateObjects(){
+
+    var move =
+        speed;
+
+
+    roadOffset +=
+        move * 2;
+
+    if(
+        roadOffset > 675
+    ){
+
+        roadOffset -= 675;
+
+    }
+
+
+    /*
+       Obstacles.
+    */
+
+    var i;
+
+    for(
+        i=obstacles.length-1;
+        i>=0;
+        i--
+    ){
+
+        obstacles[i].y +=
+            move;
+
+        if(
+            obstacles[i].y >
+            stageHeight + 80
+        ){
+
+            obstacles.splice(
+                i,
+                1
+            );
+
+            score += 10;
+
+        }
+
+    }
+
+
+    /*
+       Jewels.
+    */
+
+    for(
+        i=collectibles.length-1;
+        i>=0;
+        i--
+    ){
+
+        collectibles[i].y +=
+            move;
+
+        if(
+            collectibles[i].y >
+            stageHeight + 50
+        ){
+
+            collectibles.splice(
+                i,
+                1
+            );
+
+        }
+
+    }
+
+
+    /*
+       Spawn timing.
+    */
+
+    spawnTimer += move;
+
+    jewelTimer += move;
+
+
+    if(
+        spawnTimer >
+        180
+    ){
+
+        spawnObstacle();
+
+        spawnTimer = 0;
+
+    }
+
+
+    if(
+        jewelTimer >
+        120
+    ){
+
+        spawnJewel();
+
+        jewelTimer = 0;
+
+    }
+
+
+    /*
+       Difficulty rises gently.
+
+       We do NOT make this brutally fast.
+    */
+
+    speed +=
+        .00035;
+
+    if(speed > 8.5){
+        speed = 8.5;
+    }
+
+
+    distance +=
+        speed;
+
+    score +=
+        .08;
+
+}
+
+
+/* =========================================================
+   COLLISION
+   ========================================================= */
+
+function collision(
+    a,
+    b
+){
+
+    var ax =
+        laneX(
+            a.lane
+        );
+
+    var ay =
+        stageHeight - 116 -
+        player.jumpY;
+
+    var bx =
+        laneX(
+            b.lane
+        );
+
+    var by =
+        b.y;
+
+
+    /*
+       Lane collision first.
+
+       This is much cheaper than pixel collision.
+    */
+
+    if(
+        a.lane !==
+        b.lane
+    ){
+
+        return false;
+    }
+
+
+    /*
+       Player vertical range.
+    */
+
+    var playerTop =
+        ay;
+
+    var playerBottom =
+        ay + player.height;
+
+    var objectTop =
+        by;
+
+    var objectBottom =
+        by + b.height;
+
+
+    if(
+        playerBottom < objectTop ||
+        playerTop > objectBottom
+    ){
+
+        return false;
+
+    }
+
+
+    /*
+       Jump can clear small obstacles.
+    */
+
+    if(
+        player.jumpY > 38
+    ){
+
+        return false;
+
+    }
+
+
+    /*
+       Horizontal overlap is assumed
+       because we're lane based.
+    */
+
+    return true;
+
+}
+
+
+/* =========================================================
+   JEWEL COLLECTION
+   ========================================================= */
+
+function collectJewels(){
+
+    var i;
+
+    for(
+        i=collectibles.length-1;
+        i>=0;
+        i--
+    ){
+
+        var c =
+            collectibles[i];
+
+        if(
+            c.lane !==
+            player.lane
+        ){
+
+            continue;
+        }
+
+
+        var playerY =
+            stageHeight - 90 -
+            player.jumpY;
+
+
+        if(
+            Math.abs(
+                c.y -
+                playerY
+            ) < 34
+        ){
+
+            jewels++;
+
+            score += 35;
+
+            collectibles.splice(
+                i,
+                1
+            );
+
+            updateHUD();
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   CHECK OBSTACLE COLLISIONS
+   ========================================================= */
+
+function checkObstacles(){
+
+    var i;
+
+    for(
+        i=0;
+        i<obstacles.length;
+        i++
+    ){
+
+        if(
+            collision(
+                player,
+                obstacles[i]
+            )
+        ){
+
+            endRun();
+
+            return;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   GAME LOOP
+   ========================================================= */
+
+function loop(
+    timestamp
+){
+
+    if(!running){
+        return;
+    }
+
+
+    if(!lastTime){
+        lastTime =
+            timestamp;
+    }
+
+
+    var delta =
+        timestamp -
+        lastTime;
+
+
+    if(delta > 45){
+        delta = 45;
+    }
+
+
+    lastTime =
+        timestamp;
+
+
+    /*
+       Run several logical updates
+       without relying on modern physics.
+    */
+
+    updatePlayer();
+    updateObjects();
+    collectJewels();
+    checkObstacles();
+
+    drawBackground();
+    drawObstacles();
+    drawJewels();
+    drawPlayer();
+
+
+    updateHUD();
+
+
+    animationFrame =
+        requestAnimationFrame(
+            loop
+        );
+
+}
+
+
+/* =========================================================
+   START RUN
+   ========================================================= */
+
+function startRun(){
+
+    showScreen("");
+
+    running = true;
+
+    score = 0;
+    jewels = 0;
+
+    speed = 4;
+
+    distance = 0;
+
+    spawnTimer = 0;
+    jewelTimer = 0;
+
+    roadOffset = 0;
+
+    obstacles = [];
+    collectibles = [];
+
+    lastTime = 0;
+
+    player.lane = 1;
+
+    player.x =
+        laneX(1);
+
+    player.targetX =
+        player.x;
+
+    player.jumpY = 0;
+    player.jumpVelocity = 0;
+    player.jumping = false;
+
+
+    updateHUD();
+
+
+    if(animationFrame){
+        cancelAnimationFrame(
+            animationFrame
+        );
+    }
+
+
+    animationFrame =
+        requestAnimationFrame(
+            loop
+        );
+
+}
+
+
+/* =========================================================
+   END RUN
+   ========================================================= */
+
+function endRun(){
+
+    if(!running){
+        return;
+    }
+
+    running = false;
+
+
+    if(animationFrame){
+
+        cancelAnimationFrame(
+            animationFrame
+        );
+
+        animationFrame = null;
+
+    }
+
+
+    var reward =
+        Math.floor(
+            jewels / 5
+        );
+
+
+    /*
+       Add test Thrilly.
+    */
+
+    var current =
+        parseInt(
+            safeGet(
+                WALLET_KEY,
+                "0"
+            ),
+            10
+        );
+
+    if(isNaN(current)){
+        current = 0;
+    }
+
+    safeSet(
+        WALLET_KEY,
+        String(
+            current +
+            reward
+        )
+    );
+
+
+    document.getElementById(
+        "finalScore"
+    ).innerHTML =
+        Math.floor(score);
+
+
+    document.getElementById(
+        "rewardText"
+    ).innerHTML =
+        "+" +
+        reward +
+        " Thrilly earned";
+
+
+    /*
+       Pick a reveal based on performance.
+
+       This gives the run a tangible fashion reward.
+    */
+
+    selectedRevealIndex =
+        Math.floor(
+            Math.random() *
+            outfits.length
+        );
+
+
+    showScreen(
+        "gameOverScreen"
+    );
+
+}
+
+
+/* =========================================================
+   JUMP
+   ========================================================= */
+
+function jump(){
+
+    if(!running){
+        return;
+    }
+
+    if(
+        player.jumping
+    ){
+
+        return;
+
+    }
+
+
+    player.jumping = true;
+
+    player.jumpVelocity =
+        12.5;
+
+}
+
+
+/* =========================================================
+   MOVE LANE
+   ========================================================= */
+
+function moveLane(
+    direction
+){
+
+    if(!running){
+        return;
+    }
+
+
+    var next =
+        player.lane +
+        direction;
+
+
+    if(next < 0){
+        next = 0;
+    }
+
+    if(next > 2){
+        next = 2;
+    }
+
+
+    player.lane =
+        next;
+
+}
+
+
+/* =========================================================
+   TOUCH CONTROLS
+   ========================================================= */
+
+function touchStart(
+    event
+){
+
+    if(
+        !event.touches ||
+        !event.touches.length
+    ){
+
+        return;
+
+    }
+
+
+    touchStartX =
+        event.touches[0].clientX;
+
+    touchStartY =
+        event.touches[0].clientY;
+
+}
+
+
+function touchEnd(
+    event
+){
+
+    if(
+        !event.changedTouches ||
+        !event.changedTouches.length
+    ){
+
+        return;
+
+    }
+
+
+    var endX =
+        event.changedTouches[0].clientX;
+
+    var endY =
+        event.changedTouches[0].clientY;
+
+
+    var dx =
+        endX -
+        touchStartX;
+
+    var dy =
+        endY -
+        touchStartY;
+
+
+    var absX =
+        Math.abs(dx);
+
+    var absY =
+        Math.abs(dy);
+
+
+    /*
+       Ignore tiny taps.
+    */
+
+    if(
+        absX < 20 &&
+        absY < 20
+    ){
+
+        return;
+
+    }
+
+
+    if(
+        absX > absY
+    ){
+
+        if(dx > 0){
+
+            moveLane(1);
+
+        }else{
+
+            moveLane(-1);
+
+        }
+
+    }else{
+
+        if(dy < 0){
+
+            jump();
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   KEYBOARD
+   ========================================================= */
+
+function keyDown(
+    event
+){
+
+    if(
+        event.keyCode === 37
+    ){
+
+        moveLane(-1);
+
+    }
+
+    if(
+        event.keyCode === 39
+    ){
+
+        moveLane(1);
+
+    }
+
+    if(
+        event.keyCode === 38 ||
+        event.keyCode === 32
+    ){
+
+        jump();
+
+    }
+
+}
+
+
+/* =========================================================
+   FASHION REVEAL
+   ========================================================= */
+
+function revealFashion(){
+
+    var outfit =
+        outfits[
+            selectedRevealIndex
+        ];
+
+
+    var reveal =
+        document.getElementById(
+            "fashionReveal"
+        );
+
+
+    var image =
+        document.getElementById(
+            "revealImage"
+        );
+
+
+    var name =
+        document.getElementById(
+            "revealName"
+        );
+
+
+    var scoreText =
+        document.getElementById(
+            "revealScore"
+        );
+
+
+    name.innerHTML =
+        outfit.name;
+
+
+    scoreText.innerHTML =
+        "LOOK DISCOVERED · " +
+        Math.floor(score) +
+        " RUN SCORE";
+
+
+    reveal.className =
+        "show";
+
+
+    image.className =
+        "revealImage";
+
+
+    loadImage(
+        outfit,
+        function(loaded){
+
+            if(!loaded){
+
+                return;
+
+            }
+
+
+            image.src =
+                loaded.src;
+
+
+            setTimeout(
+                function(){
+
+                    image.className =
+                        "revealImage show";
+
+                },
+                40
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE REVEAL
+   ========================================================= */
+
+function closeReveal(){
+
+    var reveal =
+        document.getElementById(
+            "fashionReveal"
+        );
+
+    reveal.className =
+        "";
+
+    showScreen("");
+
+    startRun();
+
+}
+
+
+/* =========================================================
+   COMPLETE STORY CONTRACT
+   ========================================================= */
+
+function completeGame(){
+
+    /*
+       Store runner completion.
+    */
+
+    var completed = {};
+
+    try{
+
+        var raw =
+            localStorage.getItem(
+                COMPLETED_KEY
+            );
+
+        if(raw){
+            completed =
+                JSON.parse(raw);
+        }
+
+    }catch(e){
+
+        completed = {};
+
+    }
+
+
+    completed[
+        GAME_ID
+    ] = true;
+
+
+    safeSet(
+        COMPLETED_KEY,
+        JSON.stringify(
+            completed
+        )
+    );
+
+
+    /*
+       Tell the story engine which game
+       returned control.
+    */
+
+    try{
+
+        sessionStorage.setItem(
+            RETURN_KEY,
+            GAME_ID
+        );
+
+    }catch(e){
+
+        /* Continue. */
+
+    }
+
+
+    /*
+       Save runner result into player state.
+    */
+
+    var state = {};
+
+    try{
+
+        var stateRaw =
+            localStorage.getItem(
+                PLAYER_KEY
+            );
+
+        if(stateRaw){
+            state =
+                JSON.parse(
+                    stateRaw
+                );
+        }
+
+    }catch(e){
+
+        state = {};
+
+    }
+
+
+    if(!state.characters){
+        state.characters = {};
+    }
+
+    if(!state.characters.lexis){
+        state.characters.lexis = {};
+    }
+
+
+    state.characters.lexis.fashionRunner01 = {
+
+        score:
+            Math.floor(score),
+
+        jewels:
+            jewels,
+
+        completed:true,
+
+        timestamp:
+            new Date().toISOString()
+
+    };
+
+
+    safeSet(
+        PLAYER_KEY,
+        JSON.stringify(
+            state
+        )
+    );
+
+}
+
+
+/* =========================================================
+   RETURN TO STORY
+   ========================================================= */
+
+function returnToStory(){
+
+    completeGame();
+
+    setTimeout(
+        function(){
+
+            try{
+
+                history.back();
+
+            }catch(e){
+
+                window.location.href =
+                    "../index.html";
+
+            }
+
+        },
+        120
+    );
+
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+function bindButtons(){
+
+    document.getElementById(
+        "startButton"
+    ).onclick =
+        startRun;
+
+
+    document.getElementById(
+        "againButton"
+    ).onclick =
+        startRun;
+
+
+    document.getElementById(
+        "lookButton"
+    ).onclick =
+        revealFashion;
+
+
+    document.getElementById(
+        "revealClose"
+    ).onclick =
+        function(){
+
+            completeGame();
+
+            closeReveal();
+
+        };
+
+
+    canvas.addEventListener(
+        "touchstart",
+        touchStart,
+        false
+    );
+
+
+    canvas.addEventListener(
+        "touchend",
+        touchEnd,
+        false
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        keyDown,
+        false
+    );
+
+
+    window.onresize =
+        resizeCanvas;
+
+
+    window.onorientationchange =
+        function(){
+
+            setTimeout(
+                resizeCanvas,
+                150
+            );
+
+        };
+
+}
+
+
+/* =========================================================
+   INIT
+   ========================================================= */
+
+function init(){
+
+    resizeCanvas();
+
+    bindButtons();
+
+    /*
+       Initial player placement.
+    */
+
+    player.x =
+        laneX(1);
+
+    player.targetX =
+        player.x;
+
+
+    /*
+       Draw a still runway behind
+       the opening screen.
+    */
+
+    drawBackground();
+    drawPlayer();
+
+}
+
+
+if(
+    document.readyState ===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        init,
+        false
+    );
+
+}else{
+
+    init();
+
+}
+
+</script>
+
+</body>
+</html>
