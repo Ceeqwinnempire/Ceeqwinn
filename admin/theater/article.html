@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>CEEQWINN Reader</title>
+<title>CEEQWINN Reader — Experimental Theater</title>
 
 <style>
 
@@ -27,6 +27,17 @@ h1{
 
 h2{
     margin-top:35px;
+}
+
+#experimentalReaderLabel{
+    margin-bottom:20px;
+    padding:10px 14px;
+    border:1px dashed #999;
+    border-radius:8px;
+    background:#f5f5f5;
+    color:#666;
+    font-size:13px;
+    text-align:center;
 }
 
 #cover{
@@ -296,6 +307,15 @@ h2{
 
 <body>
 
+<!-- =======================================================
+     EXPERIMENTAL READER IDENTIFICATION
+     ======================================================= -->
+
+<div id="experimentalReaderLabel">
+    🧪 CEEQWINN STORY THEATER — EXPERIMENTAL READER
+</div>
+
+
 <img id="cover" alt="">
 
 <h1 id="title">Loading...</h1>
@@ -435,11 +455,22 @@ function loadStory(){
     /*
      * IMPORTANT:
      *
-     * This reader lives inside:
+     * This reader is inside:
      *
-     * admin/theater/article.html
+     * /admin/theater/article.html
      *
-     * so content/ is TWO levels above it.
+     * Therefore content/articles is TWO
+     * levels above this file.
+     *
+     * Production reader:
+     * /admin/article.html
+     * uses:
+     * ../content/articles/
+     *
+     * Theater reader:
+     * /admin/theater/article.html
+     * uses:
+     * ../../content/articles/
      */
 
     xhr.open(
@@ -1080,7 +1111,6 @@ function parseChoiceNode(
 
     var id =
         match[1];
-
 
     var options = [];
 
