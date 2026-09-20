@@ -1,0 +1,3123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CEEQWINN Reader</title>
+
+<style>
+
+body{
+    max-width:800px;
+    margin:auto;
+    padding:35px 18px;
+    font-family:Arial,sans-serif;
+    line-height:1.8;
+    background:#fafafa;
+    color:#222;
+}
+
+h1{
+    font-size:2.2rem;
+    margin-bottom:20px;
+}
+
+h2{
+    margin-top:35px;
+}
+
+#cover{
+    display:none;
+    max-width:100%;
+    height:auto;
+    margin:0 auto 30px;
+    border-radius:12px;
+}
+
+#credits{
+    color:#666;
+    margin-bottom:25px;
+}
+
+#status{
+    color:#777;
+}
+
+#content{
+    overflow-wrap:break-word;
+}
+
+#content img{
+    display:block;
+    max-width:100%;
+    height:auto;
+    margin:25px auto;
+    border-radius:12px;
+}
+
+#content video,
+#content audio{
+    display:block;
+    width:100%;
+    max-width:100%;
+    margin:25px auto;
+}
+
+#content blockquote{
+    margin:25px 0;
+    padding:10px 18px;
+    border-left:4px solid #999;
+    background:#f0f0f0;
+}
+
+#content table{
+    width:100%;
+    border-collapse:collapse;
+    margin:25px 0;
+}
+
+#content th,
+#content td{
+    padding:8px;
+    border:1px solid #ccc;
+}
+
+
+/* =========================================================
+   STORY ENGINE
+   ========================================================= */
+
+.story-choice{
+    margin:45px 0;
+    padding:20px 0;
+}
+
+.story-choice-title{
+    font-weight:bold;
+    font-size:1.1rem;
+    margin-bottom:15px;
+}
+
+.story-choice-button{
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    margin:10px 0;
+    padding:15px;
+    font:16px Arial,sans-serif;
+    text-align:left;
+    background:#fff;
+    color:#222;
+    border:1px solid #ccc;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.story-choice-button:hover{
+    background:#f2f2f2;
+}
+
+.story-choice-button:disabled{
+    cursor:default;
+    opacity:.7;
+}
+
+.story-branch{
+    margin-top:25px;
+}
+
+.story-choice-result{
+    margin-top:25px;
+}
+
+.story-resume-anchor{
+    display:block;
+    width:100%;
+    height:1px;
+    margin:0;
+    padding:0;
+}
+
+
+/* =========================================================
+   NEXT CHAPTER
+   ========================================================= */
+
+.story-next{
+    margin:55px 0 25px;
+    padding:25px 0;
+    text-align:center;
+}
+
+.story-next-text{
+    margin-bottom:18px;
+    color:#555;
+    font-size:1rem;
+}
+
+.story-next-button{
+    display:inline-block;
+    padding:14px 22px;
+    font:16px Arial,sans-serif;
+    background:#222;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.story-next-button:hover{
+    opacity:.85;
+}
+
+
+/* =========================================================
+   GAME BRIDGE
+   ========================================================= */
+
+.story-game{
+    margin:45px 0;
+    padding:25px 0;
+    text-align:center;
+}
+
+.story-game-title{
+    font-weight:bold;
+    font-size:1.15rem;
+    margin-bottom:10px;
+}
+
+.story-game-text{
+    color:#666;
+    margin-bottom:18px;
+}
+
+.story-game-button{
+    display:inline-block;
+    padding:15px 24px;
+    font:16px Arial,sans-serif;
+    background:#222;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.story-game-button:hover{
+    opacity:.85;
+}
+
+.story-game-complete{
+    margin:30px 0;
+    padding:15px;
+    text-align:center;
+    color:#666;
+}
+
+
+/* =========================================================
+   SHOW OUTFIT
+   ========================================================= */
+
+.story-outfit{
+    margin:35px 0;
+    text-align:center;
+}
+
+.story-outfit img{
+    display:block;
+    width:100%;
+    max-width:420px;
+    height:auto;
+    margin:0 auto;
+    border-radius:12px;
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+#storyReset{
+    display:none;
+    width:100%;
+    margin:35px 0;
+    padding:12px;
+    background:#f7f7f7;
+    color:#555;
+    border:1px dashed #aaa;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+#storyReset:hover{
+    background:#eeeeee;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:600px){
+
+    body{
+        padding:25px 15px;
+    }
+
+    h1{
+        font-size:1.8rem;
+    }
+
+    .story-choice-button{
+        font-size:16px;
+        padding:15px;
+    }
+
+    .story-next-button{
+        width:100%;
+        box-sizing:border-box;
+    }
+
+    .story-game-button{
+        width:100%;
+        box-sizing:border-box;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<img id="cover" alt="">
+
+<h1 id="title">Loading...</h1>
+
+<div id="credits"></div>
+
+<div id="status"></div>
+
+<div id="content"></div>
+
+<button id="storyReset" type="button">
+    ↺ Reset Story
+</button>
+
+<div id="media"></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
+
+
+<script>
+
+/* =========================================================
+   BASIC ELEMENTS
+   ========================================================= */
+
+var title =
+    document.getElementById("title");
+
+var credits =
+    document.getElementById("credits");
+
+var status =
+    document.getElementById("status");
+
+var content =
+    document.getElementById("content");
+
+var cover =
+    document.getElementById("cover");
+
+var media =
+    document.getElementById("media");
+
+var reset =
+    document.getElementById("storyReset");
+
+
+/* =========================================================
+   ARTICLE FILE
+   ========================================================= */
+
+var params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+var file =
+    params.get("file") || "";
+
+var returnGame =
+    params.get("return") || "";
+
+file =
+    cleanPath(file);
+
+returnGame =
+    String(returnGame).trim();
+
+
+/* =========================================================
+   STORY ID
+   =========================================================
+   
+   ALL CHAPTERS OF THE SAME STORY MUST USE
+   THE SAME STORAGE KEY.
+   
+   Examples:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   ALL become:
+   
+   discordant-descendants
+   ========================================================= */
+
+var storyId =
+    getStoryId(file);
+
+
+/* =========================================================
+   SHARED STORY STORAGE
+   ========================================================= */
+
+var storageKey =
+    "ceeqwinn_story_history_" +
+    storyId;
+
+
+/* =========================================================
+   STORY STATE
+   ========================================================= */
+
+var storyNodes = [];
+
+var resumeAfterGameId = "";
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+if(!file){
+
+    title.textContent =
+        "Article not found";
+
+    status.textContent =
+        "No article was selected.";
+
+}else{
+
+    loadStory();
+
+}
+
+
+/* =========================================================
+   LOAD MARKDOWN
+   ========================================================= */
+
+function loadStory(){
+
+    status.textContent =
+        "Loading...";
+
+    content.innerHTML = "";
+
+    media.innerHTML = "";
+
+    cover.style.display =
+        "none";
+
+
+    var xhr =
+        new XMLHttpRequest();
+
+
+    xhr.open(
+        "GET",
+        "../content/articles/" +
+        encodeURIComponent(file) +
+        ".md",
+        true
+    );
+
+
+    xhr.onload =
+        function(){
+
+            if(
+                xhr.status !== 200 &&
+                xhr.status !== 0
+            ){
+
+                title.textContent =
+                    "Unable to load article";
+
+                status.textContent =
+                    "The article could not be loaded.";
+
+                return;
+
+            }
+
+
+            buildStory(
+                xhr.responseText
+            );
+
+        };
+
+
+    xhr.onerror =
+        function(){
+
+            title.textContent =
+                "Unable to load article";
+
+            status.textContent =
+                "The article could not be loaded.";
+
+        };
+
+
+    xhr.send();
+
+}
+
+
+/* =========================================================
+   BUILD STORY
+   ========================================================= */
+
+function buildStory(text){
+
+    var data =
+        parseFrontmatter(text);
+
+
+    title.textContent =
+        data.title || file;
+
+
+    credits.innerHTML =
+        data.credits
+        ? "<strong>Credits:</strong> " +
+          escapeHtml(data.credits)
+        : "";
+
+
+    if(data.cover){
+
+        cover.src =
+            mediaPath(data.cover);
+
+        cover.alt =
+            data.title || file;
+
+        cover.style.display =
+            "block";
+
+
+        cover.onerror =
+            function(){
+
+                cover.style.display =
+                    "none";
+
+            };
+
+    }
+
+
+    /*
+     * Convert Markdown into the internal story-node
+     * structure.
+     *
+     * This is what allows ordinary Markdown,
+     * choices, conditions, games and NEXT markers
+     * to coexist.
+     */
+
+    storyNodes =
+        parseStoryNodes(
+            data.body.split(/\r?\n/)
+        );
+
+
+    /*
+     * Game return support.
+     */
+
+    if(returnGame){
+
+        resumeAfterGameId =
+            returnGame;
+
+        returnGame = "";
+
+    }
+
+
+    renderProgress();
+
+    fixMedia();
+
+    renderExtraMedia(data);
+
+    status.textContent = "";
+
+}
+
+
+/* =========================================================
+   FRONTMATTER
+   ========================================================= */
+
+function parseFrontmatter(text){
+
+    var data = {
+        title:"",
+        cover:"",
+        credits:"",
+        video:"",
+        audio:"",
+        body:text
+    };
+
+
+    text =
+        String(text || "")
+        .replace(/^\uFEFF/, "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n");
+
+
+    var match =
+        text.match(
+            /^---[ \t]*\n([\s\S]*?)\n---[ \t]*(?:\n|$)/
+        );
+
+
+    if(!match){
+
+        data.body =
+            cleanLeadingArticleMetadata(text);
+
+        return data;
+
+    }
+
+
+    var front =
+        match[1];
+
+
+    data.body =
+        text.substring(
+            match[0].length
+        );
+
+
+    data.title =
+        frontValue(
+            front,
+            "title"
+        );
+
+    data.cover =
+        frontValue(
+            front,
+            "cover"
+        );
+
+    data.credits =
+        frontValue(
+            front,
+            "credits"
+        );
+
+    data.video =
+        frontValue(
+            front,
+            "video"
+        );
+
+    data.audio =
+        frontValue(
+            front,
+            "audio"
+        );
+
+
+    data.body =
+        cleanLeadingArticleMetadata(
+            data.body
+        );
+
+
+    return data;
+
+}
+
+
+/* =========================================================
+   CLEAN LEADING ARTICLE METADATA
+   ========================================================= */
+
+function cleanLeadingArticleMetadata(text){
+
+    var body =
+        String(text || "")
+        .replace(/^\uFEFF/, "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n");
+
+
+    body =
+        body.replace(
+            /^\s*\n/,
+            ""
+        );
+
+
+    var changed = true;
+
+
+    while(changed){
+
+        changed = false;
+
+
+        var duplicateFront =
+            body.match(
+                /^---[ \t]*\n([\s\S]*?)\n---[ \t]*(?:\n|$)/
+            );
+
+
+        if(duplicateFront){
+
+            var possibleMeta =
+                duplicateFront[1];
+
+
+            if(
+                /^\s*(title|cover|credits|video|audio)\s*:/mi.test(
+                    possibleMeta
+                )
+            ){
+
+                body =
+                    body.substring(
+                        duplicateFront[0].length
+                    );
+
+
+                body =
+                    body.replace(
+                        /^\s*\n/,
+                        ""
+                    );
+
+
+                changed = true;
+
+            }
+
+        }
+
+    }
+
+
+    body =
+        body.replace(
+            /^##[ \t]+title\s*:[^\n]*\n+/i,
+            ""
+        );
+
+
+    body =
+        body.replace(
+            /^\s*\n/,
+            ""
+        );
+
+
+    return body;
+
+}
+
+
+/* =========================================================
+   FRONTMATTER VALUE
+   ========================================================= */
+
+function frontValue(
+    text,
+    key
+){
+
+    var re =
+        new RegExp(
+            "^" +
+            key +
+            "\\s*:\\s*[\"']?(.*?)[\"']?$",
+            "mi"
+        );
+
+
+    var match =
+        text.match(re);
+
+
+    return match
+        ? match[1].trim()
+        : "";
+
+}
+
+
+/* =========================================================
+   CLEAN CONTROL LINE
+   ========================================================= */
+
+function cleanControlLine(line){
+
+    return String(line || "")
+        .trim()
+        .replace(/^\*+\s*/, "")
+        .replace(/\s*\*+$/, "")
+        .trim();
+
+}
+
+
+/* =========================================================
+   MARKER TESTS
+   ========================================================= */
+
+function isGameMarker(line){
+
+    return /^\[GAME:\s*[A-Z0-9_-]+\s*\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isChoiceStart(line){
+
+    return /^\[CHOICE:\s*[\w-]+\s*\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isShowOutfitMarker(line){
+
+    return /^\[SHOWOUTFIT\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+/*
+ * NEXT is deliberately tolerant:
+ *
+ * [NEXT:file]
+ * [NEXT:file|Label]
+ * [NEXT: file | Label]
+ *
+ * all work.
+ */
+
+function isNextMarker(line){
+
+    return /^\[NEXT:\s*[^|\]]+(?:\|[^\]]+)?\s*\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isIfMarker(line){
+
+    return /^\[IF:\s*[\w-]+\s*=\s*[A-Z]\s*\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isElseMarker(line){
+
+    return /^\[ELSE\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isEndIfMarker(line){
+
+    return /^\[ENDIF\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isEndChoiceMarker(line){
+
+    return /^\[ENDCHOICE\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+/* =========================================================
+   GET GAME ID
+   ========================================================= */
+
+function getGameId(line){
+
+    var match =
+        cleanControlLine(line).match(
+            /^\[GAME:\s*([A-Z0-9_-]+)\s*\]$/i
+        );
+
+
+    return match
+        ? match[1].toUpperCase()
+        : "";
+
+}
+
+
+/* =========================================================
+   PARSE COMPLETE STORY INTO NODES
+   ========================================================= */
+
+function parseStoryNodes(lines){
+
+    var result = [];
+
+    var normal = [];
+
+    var i = 0;
+
+
+    function flushNormal(){
+
+        if(normal.length){
+
+            result.push({
+                type:"markdown",
+                text:normal.join("\n")
+            });
+
+            normal = [];
+
+        }
+
+    }
+
+
+    while(i < lines.length){
+
+        var line =
+            lines[i];
+
+
+        /* CONDITIONAL */
+
+        if(isIfMarker(line)){
+
+            flushNormal();
+
+
+            var conditional =
+                parseConditionalNode(
+                    lines,
+                    i
+                );
+
+
+            result.push(
+                conditional.node
+            );
+
+
+            i =
+                conditional.next;
+
+            continue;
+
+        }
+
+
+        /* CHOICE */
+
+        if(isChoiceStart(line)){
+
+            flushNormal();
+
+
+            var choice =
+                parseChoiceNode(
+                    lines,
+                    i
+                );
+
+
+            result.push(
+                choice.node
+            );
+
+
+            i =
+                choice.next;
+
+            continue;
+
+        }
+
+
+        /* GAME */
+
+        if(isGameMarker(line)){
+
+            flushNormal();
+
+
+            result.push({
+                type:"game",
+                id:getGameId(line)
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /* SHOW OUTFIT */
+
+        if(isShowOutfitMarker(line)){
+
+            flushNormal();
+
+
+            result.push({
+                type:"outfit"
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /* NEXT CHAPTER */
+
+        if(isNextMarker(line)){
+
+            flushNormal();
+
+
+            result.push({
+                type:"next",
+                line:cleanControlLine(line)
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * These markers belong to a structure already
+         * being parsed. Ignore them here.
+         */
+
+        if(
+            isElseMarker(line) ||
+            isEndIfMarker(line) ||
+            isEndChoiceMarker(line)
+        ){
+
+            i++;
+
+            continue;
+
+        }
+
+
+        normal.push(line);
+
+        i++;
+
+    }
+
+
+    flushNormal();
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   PARSE CHOICE NODE
+   ========================================================= */
+
+function parseChoiceNode(
+    lines,
+    start
+){
+
+    var match =
+        cleanControlLine(
+            lines[start]
+        ).match(
+            /^\[CHOICE:\s*([\w-]+)\s*\]$/i
+        );
+
+
+    if(!match){
+
+        return {
+            node:{
+                type:"markdown",
+                text:""
+            },
+            next:start + 1
+        };
+
+    }
+
+
+    var id =
+        match[1];
+
+
+    var options = [];
+
+    var branches = {};
+
+    var currentLetter =
+        null;
+
+    var currentLines = [];
+
+    var i =
+        start + 1;
+
+    var choiceStarted =
+        false;
+
+
+    function saveBranch(){
+
+        if(
+            currentLetter !== null
+        ){
+
+            branches[
+                currentLetter
+            ] =
+                parseStoryNodes(
+                    currentLines
+                );
+
+            choiceStarted =
+                true;
+
+        }
+
+
+        currentLines = [];
+
+    }
+
+
+    while(i < lines.length){
+
+        var line =
+            lines[i];
+
+        var cleaned =
+            cleanControlLine(line);
+
+
+        /*
+         * CONSEQUENCE
+         */
+
+        var consequence =
+            cleaned.match(
+                /^\[CONSEQUENCE:\s*([A-Z])\s*\]$/i
+            );
+
+
+        if(consequence){
+
+            saveBranch();
+
+
+            currentLetter =
+                consequence[1].toUpperCase();
+
+
+            currentLines = [];
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * ENDCHOICE
+         *
+         * It closes the current branch, NOT the
+         * entire A/B/C collection.
+         */
+
+        if(isEndChoiceMarker(line)){
+
+            saveBranch();
+
+
+            currentLetter =
+                null;
+
+            currentLines = [];
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * OPTIONS
+         */
+
+        var option =
+            cleaned.match(
+                /^\[([A-Z])\]\s*(.+?)\s*$/i
+            );
+
+
+        if(
+            option &&
+            !choiceStarted &&
+            currentLetter === null
+        ){
+
+            options.push({
+                letter:
+                    option[1].toUpperCase(),
+
+                label:
+                    option[2]
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * AFTER A CLOSED BRANCH
+         */
+
+        if(
+            currentLetter === null &&
+            choiceStarted
+        ){
+
+            if(cleaned === ""){
+
+                i++;
+
+                continue;
+
+            }
+
+
+            /*
+             * These belong to the outer story parser.
+             */
+
+            if(
+                isChoiceStart(line) ||
+                isGameMarker(line) ||
+                isShowOutfitMarker(line) ||
+                isNextMarker(line) ||
+                isIfMarker(line)
+            ){
+
+                break;
+
+            }
+
+
+            /*
+             * Normal Markdown also means the choice
+             * block has ended.
+             */
+
+            break;
+
+        }
+
+
+        /*
+         * CURRENT BRANCH CONTENT
+         */
+
+        if(
+            currentLetter !== null
+        ){
+
+            currentLines.push(line);
+
+        }
+
+
+        i++;
+
+    }
+
+
+    /*
+     * Save a final branch if the author omitted
+     * [ENDCHOICE].
+     */
+
+    saveBranch();
+
+
+    return {
+
+        node:{
+            type:"choice",
+            id:id,
+            options:options,
+            branches:branches
+        },
+
+        next:i
+
+    };
+
+}
+
+
+/* =========================================================
+   PARSE CONDITIONAL NODE
+   ========================================================= */
+
+function parseConditionalNode(
+    lines,
+    start
+){
+
+    var first =
+        cleanControlLine(
+            lines[start]
+        ).match(
+            /^\[IF:\s*([\w-]+)\s*=\s*([A-Z])\s*\]$/i
+        );
+
+
+    if(!first){
+
+        return {
+            node:{
+                type:"markdown",
+                text:""
+            },
+            next:start + 1
+        };
+
+    }
+
+
+    var id =
+        first[1];
+
+    var letter =
+        first[2].toUpperCase();
+
+
+    var thenLines = [];
+
+    var elseLines = [];
+
+    var current =
+        thenLines;
+
+    var depth = 1;
+
+    var i =
+        start + 1;
+
+
+    while(i < lines.length){
+
+        var line =
+            lines[i];
+
+
+        if(isIfMarker(line)){
+
+            depth++;
+
+            current.push(line);
+
+            i++;
+
+            continue;
+
+        }
+
+
+        if(isEndIfMarker(line)){
+
+            depth--;
+
+
+            if(depth === 0){
+
+                i++;
+
+                break;
+
+            }
+
+
+            current.push(line);
+
+            i++;
+
+            continue;
+
+        }
+
+
+        if(
+            depth === 1 &&
+            isElseMarker(line)
+        ){
+
+            current =
+                elseLines;
+
+            i++;
+
+            continue;
+
+        }
+
+
+        current.push(line);
+
+        i++;
+
+    }
+
+
+    return {
+
+        node:{
+            type:"conditional",
+            id:id,
+            letter:letter,
+
+            thenNodes:
+                parseStoryNodes(
+                    thenLines
+                ),
+
+            elseNodes:
+                parseStoryNodes(
+                    elseLines
+                )
+        },
+
+        next:i
+
+    };
+
+}
+
+
+/* =========================================================
+   RENDER PROGRESS
+   ========================================================= */
+
+function renderProgress(){
+
+    content.innerHTML = "";
+
+
+    var result =
+        executeNodes(
+            storyNodes,
+            content
+        );
+
+
+    if(result.hasProgress){
+
+        reset.style.display =
+            "block";
+
+    }else{
+
+        reset.style.display =
+            "none";
+
+    }
+
+
+    fixMedia();
+
+
+    /*
+     * GAME RETURN
+     */
+
+    if(resumeAfterGameId){
+
+        var gameAnchor =
+            content.querySelector(
+                '[data-resume-game="' +
+                cssEscape(
+                    resumeAfterGameId
+                ) +
+                '"]'
+            );
+
+
+        resumeAfterGameId = "";
+
+
+        if(gameAnchor){
+
+            scrollToElement(
+                gameAnchor
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   EXECUTE STORY NODES
+   ========================================================= */
+
+function executeNodes(
+    nodes,
+    target
+){
+
+    var result = {
+        stopped:false,
+        hasProgress:false
+    };
+
+
+    for(
+        var i = 0;
+        i < nodes.length;
+        i++
+    ){
+
+        var node =
+            nodes[i];
+
+
+        /* =================================================
+           MARKDOWN
+           ================================================= */
+
+        if(
+            node.type ===
+            "markdown"
+        ){
+
+            if(node.text.trim()){
+
+                if(resumeAfterGameId){
+
+                    target.insertAdjacentHTML(
+                        "beforeend",
+                        '<span class="story-resume-anchor" ' +
+                        'data-resume-game="' +
+                        escapeAttr(
+                            resumeAfterGameId
+                        ) +
+                        '"></span>'
+                    );
+
+
+                    resumeAfterGameId = "";
+
+
+                    target.insertAdjacentHTML(
+                        "beforeend",
+                        marked(node.text)
+                    );
+
+                }else{
+
+                    target.insertAdjacentHTML(
+                        "beforeend",
+                        marked(node.text)
+                    );
+
+                }
+
+            }
+
+
+            continue;
+
+        }
+
+
+        /* =================================================
+           SHOW OUTFIT
+           ================================================= */
+
+        if(
+            node.type ===
+            "outfit"
+        ){
+
+            target.insertAdjacentHTML(
+                "beforeend",
+                renderShowOutfit()
+            );
+
+            continue;
+
+        }
+
+
+        /* =================================================
+           CONDITIONAL
+           ================================================= */
+
+        if(
+            node.type ===
+            "conditional"
+        ){
+
+            var choices =
+                getChoices();
+
+
+            var selected =
+                normalizeChoiceLetter(
+                    choices[node.id]
+                );
+
+
+            /*
+             * IMPORTANT:
+             *
+             * If the requested choice matches,
+             * render THEN.
+             *
+             * Otherwise render ELSE.
+             *
+             * This allows Chapter 2 to react to
+             * Chapter 1's saved choice.
+             */
+
+            if(
+                selected ===
+                node.letter
+            ){
+
+                var branchResult =
+                    executeNodes(
+                        node.thenNodes,
+                        target
+                    );
+
+
+                if(branchResult.stopped){
+
+                    result.stopped =
+                        true;
+
+                    result.hasProgress =
+                        true;
+
+                    return result;
+
+                }
+
+            }else{
+
+                var elseResult =
+                    executeNodes(
+                        node.elseNodes,
+                        target
+                    );
+
+
+                if(elseResult.stopped){
+
+                    result.stopped =
+                        true;
+
+                    result.hasProgress =
+                        true;
+
+                    return result;
+
+                }
+
+            }
+
+
+            continue;
+
+        }
+
+
+        /* =================================================
+           CHOICE
+           ================================================= */
+
+        if(
+            node.type ===
+            "choice"
+        ){
+
+            result.hasProgress =
+                true;
+
+
+            var savedChoices =
+                getChoices();
+
+
+            var savedLetter =
+                normalizeChoiceLetter(
+                    savedChoices[node.id]
+                );
+
+
+            /*
+             * CHOICE ALREADY MADE
+             */
+
+            if(savedLetter){
+
+                var savedBranch =
+                    node.branches[
+                        savedLetter
+                    ] || [];
+
+
+                var branchTarget =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                branchTarget.className =
+                    "story-choice-result";
+
+
+                branchTarget.setAttribute(
+                    "data-choice-result",
+                    node.id
+                );
+
+
+                target.appendChild(
+                    branchTarget
+                );
+
+
+                var branchResult =
+                    executeNodes(
+                        savedBranch,
+                        branchTarget
+                    );
+
+
+                if(branchResult.stopped){
+
+                    result.stopped =
+                        true;
+
+                    return result;
+
+                }
+
+
+                continue;
+
+            }
+
+
+            /*
+             * CHOICE NOT YET MADE
+             */
+
+            target.insertAdjacentHTML(
+                "beforeend",
+                renderChoice(node)
+            );
+
+
+            result.stopped =
+                true;
+
+
+            return result;
+
+        }
+
+
+        /* =================================================
+           GAME
+           ================================================= */
+
+        if(
+            node.type ===
+            "game"
+        ){
+
+            result.hasProgress =
+                true;
+
+
+            var completedGames =
+                getCompletedGames();
+
+
+            if(
+                completedGames[
+                    node.id
+                ]
+            ){
+
+                continue;
+
+            }
+
+
+            target.insertAdjacentHTML(
+                "beforeend",
+                renderGame(
+                    node.id
+                )
+            );
+
+
+            result.stopped =
+                true;
+
+
+            return result;
+
+        }
+
+
+        /* =================================================
+           NEXT CHAPTER
+           ================================================= */
+
+        if(
+            node.type ===
+            "next"
+        ){
+
+            result.hasProgress =
+                true;
+
+
+            /*
+             * At this exact point ALL choices already
+             * encountered in the chapter have been
+             * stored in localStorage.
+             *
+             * Therefore clicking NEXT can safely
+             * move to the next chapter.
+             */
+
+            target.insertAdjacentHTML(
+                "beforeend",
+                renderNext(
+                    node.line
+                )
+            );
+
+
+            result.stopped =
+                true;
+
+
+            return result;
+
+        }
+
+    }
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   RENDER CHOICE
+   ========================================================= */
+
+function renderChoice(node){
+
+    var html =
+        '<div class="story-choice" ' +
+        'data-choice="' +
+        escapeAttr(node.id) +
+        '">' +
+
+        '<div class="story-choice-title">' +
+        'What do you do?' +
+        '</div>';
+
+
+    for(
+        var i = 0;
+        i < node.options.length;
+        i++
+    ){
+
+        var option =
+            node.options[i];
+
+
+        html +=
+            '<button ' +
+            'type="button" ' +
+            'class="story-choice-button" ' +
+            'data-choice="' +
+            escapeAttr(node.id) +
+            '" ' +
+            'data-letter="' +
+            escapeAttr(option.letter) +
+            '">' +
+
+            escapeHtml(
+                option.letter +
+                " — " +
+                option.label
+            ) +
+
+            '</button>';
+
+    }
+
+
+    html +=
+        '</div>';
+
+
+    return html;
+
+}
+
+
+/* =========================================================
+   CHOICE CLICK
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        var target =
+            event.target;
+
+
+        if(
+            !target.classList.contains(
+                "story-choice-button"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        var id =
+            target.getAttribute(
+                "data-choice"
+            );
+
+
+        var letter =
+            normalizeChoiceLetter(
+                target.getAttribute(
+                    "data-letter"
+                )
+            );
+
+
+        if(
+            !id ||
+            !letter
+        ){
+
+            return;
+
+        }
+
+
+        var previousTop =
+            window.pageYOffset ||
+            document.documentElement.scrollTop ||
+            document.body.scrollTop ||
+            0;
+
+
+        /*
+         * SAVE FIRST.
+         *
+         * This is critical because the next render,
+         * conditional branches and NEXT chapter all
+         * depend on this state.
+         */
+
+        saveChoice(
+            id,
+            letter
+        );
+
+
+        /*
+         * Rebuild the reachable story.
+         */
+
+        renderProgress();
+
+
+        /*
+         * Scroll to the selected branch.
+         */
+
+        setTimeout(
+            function(){
+
+                var branchResult =
+                    content.querySelector(
+                        '[data-choice-result="' +
+                        cssEscape(id) +
+                        '"]'
+                    );
+
+
+                if(branchResult){
+
+                    scrollToElement(
+                        branchResult
+                    );
+
+                    return;
+
+                }
+
+
+                try{
+
+                    window.scrollTo(
+                        0,
+                        previousTop
+                    );
+
+                }catch(e){}
+
+            },
+            60
+        );
+
+    }
+);
+
+
+/* =========================================================
+   SAVE CHOICE
+   ========================================================= */
+
+function saveChoice(
+    id,
+    letter
+){
+
+    var choices =
+        getChoices();
+
+
+    choices[id] =
+        normalizeChoiceLetter(
+            letter
+        );
+
+
+    try{
+
+        localStorage.setItem(
+            storageKey,
+            JSON.stringify(
+                choices
+            )
+        );
+
+    }catch(e){}
+
+}
+
+
+/* =========================================================
+   NORMALIZE CHOICE LETTER
+   ========================================================= */
+
+function normalizeChoiceLetter(value){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .trim()
+        .toUpperCase();
+
+}
+
+
+/* =========================================================
+   GET CHOICES
+   ========================================================= */
+
+function getChoices(){
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                storageKey
+            );
+
+
+        if(!saved){
+
+            return {};
+
+        }
+
+
+        var parsed =
+            JSON.parse(
+                saved
+            );
+
+
+        if(
+            parsed &&
+            typeof parsed === "object" &&
+            !Array.isArray(parsed)
+        ){
+
+            return parsed;
+
+        }
+
+
+        return {};
+
+    }catch(e){
+
+        return {};
+
+    }
+
+}
+
+
+/* =========================================================
+   GAME COMPLETION
+   ========================================================= */
+
+function getCompletedGames(){
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                "ceeqwinn_completed_games"
+            );
+
+
+        if(!saved){
+
+            return {};
+
+        }
+
+
+        var parsed =
+            JSON.parse(
+                saved
+            );
+
+
+        return parsed &&
+               typeof parsed === "object"
+            ? parsed
+            : {};
+
+    }catch(e){
+
+        return {};
+
+    }
+
+}
+
+
+/* =========================================================
+   GAME BRIDGE
+   ========================================================= */
+
+function renderGame(gameId){
+
+    if(
+        gameId ===
+        "FASHION-01"
+    ){
+
+        return (
+
+            '<div class="story-game">' +
+
+                '<div class="story-game-title">' +
+                    'Lexis needs to choose her outfit.' +
+                '</div>' +
+
+                '<div class="story-game-text">' +
+                    'Choose how she wants to face the evening.' +
+                '</div>' +
+
+                '<button ' +
+                    'type="button" ' +
+                    'class="story-game-button" ' +
+                    'data-game="FASHION-01">' +
+                    'Open Fashion Game' +
+                '</button>' +
+
+            '</div>'
+
+        );
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =========================================================
+   GAME BUTTON CLICK
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        var target =
+            event.target;
+
+
+        if(
+            !target.classList.contains(
+                "story-game-button"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        var gameId =
+            target.getAttribute(
+                "data-game"
+            );
+
+
+        if(
+            gameId ===
+            "FASHION-01"
+        ){
+
+            window.location.href =
+                "/games/fashion-01.html";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   GAME RETURN SIGNAL
+   ========================================================= */
+
+window.addEventListener(
+    "pageshow",
+    function(){
+
+        var returnedGame =
+            "";
+
+
+        try{
+
+            returnedGame =
+                sessionStorage.getItem(
+                    "ceeqwinn_return_from_game"
+                ) || "";
+
+        }catch(e){
+
+            returnedGame =
+                "";
+
+        }
+
+
+        returnedGame =
+            String(
+                returnedGame
+            )
+            .trim()
+            .toUpperCase();
+
+
+        if(
+            returnedGame !==
+            "FASHION-01"
+        ){
+
+            return;
+
+        }
+
+
+        try{
+
+            sessionStorage.removeItem(
+                "ceeqwinn_return_from_game"
+            );
+
+        }catch(e){}
+
+
+        if(
+            storyNodes &&
+            storyNodes.length
+        ){
+
+            resumeAfterGameId =
+                returnedGame;
+
+            renderProgress();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SCROLL TO ELEMENT
+   ========================================================= */
+
+function scrollToElement(element){
+
+    if(!element){
+
+        return;
+
+    }
+
+
+    setTimeout(
+        function(){
+
+            try{
+
+                element.scrollIntoView({
+                    behavior:"smooth",
+                    block:"start"
+                });
+
+            }catch(e){
+
+                try{
+
+                    window.scrollTo(
+                        0,
+                        Math.max(
+                            0,
+                            element.getBoundingClientRect().top +
+                            (
+                                window.pageYOffset ||
+                                document.documentElement.scrollTop ||
+                                document.body.scrollTop ||
+                                0
+                            ) -
+                            20
+                        )
+                    );
+
+                }catch(ignore){}
+
+            }
+
+        },
+        100
+    );
+
+}
+
+
+/* =========================================================
+   SHOW OUTFIT
+   ========================================================= */
+
+function renderShowOutfit(){
+
+    var outfit =
+        "lexis_default";
+
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                "ceeqwinn_player_state"
+            );
+
+
+        if(saved){
+
+            var state =
+                JSON.parse(
+                    saved
+                );
+
+
+            if(
+                state &&
+                state.characters &&
+                state.characters.lexis &&
+                state.characters.lexis.currentOutfit
+            ){
+
+                outfit =
+                    state.characters.lexis.currentOutfit;
+
+            }
+
+        }
+
+    }catch(e){}
+
+
+    var images = {
+
+        lexis_default:
+            "/content/images/characters/lexis/outfits/lexis_default.png.jpeg",
+
+        lexis_red_dress:
+            "/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg",
+
+        lexis_black_dress:
+            "/content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg"
+
+    };
+
+
+    var src =
+        images[outfit] ||
+        images.lexis_default;
+
+
+    return (
+
+        '<div class="story-outfit">' +
+
+            '<img ' +
+                'src="' +
+                escapeAttr(src) +
+                '" ' +
+                'alt="Lexis outfit" ' +
+                'loading="lazy">' +
+
+        '</div>'
+
+    );
+
+}
+
+
+/* =========================================================
+   NEXT CHAPTER
+   ========================================================= */
+
+function renderNext(line){
+
+    /*
+     * Accept:
+     *
+     * [NEXT:discordant-descendants-chapter-2]
+     *
+     * [NEXT:discordant-descendants-chapter-2|Step into the gathering.]
+     *
+     * [NEXT: discordant-descendants-chapter-2 | Step into the gathering. ]
+     */
+
+    var cleaned =
+        cleanControlLine(line);
+
+
+    var match =
+        cleaned.match(
+            /^\[NEXT:\s*([^|\]]+?)\s*(?:\|\s*([^\]]+?)\s*)?\]$/i
+        );
+
+
+    if(!match){
+
+        return "";
+
+    }
+
+
+    var nextFile =
+        cleanPath(
+            match[1]
+        );
+
+
+    nextFile =
+        nextFile.replace(
+            /\.md$/i,
+            ""
+        );
+
+
+    var label =
+        match[2]
+        ? match[2].trim()
+        : "Enter the next chapter";
+
+
+    if(!nextFile){
+
+        return "";
+
+    }
+
+
+    return (
+
+        '<div class="story-next">' +
+
+            '<div class="story-next-text">' +
+                'The story continues...' +
+            '</div>' +
+
+            '<button ' +
+                'type="button" ' +
+                'class="story-next-button" ' +
+                'data-next="' +
+                escapeAttr(nextFile) +
+                '">' +
+
+                escapeHtml(label) +
+
+            '</button>' +
+
+        '</div>'
+
+    );
+
+}
+
+
+/* =========================================================
+   NEXT CHAPTER CLICK
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        var target =
+            event.target;
+
+
+        if(
+            !target.classList.contains(
+                "story-next-button"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        if(target.disabled){
+
+            return;
+
+        }
+
+
+        var nextFile =
+            target.getAttribute(
+                "data-next"
+            );
+
+
+        if(!nextFile){
+
+            return;
+
+        }
+
+
+        nextFile =
+            cleanPath(
+                nextFile
+            );
+
+
+        nextFile =
+            nextFile.replace(
+                /\.md$/i,
+                ""
+            );
+
+
+        /*
+         * The story history is NOT cleared here.
+         *
+         * That is the important part.
+         *
+         * Chapter 2 will use the exact same
+         * ceeqwinn_story_history_<base-story> key.
+         */
+
+        window.location.href =
+            "article.html?file=" +
+            encodeURIComponent(
+                nextFile
+            );
+
+    }
+);
+
+
+/* =========================================================
+   RESET STORY
+   ========================================================= */
+
+reset.onclick =
+    function(){
+
+        try{
+
+            localStorage.removeItem(
+                storageKey
+            );
+
+            localStorage.removeItem(
+                "ceeqwinn_completed_games"
+            );
+
+        }catch(e){}
+
+
+        window.location.reload();
+
+    };
+
+
+/* =========================================================
+   STORY ID
+   =========================================================
+   
+   This is the bridge between chapters.
+   
+   Example:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   all become:
+   
+   discordant-descendants
+   ========================================================= */
+
+function getStoryId(path){
+
+    path =
+        String(path || "");
+
+
+    path =
+        path.replace(
+            /\.md$/i,
+            ""
+        );
+
+
+    /*
+     * Remove chapter numbering from the END only.
+     *
+     * This means:
+     *
+     * discordant-descendants-chapter-2
+     *
+     * becomes:
+     *
+     * discordant-descendants
+     *
+     * while unrelated names containing the word
+     * "chapter" elsewhere remain untouched.
+     */
+
+    path =
+        path.replace(
+            /-chapter-\d+$/i,
+            ""
+        );
+
+
+    return path;
+
+}
+
+
+/* =========================================================
+   MEDIA PATH
+   ========================================================= */
+
+function mediaPath(src){
+
+    if(!src){
+
+        return "";
+
+    }
+
+
+    src =
+        src.trim();
+
+
+    if(
+        /^https?:\/\//i.test(src) ||
+        /^data:/i.test(src) ||
+        src.charAt(0) === "/"
+    ){
+
+        return src;
+
+    }
+
+
+    while(
+        src.indexOf("../") === 0
+    ){
+
+        src =
+            src.substring(3);
+
+    }
+
+
+    while(
+        src.indexOf("./") === 0
+    ){
+
+        src =
+            src.substring(2);
+
+    }
+
+
+    if(
+        src.indexOf("content/") === 0
+    ){
+
+        return "/" + src;
+
+    }
+
+
+    return "/content/images/" + src;
+
+}
+
+
+/* =========================================================
+   FIX MEDIA
+   ========================================================= */
+
+function fixMedia(){
+
+    var images =
+        content.getElementsByTagName(
+            "img"
+        );
+
+    var videos =
+        content.getElementsByTagName(
+            "video"
+        );
+
+    var audios =
+        content.getElementsByTagName(
+            "audio"
+        );
+
+
+    var i;
+
+
+    for(
+        i = 0;
+        i < images.length;
+        i++
+    ){
+
+        var imageSrc =
+            images[i].getAttribute(
+                "src"
+            );
+
+
+        if(imageSrc){
+
+            images[i].src =
+                mediaPath(
+                    imageSrc
+                );
+
+        }
+
+
+        images[i].setAttribute(
+            "loading",
+            "lazy"
+        );
+
+    }
+
+
+    for(
+        i = 0;
+        i < videos.length;
+        i++
+    ){
+
+        var videoSrc =
+            videos[i].getAttribute(
+                "src"
+            );
+
+
+        if(videoSrc){
+
+            videos[i].src =
+                mediaPath(
+                    videoSrc
+                );
+
+        }
+
+
+        videos[i].controls =
+            true;
+
+    }
+
+
+    for(
+        i = 0;
+        i < audios.length;
+        i++
+    ){
+
+        var audioSrc =
+            audios[i].getAttribute(
+                "src"
+            );
+
+
+        if(audioSrc){
+
+            audios[i].src =
+                mediaPath(
+                    audioSrc
+                );
+
+        }
+
+
+        audios[i].controls =
+            true;
+
+    }
+
+}
+
+
+/* =========================================================
+   EXTRA MEDIA
+   ========================================================= */
+
+function renderExtraMedia(data){
+
+    var html = "";
+
+
+    if(data.video){
+
+        html +=
+
+            '<h2>Video</h2>' +
+
+            '<video ' +
+                'controls ' +
+                'preload="metadata">' +
+
+                '<source src="' +
+                    escapeAttr(
+                        mediaPath(
+                            data.video
+                        )
+                    ) +
+                '">' +
+
+            '</video>';
+
+    }
+
+
+    if(data.audio){
+
+        html +=
+
+            '<h2>Audio</h2>' +
+
+            '<audio ' +
+                'controls ' +
+                'preload="metadata">' +
+
+                '<source src="' +
+                    escapeAttr(
+                        mediaPath(
+                            data.audio
+                        )
+                    ) +
+                '">' +
+
+            '</audio>';
+
+    }
+
+
+    media.innerHTML =
+        html;
+
+}
+
+
+/* =========================================================
+   CLEAN PATH
+   ========================================================= */
+
+function cleanPath(path){
+
+    path =
+        String(path || "")
+        .replace(
+            /\\/g,
+            "/"
+        )
+        .replace(
+            /^\/+/,
+            ""
+        );
+
+
+    var parts =
+        path.split("/");
+
+
+    var clean = [];
+
+
+    for(
+        var i = 0;
+        i < parts.length;
+        i++
+    ){
+
+        if(
+            parts[i] &&
+            parts[i] !== "." &&
+            parts[i] !== ".."
+        ){
+
+            clean.push(
+                parts[i]
+            );
+
+        }
+
+    }
+
+
+    return clean.join("/");
+
+}
+
+
+/* =========================================================
+   HTML ESCAPING
+   ========================================================= */
+
+function escapeHtml(value){
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#39;"
+        );
+
+}
+
+
+function escapeAttr(value){
+
+    return escapeHtml(
+        value
+    );
+
+}
+
+
+/* =========================================================
+   SIMPLE CSS ESCAPE
+   ========================================================= */
+
+function cssEscape(value){
+
+    return String(value)
+
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+
+        .replace(
+            /"/g,
+            '\\"'
+        );
+
+}
+
+</script>
+
+</body>
+
+</html>
