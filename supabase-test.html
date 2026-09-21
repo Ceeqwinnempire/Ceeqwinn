@@ -17,6 +17,7 @@
 
 <p id="status">Connecting...</p>
 
+
 <div id="ledgerArea" style="display:none;">
 
     <h2>Wallet Ledger</h2>
@@ -24,6 +25,7 @@
     <div id="ledgerStatus"></div>
 
 </div>
+
 
 <div id="redeemArea" style="display:none;">
 
@@ -35,13 +37,17 @@
 
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-const SUPABASE_URL = "https://iwuambqesluciawsgyww.supabase.co";
+const SUPABASE_URL =
+    "https://iwuambqesluciawsgyww.supabase.co";
 
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_zG6WuGdx";
+const SUPABASE_PUBLISHABLE_KEY =
+    "YOUR_EXISTING_PUBLISHABLE_KEY";
+
 
 const { createClient } = supabase;
 
@@ -51,11 +57,112 @@ const client = createClient(
 );
 
 
+/*
+=========================================================
+LEDGER DISPLAY
+=========================================================
+*/
+
+async function loadLedger(walletId){
+
+    const ledgerArea =
+        document.getElementById("ledgerArea");
+
+    const ledgerStatus =
+        document.getElementById("ledgerStatus");
+
+
+    ledgerArea.style.display = "block";
+
+    ledgerStatus.textContent =
+        "Checking wallet ledger...";
+
+
+    const { data: ledger, error: ledgerError } =
+        await client
+            .from("wallet_ledger")
+            .select(
+                "id, amount_diamonds, entry_type, reference_id, created_at"
+            )
+            .eq("wallet_id", walletId)
+            .order(
+                "created_at",
+                { ascending: false }
+            );
+
+
+    if(ledgerError){
+
+        console.error(ledgerError);
+
+        ledgerStatus.textContent =
+            "Ledger check failed: " +
+            ledgerError.message;
+
+        return;
+    }
+
+
+    if(!ledger || ledger.length === 0){
+
+        ledgerStatus.textContent =
+            "No ledger entries found.";
+
+        return;
+    }
+
+
+    ledgerStatus.innerHTML =
+        ledger.map(entry => `
+
+            <div style="
+                border:1px solid #ccc;
+                padding:10px;
+                margin-bottom:10px;
+            ">
+
+                <strong>
+                    ${entry.amount_diamonds > 0 ? "+" : ""}
+                    ${entry.amount_diamonds}
+                    diamonds
+                </strong>
+
+                <br>
+
+                Entry type:
+                ${entry.entry_type}
+
+                <br>
+
+                Reference:
+                ${entry.reference_id}
+
+                <br>
+
+                Created:
+                ${entry.created_at}
+
+            </div>
+
+        `).join("");
+
+}
+
+
+/*
+=========================================================
+MAIN SUPABASE TEST
+=========================================================
+*/
+
 async function testSupabase(){
 
-    const status = document.getElementById("status");
+    const status =
+        document.getElementById("status");
 
-    status.textContent = "Creating anonymous player...";
+
+    status.textContent =
+        "Creating anonymous player...";
 
 
     const { data, error } =
@@ -74,7 +181,8 @@ async function testSupabase(){
     }
 
 
-    const user = data.user;
+    const user =
+        data.user;
 
 
     status.textContent =
@@ -140,85 +248,16 @@ async function testSupabase(){
 
     /*
     =========================================================
-    CHECK WALLET LEDGER
+    CHECK LEDGER BEFORE REDEMPTION
     =========================================================
     */
 
-    const { data: ledger, error: ledgerError } =
-        await client
-            .from("wallet_ledger")
-            .select(
-                "id, amount_diamonds, entry_type, reference_id, created_at"
-            )
-            .eq("wallet_id", wallet.id)
-            .order(
-                "created_at",
-                { ascending: false }
-            );
-
-
-    document.getElementById("ledgerArea").style.display =
-        "block";
-
-
-    if(ledgerError){
-
-        console.error(ledgerError);
-
-        document.getElementById("ledgerStatus").textContent =
-            "Ledger check failed: " +
-            ledgerError.message;
-
-    }
-
-    else if(!ledger || ledger.length === 0){
-
-        document.getElementById("ledgerStatus").textContent =
-            "No ledger entries found.";
-
-    }
-
-    else{
-
-        document.getElementById("ledgerStatus").innerHTML =
-            ledger.map(entry => `
-
-                <div style="
-                    border:1px solid #ccc;
-                    padding:10px;
-                    margin-bottom:10px;
-                ">
-
-                    <strong>
-                        ${entry.amount_diamonds > 0 ? "+" : ""}
-                        ${entry.amount_diamonds} diamonds
-                    </strong>
-
-                    <br>
-
-                    Entry type:
-                    ${entry.entry_type}
-
-                    <br>
-
-                    Reference:
-                    ${entry.reference_id}
-
-                    <br>
-
-                    Created:
-                    ${entry.created_at}
-
-                </div>
-
-            `).join("");
-
-    }
+    await loadLedger(wallet.id);
 
 
     /*
     =========================================================
-    REDEMPTION TEST
+    SHOW REDEMPTION BUTTON
     =========================================================
     */
 
@@ -238,15 +277,17 @@ async function testSupabase(){
 
             button.disabled = true;
 
+
             redeemStatus.textContent =
-                "Redeeming CEEQ-TEST-002...";
+                "Redeeming CEEQ-TEST-003...";
 
 
             const { data: diamonds, error: redeemError } =
                 await client.rpc(
                     "redeem_ticket",
                     {
-                        p_ticket_code: "CEEQ-TEST-002"
+                        p_ticket_code:
+                            "CEEQ-TEST-003"
                     }
                 );
 
@@ -272,18 +313,41 @@ async function testSupabase(){
             `;
 
 
-            const { data: updatedWallet } =
+            /*
+            =================================================
+            REFRESH WALLET BALANCE
+            =================================================
+            */
+
+            const {
+                data: updatedWallet,
+                error: updatedWalletError
+            } =
                 await client
                     .from("wallets")
-                    .select("balance_diamonds")
-                    .eq("player_id", user.id)
+                    .select(
+                        "balance_diamonds"
+                    )
+                    .eq(
+                        "player_id",
+                        user.id
+                    )
                     .single();
 
 
-            if(updatedWallet){
+            if(updatedWalletError){
+
+                console.error(
+                    updatedWalletError
+                );
+
+            }
+            else{
 
                 status.innerHTML = `
-                    <strong>CEEQWINN Supabase test successful.</strong><br><br>
+                    <strong>
+                        CEEQWINN Supabase test successful.
+                    </strong><br><br>
 
                     Player ID: ${player.id}<br>
 
@@ -294,6 +358,15 @@ async function testSupabase(){
                 `;
 
             }
+
+
+            /*
+            =================================================
+            REFRESH LEDGER
+            =================================================
+            */
+
+            await loadLedger(wallet.id);
 
         };
 
