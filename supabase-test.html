@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,6 +16,14 @@
 <h1>CEEQWINN Supabase Test</h1>
 
 <p id="status">Connecting...</p>
+
+<div id="ledgerArea" style="display:none;">
+
+    <h2>Wallet Ledger</h2>
+
+    <div id="ledgerStatus"></div>
+
+</div>
 
 <div id="redeemArea" style="display:none;">
 
@@ -129,6 +138,90 @@ async function testSupabase(){
     `;
 
 
+    /*
+    =========================================================
+    CHECK WALLET LEDGER
+    =========================================================
+    */
+
+    const { data: ledger, error: ledgerError } =
+        await client
+            .from("wallet_ledger")
+            .select(
+                "id, amount_diamonds, entry_type, reference_id, created_at"
+            )
+            .eq("wallet_id", wallet.id)
+            .order(
+                "created_at",
+                { ascending: false }
+            );
+
+
+    document.getElementById("ledgerArea").style.display =
+        "block";
+
+
+    if(ledgerError){
+
+        console.error(ledgerError);
+
+        document.getElementById("ledgerStatus").textContent =
+            "Ledger check failed: " +
+            ledgerError.message;
+
+    }
+
+    else if(!ledger || ledger.length === 0){
+
+        document.getElementById("ledgerStatus").textContent =
+            "No ledger entries found.";
+
+    }
+
+    else{
+
+        document.getElementById("ledgerStatus").innerHTML =
+            ledger.map(entry => `
+
+                <div style="
+                    border:1px solid #ccc;
+                    padding:10px;
+                    margin-bottom:10px;
+                ">
+
+                    <strong>
+                        ${entry.amount_diamonds > 0 ? "+" : ""}
+                        ${entry.amount_diamonds} diamonds
+                    </strong>
+
+                    <br>
+
+                    Entry type:
+                    ${entry.entry_type}
+
+                    <br>
+
+                    Reference:
+                    ${entry.reference_id}
+
+                    <br>
+
+                    Created:
+                    ${entry.created_at}
+
+                </div>
+
+            `).join("");
+
+    }
+
+
+    /*
+    =========================================================
+    REDEMPTION TEST
+    =========================================================
+    */
+
     document.getElementById("redeemArea").style.display =
         "block";
 
@@ -199,6 +292,7 @@ async function testSupabase(){
                     Diamond balance:
                     ${updatedWallet.balance_diamonds}
                 `;
+
             }
 
         };
@@ -212,3 +306,4 @@ testSupabase();
 
 </body>
 </html>
+```
