@@ -5,50 +5,20 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-<title>CEEQWINN Supabase Test</title>
+<title>CEEQWINN Supabase Full Test</title>
 
 </head>
 
 <body>
 
-<h1>CEEQWINN Supabase Test</h1>
+<h1>CEEQWINN Supabase Full Test</h1>
 
 <p id="status">Connecting...</p>
 
-
-<div id="ledgerArea" style="display:none;">
-
-    <h2>Wallet Ledger</h2>
-
-    <div id="ledgerStatus"></div>
-
-</div>
-
-
-<div id="redeemArea" style="display:none;">
-
-    <button id="redeemButton">
-        REDEEM TEST TICKET
-    </button>
-
-    <p id="redeemStatus"></p>
-
-</div>
-
-
-<div id="securityArea" style="display:none; margin-top:30px;">
-
-    <h2>Security Test</h2>
-
-    <button id="fakeLedgerButton">
-        TEST DIRECT LEDGER INSERT
-    </button>
-
-    <p id="securityStatus"></p>
-
-</div>
+<div id="results"></div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -70,105 +40,41 @@ const client = createClient(
 );
 
 
-/*
-=========================================================
-LEDGER DISPLAY
-=========================================================
-*/
-
-async function loadLedger(walletId){
-
-    const ledgerArea =
-        document.getElementById("ledgerArea");
-
-    const ledgerStatus =
-        document.getElementById("ledgerStatus");
+const results =
+    document.getElementById("results");
 
 
-    ledgerArea.style.display = "block";
+function showTest(name, passed, details){
 
-    ledgerStatus.textContent =
-        "Checking wallet ledger...";
+    const box =
+        document.createElement("div");
 
+    box.style.border = "1px solid #ccc";
+    box.style.padding = "12px";
+    box.style.margin = "10px 0";
 
-    const { data: ledger, error: ledgerError } =
-        await client
-            .from("wallet_ledger")
-            .select(
-                "id, amount_diamonds, entry_type, reference_id, created_at"
-            )
-            .eq("wallet_id", walletId)
-            .order(
-                "created_at",
-                { ascending: false }
-            );
+    box.innerHTML = `
+        <strong>
+            ${passed ? "✅" : "❌"} ${name}
+        </strong>
 
+        <br><br>
 
-    if(ledgerError){
+        ${details}
+    `;
 
-        console.error(ledgerError);
-
-        ledgerStatus.textContent =
-            "Ledger check failed: " +
-            ledgerError.message;
-
-        return;
-    }
-
-
-    if(!ledger || ledger.length === 0){
-
-        ledgerStatus.textContent =
-            "No ledger entries found.";
-
-        return;
-    }
-
-
-    ledgerStatus.innerHTML =
-        ledger.map(entry => `
-
-            <div style="
-                border:1px solid #ccc;
-                padding:10px;
-                margin-bottom:10px;
-            ">
-
-                <strong>
-                    ${entry.amount_diamonds > 0 ? "+" : ""}
-                    ${entry.amount_diamonds}
-                    diamonds
-                </strong>
-
-                <br>
-
-                Entry type:
-                ${entry.entry_type}
-
-                <br>
-
-                Reference:
-                ${entry.reference_id}
-
-                <br>
-
-                Created:
-                ${entry.created_at}
-
-            </div>
-
-        `).join("");
+    results.appendChild(box);
 
 }
 
 
 /*
 =========================================================
-MAIN SUPABASE TEST
+MAIN TEST
 =========================================================
 */
 
-async function testSupabase(){
+async function runTests(){
 
     const status =
         document.getElementById("status");
@@ -178,55 +84,81 @@ async function testSupabase(){
         "Creating anonymous player...";
 
 
-    const { data, error } =
+    /*
+    =====================================================
+    1. ANONYMOUS AUTH
+    =====================================================
+    */
+
+    const {
+        data: authData,
+        error: authError
+    } =
         await client.auth.signInAnonymously();
 
 
-    if(error){
-
-        console.error(error);
+    if(authError){
 
         status.textContent =
-            "Supabase authentication failed: " +
-            error.message;
+            "Authentication failed.";
+
+        showTest(
+            "Anonymous authentication",
+            false,
+            authError.message
+        );
 
         return;
     }
 
 
     const user =
-        data.user;
+        authData.user;
 
 
-    status.textContent =
-        "Anonymous authentication successful. Checking player...";
+    showTest(
+        "Anonymous authentication",
+        true,
+        "Anonymous player session created."
+    );
 
 
-    const { data: player, error: playerError } =
+    /*
+    =====================================================
+    2. PLAYER READ
+    =====================================================
+    */
+
+    const {
+        data: player,
+        error: playerError
+    } =
         await client
             .from("players")
-            .select("id, created_at")
+            .select("id")
             .eq("id", user.id)
             .single();
 
 
-    if(playerError){
-
-        console.error(playerError);
-
-        status.textContent =
-            "Player check failed: " +
-            playerError.message;
-
-        return;
-    }
+    showTest(
+        "Own player record",
+        !playerError && !!player,
+        playerError
+            ? playerError.message
+            : "Player record is readable."
+    );
 
 
-    status.textContent =
-        "Player created successfully. Checking wallet...";
+    /*
+    =====================================================
+    3. WALLET READ
+    =====================================================
+    */
 
-
-    const { data: wallet, error: walletError } =
+    const {
+        data: wallet,
+        error: walletError
+    } =
         await client
             .from("wallets")
             .select(
@@ -238,232 +170,274 @@ async function testSupabase(){
 
     if(walletError){
 
-        console.error(walletError);
-
-        status.textContent =
-            "Wallet check failed: " +
-            walletError.message;
+        showTest(
+            "Own wallet",
+            false,
+            walletError.message
+        );
 
         return;
     }
 
 
-    status.innerHTML = `
-        <strong>CEEQWINN Supabase test successful.</strong><br><br>
+    showTest(
+        "Own wallet",
+        true,
+        "Wallet is readable by its owner."
+    );
 
-        Player ID: ${player.id}<br>
+
+    /*
+    =====================================================
+    4. OWN LEDGER READ
+    =====================================================
+    */
+
+    const {
+        data: ownLedger,
+        error: ownLedgerError
+    } =
+        await client
+            .from("wallet_ledger")
+            .select(
+                "id, amount_diamonds, entry_type"
+            )
+            .eq("wallet_id", wallet.id);
+
+
+    showTest(
+        "Own wallet ledger",
+        !ownLedgerError,
+        ownLedgerError
+            ? ownLedgerError.message
+            : `${ownLedger.length} ledger entr${ownLedger.length === 1 ? "y" : "ies"} readable.`
+    );
+
+
+    /*
+    =====================================================
+    5. DIRECT LEDGER INSERT
+    =====================================================
+    */
+
+    const {
+        error: ledgerInsertError
+    } =
+        await client
+            .from("wallet_ledger")
+            .insert({
+                wallet_id: wallet.id,
+                amount_diamonds: 999999,
+                entry_type: "security_test",
+                reference_id: null
+            });
+
+
+    showTest(
+        "Direct ledger insert",
+        !!ledgerInsertError,
+        ledgerInsertError
+            ? "Blocked by database security."
+            : "SECURITY FAILURE: browser inserted a ledger entry."
+    );
+
+
+    /*
+    =====================================================
+    6. DIRECT WALLET UPDATE
+    =====================================================
+    */
+
+    const originalBalance =
+        wallet.balance_diamonds;
+
+
+    const {
+        error: walletUpdateError
+    } =
+        await client
+            .from("wallets")
+            .update({
+                balance_diamonds:
+                    originalBalance + 999999
+            })
+            .eq("id", wallet.id);
+
+
+    showTest(
+        "Direct wallet update",
+        !!walletUpdateError,
+        walletUpdateError
+            ? "Blocked by database security."
+            : "SECURITY FAILURE: browser changed wallet balance."
+    );
+
+
+    /*
+    =====================================================
+    7. OTHER WALLET READ
+    =====================================================
+
+    We ask for wallets that do NOT belong to this player.
+
+    RLS should prevent those rows from being returned.
+    */
+
+    const {
+        data: otherWallets,
+        error: otherWalletError
+    } =
+        await client
+            .from("wallets")
+            .select("id, player_id, balance_diamonds")
+            .neq("player_id", user.id);
+
+
+    const otherWalletBlocked =
+        !otherWalletError &&
+        (!otherWallets ||
+         otherWallets.length === 0);
+
+
+    showTest(
+        "Other players' wallets",
+        otherWalletBlocked,
+        otherWalletBlocked
+            ? "No other players' wallets were exposed."
+            : "SECURITY FAILURE: another wallet was visible."
+    );
+
+
+    /*
+    =====================================================
+    8. RECHARGE TICKET INVENTORY
+    =====================================================
+
+    This table must NOT be player-readable.
+    */
+
+    const {
+        data: tickets,
+        error: ticketError
+    } =
+        await client
+            .from("recharge_tickets")
+            .select("id, code, redeemed")
+            .limit(1);
+
+
+    const ticketsBlocked =
+        !!ticketError ||
+        !tickets ||
+        tickets.length === 0;
+
+
+    showTest(
+        "Recharge ticket inventory",
+        ticketsBlocked,
+        ticketsBlocked
+            ? "Ticket inventory is not exposed to the browser."
+            : "SECURITY FAILURE: ticket inventory is visible."
+    );
+
+
+    /*
+    =====================================================
+    9. REDEMPTION RECORDS
+    =====================================================
+    */
+
+    const {
+        data: redemptionRecords,
+        error: redemptionError
+    } =
+        await client
+            .from("redemption_records")
+            .select(
+                "id, ticket_id, product_id"
+            )
+            .limit(1);
+
+
+    const redemptionBlocked =
+        !!redemptionError ||
+        !redemptionRecords ||
+        redemptionRecords.length === 0;
+
+
+    showTest(
+        "Redemption records",
+        redemptionBlocked,
+        redemptionBlocked
+            ? "Redemption records are not exposed to the browser."
+            : "SECURITY FAILURE: redemption records are visible."
+    );
+
+
+    /*
+    =====================================================
+    10. REUSE ALREADY-REDEEMED TICKET
+    =====================================================
+
+    CEEQ-TEST-003 was already redeemed during our
+    previous successful test.
+
+    We deliberately try it again.
+
+    It MUST fail.
+    */
+
+    const {
+        data: reuseResult,
+        error: reuseError
+    } =
+        await client.rpc(
+            "redeem_ticket",
+            {
+                p_ticket_code:
+                    "CEEQ-TEST-003"
+            }
+        );
+
+
+    const reuseBlocked =
+        !!reuseError;
+
+
+    showTest(
+        "Redeemed ticket replay protection",
+        reuseBlocked,
+        reuseBlocked
+            ? "Second redemption was rejected: " +
+              reuseError.message
+            : "SECURITY FAILURE: redeemed ticket was accepted."
+    );
+
+
+    /*
+    =====================================================
+    COMPLETE
+    =====================================================
+    */
+
+    status.innerHTML = `
+        <strong>
+            Full Supabase security test completed.
+        </strong>
+        <br><br>
+
+        Player ID: ${user.id}<br>
 
         Wallet ID: ${wallet.id}<br>
 
-        Diamond balance: ${wallet.balance_diamonds}
+        Current wallet balance:
+        ${originalBalance}
     `;
-
-
-    /*
-    =========================================================
-    CHECK LEDGER
-    =========================================================
-    */
-
-    await loadLedger(wallet.id);
-
-
-    /*
-    =========================================================
-    SHOW REDEMPTION AREA
-    =========================================================
-    */
-
-    document.getElementById("redeemArea").style.display =
-        "block";
-
-
-    document.getElementById("redeemButton").onclick =
-        async function(){
-
-            const redeemStatus =
-                document.getElementById("redeemStatus");
-
-            const button =
-                document.getElementById("redeemButton");
-
-
-            button.disabled = true;
-
-
-            redeemStatus.textContent =
-                "Redeeming CEEQ-TEST-003...";
-
-
-            const { data: diamonds, error: redeemError } =
-                await client.rpc(
-                    "redeem_ticket",
-                    {
-                        p_ticket_code:
-                            "CEEQ-TEST-003"
-                    }
-                );
-
-
-            if(redeemError){
-
-                console.error(redeemError);
-
-                redeemStatus.textContent =
-                    "Redemption failed: " +
-                    redeemError.message;
-
-                button.disabled = false;
-
-                return;
-            }
-
-
-            redeemStatus.innerHTML = `
-                <strong>Redemption successful.</strong><br><br>
-
-                Diamonds credited: ${diamonds}
-            `;
-
-
-            /*
-            =================================================
-            REFRESH WALLET BALANCE
-            =================================================
-            */
-
-            const {
-                data: updatedWallet,
-                error: updatedWalletError
-            } =
-                await client
-                    .from("wallets")
-                    .select(
-                        "balance_diamonds"
-                    )
-                    .eq(
-                        "player_id",
-                        user.id
-                    )
-                    .single();
-
-
-            if(updatedWalletError){
-
-                console.error(
-                    updatedWalletError
-                );
-
-            }
-            else{
-
-                status.innerHTML = `
-                    <strong>
-                        CEEQWINN Supabase test successful.
-                    </strong><br><br>
-
-                    Player ID: ${player.id}<br>
-
-                    Wallet ID: ${wallet.id}<br>
-
-                    Diamond balance:
-                    ${updatedWallet.balance_diamonds}
-                `;
-
-            }
-
-
-            /*
-            =================================================
-            REFRESH LEDGER
-            =================================================
-            */
-
-            await loadLedger(wallet.id);
-
-        };
-
-
-    /*
-    =========================================================
-    SECURITY TEST AREA
-    =========================================================
-    */
-
-    document.getElementById("securityArea").style.display =
-        "block";
-
-
-    document.getElementById("fakeLedgerButton").onclick =
-        async function(){
-
-            const securityStatus =
-                document.getElementById("securityStatus");
-
-            const button =
-                document.getElementById("fakeLedgerButton");
-
-
-            button.disabled = true;
-
-
-            securityStatus.textContent =
-                "Attempting direct ledger insert...";
-
-
-            const {
-                data: fakeEntry,
-                error: fakeLedgerError
-            } =
-                await client
-                    .from("wallet_ledger")
-                    .insert({
-                        wallet_id: wallet.id,
-                        amount_diamonds: 999999,
-                        entry_type: "fake_test",
-                        reference_id: null
-                    })
-                    .select();
-
-
-            if(fakeLedgerError){
-
-                console.error(fakeLedgerError);
-
-                securityStatus.innerHTML = `
-                    <strong>
-                        Direct ledger insert blocked.
-                    </strong><br><br>
-
-                    Database response:
-                    ${fakeLedgerError.message}
-                `;
-
-            }
-            else{
-
-                console.error(
-                    "SECURITY TEST FAILED:",
-                    fakeEntry
-                );
-
-                securityStatus.innerHTML = `
-                    <strong>
-                        SECURITY TEST FAILED.
-                    </strong><br><br>
-
-                    The browser was able to insert
-                    a ledger entry directly.
-                `;
-
-            }
-
-        };
 
 }
 
 
-testSupabase();
+runTests();
 
 </script>
 
