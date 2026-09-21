@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CEEQWINN Supabase Test</title>
+
+</head>
+
+<body>
+
+<h1>CEEQWINN Supabase Test</h1>
+
+<p id="status">Connecting...</p>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL = "https://iwuambqesluciawsgyww.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_zG6WuGdx";
+
+const { createClient } = supabase;
+
+const client = createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+);
+
+async function testSupabase(){
+
+    const status = document.getElementById("status");
+
+    status.textContent = "Creating anonymous player...";
+
+    const { data, error } = await client.auth.signInAnonymously();
+
+    if(error){
+
+        console.error(error);
+
+        status.textContent =
+            "Supabase authentication failed: " + error.message;
+
+        return;
+    }
+
+    const user = data.user;
+
+    status.textContent =
+        "Anonymous authentication successful. Checking player...";
+
+    const { data: player, error: playerError } =
+        await client
+            .from("players")
+            .select("id, created_at")
+            .eq("id", user.id)
+            .single();
+
+    if(playerError){
+
+        console.error(playerError);
+
+        status.textContent =
+            "Player check failed: " + playerError.message;
+
+        return;
+    }
+
+    status.textContent =
+        "Player created successfully. Checking wallet...";
+
+    const { data: wallet, error: walletError } =
+        await client
+            .from("wallets")
+            .select("id, balance_diamonds, player_id")
+            .eq("player_id", user.id)
+            .single();
+
+    if(walletError){
+
+        console.error(walletError);
+
+        status.textContent =
+            "Wallet check failed: " + walletError.message;
+
+        return;
+    }
+
+    status.innerHTML = `
+        <strong>CEEQWINN Supabase test successful.</strong><br><br>
+
+        Player ID: ${player.id}<br>
+
+        Wallet ID: ${wallet.id}<br>
+
+        Diamond balance: ${wallet.balance_diamonds}
+    `;
+
+}
+
+testSupabase();
+
+</script>
+
+</body>
+</html>
