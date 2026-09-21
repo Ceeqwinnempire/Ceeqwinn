@@ -38,6 +38,19 @@
 </div>
 
 
+<div id="securityArea" style="display:none; margin-top:30px;">
+
+    <h2>Security Test</h2>
+
+    <button id="fakeLedgerButton">
+        TEST DIRECT LEDGER INSERT
+    </button>
+
+    <p id="securityStatus"></p>
+
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -46,7 +59,7 @@ const SUPABASE_URL =
     "https://iwuambqesluciawsgyww.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_zG6WuGdx";
+    "YOUR_EXISTING_PUBLISHABLE_KEY";
 
 
 const { createClient } = supabase;
@@ -248,7 +261,7 @@ async function testSupabase(){
 
     /*
     =========================================================
-    CHECK LEDGER BEFORE REDEMPTION
+    CHECK LEDGER
     =========================================================
     */
 
@@ -257,7 +270,7 @@ async function testSupabase(){
 
     /*
     =========================================================
-    SHOW REDEMPTION BUTTON
+    SHOW REDEMPTION AREA
     =========================================================
     */
 
@@ -367,6 +380,83 @@ async function testSupabase(){
             */
 
             await loadLedger(wallet.id);
+
+        };
+
+
+    /*
+    =========================================================
+    SECURITY TEST AREA
+    =========================================================
+    */
+
+    document.getElementById("securityArea").style.display =
+        "block";
+
+
+    document.getElementById("fakeLedgerButton").onclick =
+        async function(){
+
+            const securityStatus =
+                document.getElementById("securityStatus");
+
+            const button =
+                document.getElementById("fakeLedgerButton");
+
+
+            button.disabled = true;
+
+
+            securityStatus.textContent =
+                "Attempting direct ledger insert...";
+
+
+            const {
+                data: fakeEntry,
+                error: fakeLedgerError
+            } =
+                await client
+                    .from("wallet_ledger")
+                    .insert({
+                        wallet_id: wallet.id,
+                        amount_diamonds: 999999,
+                        entry_type: "fake_test",
+                        reference_id: null
+                    })
+                    .select();
+
+
+            if(fakeLedgerError){
+
+                console.error(fakeLedgerError);
+
+                securityStatus.innerHTML = `
+                    <strong>
+                        Direct ledger insert blocked.
+                    </strong><br><br>
+
+                    Database response:
+                    ${fakeLedgerError.message}
+                `;
+
+            }
+            else{
+
+                console.error(
+                    "SECURITY TEST FAILED:",
+                    fakeEntry
+                );
+
+                securityStatus.innerHTML = `
+                    <strong>
+                        SECURITY TEST FAILED.
+                    </strong><br><br>
+
+                    The browser was able to insert
+                    a ledger entry directly.
+                `;
+
+            }
 
         };
 
