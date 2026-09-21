@@ -246,6 +246,18 @@ async function runTests(){
     =====================================================
     6. DIRECT WALLET UPDATE
     =====================================================
+
+    IMPORTANT:
+
+    Supabase/PostgREST can return no error when an UPDATE
+    matches zero rows because RLS prevents access.
+
+    Therefore, we request the affected row with SELECT.
+
+    If no row comes back, the update was blocked.
+
+    If a row comes back, the browser actually changed
+    the wallet and that is a security failure.
     */
 
     const originalBalance =
@@ -253,6 +265,7 @@ async function runTests(){
 
 
     const {
+        data: attemptedWalletUpdate,
         error: walletUpdateError
     } =
         await client
@@ -261,13 +274,22 @@ async function runTests(){
                 balance_diamonds:
                     originalBalance + 999999
             })
-            .eq("id", wallet.id);
+            .eq("id", wallet.id)
+            .select(
+                "id, balance_diamonds"
+            );
+
+
+    const walletUpdateBlocked =
+        !!walletUpdateError ||
+        !attemptedWalletUpdate ||
+        attemptedWalletUpdate.length === 0;
 
 
     showTest(
         "Direct wallet update",
-        !!walletUpdateError,
-        walletUpdateError
+        walletUpdateBlocked,
+        walletUpdateBlocked
             ? "Blocked by database security."
             : "SECURITY FAILURE: browser changed wallet balance."
     );
@@ -289,7 +311,9 @@ async function runTests(){
     } =
         await client
             .from("wallets")
-            .select("id, player_id, balance_diamonds")
+            .select(
+                "id, player_id, balance_diamonds"
+            )
             .neq("player_id", user.id);
 
 
@@ -322,7 +346,9 @@ async function runTests(){
     } =
         await client
             .from("recharge_tickets")
-            .select("id, code, redeemed")
+            .select(
+                "id, code, redeemed"
+            )
             .limit(1);
 
 
@@ -424,6 +450,7 @@ async function runTests(){
         <strong>
             Full Supabase security test completed.
         </strong>
+
         <br><br>
 
         Player ID: ${user.id}<br>
@@ -444,3 +471,4 @@ runTests();
 </body>
 </html>
 ```
+
