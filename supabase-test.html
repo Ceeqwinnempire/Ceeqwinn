@@ -16,13 +16,23 @@
 
 <p id="status">Connecting...</p>
 
+<div id="redeemArea" style="display:none;">
+
+    <button id="redeemButton">
+        REDEEM TEST TICKET
+    </button>
+
+    <p id="redeemStatus"></p>
+
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
 const SUPABASE_URL = "https://iwuambqesluciawsgyww.supabase.co";
 
-const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_zG6WuGdx";
+const SUPABASE_PUBLISHABLE_KEY = "PASTE YOUR EXISTING PUBLISHABLE KEY HERE";
 
 const { createClient } = supabase;
 
@@ -31,28 +41,36 @@ const client = createClient(
     SUPABASE_PUBLISHABLE_KEY
 );
 
+
 async function testSupabase(){
 
     const status = document.getElementById("status");
 
     status.textContent = "Creating anonymous player...";
 
-    const { data, error } = await client.auth.signInAnonymously();
+
+    const { data, error } =
+        await client.auth.signInAnonymously();
+
 
     if(error){
 
         console.error(error);
 
         status.textContent =
-            "Supabase authentication failed: " + error.message;
+            "Supabase authentication failed: " +
+            error.message;
 
         return;
     }
 
+
     const user = data.user;
+
 
     status.textContent =
         "Anonymous authentication successful. Checking player...";
+
 
     const { data: player, error: playerError } =
         await client
@@ -61,35 +79,44 @@ async function testSupabase(){
             .eq("id", user.id)
             .single();
 
+
     if(playerError){
 
         console.error(playerError);
 
         status.textContent =
-            "Player check failed: " + playerError.message;
+            "Player check failed: " +
+            playerError.message;
 
         return;
     }
 
+
     status.textContent =
         "Player created successfully. Checking wallet...";
+
 
     const { data: wallet, error: walletError } =
         await client
             .from("wallets")
-            .select("id, balance_diamonds, player_id")
+            .select(
+                "id, balance_diamonds, player_id"
+            )
             .eq("player_id", user.id)
             .single();
+
 
     if(walletError){
 
         console.error(walletError);
 
         status.textContent =
-            "Wallet check failed: " + walletError.message;
+            "Wallet check failed: " +
+            walletError.message;
 
         return;
     }
+
 
     status.innerHTML = `
         <strong>CEEQWINN Supabase test successful.</strong><br><br>
@@ -101,7 +128,83 @@ async function testSupabase(){
         Diamond balance: ${wallet.balance_diamonds}
     `;
 
+
+    document.getElementById("redeemArea").style.display =
+        "block";
+
+
+    document.getElementById("redeemButton").onclick =
+        async function(){
+
+            const redeemStatus =
+                document.getElementById("redeemStatus");
+
+            const button =
+                document.getElementById("redeemButton");
+
+
+            button.disabled = true;
+
+            redeemStatus.textContent =
+                "Redeeming CEEQ-TEST-002...";
+
+
+            const { data: diamonds, error: redeemError } =
+                await client.rpc(
+                    "redeem_ticket",
+                    {
+                        p_ticket_code: "CEEQ-TEST-002"
+                    }
+                );
+
+
+            if(redeemError){
+
+                console.error(redeemError);
+
+                redeemStatus.textContent =
+                    "Redemption failed: " +
+                    redeemError.message;
+
+                button.disabled = false;
+
+                return;
+            }
+
+
+            redeemStatus.innerHTML = `
+                <strong>Redemption successful.</strong><br><br>
+
+                Diamonds credited: ${diamonds}
+            `;
+
+
+            const { data: updatedWallet } =
+                await client
+                    .from("wallets")
+                    .select("balance_diamonds")
+                    .eq("player_id", user.id)
+                    .single();
+
+
+            if(updatedWallet){
+
+                status.innerHTML = `
+                    <strong>CEEQWINN Supabase test successful.</strong><br><br>
+
+                    Player ID: ${player.id}<br>
+
+                    Wallet ID: ${wallet.id}<br>
+
+                    Diamond balance:
+                    ${updatedWallet.balance_diamonds}
+                `;
+            }
+
+        };
+
 }
+
 
 testSupabase();
 
