@@ -1,215 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
 
-<title>CEEQWINN Visual Theatre Test</title>
+  <title>CEEQWINN Visual Story Theatre</title>
 
-<style>
-
-body{
-    margin:0;
-    padding:20px;
-    font-family:Arial,sans-serif;
-    background:#111;
-    color:#fff;
-}
-
-#status{
-    padding:15px;
-    margin-bottom:20px;
-    background:#222;
-    border-radius:8px;
-}
-
-#story{
-    max-width:800px;
-    margin:auto;
-    line-height:1.8;
-}
-
-.scene-marker{
-    margin:30px 0;
-    padding:15px;
-    border:1px solid #555;
-    border-radius:8px;
-    background:#1b1b1b;
-}
-
-.scene-marker strong{
-    display:block;
-    margin-bottom:5px;
-}
-
-</style>
+  <link rel="stylesheet" href="theater.css">
 </head>
 
 <body>
 
-<div id="status">
-    Loading Visual Theatre test...
-</div>
+  <main id="theatre-app" class="theatre-app">
 
-<main id="story"></main>
+    <div id="theatre-status" class="theatre-status">
+      Loading Visual Theatre...
+    </div>
 
+    <div id="theatre-root"></div>
 
-<script>
+  </main>
 
-var status =
-    document.getElementById("status");
-
-var story =
-    document.getElementById("story");
-
-
-var storyFile =
-    "../../content/articles/discordant-descendants-chapter-2.md";
-
-
-loadTheatreTest();
-
-
-function loadTheatreTest(){
-
-    var xhr =
-        new XMLHttpRequest();
-
-
-    xhr.open(
-        "GET",
-        storyFile,
-        true
-    );
-
-
-    xhr.onload =
-        function(){
-
-            if(
-                xhr.status !== 200 &&
-                xhr.status !== 0
-            ){
-
-                status.textContent =
-                    "Could not load Chapter 2. HTTP status: " +
-                    xhr.status;
-
-                return;
-
-            }
-
-
-            status.textContent =
-                "Chapter 2 loaded successfully.";
-
-
-            analyseStory(
-                xhr.responseText
-            );
-
-        };
-
-
-    xhr.onerror =
-        function(){
-
-            status.textContent =
-                "The Theatre could not reach the Chapter 2 Markdown.";
-
-        };
-
-
-    xhr.send();
-
-}
-
-
-function analyseStory(text){
-
-    var lines =
-        String(text || "")
-        .replace(/\r\n/g,"\n")
-        .replace(/\r/g,"\n")
-        .split("\n");
-
-
-    var sceneCount =
-        0;
-
-
-    for(
-        var i = 0;
-        i < lines.length;
-        i++
-    ){
-
-        var line =
-            lines[i].trim();
-
-
-        var match =
-            line.match(
-                /^\[SCENE:\s*([^\]]+)\]$/i
-            );
-
-
-        if(!match){
-
-            continue;
-
-        }
-
-
-        sceneCount++;
-
-
-        var sceneId =
-            match[1].trim();
-
-
-        var marker =
-            document.createElement("div");
-
-
-        marker.className =
-            "scene-marker";
-
-
-        marker.innerHTML =
-            "<strong>VISUAL THEATRE SCENE DETECTED</strong>" +
-            "Scene ID: " +
-            escapeHtml(sceneId);
-
-
-        story.appendChild(
-            marker
-        );
-
-    }
-
-
-    status.textContent =
-        "Chapter 2 loaded. " +
-        sceneCount +
-        " Visual Theatre scene marker(s) detected.";
-
-}
-
-
-function escapeHtml(value){
-
-    return String(value)
-
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#39;");
-
-}
-
-</script>
+  <script src="theater.js"></script>
 
 </body>
 </html>
