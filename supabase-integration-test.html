@@ -1,0 +1,540 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>CEEQWINN Supabase Integration Test</title>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    max-width:800px;
+    margin:40px auto;
+    padding:20px;
+    line-height:1.6;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+.status{
+    padding:15px;
+    border:1px solid #ccc;
+    margin:20px 0;
+}
+
+.wallet{
+    padding:20px;
+    border:1px solid #ccc;
+    margin:20px 0;
+}
+
+.balance{
+    font-size:32px;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+button{
+    padding:12px 18px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:disabled{
+    cursor:not-allowed;
+    opacity:0.6;
+}
+
+.result{
+    padding:15px;
+    border:1px solid #ccc;
+    margin-top:20px;
+}
+
+.success{
+    border-color:green;
+}
+
+.error{
+    border-color:red;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>CEEQWINN Supabase Integration Test</h1>
+
+<p>
+This is a temporary integration test.
+</p>
+
+
+<div id="status"
+     class="status">
+
+Connecting to CEEQWINN...
+
+</div>
+
+
+<div class="wallet">
+
+<h2>Player Wallet</h2>
+
+<div id="balance"
+     class="balance">
+
+Loading...
+
+</div>
+
+<div id="playerInfo">
+
+</div>
+
+</div>
+
+
+<button id="redeemButton"
+        disabled>
+
+Redeem Free Ticket
+
+</button>
+
+
+<div id="result"
+     class="result">
+
+Waiting...
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+
+/*
+=========================================================
+SUPABASE CONNECTION
+=========================================================
+*/
+
+const SUPABASE_URL =
+    "https://iwuambqesluciawsgyww.supabase.co";
+
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_zG6WuGdx";
+
+
+const {
+    createClient
+} = supabase;
+
+
+const client =
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+/*
+=========================================================
+ELEMENTS
+=========================================================
+*/
+
+const statusElement =
+    document.getElementById("status");
+
+
+const balanceElement =
+    document.getElementById("balance");
+
+
+const playerInfoElement =
+    document.getElementById("playerInfo");
+
+
+const redeemButton =
+    document.getElementById("redeemButton");
+
+
+const resultElement =
+    document.getElementById("result");
+
+
+/*
+=========================================================
+CURRENT PLAYER / WALLET
+=========================================================
+*/
+
+let currentUser = null;
+
+let currentWallet = null;
+
+
+/*
+=========================================================
+STATUS HELPER
+=========================================================
+*/
+
+function setStatus(message){
+
+    statusElement.textContent =
+        message;
+
+}
+
+
+/*
+=========================================================
+RESULT HELPER
+=========================================================
+*/
+
+function showResult(
+    message,
+    success = false
+){
+
+    resultElement.textContent =
+        message;
+
+    resultElement.className =
+        success
+            ? "result success"
+            : "result";
+}
+
+
+/*
+=========================================================
+LOAD WALLET
+=========================================================
+*/
+
+async function loadWallet(){
+
+    if(!currentUser){
+
+        throw new Error(
+            "No authenticated player."
+        );
+
+    }
+
+
+    const {
+        data: wallet,
+        error
+    } =
+        await client
+            .from("wallets")
+            .select(
+                "id, balance_diamonds, player_id"
+            )
+            .eq(
+                "player_id",
+                currentUser.id
+            )
+            .single();
+
+
+    if(error){
+
+        throw error;
+
+    }
+
+
+    currentWallet =
+        wallet;
+
+
+    balanceElement.textContent =
+        `${wallet.balance_diamonds} 💎`;
+
+
+    playerInfoElement.innerHTML = `
+        Player session connected.<br>
+        Wallet connected.
+    `;
+
+
+    return wallet;
+
+}
+
+
+/*
+=========================================================
+LOAD LEDGER
+=========================================================
+*/
+
+async function loadLedger(){
+
+    if(!currentWallet){
+
+        return;
+
+    }
+
+
+    const {
+        data: ledger,
+        error
+    } =
+        await client
+            .from("wallet_ledger")
+            .select(
+                "id, amount_diamonds, entry_type, created_at"
+            )
+            .eq(
+                "wallet_id",
+                currentWallet.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            );
+
+
+    if(error){
+
+        throw error;
+
+    }
+
+
+    return ledger || [];
+
+}
+
+
+/*
+=========================================================
+INITIALIZE PLAYER
+=========================================================
+*/
+
+async function initialize(){
+
+    setStatus(
+        "Creating anonymous CEEQWINN player..."
+    );
+
+
+    const {
+        data,
+        error
+    } =
+        await client.auth.signInAnonymously();
+
+
+    if(error){
+
+        throw error;
+
+    }
+
+
+    currentUser =
+        data.user;
+
+
+    setStatus(
+        "Anonymous player connected."
+    );
+
+
+    await loadWallet();
+
+
+    await loadLedger();
+
+
+    redeemButton.disabled =
+        false;
+
+
+    showResult(
+        "CEEQWINN player and wallet are connected. Ready for the free ticket.",
+        true
+    );
+
+}
+
+
+/*
+=========================================================
+REDEEM FREE TICKET
+=========================================================
+*/
+
+async function redeemFreeTicket(){
+
+    redeemButton.disabled =
+        true;
+
+
+    showResult(
+        "Sending free ticket to the server..."
+    );
+
+
+    try{
+
+        /*
+        IMPORTANT:
+
+        The browser sends ONLY the ticket code.
+
+        It does NOT send:
+
+        - wallet ID
+        - player ID
+        - diamond amount
+
+        The server determines those itself.
+        */
+
+        const {
+            data,
+            error
+        } =
+            await client.rpc(
+                "redeem_ticket",
+                {
+                    p_ticket_code:
+                        "CEEQ-FREE-REAL-001"
+                }
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        /*
+        Server returns the number of diamonds
+        that were actually credited.
+        */
+
+        showResult(
+            `Server accepted the ticket and credited ${data} diamonds.`,
+            true
+        );
+
+
+        /*
+        Read the wallet again from Supabase.
+        */
+
+        await loadWallet();
+
+
+        /*
+        Read the ledger again.
+        */
+
+        const ledger =
+            await loadLedger();
+
+
+        /*
+        Show the latest ledger entry.
+        */
+
+        if(ledger.length > 0){
+
+            const latest =
+                ledger[0];
+
+
+            showResult(
+                `Success! ${data} diamonds were credited. ` +
+                `Current wallet: ${currentWallet.balance_diamonds} 💎. ` +
+                `Latest ledger entry: +${latest.amount_diamonds} ${latest.entry_type}.`,
+                true
+            );
+
+        }
+
+    }
+    catch(error){
+
+        showResult(
+            "Redemption failed: " +
+            error.message
+        );
+
+        redeemButton.disabled =
+            false;
+
+    }
+
+}
+
+
+/*
+=========================================================
+BUTTON
+=========================================================
+*/
+
+redeemButton.addEventListener(
+    "click",
+    redeemFreeTicket
+);
+
+
+/*
+=========================================================
+START
+=========================================================
+*/
+
+initialize()
+.catch(error => {
+
+    setStatus(
+        "CEEQWINN integration failed."
+    );
+
+
+    showResult(
+        error.message
+    );
+
+});
+
+
+</script>
+
+</body>
+</html>
+```
