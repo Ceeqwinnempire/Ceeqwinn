@@ -3,6 +3,14 @@ title: DISCORDANT DESCENDANTS — CHAPTER 2
 ---
 ---
 
+## ---
+
+title: DISCORDANT DESCENDANTS — CHAPTER 2
+
+---
+
+---
+
 ## title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 ## ---
@@ -30,6 +38,8 @@ title: DISCORDANT DESCENDANTS — CHAPTER 2
 ---
 
 [IF:choice-03=A]
+
+[SCENE:morning-after]
 
 ## THE MORNING AFTER THE QUESTION
 
@@ -124,8 +134,6 @@ Luxury vehicles arrived one after another.
 Music drifted through the open doors of the mansion, mixing with the sound of conversation, laughter, and the occasional clinking of glasses.
 
 Lexis stood at the bottom of the staircase.
-
-She stared at the crowd.
 
 “This is supposed to be a family gathering?”
 
