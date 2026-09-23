@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>CEEQWINN Visual Theatre — Chapter 2 Test</title>
+
+  <link rel="stylesheet" href="visual-theatre.css">
+</head>
+
+<body>
+
+  <main class="theatre-shell">
+
+    <!-- =========================================================
+         STAGE
+         ========================================================= -->
+
+    <section
+      id="theatreStage"
+      class="theatre-stage"
+      aria-label="Visual Theatre stage"
+    >
+
+      <div class="stage-image" id="stageImage"></div>
+
+      <div class="stage-vignette"></div>
+
+      <div class="stage-topbar">
+
+        <div class="stage-series">
+          CEEQWINN
+        </div>
+
+        <div class="stage-chapter" id="stageChapter">
+          CHAPTER II
+        </div>
+
+        <button
+          type="button"
+          class="stage-reset"
+          id="resetButton"
+        >
+          Reset
+        </button>
+
+      </div>
+
+      <div class="stage-location" id="stageLocation">
+        THE NIGHT GATHERING
+      </div>
+
+      <div
+        class="stage-visual-content"
+        id="stageVisualContent"
+      >
+      </div>
+
+      <div
+        class="stage-blackout"
+        id="stageBlackout"
+        aria-hidden="true"
+      ></div>
+
+    </section>
+
+
+    <!-- =========================================================
+         STORY PANEL
+         ========================================================= -->
+
+    <section class="story-panel">
+
+      <div class="progress-line">
+        <div
+          class="progress-fill"
+          id="progressFill"
+        ></div>
+      </div>
+
+      <div class="story-inner">
+
+        <div
+          class="scene-label"
+          id="sceneLabel"
+        >
+          SCENE
+        </div>
+
+        <h1
+          class="scene-title"
+          id="sceneTitle"
+        >
+          The Night Gathering
+        </h1>
+
+        <div
+          class="story-content"
+          id="storyContent"
+        ></div>
+
+        <div
+          class="choice-area"
+          id="choiceArea"
+        ></div>
+
+        <button
+          type="button"
+          class="continue-button"
+          id="continueButton"
+        >
+          Continue
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <script src="visual-theatre.js"></script>
+
+</body>
+</html>
+
+  <script src="theater.js"></script>
+
+</body>
+</html>
