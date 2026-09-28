@@ -18,12 +18,6 @@
 
 <style>
 
-/* =====================================================
-   CEEQWINN GAME STORE
-   Luxury gallery + glass app system
-   Low-end-first
-===================================================== */
-
 :root{
 
     --ruby:#8b1025;
@@ -51,11 +45,6 @@
 
     --radius:24px;
 }
-
-
-/* =====================================================
-   BASE
-===================================================== */
 
 *{
     box-sizing:border-box;
@@ -103,11 +92,6 @@ body{
         );
 }
 
-
-/* =====================================================
-   SIDE DRAPES
-===================================================== */
-
 .curtain{
 
     position:fixed;
@@ -133,7 +117,6 @@ body{
 
     box-shadow:
         8px 0 30px rgba(60,5,20,.12);
-
 }
 
 .curtain.left{
@@ -145,13 +128,7 @@ body{
     right:0;
 
     transform:scaleX(-1);
-
 }
-
-
-/* =====================================================
-   MAIN
-===================================================== */
 
 .page{
 
@@ -169,11 +146,6 @@ body{
     z-index:3;
 }
 
-
-/* =====================================================
-   HEADER
-===================================================== */
-
 .header{
 
     text-align:center;
@@ -182,7 +154,6 @@ body{
         24px
         0
         35px;
-
 }
 
 .brand-mark{
@@ -214,7 +185,6 @@ body{
         0 10px 30px rgba(139,16,37,.25);
 
     font-size:22px;
-
 }
 
 .eyebrow{
@@ -228,7 +198,6 @@ body{
     color:var(--muted);
 
     margin-bottom:12px;
-
 }
 
 h1{
@@ -248,7 +217,6 @@ h1{
     line-height:.98;
 
     letter-spacing:-2px;
-
 }
 
 .title-accent{
@@ -269,7 +237,6 @@ h1{
     background-clip:text;
 
     color:transparent;
-
 }
 
 .subtitle{
@@ -284,13 +251,7 @@ h1{
     line-height:1.7;
 
     font-size:15px;
-
 }
-
-
-/* =====================================================
-   WALLET BAR
-===================================================== */
 
 .wallet-bar{
 
@@ -315,7 +276,6 @@ h1{
     -webkit-backdrop-filter:blur(12px);
 
     box-shadow:var(--shadow);
-
 }
 
 .wallet-label{
@@ -327,7 +287,6 @@ h1{
     text-transform:uppercase;
 
     color:var(--muted);
-
 }
 
 .wallet-balance{
@@ -335,13 +294,7 @@ h1{
     font-weight:800;
 
     color:var(--ruby);
-
 }
-
-
-/* =====================================================
-   STORE INTRO
-===================================================== */
 
 .store-intro{
 
@@ -357,7 +310,6 @@ h1{
         25px
         0
         15px;
-
 }
 
 .store-intro h2{
@@ -372,7 +324,6 @@ h1{
     font-size:28px;
 
     font-weight:500;
-
 }
 
 .store-intro p{
@@ -382,13 +333,7 @@ h1{
     color:var(--muted);
 
     font-size:13px;
-
 }
-
-
-/* =====================================================
-   PRODUCT GRID
-===================================================== */
 
 .products{
 
@@ -398,13 +343,7 @@ h1{
         repeat(auto-fit,minmax(260px,1fr));
 
     gap:20px;
-
 }
-
-
-/* =====================================================
-   PRODUCT CARD
-===================================================== */
 
 .product-card{
 
@@ -431,7 +370,6 @@ h1{
     transition:
         transform .3s ease,
         box-shadow .3s ease;
-
 }
 
 .product-card:hover{
@@ -440,11 +378,7 @@ h1{
 
     box-shadow:
         0 24px 55px rgba(32,8,18,.19);
-
 }
-
-
-/* gemstone light */
 
 .product-card::before{
 
@@ -468,9 +402,7 @@ h1{
         );
 
     pointer-events:none;
-
 }
-
 
 .product-tag{
 
@@ -492,7 +424,6 @@ h1{
         rgba(139,16,37,.08);
 
     color:var(--ruby);
-
 }
 
 .gem-icon{
@@ -523,7 +454,6 @@ h1{
         0 10px 25px rgba(80,25,45,.12);
 
     font-size:34px;
-
 }
 
 .product-title{
@@ -538,7 +468,6 @@ h1{
     font-size:26px;
 
     font-weight:500;
-
 }
 
 .product-description{
@@ -553,7 +482,6 @@ h1{
     font-size:14px;
 
     line-height:1.65;
-
 }
 
 .product-bottom{
@@ -565,7 +493,6 @@ h1{
     align-items:center;
 
     gap:15px;
-
 }
 
 .price{
@@ -573,7 +500,6 @@ h1{
     font-size:22px;
 
     font-weight:800;
-
 }
 
 .price small{
@@ -587,13 +513,7 @@ h1{
     font-weight:500;
 
     color:var(--muted);
-
 }
-
-
-/* =====================================================
-   BUTTON
-===================================================== */
 
 .shop-button{
 
@@ -628,7 +548,6 @@ h1{
     transition:
         transform .2s ease,
         box-shadow .2s ease;
-
 }
 
 .shop-button:hover{
@@ -639,7 +558,6 @@ h1{
 
     box-shadow:
         0 13px 28px rgba(139,16,37,.28);
-
 }
 
 .shop-button:active{
@@ -647,13 +565,16 @@ h1{
     transform:
         translateY(0)
         scale(.98);
-
 }
 
+.shop-button:disabled{
 
-/* =====================================================
-   STATUS
-===================================================== */
+    opacity:.55;
+
+    cursor:wait;
+
+    transform:none;
+}
 
 .status-card{
 
@@ -671,25 +592,17 @@ h1{
     font-size:13px;
 
     line-height:1.5;
-
 }
 
 .status-card.success{
 
     color:#17624d;
-
 }
 
 .status-card.error{
 
     color:#9b1c31;
-
 }
-
-
-/* =====================================================
-   FOOTER
-===================================================== */
 
 .footer{
 
@@ -702,13 +615,7 @@ h1{
     font-size:11px;
 
     line-height:1.7;
-
 }
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
 
 @media(max-width:600px){
 
@@ -722,7 +629,6 @@ h1{
             20px
             34px
             45px;
-
     }
 
     .header{
@@ -730,15 +636,11 @@ h1{
     }
 
     .wallet-bar{
-
         border-radius:18px;
-
     }
 
     .store-intro{
-
         display:block;
-
     }
 
     .product-bottom{
@@ -748,21 +650,12 @@ h1{
 
         flex-direction:
             column;
-
     }
 
     .shop-button{
-
         width:100%;
-
     }
-
 }
-
-
-/* =====================================================
-   REDUCED MOTION
-===================================================== */
 
 @media(prefers-reduced-motion:reduce){
 
@@ -770,26 +663,18 @@ h1{
         scroll-behavior:auto !important;
         transition:none !important;
     }
-
 }
 
 </style>
 
 </head>
 
-
 <body>
 
 <div class="curtain left"></div>
 <div class="curtain right"></div>
 
-
 <main class="page">
-
-
-<!-- =================================================
-     HEADER
-================================================== -->
 
 <header class="header">
 
@@ -819,11 +704,6 @@ h1{
 
 </header>
 
-
-<!-- =================================================
-     WALLET
-================================================== -->
-
 <section class="wallet-bar">
 
     <div class="wallet-label">
@@ -838,11 +718,6 @@ h1{
     </div>
 
 </section>
-
-
-<!-- =================================================
-     STORE
-================================================== -->
 
 <div class="store-intro">
 
@@ -860,13 +735,7 @@ h1{
 
 </div>
 
-
 <section class="products">
-
-
-<!-- =================================================
-     FIRST REAL PRODUCT
-================================================== -->
 
 <article class="product-card">
 
@@ -874,16 +743,13 @@ h1{
         First Edition
     </span>
 
-
     <div class="gem-icon">
         💎
     </div>
 
-
     <h3 class="product-title">
         Wonderland Diamonds
     </h3>
-
 
     <p class="product-description">
 
@@ -892,7 +758,6 @@ h1{
         for your player wallet.
 
     </p>
-
 
     <div class="product-bottom">
 
@@ -906,7 +771,6 @@ h1{
 
         </div>
 
-
         <button
             id="buyButton"
             class="shop-button"
@@ -918,13 +782,7 @@ h1{
 
 </article>
 
-
 </section>
-
-
-<!-- =================================================
-     STATUS
-================================================== -->
 
 <div
     id="status"
@@ -932,11 +790,6 @@ h1{
 >
     Connecting to your CEEQWINN wallet...
 </div>
-
-
-<!-- =================================================
-     FOOTER
-================================================== -->
 
 <footer class="footer">
 
@@ -948,29 +801,34 @@ h1{
 
 </footer>
 
-
 </main>
-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
 <script>
-
-/* =====================================================
-   CEEQWINN CONNECTION
-===================================================== */
 
 const SUPABASE_URL =
     "https://iwuambqesluciawsgyww.supabase.co";
 
-
 const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_zG6WuGdx";
+    "sb_publishable_Cf4ct1w5RTNUHQ5mfsidQ_zG6WuGdx";
 
+/*
+    CEEQWINN PRODUCT
+    ----------------
+    This is the FREE 100-diamond
+    integration-test product.
+*/
+
+const GAME_PRODUCT_ID =
+    "cdd104b7-e9f0-4efc-b6e3-2ba3dbf0619a";
+
+/*
+    LIVE SELAR PRODUCT
+*/
 
 const SELAR_PRODUCT_URL =
-    "https://selar.com/9129k19d11";
+    "https://selar.com/8851i15n51";
 
 
 const {
@@ -984,10 +842,6 @@ const client =
         SUPABASE_PUBLISHABLE_KEY
     );
 
-
-/* =====================================================
-   ELEMENTS
-===================================================== */
 
 const walletBalance =
     document.getElementById(
@@ -1007,18 +861,10 @@ const buyButton =
     );
 
 
-/* =====================================================
-   PLAYER
-===================================================== */
-
 let currentSession = null;
 
 let currentUser = null;
 
-
-/* =====================================================
-   STATUS
-===================================================== */
 
 function setStatus(
     message,
@@ -1030,13 +876,8 @@ function setStatus(
 
     statusElement.className =
         "status-card " + type;
-
 }
 
-
-/* =====================================================
-   WALLET
-===================================================== */
 
 async function loadWallet(){
 
@@ -1057,21 +898,14 @@ async function loadWallet(){
 
 
     if(error){
-
         throw error;
-
     }
 
 
     walletBalance.textContent =
         `${data.balance_diamonds} 💎`;
-
 }
 
-
-/* =====================================================
-   INITIALIZE PLAYER
-===================================================== */
 
 async function initialize(){
 
@@ -1079,10 +913,6 @@ async function initialize(){
         "Connecting to your CEEQWINN player..."
     );
 
-
-    /*
-    First reuse an existing session.
-    */
 
     const {
         data: sessionData,
@@ -1092,20 +922,13 @@ async function initialize(){
 
 
     if(sessionError){
-
         throw sessionError;
-
     }
 
 
     currentSession =
         sessionData.session;
 
-
-    /*
-    If there isn't one, create the
-    anonymous CEEQWINN player.
-    */
 
     if(!currentSession){
 
@@ -1117,21 +940,14 @@ async function initialize(){
 
 
         if(error){
-
             throw error;
-
         }
 
 
         currentSession =
             data.session;
-
     }
 
-
-    /*
-    Get the current player.
-    */
 
     const {
         data: userData,
@@ -1141,9 +957,7 @@ async function initialize(){
 
 
     if(userError){
-
         throw userError;
-
     }
 
 
@@ -1156,13 +970,8 @@ async function initialize(){
         throw new Error(
             "CEEQWINN player could not be loaded."
         );
-
     }
 
-
-    /*
-    Load the central wallet.
-    */
 
     await loadWallet();
 
@@ -1171,48 +980,132 @@ async function initialize(){
         "Welcome to the CEEQWINN Game Store.",
         "success"
     );
-
 }
 
 
-/* =====================================================
-   GO TO SELAR
-===================================================== */
+/*
+=====================================================
+START PURCHASE
+=====================================================
+*/
 
-function beginPurchase(){
+async function beginPurchase(){
+
+    if(!currentUser){
+
+        setStatus(
+            "Your CEEQWINN player is still loading.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    buyButton.disabled = true;
+
 
     setStatus(
-        "Opening the Wonderland checkout..."
+        "Preparing your Wonderland purchase..."
     );
 
 
-    /*
-    The actual checkout is handled by
-    the real Selar product.
+    try{
 
-    We do NOT manufacture a fake payment
-    inside CEEQWINN.
-    */
+        /*
+            IMPORTANT:
 
-    window.location.href =
-        SELAR_PRODUCT_URL;
+            The browser calls start_purchase_session.
 
+            Supabase performs the reservation
+            internally and keeps the ticket code
+            server-side.
+
+            The browser receives ONLY the
+            opaque purchase-session UUID.
+        */
+
+        const {
+            data,
+            error
+        } =
+            await client.rpc(
+                "start_purchase_session",
+                {
+                    p_product_id:
+                        GAME_PRODUCT_ID
+                }
+            );
+
+
+        if(error){
+            throw error;
+        }
+
+
+        if(!data){
+
+            throw new Error(
+                "Purchase session was not created."
+            );
+        }
+
+
+        /*
+            Store only the opaque session ID.
+
+            NEVER store or expose:
+            - ticket_code
+            - ticket_id
+            - reservation ticket code
+        */
+
+        sessionStorage.setItem(
+            "ceeqwinn_purchase_session",
+            data
+        );
+
+
+        setStatus(
+            "Opening the Wonderland checkout..."
+        );
+
+
+        /*
+            Now leave CEEQWINN and enter
+            the real Selar checkout.
+        */
+
+        window.location.href =
+            SELAR_PRODUCT_URL;
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Purchase session error:",
+            error
+        );
+
+
+        buyButton.disabled = false;
+
+
+        setStatus(
+            "We couldn't start your purchase: " +
+            error.message,
+            "error"
+        );
+    }
 }
 
-
-/* =====================================================
-   BUTTON
-===================================================== */
 
 buyButton.addEventListener(
     "click",
     beginPurchase
 );
 
-
-/* =====================================================
-   START
-===================================================== */
 
 initialize()
 .catch(error => {
