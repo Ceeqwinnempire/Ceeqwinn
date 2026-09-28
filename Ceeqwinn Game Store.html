@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
@@ -821,15 +820,19 @@ Wonderland Edition · 100 Diamonds
 
 <script>
 
+/*
+=====================================================
+CEEQWINN SUPABASE
+=====================================================
+*/
+
 const SUPABASE_URL =
     "https://iwuambqesluciawsgyww.supabase.co";
 
 
 /*
-=====================================================
-YOUR EXISTING PUBLISHABLE KEY
-DO NOT CHANGE
-=====================================================
+    YOUR ORIGINAL PUBLISHABLE KEY.
+    PRESERVED EXACTLY.
 */
 
 const SUPABASE_PUBLISHABLE_KEY =
@@ -838,7 +841,7 @@ const SUPABASE_PUBLISHABLE_KEY =
 
 /*
 =====================================================
-CEEQWINN FREE TEST PRODUCT
+GAME PRODUCT
 =====================================================
 */
 
@@ -854,7 +857,30 @@ const {
 const client =
     createClient(
         SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+            auth: {
+
+                /*
+                    Let Supabase persist the anonymous
+                    player in this browser.
+                */
+
+                persistSession:true,
+
+                /*
+                    Let Supabase refresh tokens normally.
+                */
+
+                autoRefreshToken:true,
+
+                /*
+                    This is not an OAuth callback page.
+                */
+
+                detectSessionInUrl:false
+            }
+        }
     );
 
 
@@ -897,6 +923,351 @@ function setStatus(
 
     statusElement.className =
         "status-card " + type;
+
+}
+
+
+/*
+=====================================================
+IS THIS AN AUTH/JWT ERROR?
+=====================================================
+*/
+
+function isAuthError(error){
+
+    if(!error){
+        return false;
+    }
+
+
+    const message =
+        String(
+            error.message || error
+        ).toLowerCase();
+
+
+    return (
+
+        message.includes("jwt") ||
+
+        message.includes("expired") ||
+
+        message.includes("token") ||
+
+        message.includes("invalid claims") ||
+
+        message.includes("authentication")
+
+    );
+
+}
+
+
+/*
+=====================================================
+CREATE A FRESH ANONYMOUS PLAYER
+=====================================================
+*/
+
+async function createFreshAnonymousPlayer(){
+
+    setStatus(
+        "Starting your CEEQWINN player..."
+    );
+
+
+    /*
+        Remove only this browser's local
+        Supabase session.
+
+        This does NOT delete anything from
+        the CEEQWINN database.
+    */
+
+    try{
+
+        await client.auth.signOut({
+            scope:"local"
+        });
+
+    }
+
+    catch(error){
+
+        console.warn(
+            "Local session cleanup:",
+            error
+        );
+
+    }
+
+
+    /*
+        Create a new anonymous player.
+    */
+
+    const {
+        data,
+        error
+    } =
+        await client.auth.signInAnonymously();
+
+
+    if(error){
+
+        throw error;
+
+    }
+
+
+    if(
+        !data ||
+        !data.session ||
+        !data.user
+    ){
+
+        throw new Error(
+            "CEEQWINN could not create an anonymous player."
+        );
+
+    }
+
+
+    currentSession =
+        data.session;
+
+
+    currentUser =
+        data.user;
+
+
+    return data.session;
+
+}
+
+
+/*
+=====================================================
+GET A USABLE SESSION
+=====================================================
+*/
+
+async function getWorkingSession(){
+
+    /*
+        Ask Supabase for the session already
+        stored in this browser.
+    */
+
+    const {
+        data,
+        error
+    } =
+        await client.auth.getSession();
+
+
+    if(error){
+
+        throw error;
+
+    }
+
+
+    let session =
+        data.session;
+
+
+    /*
+        No session at all.
+
+        Create an anonymous player.
+    */
+
+    if(!session){
+
+        return await createFreshAnonymousPlayer();
+
+    }
+
+
+    /*
+        Work out whether the token is expired
+        or about to expire.
+    */
+
+    const expiresAt =
+        session.expires_at
+            ? session.expires_at * 1000
+            : 0;
+
+
+    const tokenNeedsRefresh =
+        expiresAt > 0 &&
+        expiresAt <= (
+            Date.now() + 30000
+        );
+
+
+    /*
+        Token is still usable.
+    */
+
+    if(!tokenNeedsRefresh){
+
+        currentSession =
+            session;
+
+        return session;
+
+    }
+
+
+    /*
+        Token is expired/about to expire.
+
+        First try Supabase's normal refresh.
+    */
+
+    setStatus(
+        "Refreshing your CEEQWINN player..."
+    );
+
+
+    const {
+        data: refreshed,
+        error: refreshError
+    } =
+        await client.auth.refreshSession();
+
+
+    if(
+        !refreshError &&
+        refreshed &&
+        refreshed.session
+    ){
+
+        currentSession =
+            refreshed.session;
+
+        return refreshed.session;
+
+    }
+
+
+    /*
+        Refresh failed.
+
+        We create a fresh anonymous player
+        rather than showing the player an
+        expired-JWT error.
+    */
+
+    console.warn(
+        "Anonymous session refresh failed.",
+        refreshError
+    );
+
+
+    return await createFreshAnonymousPlayer();
+
+}
+
+
+/*
+=====================================================
+GET PLAYER
+=====================================================
+*/
+
+async function getCurrentPlayer(){
+
+    /*
+        First guarantee that we have a usable
+        session.
+    */
+
+    await getWorkingSession();
+
+
+    /*
+        Now ask Supabase for the player.
+    */
+
+    let {
+        data,
+        error
+    } =
+        await client.auth.getUser();
+
+
+    /*
+        If the JWT somehow became invalid between
+        getSession() and getUser(), recover once.
+    */
+
+    if(
+        error &&
+        isAuthError(error)
+    ){
+
+        console.warn(
+            "Expired/invalid anonymous JWT detected. Recovering..."
+        );
+
+
+        await createFreshAnonymousPlayer();
+
+
+        currentUser =
+            currentUser ||
+            null;
+
+
+        if(!currentUser){
+
+            throw new Error(
+                "CEEQWINN could not recover the anonymous player."
+            );
+
+        }
+
+
+        return currentUser;
+
+    }
+
+
+    if(error){
+
+        throw error;
+
+    }
+
+
+    /*
+        No player returned.
+
+        Create one.
+    */
+
+    if(
+        !data ||
+        !data.user
+    ){
+
+        await createFreshAnonymousPlayer();
+
+        return currentUser;
+
+    }
+
+
+    currentUser =
+        data.user;
+
+
+    return currentUser;
+
 }
 
 
@@ -925,175 +1296,59 @@ async function loadWallet(){
 
 
     if(error){
+
+        /*
+            If this is an authentication problem,
+            recover the player and retry once.
+        */
+
+        if(isAuthError(error)){
+
+            await createFreshAnonymousPlayer();
+
+
+            const retry =
+                await client
+                    .from("wallets")
+                    .select(
+                        "balance_diamonds"
+                    )
+                    .eq(
+                        "player_id",
+                        currentUser.id
+                    )
+                    .single();
+
+
+            if(retry.error){
+
+                throw retry.error;
+
+            }
+
+
+            walletBalance.textContent =
+                `${retry.data.balance_diamonds} 💎`;
+
+            return;
+
+        }
+
+
         throw error;
+
     }
 
 
     walletBalance.textContent =
         `${data.balance_diamonds} 💎`;
+
 }
 
 
 /*
 =====================================================
-GET / RESTORE ANONYMOUS PLAYER
-=====================================================
-
-Anonymous players are normal CEEQWINN players.
-
-The access JWT can expire.
-
-The player experience should NOT break
-because of that.
-
-We therefore:
-
-1. Check the current session.
-2. If its access token is expired, silently
-   try to refresh it.
-3. If refresh is impossible, silently create
-   a fresh anonymous player.
-4. Continue normally.
-
-No "your anonymous account expired" screen.
-No manual login requirement for the Game Store.
-=====================================================
-*/
-
-async function getUsableAnonymousSession(){
-
-    const {
-        data: sessionData,
-        error: sessionError
-    } =
-        await client.auth.getSession();
-
-
-    if(sessionError){
-        throw sessionError;
-    }
-
-
-    let session =
-        sessionData.session;
-
-
-    /*
-        No session at all.
-
-        Create the anonymous player.
-    */
-
-    if(!session){
-
-        setStatus(
-            "Creating your CEEQWINN player..."
-        );
-
-
-        const {
-            data,
-            error
-        } =
-            await client.auth.signInAnonymously();
-
-
-        if(error){
-            throw error;
-        }
-
-
-        return data.session;
-    }
-
-
-    /*
-        We have a session.
-
-        Check the access-token expiry.
-    */
-
-    const expiresAt =
-        session.expires_at
-            ? session.expires_at * 1000
-            : 0;
-
-
-    const isExpired =
-        expiresAt > 0 &&
-        expiresAt <= Date.now();
-
-
-    if(!isExpired){
-
-        return session;
-    }
-
-
-    /*
-        Access token expired.
-
-        Try silent refresh first.
-    */
-
-    setStatus(
-        "Refreshing your CEEQWINN player..."
-    );
-
-
-    const {
-        data: refreshedData,
-        error: refreshError
-    } =
-        await client.auth.refreshSession();
-
-
-    if(
-        !refreshError &&
-        refreshedData &&
-        refreshedData.session
-    ){
-
-        return refreshedData.session;
-    }
-
-
-    /*
-        The old anonymous session can no longer
-        be refreshed.
-
-        Do not punish the player.
-
-        Start a fresh anonymous session.
-    */
-
-    await client.auth.signOut();
-
-
-    setStatus(
-        "Starting a fresh CEEQWINN player..."
-    );
-
-
-    const {
-        data: newData,
-        error: newError
-    } =
-        await client.auth.signInAnonymously();
-
-
-    if(newError){
-        throw newError;
-    }
-
-
-    return newData.session;
-}
-
-
-/*
-=====================================================
-INITIALIZE GAME STORE
+INITIALIZE
 =====================================================
 */
 
@@ -1104,37 +1359,7 @@ async function initialize(){
     );
 
 
-    currentSession =
-        await getUsableAnonymousSession();
-
-
-    if(!currentSession){
-
-        throw new Error(
-            "CEEQWINN player could not be created."
-        );
-    }
-
-
-    /*
-        Get the actual authenticated player
-        belonging to the usable session.
-    */
-
-    const {
-        data: userData,
-        error: userError
-    } =
-        await client.auth.getUser();
-
-
-    if(userError){
-        throw userError;
-    }
-
-
-    currentUser =
-        userData.user;
+    await getCurrentPlayer();
 
 
     if(!currentUser){
@@ -1142,14 +1367,9 @@ async function initialize(){
         throw new Error(
             "CEEQWINN player could not be loaded."
         );
+
     }
 
-
-    /*
-        Anonymous players still get wallets.
-
-        Login is NOT required for this store.
-    */
 
     await loadWallet();
 
@@ -1158,6 +1378,7 @@ async function initialize(){
         "Welcome to the CEEQWINN Game Store.",
         "success"
     );
+
 }
 
 
@@ -1177,6 +1398,7 @@ async function beginPurchase(){
         );
 
         return;
+
     }
 
 
@@ -1191,29 +1413,23 @@ async function beginPurchase(){
     try{
 
         /*
-            Supabase performs the complete
-            ticket-selection step.
+            Supabase:
 
-            It:
+            1. chooses ONE available ticket
+            2. reserves it for one hour
+            3. creates the purchase session
+            4. finds that ticket's Selar URL
 
-            1. Finds ONE available ticket.
-            2. Reserves that ticket.
-            3. Creates the purchase session.
-            4. Finds the Selar URL attached
-               to that exact ticket.
+            Browser receives only:
 
-            The browser receives only:
-
-            {
-                purchase_session_id,
+                purchase_session_id
                 checkout_url
-            }
 
-            The ticket code never leaves
-            Supabase.
+            The ticket code NEVER reaches
+            the browser.
         */
 
-        const {
+        let {
             data,
             error
         } =
@@ -1226,8 +1442,48 @@ async function beginPurchase(){
             );
 
 
+        /*
+            If the anonymous JWT expired between
+            page load and the purchase click,
+            recover the player and retry once.
+        */
+
+        if(
+            error &&
+            isAuthError(error)
+        ){
+
+            console.warn(
+                "Purchase JWT expired. Recovering anonymous player..."
+            );
+
+
+            await createFreshAnonymousPlayer();
+
+
+            const retry =
+                await client.rpc(
+                    "start_purchase_session",
+                    {
+                        p_product_id:
+                            GAME_PRODUCT_ID
+                    }
+                );
+
+
+            data =
+                retry.data;
+
+            error =
+                retry.error;
+
+        }
+
+
         if(error){
+
             throw error;
+
         }
 
 
@@ -1236,6 +1492,7 @@ async function beginPurchase(){
             throw new Error(
                 "Purchase session was not created."
             );
+
         }
 
 
@@ -1244,6 +1501,7 @@ async function beginPurchase(){
             throw new Error(
                 "Supabase did not return a purchase session."
             );
+
         }
 
 
@@ -1252,18 +1510,18 @@ async function beginPurchase(){
             throw new Error(
                 "Supabase did not return a checkout URL."
             );
+
         }
 
 
         /*
-            Store ONLY the opaque purchase
-            session ID.
+            Store ONLY the opaque purchase-session ID.
 
             Never store:
 
             - ticket code
             - ticket ID
-            - reservation ticket code
+            - reservation code
         */
 
         sessionStorage.setItem(
@@ -1278,16 +1536,15 @@ async function beginPurchase(){
 
 
         /*
-            Supabase selected the ticket's
-            configured Selar checkout URL.
-
-            No hard-coded Selar URL here.
+            Supabase selected the appropriate
+            Selar checkout URL.
         */
 
         window.location.href =
             data.checkout_url;
 
     }
+
 
     catch(error){
 
@@ -1305,9 +1562,17 @@ async function beginPurchase(){
             error.message,
             "error"
         );
+
     }
+
 }
 
+
+/*
+=====================================================
+BUTTON
+=====================================================
+*/
 
 buyButton.addEventListener(
     "click",
@@ -1322,6 +1587,7 @@ START
 */
 
 initialize()
+
 .catch(error => {
 
     console.error(
@@ -1345,6 +1611,5 @@ initialize()
 </script>
 
 </body>
-
 </html>
 
