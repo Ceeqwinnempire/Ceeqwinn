@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
+>
+
+<meta
+name="theme-color"
+content="#160912"
+
+>
+
+<title>CEEQWINN — Complete Purchase</title>
+
+<style>
+
+:root{
+
+    --ruby:#8b1025;
+    --ruby-deep:#4d0717;
+
+    --magenta:#b52d68;
+    --purple:#54266f;
+
+    --emerald:#17624d;
+    --sapphire:#233d78;
+
+    --pearl:#f8f2ed;
+    --soft-white:#fffaf7;
+
+    --ink:#24171d;
+    --muted:#74666d;
+
+    --gold:#c6a75e;
+
+    --glass:rgba(255,255,255,.78);
+    --glass-strong:rgba(255,255,255,.9);
+
+    --shadow:
+        0 18px 45px rgba(32,8,18,.15);
+
+    --radius:24px;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    margin:0;
+
+    min-height:100vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:30px;
+
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    color:var(--ink);
+
+    background:
+
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(181,45,104,.16),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(35,61,120,.13),
+            transparent 28%
+        ),
+
+        linear-gradient(
+            135deg,
+            #fbf8f5,
+            #f4edf0 50%,
+            #f8f5f2
+        );
+}
+
+.curtain{
+
+    position:fixed;
+
+    top:0;
+    bottom:0;
+
+    width:54px;
+
+    z-index:1;
+
+    pointer-events:none;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            rgba(77,7,23,.95),
+            rgba(139,16,37,.78),
+            rgba(181,45,104,.35),
+            transparent
+        );
+
+    box-shadow:
+        8px 0 30px rgba(60,5,20,.12);
+}
+
+.curtain.left{
+    left:0;
+}
+
+.curtain.right{
+
+    right:0;
+
+    transform:scaleX(-1);
+}
+
+.card{
+
+    position:relative;
+
+    z-index:2;
+
+    width:min(520px,100%);
+
+    padding:38px 30px;
+
+    text-align:center;
+
+    border-radius:30px;
+
+    background:var(--glass-strong);
+
+    backdrop-filter:blur(16px);
+
+    -webkit-backdrop-filter:blur(16px);
+
+    border:
+        1px solid
+        rgba(255,255,255,.8);
+
+    box-shadow:var(--shadow);
+}
+
+.brand-mark{
+
+    width:58px;
+    height:58px;
+
+    margin:0 auto 20px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    color:white;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            var(--ruby),
+            var(--magenta),
+            var(--purple)
+        );
+
+    box-shadow:
+        0 10px 30px rgba(139,16,37,.25);
+
+    font-size:25px;
+}
+
+.eyebrow{
+
+    margin-bottom:10px;
+
+    font-size:10px;
+
+    letter-spacing:4px;
+
+    text-transform:uppercase;
+
+    color:var(--muted);
+}
+
+h1{
+
+    margin:0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(34px,8vw,52px);
+
+    font-weight:500;
+
+    line-height:1;
+
+    letter-spacing:-1.5px;
+}
+
+.accent{
+
+    display:block;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            var(--ruby),
+            var(--magenta),
+            var(--purple),
+            var(--sapphire)
+        );
+
+    -webkit-background-clip:text;
+    background-clip:text;
+
+    color:transparent;
+}
+
+.message{
+
+    margin:
+        20px
+        auto
+        28px;
+
+    max-width:390px;
+
+    color:var(--muted);
+
+    font-size:14px;
+
+    line-height:1.7;
+}
+
+.redeem-button{
+
+    width:100%;
+
+    border:0;
+
+    border-radius:999px;
+
+    padding:16px 22px;
+
+    cursor:pointer;
+
+    color:white;
+
+    font-size:14px;
+
+    font-weight:800;
+
+    background:
+
+        linear-gradient(
+            110deg,
+            var(--ruby),
+            var(--magenta),
+            var(--purple)
+        );
+
+    box-shadow:
+        0 10px 25px rgba(139,16,37,.23);
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.redeem-button:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 14px 30px rgba(139,16,37,.28);
+}
+
+.redeem-button:active{
+
+    transform:scale(.98);
+}
+
+.redeem-button:disabled{
+
+    opacity:.55;
+
+    cursor:wait;
+
+    transform:none;
+}
+
+.status{
+
+    margin-top:20px;
+
+    padding:15px 18px;
+
+    border-radius:18px;
+
+    background:
+        rgba(255,255,255,.65);
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    line-height:1.6;
+}
+
+.status.success{
+
+    color:#17624d;
+}
+
+.status.error{
+
+    color:#9b1c31;
+}
+
+.diamond-result{
+
+    display:none;
+
+    margin:
+        22px
+        0
+        5px;
+
+    padding:22px;
+
+    border-radius:22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(139,16,37,.08),
+            rgba(181,45,104,.08),
+            rgba(84,38,111,.08)
+        );
+}
+
+.diamond-number{
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:48px;
+
+    line-height:1;
+
+    font-weight:500;
+
+    color:var(--ruby);
+}
+
+.diamond-label{
+
+    margin-top:8px;
+
+    font-size:11px;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+    color:var(--muted);
+}
+
+.footer{
+
+    margin-top:25px;
+
+    color:#93858b;
+
+    font-size:10px;
+
+    line-height:1.6;
+}
+
+@media(max-width:600px){
+
+    body{
+        padding:18px 28px;
+    }
+
+    .curtain{
+        width:20px;
+    }
+
+    .card{
+        padding:32px 22px;
+    }
+
+}
+
+@media(prefers-reduced-motion:reduce){
+
+    *{
+        transition:none !important;
+        scroll-behavior:auto !important;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="curtain left"></div>
+<div class="curtain right"></div>
+
+<main class="card">
+
+```
+<div class="brand-mark">
+    ✦
+</div>
+
+<div class="eyebrow">
+    CEEQWINN
+</div>
+
+<h1>
+    Your Treasure
+    <span class="accent">
+        Awaits
+    </span>
+</h1>
+
+<p
+    id="message"
+    class="message"
+>
+    Your purchase journey has returned
+    to CEEQWINN. Tap below to complete
+    your diamond redemption.
+</p>
+
+<button
+    id="redeemButton"
+    class="redeem-button"
+>
+    Redeem 100 💎
+</button>
+
+<div
+    id="diamondResult"
+    class="diamond-result"
+>
+
+    <div
+        id="diamondNumber"
+        class="diamond-number"
+    >
+        +100 💎
+    </div>
+
+    <div class="diamond-label">
+        Added to your CEEQWINN wallet
+    </div>
+
+</div>
+
+<div
+    id="status"
+    class="status"
+>
+    Preparing your redemption...
+</div>
+
+<div class="footer">
+
+    CEEQWINN Game Store · Wonderland Edition
+
+</div>
+```
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL =
+    "https://iwuambqesluciawsgyww.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_zG6WuGdx";
+
+
+const {
+    createClient
+} = supabase;
+
+
+const client =
+    createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+
+const redeemButton =
+    document.getElementById(
+        "redeemButton"
+    );
+
+
+const statusElement =
+    document.getElementById(
+        "status"
+    );
+
+
+const messageElement =
+    document.getElementById(
+        "message"
+    );
+
+
+const diamondResult =
+    document.getElementById(
+        "diamondResult"
+    );
+
+
+const diamondNumber =
+    document.getElementById(
+        "diamondNumber"
+    );
+
+
+function setStatus(
+    message,
+    type = ""
+){
+
+    statusElement.textContent =
+        message;
+
+    statusElement.className =
+        "status " + type;
+}
+
+
+/*
+=====================================================
+LOAD PLAYER
+=====================================================
+*/
+
+async function initialize(){
+
+    setStatus(
+        "Connecting to your CEEQWINN player..."
+    );
+
+
+    const {
+        data: sessionData,
+        error: sessionError
+    } =
+        await client.auth.getSession();
+
+
+    if(sessionError){
+        throw sessionError;
+    }
+
+
+    let session =
+        sessionData.session;
+
+
+    /*
+        The Game Store normally already created
+        the anonymous CEEQWINN session.
+
+        If the browser still has no session,
+        restore one here.
+    */
+
+    if(!session){
+
+        const {
+            data,
+            error
+        } =
+            await client.auth.signInAnonymously();
+
+
+        if(error){
+            throw error;
+        }
+
+
+        session =
+            data.session;
+    }
+
+
+    /*
+        The purchase session ID is the ONLY
+        purchase identifier stored in the browser.
+    */
+
+    const purchaseSessionId =
+        sessionStorage.getItem(
+            "ceeqwinn_purchase_session"
+        );
+
+
+    if(!purchaseSessionId){
+
+        throw new Error(
+            "No active CEEQWINN purchase session was found."
+        );
+    }
+
+
+    /*
+        Keep the ID in memory for the
+        redemption button.
+
+        It is still only an opaque UUID.
+    */
+
+    window.ceeqwinnPurchaseSessionId =
+        purchaseSessionId;
+
+
+    setStatus(
+        "Your purchase is ready to redeem.",
+        "success"
+    );
+
+}
+
+
+/*
+=====================================================
+REDEEM
+=====================================================
+*/
+
+async function redeemPurchase(){
+
+    const purchaseSessionId =
+        window.ceeqwinnPurchaseSessionId;
+
+
+    if(!purchaseSessionId){
+
+        setStatus(
+            "Your purchase session could not be found.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    redeemButton.disabled = true;
+
+
+    setStatus(
+        "Adding your diamonds to the CEEQWINN ledger..."
+    );
+
+
+    try{
+
+        const {
+            data,
+            error
+        } =
+            await client.rpc(
+                "redeem_purchase_session",
+                {
+                    p_purchase_session_id:
+                        purchaseSessionId
+                }
+            );
+
+
+        if(error){
+            throw error;
+        }
+
+
+        if(!data){
+
+            throw new Error(
+                "The redemption service returned no result."
+            );
+        }
+
+
+        /*
+            If this purchase was already completed,
+            Supabase deliberately does NOT credit
+            the wallet again.
+        */
+
+        if(
+            data.status ===
+            "already_completed"
+        ){
+
+            diamondNumber.textContent =
+                "Already redeemed 💎";
+
+            diamondResult.style.display =
+                "block";
+
+            messageElement.textContent =
+                "This purchase has already been added to your CEEQWINN wallet.";
+
+            setStatus(
+                "This purchase was already redeemed. No second credit was created.",
+                "success"
+            );
+
+            redeemButton.disabled = true;
+
+            return;
+        }
+
+
+        if(
+            data.status !==
+            "completed"
+        ){
+
+            throw new Error(
+                "The purchase could not be completed."
+            );
+        }
+
+
+        const diamonds =
+            Number(data.diamonds);
+
+
+        diamondNumber.textContent =
+            `+${diamonds} 💎`;
+
+
+        diamondResult.style.display =
+            "block";
+
+
+        messageElement.textContent =
+            "Your diamonds are now safely recorded in your CEEQWINN wallet ledger.";
+
+
+        setStatus(
+            `${diamonds} diamonds have been added successfully.`,
+            "success"
+        );
+
+
+        redeemButton.textContent =
+            "Redeemed ✓";
+
+
+        redeemButton.disabled =
+            true;
+
+
+        /*
+            The purchase is complete.
+
+            Keeping the session ID in sessionStorage
+            is harmless because Supabase will reject
+            a second credit through the completed
+            purchase session.
+        */
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Purchase redemption error:",
+            error
+        );
+
+
+        redeemButton.disabled =
+            false;
+
+
+        setStatus(
+            "We couldn't complete the redemption: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+redeemButton.addEventListener(
+    "click",
+    redeemPurchase
+);
+
+
+initialize()
+.catch(error => {
+
+    console.error(
+        "Return page error:",
+        error
+    );
+
+
+    redeemButton.disabled =
+        true;
+
+
+    setStatus(
+        error.message,
+        "error"
+    );
+
+});
+
+</script>
+
+</body>
+
+</html>
+```
+
+## Then the journey becomes beautifully simple
+
+```text
+GAME STORE
+    │
+    │ Get 100 💎
+    ▼
+Supabase
+    │
+    ├── chooses available ticket
+    ├── reserves ticket for 1 hour
+    ├── creates purchase session
+    └── finds that ticket's Selar URL
+    │
+    ▼
+SELAR
+    │
+    │ customer completes the checkout
+    ▼
+CEEQWINN PURCHASE-RETURN.HTML
+    │
+    │ "Redeem 100 💎"
+    ▼
+redeem_purchase_session()
+    │
+    ├── verifies player
+    ├── finds purchase session
+    ├── finds reservation
+    ├── finds ticket
+    ├── calls redemption engine
+    ├── credits wallet ledger
+    ├── marks ticket redeemed
+    └── marks purchase session completed
+    │
+    ▼
+💎 +100 DIAMONDS
+```
+
+### And the beautiful part
+
+If somebody somehow taps **Redeem** twice:
+
+**first tap**
+→ ticket redeemed
+→ ledger gets +100
+→ session becomes `completed`
+
+**second tap**
+→ session is already `completed`
+→ **no second ledger credit**
+
+So we have the exact protection we wanted at the **Supabase session level**, rather than trusting the browser.
+
+**Do Step 1 first.** If that SQL says `Success`, tell me **“success”** and then we’ll wire the permanent page into the actual Selar return path and run the full end-to-end test.
