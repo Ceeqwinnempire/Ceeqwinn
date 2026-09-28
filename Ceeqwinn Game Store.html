@@ -1,17 +1,20 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 
 <meta charset="UTF-8">
 
 <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
+name="viewport"
+content="width=device-width, initial-scale=1.0"
+
 >
 
 <meta
-    name="theme-color"
-    content="#160912"
+name="theme-color"
+content="#160912"
+
 >
 
 <title>CEEQWINN Game Store</title>
@@ -678,60 +681,66 @@ h1{
 
 <header class="header">
 
-    <div class="brand-mark">
-        ✦
-    </div>
+```
+<div class="brand-mark">
+    ✦
+</div>
 
-    <div class="eyebrow">
-        CEEQWINN
-    </div>
+<div class="eyebrow">
+    CEEQWINN
+</div>
 
-    <h1>
-        Game
-        <span class="title-accent">
-            Store
-        </span>
-    </h1>
+<h1>
+    Game
+    <span class="title-accent">
+        Store
+    </span>
+</h1>
 
-    <p class="subtitle">
+<p class="subtitle">
 
-        Your CEEQWINN marketplace for
-        diamonds, game treasures, unlocks
-        and digital experiences worth
-        discovering.
+    Your CEEQWINN marketplace for
+    diamonds, game treasures, unlocks
+    and digital experiences worth
+    discovering.
 
-    </p>
+</p>
+```
 
 </header>
 
 <section class="wallet-bar">
 
-    <div class="wallet-label">
-        Your CEEQWINN Wallet
-    </div>
+```
+<div class="wallet-label">
+    Your CEEQWINN Wallet
+</div>
 
-    <div
-        id="walletBalance"
-        class="wallet-balance"
-    >
-        Connecting...
-    </div>
+<div
+    id="walletBalance"
+    class="wallet-balance"
+>
+    Connecting...
+</div>
+```
 
 </section>
 
 <div class="store-intro">
 
-    <div>
+```
+<div>
 
-        <h2>
-            Wonderland
-        </h2>
+    <h2>
+        Wonderland
+    </h2>
 
-        <p>
-            First collection in the CEEQWINN Game Store.
-        </p>
+    <p>
+        First collection in the CEEQWINN Game Store.
+    </p>
 
-    </div>
+</div>
+```
 
 </div>
 
@@ -739,46 +748,48 @@ h1{
 
 <article class="product-card">
 
-    <span class="product-tag">
-        First Edition
-    </span>
+```
+<span class="product-tag">
+    First Edition
+</span>
 
-    <div class="gem-icon">
-        💎
-    </div>
+<div class="gem-icon">
+    💎
+</div>
 
-    <h3 class="product-title">
-        Wonderland Diamonds
-    </h3>
+<h3 class="product-title">
+    Wonderland Diamonds
+</h3>
 
-    <p class="product-description">
+<p class="product-description">
 
-        A little pocket of CEEQWINN
-        treasure. Receive 100 diamonds
-        for your player wallet.
+    A little pocket of CEEQWINN
+    treasure. Receive 100 diamonds
+    for your player wallet.
 
-    </p>
+</p>
 
-    <div class="product-bottom">
+<div class="product-bottom">
 
-        <div class="price">
+    <div class="price">
 
-            ₦0
+        ₦0
 
-            <small>
-                FIRST WONDERLAND RELEASE
-            </small>
-
-        </div>
-
-        <button
-            id="buyButton"
-            class="shop-button"
-        >
-            Get 100 💎
-        </button>
+        <small>
+            FIRST WONDERLAND RELEASE
+        </small>
 
     </div>
+
+    <button
+        id="buyButton"
+        class="shop-button"
+    >
+        Get 100 💎
+    </button>
+
+</div>
+```
 
 </article>
 
@@ -793,11 +804,13 @@ h1{
 
 <footer class="footer">
 
-    CEEQWINN Game Store
+```
+CEEQWINN Game Store
 
-    <br>
+<br>
 
-    Wonderland Edition · 100 Diamonds
+Wonderland Edition · 100 Diamonds
+```
 
 </footer>
 
@@ -822,13 +835,6 @@ const SUPABASE_PUBLISHABLE_KEY =
 
 const GAME_PRODUCT_ID =
     "cdd104b7-e9f0-4efc-b6e3-2ba3dbf0619a";
-
-/*
-    LIVE SELAR PRODUCT
-*/
-
-const SELAR_PRODUCT_URL =
-    "https://selar.com/8851i15n51";
 
 
 const {
@@ -1013,16 +1019,26 @@ async function beginPurchase(){
     try{
 
         /*
-            IMPORTANT:
+            Supabase now performs the entire
+            ticket-selection step.
 
-            The browser calls start_purchase_session.
+            It will:
 
-            Supabase performs the reservation
-            internally and keeps the ticket code
-            server-side.
+            1. Find ONE available ticket.
+            2. Reserve that ticket.
+            3. Create the purchase session.
+            4. Find the Selar URL attached
+               to that exact ticket.
 
-            The browser receives ONLY the
-            opaque purchase-session UUID.
+            The browser receives:
+
+            {
+                purchase_session_id,
+                checkout_url
+            }
+
+            The ticket code NEVER leaves
+            Supabase.
         */
 
         const {
@@ -1051,18 +1067,36 @@ async function beginPurchase(){
         }
 
 
-        /*
-            Store only the opaque session ID.
+        if(!data.purchase_session_id){
 
-            NEVER store or expose:
-            - ticket_code
-            - ticket_id
+            throw new Error(
+                "Supabase did not return a purchase session."
+            );
+        }
+
+
+        if(!data.checkout_url){
+
+            throw new Error(
+                "Supabase did not return a checkout URL."
+            );
+        }
+
+
+        /*
+            Store ONLY the opaque purchase
+            session ID.
+
+            NEVER store:
+
+            - ticket code
+            - ticket ID
             - reservation ticket code
         */
 
         sessionStorage.setItem(
             "ceeqwinn_purchase_session",
-            data
+            data.purchase_session_id
         );
 
 
@@ -1072,12 +1106,20 @@ async function beginPurchase(){
 
 
         /*
-            Now leave CEEQWINN and enter
-            the real Selar checkout.
+            IMPORTANT:
+
+            We no longer use a hard-coded
+            Selar URL.
+
+            Supabase selected the available
+            ticket and returned the checkout
+            URL attached to THAT ticket.
+
+            We simply follow it.
         */
 
         window.location.href =
-            SELAR_PRODUCT_URL;
+            data.checkout_url;
 
     }
 
@@ -1124,6 +1166,10 @@ initialize()
 });
 
 </script>
+
+</body>
+</html>
+
 
 </body>
 </html>
