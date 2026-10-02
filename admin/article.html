@@ -87,237 +87,6 @@ h2{
 
 
 /* =========================================================
-   VISUAL STORY MODE
-   ========================================================= */
-
-#theatre{
-    display:none;
-    margin:0 0 35px;
-}
-
-#theatre.theatre-visible{
-    display:block;
-}
-
-.theatre-frame{
-    position:relative;
-    width:100%;
-    overflow:hidden;
-    background:#111;
-    border-radius:14px;
-    border:1px solid #ddd;
-}
-
-.theatre-stage{
-    position:relative;
-    width:100%;
-    aspect-ratio:16 / 9;
-    min-height:220px;
-    overflow:hidden;
-    background:#111;
-}
-
-.theatre-stage-layer{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    display:block;
-    object-fit:cover;
-    object-position:center center;
-    opacity:0;
-    transform:scale(1);
-    transition:
-        opacity .45s ease,
-        transform .55s ease,
-        object-position .35s ease;
-    will-change:opacity,transform;
-}
-
-.theatre-stage-layer.active{
-    opacity:1;
-}
-
-.theatre-stage-layer.theatre-settle{
-    transform:scale(1.015);
-}
-
-.theatre-empty{
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:25px;
-    box-sizing:border-box;
-    text-align:center;
-    color:#ddd;
-    background:#151515;
-    font-size:.9rem;
-}
-
-.theatre-empty.hidden{
-    display:none;
-}
-
-.theatre-caption{
-    padding:10px 14px;
-    background:#181818;
-    color:#ddd;
-    font-size:.78rem;
-    letter-spacing:.04em;
-    text-align:center;
-    min-height:20px;
-}
-
-.theatre-caption:empty{
-    display:none;
-}
-
-.theatre-caption strong{
-    color:#fff;
-}
-
-.theatre-frame.theatre-focus-left .theatre-stage-layer{
-    object-position:35% center;
-}
-
-.theatre-frame.theatre-focus-center .theatre-stage-layer{
-    object-position:50% center;
-}
-
-.theatre-frame.theatre-focus-right .theatre-stage-layer{
-    object-position:65% center;
-}
-
-
-/* SHOTS */
-
-.theatre-frame.theatre-shot-full .theatre-stage-layer{
-    object-fit:cover;
-    transform:scale(1);
-}
-
-.theatre-frame.theatre-shot-medium .theatre-stage-layer{
-    object-fit:cover;
-    transform:scale(1.08);
-}
-
-.theatre-frame.theatre-shot-close .theatre-stage-layer{
-    object-fit:cover;
-    transform:scale(1.18);
-}
-
-.theatre-frame.theatre-shot-medium .theatre-stage-layer.theatre-settle{
-    transform:scale(1.095);
-}
-
-.theatre-frame.theatre-shot-close .theatre-stage-layer.theatre-settle{
-    transform:scale(1.205);
-}
-
-
-/* LIGHTWEIGHT TRANSITIONS */
-
-.theatre-frame.theatre-transition-cut .theatre-stage-layer{
-    transition:none;
-}
-
-.theatre-frame.theatre-transition-fade .theatre-stage-layer{
-    transition:opacity .55s ease;
-}
-
-.theatre-frame.theatre-transition-crossfade .theatre-stage-layer{
-    transition:
-        opacity .55s ease,
-        transform .55s ease,
-        object-position .35s ease;
-}
-
-.theatre-frame.theatre-transition-soft-rise .theatre-stage-layer{
-    transition:
-        opacity .55s ease,
-        transform .65s ease;
-}
-
-.theatre-frame.theatre-transition-slide .theatre-stage-layer{
-    transition:
-        opacity .45s ease,
-        transform .55s ease;
-}
-
-
-/* BEATS */
-
-.theatre-frame.theatre-beat-arrival{
-    border-color:#c9b47a;
-}
-
-.theatre-frame.theatre-beat-announcement{
-    border-color:#bda96e;
-}
-
-.theatre-frame.theatre-beat-blackout{
-    background:#000;
-}
-
-.theatre-frame.theatre-beat-blackout .theatre-stage-layer{
-    opacity:.22 !important;
-}
-
-.theatre-frame.theatre-beat-door-opened{
-    border-color:#8d8d8d;
-}
-
-
-/* READING PANEL */
-
-#content.theatre-reading{
-    position:relative;
-}
-
-#content.theatre-reading::before{
-    content:"";
-    display:block;
-    height:1px;
-    margin-bottom:25px;
-    background:#ddd;
-}
-
-
-/* DIALOGUE */
-
-#content blockquote{
-    position:relative;
-}
-
-#content blockquote p:last-child{
-    margin-bottom:0;
-}
-
-
-/* THEATRE MODES */
-
-body.theatre-mode-choice .story-choice{
-    margin-top:30px;
-}
-
-body.theatre-mode-choice .story-choice-title{
-    text-align:center;
-    font-size:1.2rem;
-    letter-spacing:.03em;
-}
-
-body.theatre-mode-game .story-game{
-    margin-top:30px;
-}
-
-body.theatre-mode-result .story-next{
-    margin-top:40px;
-}
-
-
-/* =========================================================
    STORY ENGINE
    ========================================================= */
 
@@ -503,16 +272,6 @@ body.theatre-mode-result .story-next{
         font-size:1.8rem;
     }
 
-    .theatre-stage{
-        aspect-ratio:4 / 3;
-        min-height:180px;
-    }
-
-    .theatre-caption{
-        font-size:.72rem;
-        padding:8px 10px;
-    }
-
     .story-choice-button{
         font-size:16px;
         padding:15px;
@@ -526,24 +285,6 @@ body.theatre-mode-result .story-next{
     .story-game-button{
         width:100%;
         box-sizing:border-box;
-    }
-
-}
-
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media(prefers-reduced-motion:reduce){
-
-    .theatre-stage-layer{
-        transition:none !important;
-        transform:none !important;
-    }
-
-    html{
-        scroll-behavior:auto;
     }
 
 }
@@ -562,44 +303,6 @@ body.theatre-mode-result .story-next{
 <div id="credits"></div>
 
 <div id="status"></div>
-
-
-<!-- =====================================================
-     VISUAL STORY STAGE
-     ===================================================== -->
-
-<section id="theatre" aria-label="Visual Story">
-
-    <div class="theatre-frame theatre-shot-full theatre-transition-crossfade" id="theatreFrame">
-
-        <div class="theatre-stage" id="theatreStage">
-
-            <img
-                id="theatreLayerA"
-                class="theatre-stage-layer active"
-                alt=""
-                decoding="async"
-            >
-
-            <img
-                id="theatreLayerB"
-                class="theatre-stage-layer"
-                alt=""
-                decoding="async"
-            >
-
-            <div id="theatreEmpty" class="theatre-empty">
-                The story world will appear here.
-            </div>
-
-        </div>
-
-        <div id="theatreCaption" class="theatre-caption" aria-live="polite"></div>
-
-    </div>
-
-</section>
-
 
 <div id="content"></div>
 
@@ -642,244 +345,6 @@ var reset =
 
 
 /* =========================================================
-   VISUAL STORY ELEMENTS
-   ========================================================= */
-
-var theatre =
-    document.getElementById("theatre");
-
-var theatreFrame =
-    document.getElementById("theatreFrame");
-
-var theatreStage =
-    document.getElementById("theatreStage");
-
-var theatreLayerA =
-    document.getElementById("theatreLayerA");
-
-var theatreLayerB =
-    document.getElementById("theatreLayerB");
-
-var theatreEmpty =
-    document.getElementById("theatreEmpty");
-
-var theatreCaption =
-    document.getElementById("theatreCaption");
-
-
-/* =========================================================
-   VISUAL STORY STATE
-   ========================================================= */
-
-var theatreState = {
-
-    activeLayer:"A",
-
-    sceneId:"",
-
-    imageSrc:"",
-
-    shot:"FULL",
-
-    focus:"",
-
-    transition:"crossfade",
-
-    beat:""
-
-};
-
-
-/* =========================================================
-   VISUAL ASSET LIBRARY
-   =========================================================
-   
-   These are deliberately ordinary files inside
-   content/images.
-   
-   They are TEST / PRESENTATION assets.
-   
-   The story itself does not depend on them.
-   If one is missing, the story still works.
-   ========================================================= */
-
-var THEATRE_ASSETS = {
-
-    "A_beautiful_young_woman_full_b.jpeg":
-        "/content/images/A_beautiful_young_woman_full_b.jpeg",
-
-    "A_beautiful_young_woman_full_b-1.jpeg":
-        "/content/images/A_beautiful_young_woman_full_b-1.jpeg",
-
-    "A_beautiful_young_woman_full_b-2.jpeg":
-        "/content/images/A_beautiful_young_woman_full_b-2.jpeg",
-
-    "Luxurious_royal_theatre_curtai (1).jpeg":
-        "/content/images/Luxurious_royal_theatre_curtai%20(1).jpeg",
-
-    "Luxurious_royal_theatre_curtai (4).jpeg":
-        "/content/images/Luxurious_royal_theatre_curtai%20(4).jpeg",
-
-    "Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg":
-        "/content/images/Full-body_cinematic_portrait_o%20-%202025-10-30T110920.194.jpeg",
-
-    "678241180_122126493969155968_6391289786818756612_n.jpg":
-        "/content/images/678241180_122126493969155968_6391289786818756612_n.jpg",
-
-    "IMG_1614278676128I.jpg":
-        "/content/images/IMG_1614278676128I.jpg",
-
-    "2D_cartoon_Disney_character_di (16).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di%20(16).jpeg",
-
-    "2D_cartoon_Disney_character_di (17).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di%20(17).jpeg",
-
-    "2D_cartoon_Disney_character_di (2).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di%20(2).jpeg",
-
-    "2D_cartoon_Disney_character_di (3).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di%20(3).jpeg",
-
-    "2D_cartoon_Disney_character_di (4).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di%20(4).jpeg",
-
-    "2D_cartoon_Disney_character_di (6).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di%20(6).jpeg"
-
-};
-
-
-/* =========================================================
-   SCENE LIBRARY
-   =========================================================
-   
-   Chapter 2 scene names map to ordinary image files.
-   
-   Markdown only says:
-   
-   [SCENE:gathering]
-   
-   The reader decides what visual to show.
-   ========================================================= */
-
-var THEATRE_SCENE_ASSETS = {
-
-    "morning-after-question":
-        "A_beautiful_young_woman_full_b.jpeg",
-
-    "morning-after-secret":
-        "A_beautiful_young_woman_full_b-1.jpeg",
-
-    "morning-after-warning":
-        "A_beautiful_young_woman_full_b-2.jpeg",
-
-    "gathering":
-        "Luxurious_royal_theatre_curtai (1).jpeg",
-
-    "announcement":
-        "Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg",
-
-    "first-heir-revelation":
-        "2D_cartoon_Disney_character_di (16).jpeg",
-
-    "outside-mansion":
-        "2D_cartoon_Disney_character_di (17).jpeg",
-
-    "private-corridor":
-        "678241180_122126493969155968_6391289786818756612_n.jpg",
-
-    "second-line-revelation":
-        "2D_cartoon_Disney_character_di (2).jpeg",
-
-    "private-archive":
-        "Luxurious_royal_theatre_curtai (4).jpeg",
-
-    "the-key":
-        "IMG_1614278676128I.jpg"
-
-};
-
-
-/* =========================================================
-   HUMAN READABLE SCENE NAMES
-   ========================================================= */
-
-var THEATRE_SCENE_NAMES = {
-
-    "morning-after-question":
-        "The Morning After",
-
-    "morning-after-secret":
-        "The Morning After",
-
-    "morning-after-warning":
-        "The Morning After",
-
-    "gathering":
-        "The Gathering",
-
-    "announcement":
-        "The Announcement",
-
-    "first-heir-revelation":
-        "The First Heir",
-
-    "outside-mansion":
-        "Outside the Mansion",
-
-    "private-corridor":
-        "The Private Corridor",
-
-    "second-line-revelation":
-        "The Second Line",
-
-    "private-archive":
-        "The Private Archive",
-
-    "the-key":
-        "The Key"
-
-};
-
-
-/* =========================================================
-   FOCUS NAMES
-   ========================================================= */
-
-var THEATRE_FOCUS_NAMES = {
-
-    "lexis":
-        "Lexis",
-
-    "woman-green":
-        "The Woman in Green",
-
-    "elderly-man":
-        "The Announcement",
-
-    "envelope":
-        "The Black Envelope",
-
-    "photograph":
-        "The Photograph",
-
-    "phone":
-        "The Messages",
-
-    "archive":
-        "Private Archive",
-
-    "file":
-        "The File",
-
-    "key":
-        "The Key"
-
-};
-
-
-/* =========================================================
    ARTICLE FILE
    ========================================================= */
 
@@ -903,6 +368,20 @@ returnGame =
 
 /* =========================================================
    STORY ID
+   =========================================================
+   
+   ALL CHAPTERS OF THE SAME STORY MUST USE
+   THE SAME STORAGE KEY.
+   
+   Examples:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   ALL become:
+   
+   discordant-descendants
    ========================================================= */
 
 var storyId =
@@ -961,8 +440,6 @@ function loadStory(){
 
     cover.style.display =
         "none";
-
-    resetTheatre();
 
 
     var xhr =
@@ -1065,11 +542,24 @@ function buildStory(text){
     }
 
 
+    /*
+     * Convert Markdown into the internal story-node
+     * structure.
+     *
+     * This is what allows ordinary Markdown,
+     * choices, conditions, games and NEXT markers
+     * to coexist.
+     */
+
     storyNodes =
         parseStoryNodes(
             data.body.split(/\r?\n/)
         );
 
+
+    /*
+     * Game return support.
+     */
 
     if(returnGame){
 
@@ -1345,6 +835,16 @@ function isShowOutfitMarker(line){
 }
 
 
+/*
+ * NEXT is deliberately tolerant:
+ *
+ * [NEXT:file]
+ * [NEXT:file|Label]
+ * [NEXT: file | Label]
+ *
+ * all work.
+ */
+
 function isNextMarker(line){
 
     return /^\[NEXT:\s*[^|\]]+(?:\|[^\]]+)?\s*\]$/i.test(
@@ -1391,55 +891,6 @@ function isEndChoiceMarker(line){
 
 
 /* =========================================================
-   VISUAL STORY MARKER TESTS
-   ========================================================= */
-
-function isSceneMarker(line){
-
-    return /^\[SCENE:\s*[^|\]]+(?:\|[^\]]+)?\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-function isFocusMarker(line){
-
-    return /^\[FOCUS:\s*[^|\]]+\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-function isShotMarker(line){
-
-    return /^\[SHOT:\s*(FULL|MEDIUM|CLOSE)\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-function isTransitionMarker(line){
-
-    return /^\[TRANSITION:\s*(CUT|FADE|CROSSFADE|SOFT-RISE|SLIDE)\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-function isBeatMarker(line){
-
-    return /^\[BEAT:\s*[^|\]]+\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-/* =========================================================
    GET GAME ID
    ========================================================= */
 
@@ -1453,100 +904,6 @@ function getGameId(line){
 
     return match
         ? match[1].toUpperCase()
-        : "";
-
-}
-
-
-/* =========================================================
-   GET VISUAL MARKER DATA
-   ========================================================= */
-
-function getSceneMarker(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[SCENE:\s*([^|\]]+?)(?:\|([^\]]+?))?\s*\]$/i
-        );
-
-
-    if(!match){
-
-        return null;
-
-    }
-
-
-    return {
-
-        id:
-            match[1].trim(),
-
-        image:
-            match[2]
-            ? match[2].trim()
-            : ""
-
-    };
-
-}
-
-
-function getFocusMarker(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[FOCUS:\s*([^|\]]+)\s*\]$/i
-        );
-
-
-    return match
-        ? match[1].trim()
-        : "";
-
-}
-
-
-function getShotMarker(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[SHOT:\s*(FULL|MEDIUM|CLOSE)\s*\]$/i
-        );
-
-
-    return match
-        ? match[1].toUpperCase()
-        : "";
-
-}
-
-
-function getTransitionMarker(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[TRANSITION:\s*(CUT|FADE|CROSSFADE|SOFT-RISE|SLIDE)\s*\]$/i
-        );
-
-
-    return match
-        ? match[1].toUpperCase()
-        : "";
-
-}
-
-
-function getBeatMarker(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[BEAT:\s*([^|\]]+)\s*\]$/i
-        );
-
-
-    return match
-        ? match[1].trim()
         : "";
 
 }
@@ -1700,140 +1057,9 @@ function parseStoryNodes(lines){
         }
 
 
-        /* =================================================
-           VISUAL STORY DIRECTIVES
-           ================================================= */
-
-        if(isSceneMarker(line)){
-
-            flushNormal();
-
-
-            var scene =
-                getSceneMarker(line);
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"scene",
-
-                id:
-                    scene.id,
-
-                image:
-                    scene.image
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        if(isFocusMarker(line)){
-
-            flushNormal();
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"focus",
-
-                value:
-                    getFocusMarker(line)
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        if(isShotMarker(line)){
-
-            flushNormal();
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"shot",
-
-                value:
-                    getShotMarker(line)
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        if(isTransitionMarker(line)){
-
-            flushNormal();
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"transition",
-
-                value:
-                    getTransitionMarker(line)
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        if(isBeatMarker(line)){
-
-            flushNormal();
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"beat",
-
-                value:
-                    getBeatMarker(line)
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
         /*
          * These markers belong to a structure already
-         * being parsed.
+         * being parsed. Ignore them here.
          */
 
         if(
@@ -1884,14 +1110,11 @@ function parseChoiceNode(
     if(!match){
 
         return {
-
             node:{
                 type:"markdown",
                 text:""
             },
-
             next:start + 1
-
         };
 
     }
@@ -1899,6 +1122,7 @@ function parseChoiceNode(
 
     var id =
         match[1];
+
 
     var options = [];
 
@@ -1949,6 +1173,10 @@ function parseChoiceNode(
             cleanControlLine(line);
 
 
+        /*
+         * CONSEQUENCE
+         */
+
         var consequence =
             cleaned.match(
                 /^\[CONSEQUENCE:\s*([A-Z])\s*\]$/i
@@ -1973,6 +1201,13 @@ function parseChoiceNode(
         }
 
 
+        /*
+         * ENDCHOICE
+         *
+         * It closes the current branch, NOT the
+         * entire A/B/C collection.
+         */
+
         if(isEndChoiceMarker(line)){
 
             saveBranch();
@@ -1990,6 +1225,10 @@ function parseChoiceNode(
         }
 
 
+        /*
+         * OPTIONS
+         */
+
         var option =
             cleaned.match(
                 /^\[([A-Z])\]\s*(.+?)\s*$/i
@@ -2003,13 +1242,11 @@ function parseChoiceNode(
         ){
 
             options.push({
-
                 letter:
                     option[1].toUpperCase(),
 
                 label:
                     option[2]
-
             });
 
 
@@ -2019,6 +1256,10 @@ function parseChoiceNode(
 
         }
 
+
+        /*
+         * AFTER A CLOSED BRANCH
+         */
 
         if(
             currentLetter === null &&
@@ -2034,13 +1275,16 @@ function parseChoiceNode(
             }
 
 
+            /*
+             * These belong to the outer story parser.
+             */
+
             if(
                 isChoiceStart(line) ||
                 isGameMarker(line) ||
                 isShowOutfitMarker(line) ||
                 isNextMarker(line) ||
-                isIfMarker(line) ||
-                isSceneMarker(line)
+                isIfMarker(line)
             ){
 
                 break;
@@ -2048,10 +1292,19 @@ function parseChoiceNode(
             }
 
 
+            /*
+             * Normal Markdown also means the choice
+             * block has ended.
+             */
+
             break;
 
         }
 
+
+        /*
+         * CURRENT BRANCH CONTENT
+         */
 
         if(
             currentLetter !== null
@@ -2067,21 +1320,21 @@ function parseChoiceNode(
     }
 
 
+    /*
+     * Save a final branch if the author omitted
+     * [ENDCHOICE].
+     */
+
     saveBranch();
 
 
     return {
 
         node:{
-
             type:"choice",
-
             id:id,
-
             options:options,
-
             branches:branches
-
         },
 
         next:i
@@ -2111,14 +1364,11 @@ function parseConditionalNode(
     if(!first){
 
         return {
-
             node:{
                 type:"markdown",
                 text:""
             },
-
             next:start + 1
-
         };
 
     }
@@ -2211,11 +1461,8 @@ function parseConditionalNode(
     return {
 
         node:{
-
             type:"conditional",
-
             id:id,
-
             letter:letter,
 
             thenNodes:
@@ -2227,7 +1474,6 @@ function parseConditionalNode(
                 parseStoryNodes(
                     elseLines
                 )
-
         },
 
         next:i
@@ -2244,10 +1490,6 @@ function parseConditionalNode(
 function renderProgress(){
 
     content.innerHTML = "";
-
-    content.classList.add(
-        "theatre-reading"
-    );
 
 
     var result =
@@ -2272,6 +1514,10 @@ function renderProgress(){
 
     fixMedia();
 
+
+    /*
+     * GAME RETURN
+     */
 
     if(resumeAfterGameId){
 
@@ -2311,11 +1557,8 @@ function executeNodes(
 ){
 
     var result = {
-
         stopped:false,
-
         hasProgress:false
-
     };
 
 
@@ -2329,7 +1572,9 @@ function executeNodes(
             nodes[i];
 
 
-        /* MARKDOWN */
+        /* =================================================
+           MARKDOWN
+           ================================================= */
 
         if(
             node.type ===
@@ -2341,16 +1586,13 @@ function executeNodes(
                 if(resumeAfterGameId){
 
                     target.insertAdjacentHTML(
-
                         "beforeend",
-
                         '<span class="story-resume-anchor" ' +
                         'data-resume-game="' +
                         escapeAttr(
                             resumeAfterGameId
                         ) +
                         '"></span>'
-
                     );
 
 
@@ -2358,21 +1600,15 @@ function executeNodes(
 
 
                     target.insertAdjacentHTML(
-
                         "beforeend",
-
                         marked(node.text)
-
                     );
 
                 }else{
 
                     target.insertAdjacentHTML(
-
                         "beforeend",
-
                         marked(node.text)
-
                     );
 
                 }
@@ -2385,23 +1621,9 @@ function executeNodes(
         }
 
 
-        /* VISUAL STORY */
-
-        if(
-            node.type ===
-            "theatre"
-        ){
-
-            applyTheatreDirective(
-                node
-            );
-
-            continue;
-
-        }
-
-
-        /* SHOW OUTFIT */
+        /* =================================================
+           SHOW OUTFIT
+           ================================================= */
 
         if(
             node.type ===
@@ -2409,11 +1631,8 @@ function executeNodes(
         ){
 
             target.insertAdjacentHTML(
-
                 "beforeend",
-
                 renderShowOutfit()
-
             );
 
             continue;
@@ -2421,7 +1640,9 @@ function executeNodes(
         }
 
 
-        /* CONDITIONAL */
+        /* =================================================
+           CONDITIONAL
+           ================================================= */
 
         if(
             node.type ===
@@ -2438,6 +1659,18 @@ function executeNodes(
                 );
 
 
+            /*
+             * IMPORTANT:
+             *
+             * If the requested choice matches,
+             * render THEN.
+             *
+             * Otherwise render ELSE.
+             *
+             * This allows Chapter 2 to react to
+             * Chapter 1's saved choice.
+             */
+
             if(
                 selected ===
                 node.letter
@@ -2445,11 +1678,8 @@ function executeNodes(
 
                 var branchResult =
                     executeNodes(
-
                         node.thenNodes,
-
                         target
-
                     );
 
 
@@ -2469,11 +1699,8 @@ function executeNodes(
 
                 var elseResult =
                     executeNodes(
-
                         node.elseNodes,
-
                         target
-
                     );
 
 
@@ -2497,7 +1724,9 @@ function executeNodes(
         }
 
 
-        /* CHOICE */
+        /* =================================================
+           CHOICE
+           ================================================= */
 
         if(
             node.type ===
@@ -2517,6 +1746,10 @@ function executeNodes(
                     savedChoices[node.id]
                 );
 
+
+            /*
+             * CHOICE ALREADY MADE
+             */
 
             if(savedLetter){
 
@@ -2549,11 +1782,8 @@ function executeNodes(
 
                 var branchResult =
                     executeNodes(
-
                         savedBranch,
-
                         branchTarget
-
                     );
 
 
@@ -2572,17 +1802,13 @@ function executeNodes(
             }
 
 
-            setTheatreMode(
-                "choice"
-            );
-
+            /*
+             * CHOICE NOT YET MADE
+             */
 
             target.insertAdjacentHTML(
-
                 "beforeend",
-
                 renderChoice(node)
-
             );
 
 
@@ -2595,7 +1821,9 @@ function executeNodes(
         }
 
 
-        /* GAME */
+        /* =================================================
+           GAME
+           ================================================= */
 
         if(
             node.type ===
@@ -2621,19 +1849,11 @@ function executeNodes(
             }
 
 
-            setTheatreMode(
-                "game"
-            );
-
-
             target.insertAdjacentHTML(
-
                 "beforeend",
-
                 renderGame(
                     node.id
                 )
-
             );
 
 
@@ -2646,7 +1866,9 @@ function executeNodes(
         }
 
 
-        /* NEXT */
+        /* =================================================
+           NEXT CHAPTER
+           ================================================= */
 
         if(
             node.type ===
@@ -2657,19 +1879,20 @@ function executeNodes(
                 true;
 
 
-            setTheatreMode(
-                "result"
-            );
-
+            /*
+             * At this exact point ALL choices already
+             * encountered in the chapter have been
+             * stored in localStorage.
+             *
+             * Therefore clicking NEXT can safely
+             * move to the next chapter.
+             */
 
             target.insertAdjacentHTML(
-
                 "beforeend",
-
                 renderNext(
                     node.line
                 )
-
             );
 
 
@@ -2684,831 +1907,7 @@ function executeNodes(
     }
 
 
-    setTheatreMode(
-        "reading"
-    );
-
-
     return result;
-
-}
-
-
-/* =========================================================
-   VISUAL STORY DIRECTIVE ENGINE
-   ========================================================= */
-
-function applyTheatreDirective(node){
-
-    if(!node){
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "scene"
-    ){
-
-        setTheatreScene(
-            node.id,
-            node.image
-        );
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "focus"
-    ){
-
-        setTheatreFocus(
-            node.value
-        );
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "shot"
-    ){
-
-        setTheatreShot(
-            node.value
-        );
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "transition"
-    ){
-
-        setTheatreTransition(
-            node.value
-        );
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "beat"
-    ){
-
-        setTheatreBeat(
-            node.value
-        );
-
-        return;
-
-    }
-
-}
-
-
-/* =========================================================
-   SET THEATRE SCENE
-   ========================================================= */
-
-function setTheatreScene(
-    sceneId,
-    explicitImage
-){
-
-    sceneId =
-        String(
-            sceneId || ""
-        ).trim();
-
-
-    if(!sceneId){
-
-        return;
-
-    }
-
-
-    theatreState.sceneId =
-        sceneId;
-
-
-    theatre.classList.add(
-        "theatre-visible"
-    );
-
-
-    var imageValue =
-        explicitImage ||
-        THEATRE_SCENE_ASSETS[
-            sceneId
-        ] ||
-        "";
-
-
-    var sceneName =
-        THEATRE_SCENE_NAMES[
-            sceneId
-        ] ||
-        humanizeSceneName(
-            sceneId
-        );
-
-
-    if(!imageValue){
-
-        theatreEmpty.textContent =
-            sceneName;
-
-        theatreEmpty.classList.remove(
-            "hidden"
-        );
-
-
-        theatreCaption.textContent =
-            sceneName;
-
-
-        return;
-
-    }
-
-
-    var src =
-        resolveTheatreAsset(
-            imageValue
-        );
-
-
-    if(!src){
-
-        theatreEmpty.textContent =
-            sceneName;
-
-        theatreEmpty.classList.remove(
-            "hidden"
-        );
-
-
-        theatreCaption.textContent =
-            sceneName;
-
-
-        return;
-
-    }
-
-
-    theatreCaption.textContent =
-        sceneName;
-
-
-    setTheatreVisual(
-        src,
-        sceneName
-    );
-
-}
-
-
-/* =========================================================
-   RESOLVE VISUAL ASSET
-   ========================================================= */
-
-function resolveTheatreAsset(
-    value
-){
-
-    value =
-        String(
-            value || ""
-        ).trim();
-
-
-    if(!value){
-
-        return "";
-
-    }
-
-
-    if(
-        THEATRE_ASSETS[
-            value
-        ]
-    ){
-
-        return THEATRE_ASSETS[
-            value
-        ];
-
-    }
-
-
-    if(
-        THEATRE_SCENE_ASSETS[
-            value
-        ]
-    ){
-
-        return resolveTheatreAsset(
-            THEATRE_SCENE_ASSETS[
-                value
-            ]
-        );
-
-    }
-
-
-    return mediaPath(
-        value
-    );
-
-}
-
-
-/* =========================================================
-   SET THEATRE VISUAL
-   ========================================================= */
-
-function setTheatreVisual(
-    src,
-    altText
-){
-
-    var image =
-        new Image();
-
-
-    image.onload =
-        function(){
-
-            var nextLayer;
-
-
-            if(
-                theatreState.activeLayer ===
-                "A"
-            ){
-
-                nextLayer =
-                    theatreLayerB;
-
-                theatreState.activeLayer =
-                    "B";
-
-            }else{
-
-                nextLayer =
-                    theatreLayerA;
-
-                theatreState.activeLayer =
-                    "A";
-
-            }
-
-
-            nextLayer.src =
-                src;
-
-            nextLayer.alt =
-                altText || "Story scene";
-
-
-            theatreLayerA.classList.remove(
-                "active",
-                "theatre-settle"
-            );
-
-            theatreLayerB.classList.remove(
-                "active",
-                "theatre-settle"
-            );
-
-
-            /*
-             * CUT means immediate replacement.
-             */
-
-            if(
-                theatreState.transition ===
-                "CUT"
-            ){
-
-                nextLayer.classList.add(
-                    "active"
-                );
-
-            }else{
-
-                requestAnimationFrame(
-                    function(){
-
-                        nextLayer.classList.add(
-                            "active"
-                        );
-
-                    }
-                );
-
-            }
-
-
-            theatreEmpty.classList.add(
-                "hidden"
-            );
-
-
-            theatreState.imageSrc =
-                src;
-
-
-            setTimeout(
-                function(){
-
-                    nextLayer.classList.add(
-                        "theatre-settle"
-                    );
-
-                },
-                40
-            );
-
-        };
-
-
-    image.onerror =
-        function(){
-
-            theatreEmpty.textContent =
-                "Visual unavailable — the story continues.";
-
-            theatreEmpty.classList.remove(
-                "hidden"
-            );
-
-
-            theatreCaption.textContent =
-                THEATRE_SCENE_NAMES[
-                    theatreState.sceneId
-                ] ||
-                humanizeSceneName(
-                    theatreState.sceneId
-                );
-
-        };
-
-
-    image.src =
-        src;
-
-}
-
-
-/* =========================================================
-   SET THEATRE SHOT
-   ========================================================= */
-
-function setTheatreShot(
-    mode
-){
-
-    mode =
-        String(
-            mode || "FULL"
-        ).toUpperCase();
-
-
-    if(
-        mode !== "FULL" &&
-        mode !== "MEDIUM" &&
-        mode !== "CLOSE"
-    ){
-
-        mode =
-            "FULL";
-
-    }
-
-
-    theatreState.shot =
-        mode;
-
-
-    theatreFrame.classList.remove(
-        "theatre-shot-full",
-        "theatre-shot-medium",
-        "theatre-shot-close"
-    );
-
-
-    theatreFrame.classList.add(
-        "theatre-shot-" +
-        mode.toLowerCase()
-    );
-
-}
-
-
-/* =========================================================
-   SET THEATRE FOCUS
-   ========================================================= */
-
-function setTheatreFocus(
-    focus
-){
-
-    focus =
-        String(
-            focus || ""
-        ).trim().toLowerCase();
-
-
-    theatreState.focus =
-        focus;
-
-
-    theatreFrame.classList.remove(
-        "theatre-focus-left",
-        "theatre-focus-center",
-        "theatre-focus-right"
-    );
-
-
-    /*
-     * These are presentation hints rather than
-     * character logic.
-     */
-
-    if(
-        focus === "woman-green" ||
-        focus === "archive" ||
-        focus === "file"
-    ){
-
-        theatreFrame.classList.add(
-            "theatre-focus-right"
-        );
-
-    }else if(
-        focus === "key" ||
-        focus === "photograph" ||
-        focus === "phone"
-    ){
-
-        theatreFrame.classList.add(
-            "theatre-focus-center"
-        );
-
-    }else{
-
-        theatreFrame.classList.add(
-            "theatre-focus-center"
-        );
-
-    }
-
-
-    var label =
-        THEATRE_FOCUS_NAMES[
-            focus
-        ];
-
-
-    if(
-        label &&
-        theatreState.sceneId
-    ){
-
-        var sceneName =
-            THEATRE_SCENE_NAMES[
-                theatreState.sceneId
-            ] ||
-            humanizeSceneName(
-                theatreState.sceneId
-            );
-
-
-        theatreCaption.textContent =
-            sceneName +
-            " · " +
-            label;
-
-    }
-
-}
-
-
-/* =========================================================
-   SET THEATRE TRANSITION
-   ========================================================= */
-
-function setTheatreTransition(
-    transition
-){
-
-    transition =
-        String(
-            transition || "CROSSFADE"
-        ).toUpperCase();
-
-
-    if(
-        transition !== "CUT" &&
-        transition !== "FADE" &&
-        transition !== "CROSSFADE" &&
-        transition !== "SOFT-RISE" &&
-        transition !== "SLIDE"
-    ){
-
-        transition =
-            "CROSSFADE";
-
-    }
-
-
-    theatreState.transition =
-        transition;
-
-
-    theatreFrame.classList.remove(
-        "theatre-transition-cut",
-        "theatre-transition-fade",
-        "theatre-transition-crossfade",
-        "theatre-transition-soft-rise",
-        "theatre-transition-slide"
-    );
-
-
-    theatreFrame.classList.add(
-        "theatre-transition-" +
-        transition.toLowerCase()
-    );
-
-}
-
-
-/* =========================================================
-   SET THEATRE BEAT
-   ========================================================= */
-
-function setTheatreBeat(
-    beat
-){
-
-    beat =
-        String(
-            beat || ""
-        ).trim().toLowerCase();
-
-
-    theatreState.beat =
-        beat;
-
-
-    var classes =
-        [];
-
-
-    if(
-        beat.indexOf("arrival") !== -1
-    ){
-
-        classes.push(
-            "theatre-beat-arrival"
-        );
-
-    }
-
-
-    if(
-        beat.indexOf("announcement") !== -1 ||
-        beat.indexOf("heir") !== -1
-    ){
-
-        classes.push(
-            "theatre-beat-announcement"
-        );
-
-    }
-
-
-    if(
-        beat.indexOf("blackout") !== -1
-    ){
-
-        classes.push(
-            "theatre-beat-blackout"
-        );
-
-    }
-
-
-    if(
-        beat.indexOf("door-opened") !== -1 ||
-        beat.indexOf("door") !== -1
-    ){
-
-        classes.push(
-            "theatre-beat-door-opened"
-        );
-
-    }
-
-
-    theatreFrame.classList.remove(
-        "theatre-beat-arrival",
-        "theatre-beat-announcement",
-        "theatre-beat-blackout",
-        "theatre-beat-door-opened"
-    );
-
-
-    for(
-        var i = 0;
-        i < classes.length;
-        i++
-    ){
-
-        theatreFrame.classList.add(
-            classes[i]
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   THEATRE MODE
-   ========================================================= */
-
-function setTheatreMode(
-    mode
-){
-
-    document.body.classList.remove(
-        "theatre-mode-reading",
-        "theatre-mode-choice",
-        "theatre-mode-game",
-        "theatre-mode-result"
-    );
-
-
-    if(
-        mode === "choice"
-    ){
-
-        document.body.classList.add(
-            "theatre-mode-choice"
-        );
-
-        return;
-
-    }
-
-
-    if(
-        mode === "game"
-    ){
-
-        document.body.classList.add(
-            "theatre-mode-game"
-        );
-
-        return;
-
-    }
-
-
-    if(
-        mode === "result"
-    ){
-
-        document.body.classList.add(
-            "theatre-mode-result"
-        );
-
-        return;
-
-    }
-
-
-    document.body.classList.add(
-        "theatre-mode-reading"
-    );
-
-}
-
-
-/* =========================================================
-   HUMANIZE SCENE NAME
-   ========================================================= */
-
-function humanizeSceneName(
-    value
-){
-
-    return String(
-        value || ""
-    )
-    .replace(
-        /[-_]+/g,
-        " "
-    )
-    .replace(
-        /\b\w/g,
-        function(letter){
-
-            return letter.toUpperCase();
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   RESET THEATRE
-   ========================================================= */
-
-function resetTheatre(){
-
-    theatreState = {
-
-        activeLayer:"A",
-
-        sceneId:"",
-
-        imageSrc:"",
-
-        shot:"FULL",
-
-        focus:"",
-
-        transition:"crossfade",
-
-        beat:""
-
-    };
-
-
-    theatre.classList.remove(
-        "theatre-visible"
-    );
-
-
-    theatreLayerA.removeAttribute(
-        "src"
-    );
-
-    theatreLayerB.removeAttribute(
-        "src"
-    );
-
-
-    theatreLayerA.classList.add(
-        "active"
-    );
-
-    theatreLayerB.classList.remove(
-        "active"
-    );
-
-
-    theatreEmpty.classList.remove(
-        "hidden"
-    );
-
-
-    theatreEmpty.textContent =
-        "The story world will appear here.";
-
-
-    theatreCaption.textContent =
-        "";
-
-
-    theatreFrame.className =
-        "theatre-frame theatre-shot-full theatre-transition-crossfade";
-
-
-    setTheatreMode(
-        "reading"
-    );
 
 }
 
@@ -3625,14 +2024,30 @@ document.addEventListener(
             0;
 
 
+        /*
+         * SAVE FIRST.
+         *
+         * This is critical because the next render,
+         * conditional branches and NEXT chapter all
+         * depend on this state.
+         */
+
         saveChoice(
             id,
             letter
         );
 
 
+        /*
+         * Rebuild the reachable story.
+         */
+
         renderProgress();
 
+
+        /*
+         * Scroll to the selected branch.
+         */
 
         setTimeout(
             function(){
@@ -4113,6 +2528,16 @@ function renderShowOutfit(){
 
 function renderNext(line){
 
+    /*
+     * Accept:
+     *
+     * [NEXT:discordant-descendants-chapter-2]
+     *
+     * [NEXT:discordant-descendants-chapter-2|Step into the gathering.]
+     *
+     * [NEXT: discordant-descendants-chapter-2 | Step into the gathering. ]
+     */
+
     var cleaned =
         cleanControlLine(line);
 
@@ -4238,6 +2663,15 @@ document.addEventListener(
             );
 
 
+        /*
+         * The story history is NOT cleared here.
+         *
+         * That is the important part.
+         *
+         * Chapter 2 will use the exact same
+         * ceeqwinn_story_history_<base-story> key.
+         */
+
         window.location.href =
             "article.html?file=" +
             encodeURIComponent(
@@ -4268,8 +2702,6 @@ reset.onclick =
         }catch(e){}
 
 
-        resetTheatre();
-
         window.location.reload();
 
     };
@@ -4277,6 +2709,19 @@ reset.onclick =
 
 /* =========================================================
    STORY ID
+   =========================================================
+   
+   This is the bridge between chapters.
+   
+   Example:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   all become:
+   
+   discordant-descendants
    ========================================================= */
 
 function getStoryId(path){
@@ -4291,6 +2736,21 @@ function getStoryId(path){
             ""
         );
 
+
+    /*
+     * Remove chapter numbering from the END only.
+     *
+     * This means:
+     *
+     * discordant-descendants-chapter-2
+     *
+     * becomes:
+     *
+     * discordant-descendants
+     *
+     * while unrelated names containing the word
+     * "chapter" elsewhere remain untouched.
+     */
 
     path =
         path.replace(
@@ -4661,3 +3121,4 @@ function cssEscape(value){
 </body>
 
 </html>
+
