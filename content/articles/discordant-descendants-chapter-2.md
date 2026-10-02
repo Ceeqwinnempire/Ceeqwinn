@@ -7,34 +7,6 @@ title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 ---
 
----
-
-## ---
-
-title: DISCORDANT DESCENDANTS — CHAPTER 2
-
----
-
----
-
-## title: DISCORDANT DESCENDANTS — CHAPTER 2
-
-## ---
-
-title: DISCORDANT DESCENDANTS — CHAPTER 2
-
----
-
-## title: DISCORDANT DESCENDANTS — CHAPTER 2
-
----
-
-# ---
-
-title: DISCORDANT DESCENDANTS — CHAPTER 2
-
----
-
 # DISCORDANT DESCENDANTS
 
 *Chapter 2 — The Gathering*
@@ -45,13 +17,7 @@ title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 [IF:choice-03=A]
 
-[SCENE:morning-after-question]
-
-[SHOT:MEDIUM]
-
-[TRANSITION:fade]
-
-[FOCUS:lexis]
+[SCENE:morning-after]
 
 ## THE MORNING AFTER THE QUESTION
 
@@ -79,14 +45,6 @@ If the Okoye family wanted to keep its secrets, Lexis intended to make them work
 
 [IF:choice-03=B]
 
-[SCENE:morning-after-secret]
-
-[SHOT:MEDIUM]
-
-[TRANSITION:fade]
-
-[FOCUS:lexis]
-
 ## THE MORNING AFTER THE SECRET
 
 Lexis woke with one thought already fixed in her mind.
@@ -111,14 +69,6 @@ And Lexis could watch them.
 
 [IF:choice-03=C]
 
-[SCENE:morning-after-warning]
-
-[SHOT:CLOSE]
-
-[TRANSITION:fade]
-
-[FOCUS:lexis]
-
 ## THE MORNING AFTER THE WARNING
 
 Lexis couldn't forget her father's expression.
@@ -139,9 +89,7 @@ Someone knew about the Okoye family.
 
 And now her father knew that she knew.
 
-Tomorrow's gathering suddenly felt less like a celebration—
-
-and more like a trap.
+Tomorrow's gathering suddenly felt less like a celebration—and more like a trap.
 
 [ENDIF]
 
@@ -150,12 +98,6 @@ and more like a trap.
 [ENDIF]
 
 ---
-
-[SCENE:gathering]
-
-[SHOT:FULL]
-
-[TRANSITION:crossfade]
 
 ## THE NIGHT OF THE GATHERING
 
@@ -194,10 +136,6 @@ Lexis sighed.
 He smiled.
 
 But the moment he looked toward the entrance, his expression changed.
-
-[FOCUS:woman-green]
-
-[SHOT:MEDIUM]
 
 Lexis noticed.
 
@@ -275,10 +213,6 @@ Her father didn't answer.
 
 Instead, he looked toward the staircase.
 
-[FOCUS:elderly-man]
-
-[SHOT:FULL]
-
 The music stopped.
 
 Everyone turned.
@@ -295,9 +229,7 @@ Lexis's heart skipped.
 
 Her father slowly reached for her hand.
 
-And for the first time that night—
-
-he looked afraid.
+And for the first time that night—he looked afraid.
 
 Golden lights lined the enormous driveway.
 
@@ -427,19 +359,9 @@ Lexis's heart skipped.
 
 Her father slowly reached for her hand.
 
-And for the first time that night—
-
-he looked afraid.
+And for the first time that night—he looked afraid.
 
 ---
-
-[SCENE:announcement]
-
-[SHOT:MEDIUM]
-
-[TRANSITION:crossfade]
-
-[FOCUS:envelope]
 
 ## THE ANNOUNCEMENT
 
@@ -465,9 +387,7 @@ The man raised an old envelope.
 
 It was black.
 
-And on the front—
-
-was the crest.
+And on the front—was the crest.
 
 The same crest Lexis had seen in her father's study.
 
@@ -565,14 +485,6 @@ And that frightened her more than the announcement itself.
 
 [CONSEQUENCE:A]
 
-[SCENE:first-heir-revelation]
-
-[SHOT:MEDIUM]
-
-[TRANSITION:crossfade]
-
-[FOCUS:photograph]
-
 Lexis slowly released her father's hand.
 
 “Fine.”
@@ -613,9 +525,7 @@ The woman in the photograph was the same mysterious person from Sirena's photogr
 
 The woman whose face had been deliberately obscured.
 
-Except this time—
-
-her face was visible.
+Except this time—her face was visible.
 
 Lexis's breath caught.
 
@@ -658,14 +568,6 @@ The room suddenly felt much smaller.
 [ENDCHOICE]
 
 [CONSEQUENCE:B]
-
-[SCENE:outside-mansion]
-
-[SHOT:MEDIUM]
-
-[TRANSITION:fade]
-
-[FOCUS:phone]
 
 Lexis turned toward the entrance.
 
@@ -725,14 +627,6 @@ Watching her.
 
 ---
 
-[SCENE:private-corridor]
-
-[SHOT:MEDIUM]
-
-[TRANSITION:crossfade]
-
-[FOCUS:archive]
-
 ## THE WOMAN IN GREEN
 
 Lexis returned to the mansion.
@@ -757,9 +651,7 @@ Watching her.
 
 Judging her.
 
-Or perhaps—
-
-waiting for her.
+Or perhaps—waiting for her.
 
 Lexis looked toward the woman in green.
 
@@ -828,14 +720,6 @@ Then lowered his voice.
 [B] Search the private archive before Dad can stop her.
 
 [CONSEQUENCE:A]
-
-[SCENE:second-line-revelation]
-
-[SHOT:MEDIUM]
-
-[TRANSITION:crossfade]
-
-[FOCUS:photograph]
 
 Lexis stared at her father.
 
@@ -916,14 +800,6 @@ He whispered:
 [ENDCHOICE]
 
 [CONSEQUENCE:B]
-
-[SCENE:private-archive]
-
-[SHOT:MEDIUM]
-
-[TRANSITION:fade]
-
-[FOCUS:file]
 
 Lexis waited until her father turned away.
 
@@ -1029,14 +905,6 @@ A small metal key.
 
 ---
 
-[SCENE:the-key]
-
-[SHOT:CLOSE]
-
-[TRANSITION:crossfade]
-
-[FOCUS:key]
-
 ## THE KEY
 
 Lexis held the key between two fingers.
@@ -1107,15 +975,7 @@ Sirena looked frightened for the first time.
 
 “The one your grandfather sealed.”
 
-[FOCUS:key]
-
-[SHOT:CLOSE]
-
-Before Lexis could respond—
-
-the lights went out.
-
-[TRANSITION:fade]
+Before Lexis could respond—the lights went out.
 
 The mansion fell completely dark.
 
@@ -1143,25 +1003,13 @@ Sirena looked back.
 
 Neither of them spoke.
 
-Then—
-
-a lock clicked somewhere beneath the floor.
-
-[FOCUS:key]
-
-[SHOT:CLOSE]
+Then—a lock clicked somewhere beneath the floor.
 
 Lexis looked down at the key in her hand.
 
 The crest began to glow faintly beneath the darkness.
 
-And somewhere inside the mansion—
-
-something opened.
-
-[BEAT:door-opened]
-
-[TRANSITION:fade]
+And somewhere inside the mansion—something opened.
 
 ---
 
@@ -1169,6 +1017,3 @@ something opened.
 
 [NEXT:discordant-descendants-chapter-3|Continue to Chapter 3]
 
-
-
-&nbsp;
