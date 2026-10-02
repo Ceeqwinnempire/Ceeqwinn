@@ -17,22 +17,6 @@ title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 ---
 
-## ---
-
-title: DISCORDANT DESCENDANTS — CHAPTER 2
-
----
-
----
-
-## ---
-
-title: DISCORDANT DESCENDANTS — CHAPTER 2
-
----
-
----
-
 ## title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 ## ---
@@ -61,7 +45,17 @@ title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 [IF:choice-03=A]
 
-[SCENE:morning-after]
+[SCENE:morning-after-question|A_beautiful_young_woman_full_b.jpeg]
+
+[SHOT:MEDIUM]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:fade]
+
+[BEAT:question-morning]
+
+[FOCUS:lexis]
 
 ## THE MORNING AFTER THE QUESTION
 
@@ -89,6 +83,18 @@ If the Okoye family wanted to keep its secrets, Lexis intended to make them work
 
 [IF:choice-03=B]
 
+[SCENE:morning-after-secret|A_beautiful_young_woman_full_b-1.jpeg]
+
+[SHOT:MEDIUM]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:crossfade]
+
+[BEAT:secret-morning]
+
+[FOCUS:lexis]
+
 ## THE MORNING AFTER THE SECRET
 
 Lexis woke with one thought already fixed in her mind.
@@ -112,6 +118,18 @@ And Lexis could watch them.
 [ELSE]
 
 [IF:choice-03=C]
+
+[SCENE:morning-after-warning|A_beautiful_young_woman_full_b-2.jpeg]
+
+[SHOT:MEDIUM]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:dissolve]
+
+[BEAT:warning-morning]
+
+[FOCUS:lexis]
 
 ## THE MORNING AFTER THE WARNING
 
@@ -145,6 +163,18 @@ and more like a trap.
 
 ---
 
+[SCENE:night-of-gathering|Luxurious_royal_theatre_curtai (1).jpeg]
+
+[SHOT:FULL]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:crossfade]
+
+[BEAT:gathering-arrival]
+
+[FOCUS:lexis]
+
 ## THE NIGHT OF THE GATHERING
 
 The Okoye residence had never looked more intimidating.
@@ -156,6 +186,10 @@ Luxury vehicles arrived one after another.
 Music drifted through the open doors of the mansion, mixing with the sound of conversation, laughter, and the occasional clinking of glasses.
 
 Lexis stood at the bottom of the staircase.
+
+[SHOT:MEDIUM]
+
+[BEAT:lexis-staircase]
 
 “This is supposed to be a family gathering?”
 
@@ -183,6 +217,12 @@ He smiled.
 
 But the moment he looked toward the entrance, his expression changed.
 
+[SHOT:CLOSE]
+
+[BEAT:father-alert]
+
+[FOCUS:father]
+
 Lexis noticed.
 
 “Dad?”
@@ -190,6 +230,12 @@ Lexis noticed.
 He didn't answer.
 
 Someone had just entered.
+
+[SHOT:MEDIUM]
+
+[BEAT:woman-green-entrance]
+
+[FOCUS:woman-in-green]
 
 A tall woman in a dark emerald dress walked slowly into the mansion.
 
@@ -218,6 +264,10 @@ She stared at him.
 “You're making this sound incredibly normal.”
 
 Before he could respond, a voice came from behind them.
+
+[BEAT:sirena-arrival]
+
+[FOCUS:sirena]
 
 “Well, well.”
 
@@ -259,6 +309,12 @@ Her father didn't answer.
 
 Instead, he looked toward the staircase.
 
+[SHOT:FULL]
+
+[BEAT:music-stops]
+
+[TRANSITION:fade]
+
 The music stopped.
 
 Everyone turned.
@@ -266,6 +322,12 @@ Everyone turned.
 An elderly man stepped onto the balcony above them.
 
 The room fell completely silent.
+
+[SHOT:MEDIUM]
+
+[BEAT:elderly-man-balcony]
+
+[FOCUS:elderly-man]
 
 “Ladies and gentlemen,” he said.
 
@@ -278,6 +340,12 @@ Her father slowly reached for her hand.
 And for the first time that night—
 
 he looked afraid.
+
+[SHOT:FULL]
+
+[BEAT:gathering-repeat]
+
+[TRANSITION:crossfade]
 
 Golden lights lined the enormous driveway.
 
@@ -323,6 +391,10 @@ He didn't answer.
 
 Someone had just entered.
 
+[SHOT:MEDIUM]
+
+[FOCUS:woman-in-green]
+
 A tall woman in a dark emerald dress walked slowly into the mansion.
 
 Several conversations stopped.
@@ -413,6 +485,18 @@ he looked afraid.
 
 ---
 
+[SCENE:announcement|Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg]
+
+[SHOT:MEDIUM]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:fade]
+
+[BEAT:announcement-begins]
+
+[FOCUS:elderly-man]
+
 ## THE ANNOUNCEMENT
 
 The elderly man continued.
@@ -442,6 +526,12 @@ And on the front—
 was the crest.
 
 The same crest Lexis had seen in her father's study.
+
+[SHOT:CLOSE]
+
+[BEAT:black-envelope]
+
+[FOCUS:envelope]
 
 Her eyes widened.
 
@@ -537,6 +627,18 @@ And that frightened her more than the announcement itself.
 
 [CONSEQUENCE:A]
 
+[SCENE:announcement-choice-a|Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg]
+
+[SHOT:MEDIUM]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:crossfade]
+
+[BEAT:walk-forward]
+
+[FOCUS:lexis]
+
 Lexis slowly released her father's hand.
 
 “Fine.”
@@ -570,6 +672,12 @@ The man opened the black envelope.
 Inside was an old photograph.
 
 He held it up.
+
+[SHOT:CLOSE]
+
+[BEAT:old-photograph]
+
+[FOCUS:photograph]
 
 Lexis stared.
 
@@ -623,6 +731,18 @@ The room suddenly felt much smaller.
 
 [CONSEQUENCE:B]
 
+[SCENE:announcement-choice-b|Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg]
+
+[SHOT:MEDIUM]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:crossfade]
+
+[BEAT:leave-gathering]
+
+[FOCUS:lexis]
+
 Lexis turned toward the entrance.
 
 “No.”
@@ -671,15 +791,39 @@ The third arrived before she could open the others.
 
 *And whatever you do, don't trust the woman in green.*
 
+[SHOT:CLOSE]
+
+[BEAT:warning-message]
+
+[FOCUS:phone]
+
 Lexis slowly looked back at the mansion.
 
 The woman in the emerald dress stood in the doorway.
 
 Watching her.
 
+[SHOT:MEDIUM]
+
+[BEAT:woman-green-watches]
+
+[FOCUS:woman-in-green]
+
 [ENDCHOICE]
 
 ---
+
+[SCENE:woman-in-green|678241180_122126493969155968_6391289786818756612_n.jpg]
+
+[SHOT:FULL]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:dissolve]
+
+[BEAT:return-to-mansion]
+
+[FOCUS:lexis]
 
 ## THE WOMAN IN GREEN
 
@@ -720,6 +864,12 @@ Lexis walked through the corridor.
 She noticed several closed doors.
 
 One had a small brass plaque.
+
+[SHOT:CLOSE]
+
+[BEAT:private-archive-door]
+
+[FOCUS:archive-door]
 
 **PRIVATE ARCHIVE**
 
@@ -767,6 +917,12 @@ Then lowered his voice.
 
 “She’s here.”
 
+[SHOT:MEDIUM]
+
+[BEAT:she-is-here]
+
+[FOCUS:father]
+
 ---
 
 [CHOICE:chapter2-choice-02]
@@ -776,6 +932,18 @@ Then lowered his voice.
 [B] Search the private archive before Dad can stop her.
 
 [CONSEQUENCE:A]
+
+[SCENE:archive-revelation|678241180_122126493969155968_6391289786818756612_n.jpg]
+
+[SHOT:MEDIUM]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:crossfade]
+
+[BEAT:father-reveals-secret]
+
+[FOCUS:father]
 
 Lexis stared at her father.
 
@@ -829,6 +997,12 @@ Instead, he reached into his jacket and removed a folded photograph.
 
 He handed it to her.
 
+[SHOT:CLOSE]
+
+[BEAT:second-line-photograph]
+
+[FOCUS:photograph]
+
 Lexis opened it.
 
 Three people stood outside the Okoye estate.
@@ -856,6 +1030,18 @@ He whispered:
 [ENDCHOICE]
 
 [CONSEQUENCE:B]
+
+[SCENE:private-archive|Luxurious_royal_theatre_curtai (4).jpeg]
+
+[SHOT:FULL]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:dissolve]
+
+[BEAT:enter-archive]
+
+[FOCUS:lexis]
 
 Lexis waited until her father turned away.
 
@@ -901,6 +1087,12 @@ Newspaper clippings.
 
 And one handwritten page.
 
+[SHOT:CLOSE]
+
+[BEAT:second-line-document]
+
+[FOCUS:document]
+
 She read the first sentence.
 
 **THE FIRST HEIR MUST NEVER LEARN ABOUT THE SECOND LINE.**
@@ -939,6 +1131,12 @@ A final message appeared.
 
 *Look beneath the third shelf.*
 
+[SHOT:MEDIUM]
+
+[BEAT:third-shelf-message]
+
+[FOCUS:phone]
+
 Lexis slowly turned toward the shelves.
 
 There were dozens.
@@ -955,11 +1153,29 @@ Her fingers touched the floor beneath the third shelf.
 
 Something was there.
 
+[SHOT:CLOSE]
+
+[BEAT:key-discovered]
+
+[FOCUS:key]
+
 A small metal key.
 
 [ENDCHOICE]
 
 ---
+
+[SCENE:the-key|IMG_1614278676128I.jpg]
+
+[SHOT:MEDIUM]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:fade]
+
+[BEAT:key]
+
+[FOCUS:key]
 
 ## THE KEY
 
@@ -1011,6 +1227,12 @@ Sirena looked toward the key in Lexis's hand.
 
 Her eyes widened.
 
+[SHOT:CLOSE]
+
+[BEAT:sirena-sees-key]
+
+[FOCUS:sirena]
+
 “You found it.”
 
 Lexis immediately closed her fingers around it.
@@ -1035,6 +1257,10 @@ Before Lexis could respond—
 
 the lights went out.
 
+[BEAT:blackout]
+
+[TRANSITION:fade]
+
 The mansion fell completely dark.
 
 Someone screamed downstairs.
@@ -1053,6 +1279,12 @@ No name.
 
 Only four words:
 
+[SHOT:CLOSE]
+
+[BEAT:heir-awakened-message]
+
+[FOCUS:phone]
+
 **THE HEIR HAS AWAKENED.**
 
 Lexis looked at Sirena.
@@ -1067,6 +1299,12 @@ a lock clicked somewhere beneath the floor.
 
 Lexis looked down at the key in her hand.
 
+[SHOT:CLOSE]
+
+[BEAT:key-glows]
+
+[FOCUS:key]
+
 The crest began to glow faintly beneath the darkness.
 
 And somewhere inside the mansion—
@@ -1074,6 +1312,16 @@ And somewhere inside the mansion—
 something opened.
 
 ---
+
+[SCENE:end-of-chapter-2|IMG_1614278676128I.jpg]
+
+[SHOT:FULL]
+
+[TEXTSAFE:BOTTOM]
+
+[TRANSITION:fade]
+
+[BEAT:chapter-end]
 
 ## END OF CHAPTER 2
 
