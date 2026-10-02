@@ -1,0 +1,345 @@
+/* =========================================================
+   CEEQWINN VISUAL STORY THEATRE — MVP
+   Presentation layer only.
+   Does NOT replace the existing story engine.
+   ========================================================= */
+
+#ceeqwinn-theatre-stage{
+    position:relative;
+    width:100%;
+    min-height:56vh;
+    margin:0 0 28px;
+    overflow:hidden;
+    border-radius:18px;
+    background:#171414;
+    isolation:isolate;
+}
+
+.ceeqwinn-theatre-scene{
+    position:absolute;
+    inset:0;
+
+    background-position:center center;
+    background-size:cover;
+    background-repeat:no-repeat;
+
+    opacity:0;
+    transform:scale(1.01);
+
+    transition:
+        opacity .55s ease,
+        transform 1.2s ease;
+
+    z-index:0;
+}
+
+.ceeqwinn-theatre-scene.is-active{
+    opacity:1;
+    transform:scale(1);
+}
+
+
+/* Reading protection layer */
+
+#ceeqwinn-theatre-veil{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(10,8,9,.05) 0%,
+            rgba(10,8,9,.18) 48%,
+            rgba(10,8,9,.72) 100%
+        );
+}
+
+
+/* Theatre glass modes */
+
+#ceeqwinn-theatre-stage.theatre-glass-light
+#ceeqwinn-theatre-veil{
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,.04),
+            rgba(255,255,255,.12),
+            rgba(255,255,255,.62)
+        );
+}
+
+
+#ceeqwinn-theatre-stage.theatre-glass-wine
+#ceeqwinn-theatre-veil{
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(35,7,17,.05),
+            rgba(55,8,28,.18),
+            rgba(25,5,13,.76)
+        );
+}
+
+
+#ceeqwinn-theatre-stage.theatre-glass-emerald
+#ceeqwinn-theatre-veil{
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(4,24,18,.04),
+            rgba(4,31,23,.16),
+            rgba(3,17,13,.76)
+        );
+}
+
+
+#ceeqwinn-theatre-stage.theatre-glass-sapphire
+#ceeqwinn-theatre-veil{
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(5,13,31,.04),
+            rgba(8,20,46,.17),
+            rgba(5,11,25,.78)
+        );
+}
+
+
+#ceeqwinn-theatre-stage.theatre-glass-neutral
+#ceeqwinn-theatre-veil{
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(20,20,20,.04),
+            rgba(20,20,20,.18),
+            rgba(12,12,12,.76)
+        );
+}
+
+
+/* Reading zone */
+
+#ceeqwinn-theatre-reading{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+
+    z-index:3;
+
+    padding:22px 20px 20px;
+
+    color:#fff;
+
+    pointer-events:none;
+}
+
+
+#ceeqwinn-theatre-label{
+    display:inline-block;
+
+    margin-bottom:7px;
+
+    font-size:.72rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+
+    opacity:.72;
+}
+
+
+#ceeqwinn-theatre-beat{
+    min-height:1.2em;
+
+    font-size:1.05rem;
+    line-height:1.55;
+}
+
+
+/* Story content */
+
+#content.theatre-enhanced{
+    max-width:900px;
+}
+
+
+/* Scene marker creates visual breathing room */
+
+#content.theatre-enhanced
+.theatre-scene-marker{
+
+    display:block;
+
+    min-height:36vh;
+
+    margin:20px 0;
+
+    pointer-events:none;
+}
+
+
+/* Visual beat */
+
+#content.theatre-enhanced
+.theatre-beat-marker{
+
+    display:block;
+
+    min-height:18vh;
+
+    margin:20px 0;
+
+    border-radius:14px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(90,20,45,.04),
+            rgba(90,20,45,.09)
+        );
+}
+
+
+/* Dialogue */
+
+#content.theatre-enhanced
+.theatre-dialogue{
+
+    margin:28px 0;
+
+    padding:18px 20px;
+
+    border-left:3px solid currentColor;
+
+    background:rgba(20,20,20,.045);
+
+    border-radius:
+        0
+        12px
+        12px
+        0;
+}
+
+
+#content.theatre-enhanced
+.theatre-dialogue strong{
+
+    display:block;
+
+    margin-bottom:6px;
+
+    font-size:.8rem;
+
+    letter-spacing:.12em;
+
+    text-transform:uppercase;
+}
+
+
+/* Choices */
+
+#content.theatre-enhanced
+.story-choice{
+
+    position:relative;
+
+    z-index:4;
+
+    margin:48px 0;
+
+    padding:24px 0;
+}
+
+
+#content.theatre-enhanced
+.story-choice-button{
+
+    border-color:#b9a39b;
+
+    background:rgba(255,255,255,.94);
+
+    transition:
+        transform .16s ease,
+        background .16s ease;
+}
+
+
+#content.theatre-enhanced
+.story-choice-button:hover,
+
+#content.theatre-enhanced
+.story-choice-button:focus{
+
+    background:#fff;
+
+    transform:translateY(-1px);
+}
+
+
+/* Mobile */
+
+@media(max-width:600px){
+
+    #ceeqwinn-theatre-stage{
+
+        min-height:58vh;
+
+        border-radius:12px;
+    }
+
+
+    #ceeqwinn-theatre-reading{
+
+        padding:18px 15px 16px;
+    }
+
+
+    #ceeqwinn-theatre-beat{
+
+        font-size:1rem;
+    }
+
+
+    #content.theatre-enhanced
+    .theatre-scene-marker{
+
+        min-height:28vh;
+    }
+}
+
+
+/* Accessibility */
+
+@media(prefers-reduced-motion:reduce){
+
+    .ceeqwinn-theatre-scene{
+
+        transition:none;
+    }
+
+
+    #content.theatre-enhanced
+    .story-choice-button{
+
+        transition:none;
+    }
+}
+
+
+body.ceeqwinn-theatre-active{
+
+    background:#f7f3f1;
+}
+
+
+body.ceeqwinn-theatre-active #title{
+
+    letter-spacing:.01em;
+}
