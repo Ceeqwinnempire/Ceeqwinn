@@ -1,15 +1,9 @@
 ---
 title: DISCORDANT DESCENDANTS — CHAPTER 2
 ---
-## ---
 
-title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 ---
-
----
-
-## ---
 
 title: DISCORDANT DESCENDANTS — CHAPTER 2
 
@@ -44,8 +38,6 @@ title: DISCORDANT DESCENDANTS — CHAPTER 2
 ---
 
 [IF:choice-03=A]
-
-[SCENE:morning-after]
 
 ## THE MORNING AFTER THE QUESTION
 
@@ -140,6 +132,8 @@ Luxury vehicles arrived one after another.
 Music drifted through the open doors of the mansion, mixing with the sound of conversation, laughter, and the occasional clinking of glasses.
 
 Lexis stood at the bottom of the staircase.
+
+She stared at the crowd.
 
 “This is supposed to be a family gathering?”
 
@@ -539,7 +533,9 @@ The elderly man studied her.
 
 “Lexis Azunna.”
 
-“Yes?”“You carry the bloodline of the First Heir.”
+“Yes?”
+
+“You carry the bloodline of the First Heir.”
 
 A murmur moved through the room.
 
@@ -943,7 +939,9 @@ A small metal key.
 
 ---
 
-## THE KEYLexis held the key between two fingers.
+## THE KEY
+
+Lexis held the key between two fingers.
 
 It was old.
 
