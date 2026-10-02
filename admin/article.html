@@ -10,474 +10,253 @@
 
 <style>
 
-*{
-  box-sizing:border-box;
-}
-
-html{
-  scroll-behavior:smooth;
-}
-
 body{
-  margin:0;
-  padding:0;
-  background:#f4f1ec;
-  color:#181818;
-  font-family:Arial,Helvetica,sans-serif;
-  line-height:1.75;
+    max-width:800px;
+    margin:auto;
+    padding:35px 18px;
+    font-family:Arial,sans-serif;
+    line-height:1.8;
+    background:#fafafa;
+    color:#222;
 }
 
-body,
-button{
-  -webkit-tap-highlight-color:transparent;
+h1{
+    font-size:2.2rem;
+    margin-bottom:20px;
 }
 
-main{
-  width:100%;
+h2{
+    margin-top:35px;
 }
 
-.reader{
-  width:min(800px,100%);
-  margin:0 auto;
-  padding:20px 16px 60px;
+#cover{
+    display:none;
+    max-width:100%;
+    height:auto;
+    margin:0 auto 30px;
+    border-radius:12px;
 }
 
-.cover{
-  width:100%;
-  margin:0 auto 20px;
-  text-align:center;
+#credits{
+    color:#666;
+    margin-bottom:25px;
 }
 
-.cover img{
-  display:block;
-  width:100%;
-  max-height:520px;
-  object-fit:cover;
-  border-radius:4px;
-}
-
-.title{
-  margin:24px 0 8px;
-  font-size:2rem;
-  line-height:1.2;
-}
-
-.credits{
-  margin:0 0 24px;
-  color:#666;
-}
-
-.status{
-  margin:0 0 20px;
-  padding:10px 12px;
-  border-left:3px solid #222;
-  background:#ebe7e1;
-  font-size:.9rem;
+#status{
+    color:#777;
 }
 
 #content{
-  position:relative;
-}
-
-#content img,
-#media img{
-  max-width:100%;
-  height:auto;
+    overflow-wrap:break-word;
 }
 
 #content img{
-  display:block;
-  margin:20px auto;
+    display:block;
+    max-width:100%;
+    height:auto;
+    margin:25px auto;
+    border-radius:12px;
 }
 
-#content h1,
-#content h2,
-#content h3{
-  line-height:1.25;
-}
-
-#content h2{
-  margin-top:40px;
+#content video,
+#content audio{
+    display:block;
+    width:100%;
+    max-width:100%;
+    margin:25px auto;
 }
 
 #content blockquote{
-  margin:24px 0;
-  padding:12px 18px;
-  border-left:4px solid #333;
-  background:#ece8e2;
+    margin:25px 0;
+    padding:10px 18px;
+    border-left:4px solid #999;
+    background:#f0f0f0;
 }
 
-#content hr{
-  border:0;
-  border-top:1px solid #d4d0ca;
-  margin:35px 0;
+#content table{
+    width:100%;
+    border-collapse:collapse;
+    margin:25px 0;
 }
 
-a{
-  color:inherit;
+#content th,
+#content td{
+    padding:8px;
+    border:1px solid #ccc;
 }
+
 
 /* =========================================================
-   THEATRE
-   ========================================================= */
-
-#theatre{
-  width:100%;
-  margin:0 0 26px;
-  display:none;
-}
-
-#theatre.theatre-visible{
-  display:block;
-}
-
-.theatre-stage{
-  position:relative;
-  width:100%;
-  aspect-ratio:16 / 9;
-  overflow:hidden;
-  background:#151515;
-  border-radius:5px;
-  isolation:isolate;
-}
-
-.theatre-stage-layer{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:50% 50%;
-  opacity:0;
-  transform:scale(1);
-  transition:
-    opacity .55s ease,
-    transform .9s ease,
-    object-position .45s ease;
-  will-change:opacity,transform;
-}
-
-.theatre-stage-layer.is-active{
-  opacity:1;
-}
-
-.theatre-stage-layer.theatre-settle{
-  transform:scale(1.015);
-}
-
-.theatre-empty{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:30px;
-  text-align:center;
-  color:#ddd;
-  background:#151515;
-  font-size:.9rem;
-}
-
-.theatre-caption{
-  min-height:1.4em;
-  margin-top:8px;
-  padding:0 4px;
-  color:#777;
-  font-size:.75rem;
-  text-align:center;
-  letter-spacing:.04em;
-  text-transform:uppercase;
-}
-
-.theatre-caption:empty{
-  display:none;
-}
-
-/* ---------------------------------------------------------
-   SHOTS
-   --------------------------------------------------------- */
-
-.theatre-shot-full .theatre-stage-layer{
-  object-fit:cover;
-  transform-origin:center center;
-}
-
-.theatre-shot-medium .theatre-stage-layer{
-  object-fit:cover;
-  transform:scale(1.12);
-  transform-origin:center center;
-}
-
-.theatre-shot-close .theatre-stage-layer{
-  object-fit:cover;
-  transform:scale(1.28);
-  transform-origin:center center;
-}
-
-.theatre-shot-medium .theatre-stage-layer.theatre-settle{
-  transform:scale(1.135);
-}
-
-.theatre-shot-close .theatre-stage-layer.theatre-settle{
-  transform:scale(1.295);
-}
-
-/* ---------------------------------------------------------
-   TRANSITIONS
-   --------------------------------------------------------- */
-
-.theatre-transition-cut .theatre-stage-layer{
-  transition:none;
-}
-
-.theatre-transition-fade .theatre-stage-layer{
-  transition:opacity .45s ease;
-}
-
-.theatre-transition-crossfade .theatre-stage-layer{
-  transition:
-    opacity .55s ease,
-    transform .9s ease;
-}
-
-.theatre-transition-dissolve .theatre-stage-layer{
-  transition:
-    opacity .85s ease,
-    transform 1s ease;
-}
-
-.theatre-transition-soft-rise .theatre-stage-layer{
-  transition:
-    opacity .55s ease,
-    transform .75s ease;
-}
-
-.theatre-transition-zoom .theatre-stage-layer{
-  transition:
-    opacity .55s ease,
-    transform 1s ease;
-}
-
-/* ---------------------------------------------------------
-   TEXT SAFE AREAS
-   --------------------------------------------------------- */
-
-.theatre-textsafe-bottom{
-  --theatre-safe-padding:18px;
-}
-
-.theatre-textsafe-left{
-  --theatre-safe-padding:18px;
-}
-
-.theatre-textsafe-right{
-  --theatre-safe-padding:18px;
-}
-
-/*
-  These classes intentionally remain lightweight.
-  The story itself remains readable in the normal content
-  area. Theatre directives never hide story text.
-*/
-
-.theatre-textsafe-bottom .theatre-caption{
-  padding-bottom:var(--theatre-safe-padding);
-}
-
-.theatre-textsafe-left .theatre-caption{
-  text-align:left;
-  padding-left:var(--theatre-safe-padding);
-}
-
-.theatre-textsafe-right .theatre-caption{
-  text-align:right;
-  padding-right:var(--theatre-safe-padding);
-}
-
-/* ---------------------------------------------------------
-   FOCUS
-   --------------------------------------------------------- */
-
-.theatre-focus-key .theatre-stage-layer{
-  object-position:50% 52%;
-}
-
-.theatre-focus-lexis .theatre-stage-layer{
-  object-position:50% 45%;
-}
-
-.theatre-focus-father .theatre-stage-layer{
-  object-position:50% 38%;
-}
-
-.theatre-focus-sirena .theatre-stage-layer{
-  object-position:50% 42%;
-}
-
-.theatre-focus-woman-in-green .theatre-stage-layer{
-  object-position:50% 40%;
-}
-
-.theatre-focus-elderly-man .theatre-stage-layer{
-  object-position:50% 32%;
-}
-
-.theatre-focus-phone .theatre-stage-layer{
-  object-position:50% 65%;
-}
-
-.theatre-focus-photograph .theatre-stage-layer{
-  object-position:50% 58%;
-}
-
-.theatre-focus-document .theatre-stage-layer{
-  object-position:50% 60%;
-}
-
-.theatre-focus-envelope .theatre-stage-layer{
-  object-position:50% 58%;
-}
-
-.theatre-focus-archive-door .theatre-stage-layer{
-  object-position:50% 48%;
-}
-
-/* ---------------------------------------------------------
-   THEATRE MODES
-   --------------------------------------------------------- */
-
-body.theatre-mode-choice #theatre{
-  margin-bottom:30px;
-}
-
-body.theatre-mode-game #theatre{
-  margin-bottom:30px;
-}
-
-body.theatre-mode-result #theatre{
-  margin-bottom:30px;
-}
-
-/* ---------------------------------------------------------
-   READING GLASS
-   --------------------------------------------------------- */
-
-.theatre-reading-glass{
-  position:relative;
-}
-
-.theatre-reading-glass::before{
-  content:"";
-  display:block;
-  width:45px;
-  height:1px;
-  margin:0 auto 25px;
-  background:#c7c2bb;
-}
-
-/* =========================================================
-   STORY UI
+   STORY ENGINE
    ========================================================= */
 
 .story-choice{
-  margin:30px 0;
-  padding:20px;
-  border:1px solid #d7d1ca;
-  background:#fff;
+    margin:45px 0;
+    padding:20px 0;
 }
 
 .story-choice-title{
-  margin:0 0 16px;
-  font-weight:bold;
-}
-
-.story-choice-options{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
-
-.story-choice-button,
-.story-game-button,
-.story-next-button,
-#storyReset{
-  appearance:none;
-  border:1px solid #222;
-  background:#222;
-  color:#fff;
-  padding:12px 15px;
-  border-radius:4px;
-  font:inherit;
-  cursor:pointer;
+    font-weight:bold;
+    font-size:1.1rem;
+    margin-bottom:15px;
 }
 
 .story-choice-button{
-  text-align:left;
-  background:#f8f6f2;
-  color:#222;
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    margin:10px 0;
+    padding:15px;
+    font:16px Arial,sans-serif;
+    text-align:left;
+    background:#fff;
+    color:#222;
+    border:1px solid #ccc;
+    border-radius:8px;
+    cursor:pointer;
 }
 
-.story-choice-button:hover,
-.story-choice-button:focus-visible{
-  background:#ebe7e1;
+.story-choice-button:hover{
+    background:#f2f2f2;
 }
+
+.story-choice-button:disabled{
+    cursor:default;
+    opacity:.7;
+}
+
+.story-branch{
+    margin-top:25px;
+}
+
+.story-choice-result{
+    margin-top:25px;
+}
+
+.story-resume-anchor{
+    display:block;
+    width:100%;
+    height:1px;
+    margin:0;
+    padding:0;
+}
+
+
+/* =========================================================
+   NEXT CHAPTER
+   ========================================================= */
+
+.story-next{
+    margin:55px 0 25px;
+    padding:25px 0;
+    text-align:center;
+}
+
+.story-next-text{
+    margin-bottom:18px;
+    color:#555;
+    font-size:1rem;
+}
+
+.story-next-button{
+    display:inline-block;
+    padding:14px 22px;
+    font:16px Arial,sans-serif;
+    background:#222;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.story-next-button:hover{
+    opacity:.85;
+}
+
+
+/* =========================================================
+   GAME BRIDGE
+   ========================================================= */
 
 .story-game{
-  margin:30px 0;
-  padding:20px;
-  border:1px solid #d7d1ca;
-  background:#fff;
+    margin:45px 0;
+    padding:25px 0;
+    text-align:center;
 }
 
-.story-game-button,
-.story-next-button{
-  width:100%;
+.story-game-title{
+    font-weight:bold;
+    font-size:1.15rem;
+    margin-bottom:10px;
 }
 
-.story-result{
-  margin:30px 0;
-  padding:20px;
-  border:1px solid #d7d1ca;
-  background:#fff;
+.story-game-text{
+    color:#666;
+    margin-bottom:18px;
 }
+
+.story-game-button{
+    display:inline-block;
+    padding:15px 24px;
+    font:16px Arial,sans-serif;
+    background:#222;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.story-game-button:hover{
+    opacity:.85;
+}
+
+.story-game-complete{
+    margin:30px 0;
+    padding:15px;
+    text-align:center;
+    color:#666;
+}
+
+
+/* =========================================================
+   SHOW OUTFIT
+   ========================================================= */
 
 .story-outfit{
-  margin:30px 0;
-  text-align:center;
+    margin:35px 0;
+    text-align:center;
 }
 
 .story-outfit img{
-  max-width:100%;
-  border-radius:4px;
+    display:block;
+    width:100%;
+    max-width:420px;
+    height:auto;
+    margin:0 auto;
+    border-radius:12px;
 }
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
 
 #storyReset{
-  display:block;
-  margin:35px auto 0;
-  background:transparent;
-  color:#333;
+    display:none;
+    width:100%;
+    margin:35px 0;
+    padding:12px;
+    background:#f7f7f7;
+    color:#555;
+    border:1px dashed #aaa;
+    border-radius:8px;
+    cursor:pointer;
 }
 
-#storyReset:hover,
-#storyReset:focus-visible{
-  background:#ebe7e1;
+#storyReset:hover{
+    background:#eeeeee;
 }
 
-#media{
-  margin-top:30px;
-}
-
-.media-item{
-  margin:25px 0;
-}
-
-.media-item img,
-.media-item video,
-.media-item iframe{
-  display:block;
-  width:100%;
-  max-width:100%;
-}
 
 /* =========================================================
    MOBILE
@@ -485,82 +264,28 @@ body.theatre-mode-result #theatre{
 
 @media(max-width:600px){
 
-  .reader{
-    padding:12px 12px 45px;
-  }
+    body{
+        padding:25px 15px;
+    }
 
-  .title{
-    font-size:1.55rem;
-  }
+    h1{
+        font-size:1.8rem;
+    }
 
-  .theatre-stage{
-    aspect-ratio:1 / .62;
-    border-radius:3px;
-  }
+    .story-choice-button{
+        font-size:16px;
+        padding:15px;
+    }
 
-  .theatre-caption{
-    font-size:.68rem;
-  }
+    .story-next-button{
+        width:100%;
+        box-sizing:border-box;
+    }
 
-  .theatre-shot-medium .theatre-stage-layer{
-    transform:scale(1.08);
-  }
-
-  .theatre-shot-close .theatre-stage-layer{
-    transform:scale(1.18);
-  }
-
-  .theatre-shot-medium .theatre-stage-layer.theatre-settle{
-    transform:scale(1.095);
-  }
-
-  .theatre-shot-close .theatre-stage-layer.theatre-settle{
-    transform:scale(1.195);
-  }
-
-  body{
-    line-height:1.68;
-  }
-
-}
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media(prefers-reduced-motion:reduce){
-
-  html{
-    scroll-behavior:auto;
-  }
-
-  .theatre-stage-layer{
-    transition:none !important;
-    transform:none !important;
-  }
-
-}
-
-/* =========================================================
-   LOW-END DEVICE FALLBACK
-   ========================================================= */
-
-@media(max-width:360px){
-
-  .reader{
-    padding-left:9px;
-    padding-right:9px;
-  }
-
-  .story-choice,
-  .story-game,
-  .story-result{
-    padding:14px;
-  }
-
-  .theatre-stage{
-    border-radius:0;
-  }
+    .story-game-button{
+        width:100%;
+        box-sizing:border-box;
+    }
 
 }
 
@@ -568,2444 +293,2828 @@ body.theatre-mode-result #theatre{
 
 </head>
 
+
 <body>
 
-<main class="reader">
+<img id="cover" alt="">
 
-  <section id="cover" class="cover"></section>
+<h1 id="title">Loading...</h1>
 
-  <h1 id="storyTitle" class="title">CEEQWINN Reader</h1>
+<div id="credits"></div>
 
-  <div id="credits" class="credits"></div>
+<div id="status"></div>
 
-  <div id="status" class="status" aria-live="polite">
-    Loading story…
-  </div>
+<div id="content"></div>
 
-  <section id="theatre" aria-label="Story Theatre">
-
-    <div
-      class="theatre-stage"
-      id="theatreStage"
-      aria-live="polite"
-    >
-
-      <img
-        id="theatreLayerA"
-        class="theatre-stage-layer"
-        alt=""
-        decoding="async"
-      >
-
-      <img
-        id="theatreLayerB"
-        class="theatre-stage-layer"
-        alt=""
-        decoding="async"
-      >
-
-      <div
-        id="theatreEmpty"
-        class="theatre-empty"
-      >
-        The story world will appear here.
-      </div>
-
-    </div>
-
-    <div
-      id="theatreCaption"
-      class="theatre-caption"
-      aria-live="polite"
-    ></div>
-
-  </section>
-
-  <div
-    id="content"
-    class="theatre-reading-glass"
-  ></div>
-
-  <button
-    id="storyReset"
-    type="button"
-  >
+<button id="storyReset" type="button">
     ↺ Reset Story
-  </button>
+</button>
 
-  <div id="media"></div>
+<div id="media"></div>
 
-</main>
 
 <script src="https://cdn.jsdelivr.net/npm/marked@0.3.19/marked.min.js"></script>
+
 
 <script>
 
 /* =========================================================
-   CEEQWINN READER
+   BASIC ELEMENTS
    ========================================================= */
 
-(function(){
+var title =
+    document.getElementById("title");
 
-"use strict";
+var credits =
+    document.getElementById("credits");
 
-/* ---------------------------------------------------------
-   BASIC ELEMENTS
-   --------------------------------------------------------- */
+var status =
+    document.getElementById("status");
 
-var cover = document.getElementById("cover");
-var storyTitle = document.getElementById("storyTitle");
-var credits = document.getElementById("credits");
-var statusBox = document.getElementById("status");
-var content = document.getElementById("content");
-var media = document.getElementById("media");
-var storyReset = document.getElementById("storyReset");
+var content =
+    document.getElementById("content");
 
-/* ---------------------------------------------------------
-   THEATRE ELEMENTS
-   --------------------------------------------------------- */
+var cover =
+    document.getElementById("cover");
 
-var theatre = document.getElementById("theatre");
-var theatreStage = document.getElementById("theatreStage");
-var theatreLayerA = document.getElementById("theatreLayerA");
-var theatreLayerB = document.getElementById("theatreLayerB");
-var theatreEmpty = document.getElementById("theatreEmpty");
-var theatreCaption = document.getElementById("theatreCaption");
+var media =
+    document.getElementById("media");
 
-/* ---------------------------------------------------------
-   THEATRE STATE
-   --------------------------------------------------------- */
+var reset =
+    document.getElementById("storyReset");
 
-var theatreState = {
 
-  activeLayer:"A",
+/* =========================================================
+   ARTICLE FILE
+   ========================================================= */
 
-  sceneId:"",
+var params =
+    new URLSearchParams(
+        window.location.search
+    );
 
-  imageSrc:"",
+var file =
+    params.get("file") || "";
 
-  shot:"FULL",
+var returnGame =
+    params.get("return") || "";
 
-  textSafe:"BOTTOM",
+file =
+    cleanPath(file);
 
-  transition:"crossfade",
+returnGame =
+    String(returnGame).trim();
 
-  beat:"",
 
-  focus:"",
+/* =========================================================
+   STORY ID
+   =========================================================
+   
+   ALL CHAPTERS OF THE SAME STORY MUST USE
+   THE SAME STORAGE KEY.
+   
+   Examples:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   ALL become:
+   
+   discordant-descendants
+   ========================================================= */
 
-  mode:"reading"
+var storyId =
+    getStoryId(file);
 
-};
 
-/* ---------------------------------------------------------
-   THEATRE ASSET LIBRARY
-   --------------------------------------------------------- */
-
-var THEATRE_ASSETS = {
-
-  "A_beautiful_young_woman_full_b.jpeg":
-    "/content/images/A_beautiful_young_woman_full_b.jpeg",
-
-  "A_beautiful_young_woman_full_b-1.jpeg":
-    "/content/images/A_beautiful_young_woman_full_b-1.jpeg",
-
-  "A_beautiful_young_woman_full_b-2.jpeg":
-    "/content/images/A_beautiful_young_woman_full_b-2.jpeg",
-
-  "Luxurious_royal_theatre_curtai (1).jpeg":
-    "/content/images/Luxurious_royal_theatre_curtai (1).jpeg",
-
-  "Luxurious_royal_theatre_curtai (4).jpeg":
-    "/content/images/Luxurious_royal_theatre_curtai (4).jpeg",
-
-  "Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg":
-    "/content/images/Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg",
-
-  "678241180_122126493969155968_6391289786818756612_n.jpg":
-    "/content/images/678241180_122126493969155968_6391289786818756612_n.jpg",
-
-  "IMG_1614278676128I.jpg":
-    "/content/images/IMG_1614278676128I.jpg"
-
-};
-
-/*
-  Scene aliases can be expanded later without touching
-  the story engine.
-*/
-
-var THEATRE_SCENE_ASSETS = {};
-
-/* ---------------------------------------------------------
-   URL / PATH
-   --------------------------------------------------------- */
-
-var params = new URLSearchParams(window.location.search);
-
-var file = params.get("file") || "";
-
-var returnGame = params.get("return") || "";
-
-function cleanPath(value){
-
-  value = String(value || "").trim();
-
-  value = value.replace(/^\/+/, "");
-
-  value = value.replace(/^content\/articles\//i, "");
-
-  value = value.replace(/\.md$/i, "");
-
-  return value;
-
-}
-
-file = cleanPath(file);
-
-returnGame = String(returnGame).trim();
-
-/* ---------------------------------------------------------
-   STORY ID / STORAGE
-   --------------------------------------------------------- */
-
-var storyId = file
-  .replace(/-chapter-\d+$/i,"")
-  .replace(/\/+$/,"");
+/* =========================================================
+   SHARED STORY STORAGE
+   ========================================================= */
 
 var storageKey =
-  "ceeqwinn_story_history_" + storyId;
+    "ceeqwinn_story_history_" +
+    storyId;
 
-var completedGamesKey =
-  "ceeqwinn_completed_games";
 
-var playerStateKey =
-  "ceeqwinn_player_state";
-
-var returnFromGameKey =
-  "ceeqwinn_return_from_game";
+/* =========================================================
+   STORY STATE
+   ========================================================= */
 
 var storyNodes = [];
 
-/* ---------------------------------------------------------
-   STORAGE HELPERS
-   --------------------------------------------------------- */
+var resumeAfterGameId = "";
 
-function readJSON(key,fallback){
-
-  try{
-
-    var raw = localStorage.getItem(key);
-
-    if(!raw){
-      return fallback;
-    }
-
-    return JSON.parse(raw);
-
-  }catch(error){
-
-    return fallback;
-
-  }
-
-}
-
-function writeJSON(key,value){
-
-  try{
-
-    localStorage.setItem(
-      key,
-      JSON.stringify(value)
-    );
-
-  }catch(error){}
-
-}
-
-function getChoices(){
-
-  var history =
-    readJSON(storageKey,{});
-
-  return history.choices || {};
-
-}
-
-function saveChoice(choiceId,value){
-
-  var history =
-    readJSON(storageKey,{});
-
-  history.choices =
-    history.choices || {};
-
-  history.choices[choiceId] = value;
-
-  writeJSON(storageKey,history);
-
-}
-
-function getCompletedGames(){
-
-  return readJSON(
-    completedGamesKey,
-    []
-  );
-
-}
-
-function hasCompletedGame(gameId){
-
-  return getCompletedGames()
-    .indexOf(gameId) !== -1;
-
-}
-
-/* ---------------------------------------------------------
-   ESCAPING
-   --------------------------------------------------------- */
-
-function escapeHtml(value){
-
-  return String(value == null ? "" : value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-function escapeAttr(value){
-
-  return escapeHtml(value);
-
-}
-
-function cssEscape(value){
-
-  return String(value || "")
-    .replace(/[^a-zA-Z0-9_-]/g,"-")
-    .toLowerCase();
-
-}
-
-/* ---------------------------------------------------------
-   MEDIA PATH
-   --------------------------------------------------------- */
-
-function mediaPath(value){
-
-  value = String(value || "").trim();
-
-  if(!value){
-    return "";
-  }
-
-  if(
-    value.indexOf("http://") === 0 ||
-    value.indexOf("https://") === 0 ||
-    value.indexOf("/") === 0
-  ){
-
-    return value;
-
-  }
-
-  return "/content/images/" + value;
-
-}
-
-/* =========================================================
-   FRONT MATTER
-   ========================================================= */
-
-function parseFrontmatter(markdown){
-
-  var result = {
-    title:"",
-    cover:"",
-    credits:"",
-    body:markdown
-  };
-
-  var match =
-    String(markdown || "")
-      .match(/^---\s*([\s\S]*?)\s*---/);
-
-  if(!match){
-
-    return result;
-
-  }
-
-  var block = match[1];
-
-  block.split(/\r?\n/).forEach(function(line){
-
-    var parts = line.split(":");
-
-    if(parts.length < 2){
-      return;
-    }
-
-    var key =
-      parts.shift()
-        .trim()
-        .toLowerCase();
-
-    var value =
-      parts.join(":")
-        .trim();
-
-    value =
-      value.replace(/^["']|["']$/g,"");
-
-    if(key === "title"){
-      result.title = value;
-    }
-
-    if(key === "cover"){
-      result.cover = value;
-    }
-
-    if(key === "credits"){
-      result.credits = value;
-    }
-
-  });
-
-  result.body =
-    markdown.slice(match[0].length);
-
-  return result;
-
-}
-
-/* ---------------------------------------------------------
-   CLEAN LEADING ARTICLE METADATA
-   --------------------------------------------------------- */
-
-function cleanLeadingArticleMetadata(markdown){
-
-  var text =
-    String(markdown || "");
-
-  var changed = true;
-
-  while(changed){
-
-    changed = false;
-
-    var match =
-      text.match(/^\s*---\s*[\r\n]+([\s\S]*?)\s*---\s*/);
-
-    if(!match){
-      break;
-    }
-
-    var block =
-      match[1].toLowerCase();
-
-    if(
-      block.indexOf("title:") !== -1 ||
-      block.indexOf("cover:") !== -1 ||
-      block.indexOf("credits:") !== -1 ||
-      block.indexOf("video:") !== -1 ||
-      block.indexOf("audio:") !== -1
-    ){
-
-      text =
-        text.slice(match[0].length);
-
-      changed = true;
-
-    }
-
-  }
-
-  text =
-    text.replace(
-      /^\s*#{1,6}\s*title\s*:[^\n]*\n?/i,
-      ""
-    );
-
-  return text;
-
-}
-
-/* =========================================================
-   THEATRE DIRECTIVE PARSERS
-   ========================================================= */
-
-function readSceneDirective(line){
-
-  var match =
-    line.match(
-      /^\[SCENE:([^\]|]+)(?:\|([^\]]+))?\]$/i
-    );
-
-  if(!match){
-    return null;
-  }
-
-  return {
-
-    id:match[1].trim(),
-
-    image:match[2]
-      ? match[2].trim()
-      : ""
-
-  };
-
-}
-
-function readBeatDirective(line){
-
-  var match =
-    line.match(
-      /^\[BEAT:([^\]]+)\]$/i
-    );
-
-  return match
-    ? match[1].trim()
-    : null;
-
-}
-
-function readShotDirective(line){
-
-  var match =
-    line.match(
-      /^\[SHOT:(FULL|MEDIUM|CLOSE)\]$/i
-    );
-
-  return match
-    ? match[1].toUpperCase()
-    : null;
-
-}
-
-function readTextSafeDirective(line){
-
-  var match =
-    line.match(
-      /^\[TEXTSAFE:(BOTTOM|LEFT|RIGHT)\]$/i
-    );
-
-  return match
-    ? match[1].toUpperCase()
-    : null;
-
-}
-
-function readTransitionDirective(line){
-
-  var match =
-    line.match(
-      /^\[TRANSITION:([^\]]+)\]$/i
-    );
-
-  return match
-    ? match[1].trim().toLowerCase()
-    : null;
-
-}
-
-function readFocusDirective(line){
-
-  var match =
-    line.match(
-      /^\[FOCUS:([^\]]+)\]$/i
-    );
-
-  return match
-    ? match[1].trim()
-    : null;
-
-}
-
-/* =========================================================
-   THEATRE
-   ========================================================= */
-
-function resetTheatre(){
-
-  theatreState = {
-
-    activeLayer:"A",
-
-    sceneId:"",
-
-    imageSrc:"",
-
-    shot:"FULL",
-
-    textSafe:"BOTTOM",
-
-    transition:"crossfade",
-
-    beat:"",
-
-    focus:"",
-
-    mode:"reading"
-
-  };
-
-  theatre.className = "";
-
-  theatreStage.className =
-    "theatre-stage";
-
-  theatreLayerA.className =
-    "theatre-stage-layer";
-
-  theatreLayerB.className =
-    "theatre-stage-layer";
-
-  theatreLayerA.removeAttribute("src");
-
-  theatreLayerB.removeAttribute("src");
-
-  theatreLayerA.alt = "";
-
-  theatreLayerB.alt = "";
-
-  theatreEmpty.style.display = "flex";
-
-  theatreCaption.textContent = "";
-
-}
-
-function setTheatreVisible(visible){
-
-  if(visible){
-
-    theatre.classList.add(
-      "theatre-visible"
-    );
-
-  }else{
-
-    theatre.classList.remove(
-      "theatre-visible"
-    );
-
-  }
-
-}
-
-function resolveTheatreAsset(value){
-
-  value =
-    String(value || "").trim();
-
-  if(!value){
-    return "";
-  }
-
-  if(
-    THEATRE_ASSETS[value]
-  ){
-
-    return THEATRE_ASSETS[value];
-
-  }
-
-  if(
-    THEATRE_SCENE_ASSETS[value]
-  ){
-
-    return resolveTheatreAsset(
-      THEATRE_SCENE_ASSETS[value]
-    );
-
-  }
-
-  return mediaPath(value);
-
-}
-
-function setTheatreScene(
-  sceneId,
-  explicitImage
-){
-
-  theatreState.sceneId =
-    String(sceneId || "").trim();
-
-  var imageValue =
-    explicitImage || "";
-
-  if(!imageValue){
-
-    imageValue =
-      THEATRE_SCENE_ASSETS[
-        theatreState.sceneId
-      ] || "";
-
-  }
-
-  var src =
-    resolveTheatreAsset(imageValue);
-
-  if(!src){
-
-    theatreState.imageSrc = "";
-
-    theatreEmpty.style.display =
-      "flex";
-
-    theatreEmpty.textContent =
-      "The story world will appear here.";
-
-    setTheatreVisible(true);
-
-    theatreCaption.textContent =
-      theatreState.sceneId
-        ? theatreState.sceneId
-        : "";
-
-    return;
-
-  }
-
-  setTheatreVisual(src);
-
-}
-
-function setTheatreVisual(src){
-
-  var image =
-    new Image();
-
-  image.decoding = "async";
-
-  image.onload = function(){
-
-    var incoming =
-      theatreState.activeLayer === "A"
-        ? theatreLayerB
-        : theatreLayerA;
-
-    var outgoing =
-      theatreState.activeLayer === "A"
-        ? theatreLayerA
-        : theatreLayerB;
-
-    incoming.src = src;
-
-    incoming.alt =
-      theatreState.sceneId || "Story scene";
-
-    incoming.classList.remove(
-      "is-active",
-      "theatre-settle"
-    );
-
-    applyTheatreClasses();
-
-    theatreEmpty.style.display =
-      "none";
-
-    setTheatreVisible(true);
-
-    /*
-      Force layout so browsers register
-      the incoming layer before activation.
-    */
-
-    incoming.offsetWidth;
-
-    outgoing.classList.remove(
-      "is-active"
-    );
-
-    incoming.classList.add(
-      "is-active"
-    );
-
-    theatreState.activeLayer =
-      theatreState.activeLayer === "A"
-        ? "B"
-        : "A";
-
-    theatreState.imageSrc = src;
-
-    window.setTimeout(
-      function(){
-
-        incoming.classList.add(
-          "theatre-settle"
-        );
-
-      },
-      40
-    );
-
-    updateTheatreCaption();
-
-  };
-
-  image.onerror = function(){
-
-    theatreState.imageSrc = "";
-
-    theatreEmpty.style.display =
-      "flex";
-
-    theatreEmpty.textContent =
-      "The story continues in reading mode.";
-
-    setTheatreVisible(true);
-
-    updateTheatreCaption();
-
-  };
-
-  image.src = src;
-
-}
-
-function applyTheatreClasses(){
-
-  var shot =
-    theatreState.shot.toLowerCase();
-
-  var textSafe =
-    theatreState.textSafe.toLowerCase();
-
-  var transition =
-    cssEscape(
-      theatreState.transition
-    );
-
-  var focus =
-    cssEscape(
-      theatreState.focus
-    );
-
-  theatreStage.className =
-    "theatre-stage " +
-    "theatre-shot-" +
-    shot +
-    " " +
-    "theatre-textsafe-" +
-    textSafe +
-    " " +
-    "theatre-transition-" +
-    transition +
-    " " +
-    (
-      focus
-        ? "theatre-focus-" + focus
-        : ""
-    );
-
-}
-
-function updateTheatreCaption(){
-
-  if(!theatreState.sceneId){
-
-    theatreCaption.textContent =
-      "";
-
-    return;
-
-  }
-
-  /*
-    Keep the caption subtle during testing.
-    It identifies the active scene without
-    becoming part of the story.
-  */
-
-  theatreCaption.textContent =
-    theatreState.sceneId
-      .replace(/[-_]+/g," ");
-
-}
-
-function setTheatreShot(mode){
-
-  if(!mode){
-    return;
-  }
-
-  theatreState.shot =
-    mode.toUpperCase();
-
-  applyTheatreClasses();
-
-}
-
-function setTheatreTextSafe(mode){
-
-  if(!mode){
-    return;
-  }
-
-  theatreState.textSafe =
-    mode.toUpperCase();
-
-  applyTheatreClasses();
-
-}
-
-function setTheatreTransition(mode){
-
-  if(!mode){
-    return;
-  }
-
-  theatreState.transition =
-    mode.toLowerCase();
-
-  applyTheatreClasses();
-
-}
-
-function setTheatreFocus(value){
-
-  if(!value){
-    return;
-  }
-
-  theatreState.focus =
-    value.trim();
-
-  applyTheatreClasses();
-
-}
-
-function setTheatreBeat(value){
-
-  theatreState.beat =
-    String(value || "").trim();
-
-  if(
-    theatreState.beat === "blackout"
-  ){
-
-    theatreStage.style.background =
-      "#000";
-
-  }else{
-
-    theatreStage.style.background =
-      "";
-
-  }
-
-}
-
-function setTheatreMode(mode){
-
-  document.body.classList.remove(
-    "theatre-mode-choice",
-    "theatre-mode-game",
-    "theatre-mode-result"
-  );
-
-  theatreState.mode =
-    mode || "reading";
-
-  if(
-    mode === "choice"
-  ){
-
-    document.body.classList.add(
-      "theatre-mode-choice"
-    );
-
-  }
-
-  if(
-    mode === "game"
-  ){
-
-    document.body.classList.add(
-      "theatre-mode-game"
-    );
-
-  }
-
-  if(
-    mode === "result"
-  ){
-
-    document.body.classList.add(
-      "theatre-mode-result"
-    );
-
-  }
-
-}
-
-function applyTheatreDirective(node){
-
-  if(!node){
-    return;
-  }
-
-  if(node.directive === "scene"){
-
-    setTheatreScene(
-      node.id,
-      node.image
-    );
-
-  }
-
-  if(node.directive === "beat"){
-
-    setTheatreBeat(
-      node.value
-    );
-
-  }
-
-  if(node.directive === "shot"){
-
-    setTheatreShot(
-      node.value
-    );
-
-  }
-
-  if(node.directive === "textsafe"){
-
-    setTheatreTextSafe(
-      node.value
-    );
-
-  }
-
-  if(node.directive === "transition"){
-
-    setTheatreTransition(
-      node.value
-    );
-
-  }
-
-  if(node.directive === "focus"){
-
-    setTheatreFocus(
-      node.value
-    );
-
-  }
-
-}
-
-/* =========================================================
-   STORY MARKERS
-   ========================================================= */
-
-function isMarker(line){
-
-  return /^\[[A-Z]+(?::|\])/i.test(line);
-
-}
-
-/* =========================================================
-   CHOICE PARSER
-   ========================================================= */
-
-function parseChoiceNode(lines,startIndex){
-
-  var header =
-    lines[startIndex];
-
-  var match =
-    header.match(
-      /^\[CHOICE:([^\]]+)\]$/i
-    );
-
-  if(!match){
-    return null;
-  }
-
-  var choiceId =
-    match[1].trim();
-
-  var options = [];
-
-  var index =
-    startIndex + 1;
-
-  while(
-    index < lines.length
-  ){
-
-    var line =
-      lines[index];
-
-    var option =
-      line.match(
-        /^\[([A-Z])\]\s*(.+)$/i
-      );
-
-    if(option){
-
-      options.push({
-
-        key:
-          option[1].toUpperCase(),
-
-        text:
-          option[2].trim()
-
-      });
-
-      index++;
-
-      continue;
-
-    }
-
-    break;
-
-  }
-
-  while(
-    index < lines.length &&
-    !/^\[CONSEQUENCE:/i.test(lines[index])
-  ){
-
-    index++;
-
-  }
-
-  var branches = {};
-
-  while(
-    index < lines.length
-  ){
-
-    var consequence =
-      lines[index].match(
-        /^\[CONSEQUENCE:([A-Z])\]$/i
-      );
-
-    if(!consequence){
-
-      index++;
-
-      continue;
-
-    }
-
-    var branchKey =
-      consequence[1].toUpperCase();
-
-    index++;
-
-    var branchLines = [];
-
-    while(
-      index < lines.length &&
-      !/^\[CONSEQUENCE:/i.test(lines[index]) &&
-      !/^\[ENDCHOICE\]$/i.test(lines[index])
-    ){
-
-      branchLines.push(
-        lines[index]
-      );
-
-      index++;
-
-    }
-
-    branches[branchKey] =
-      branchLines;
-
-    if(
-      index < lines.length &&
-      /^\[ENDCHOICE\]$/i.test(lines[index])
-    ){
-
-      break;
-
-    }
-
-  }
-
-  return {
-
-    node:{
-
-      type:"choice",
-
-      id:choiceId,
-
-      options:options,
-
-      branches:branches
-
-    },
-
-    nextIndex:
-      index < lines.length
-        ? index + 1
-        : index
-
-  };
-
-}
-
-/* =========================================================
-   CONDITIONAL PARSER
-   ========================================================= */
-
-function parseConditionalNode(lines,startIndex){
-
-  var first =
-    lines[startIndex].match(
-      /^\[IF:([^=\]]+)=([^\]]+)\]$/i
-    );
-
-  if(!first){
-    return null;
-  }
-
-  var choiceId =
-    first[1].trim();
-
-  var expected =
-    first[2].trim();
-
-  var thenLines = [];
-
-  var elseLines = [];
-
-  var current =
-    thenLines;
-
-  var depth = 1;
-
-  var index =
-    startIndex + 1;
-
-  while(
-    index < lines.length
-  ){
-
-    var line =
-      lines[index];
-
-    if(
-      /^\[IF:/i.test(line)
-    ){
-
-      depth++;
-
-      current.push(line);
-
-      index++;
-
-      continue;
-
-    }
-
-    if(
-      /^\[ENDIF\]$/i.test(line)
-    ){
-
-      depth--;
-
-      if(depth === 0){
-
-        return {
-
-          node:{
-
-            type:"conditional",
-
-            choiceId:choiceId,
-
-            expected:expected,
-
-            thenLines:thenLines,
-
-            elseLines:elseLines
-
-          },
-
-          nextIndex:index + 1
-
-        };
-
-      }
-
-      current.push(line);
-
-      index++;
-
-      continue;
-
-    }
-
-    if(
-      /^\[ELSE\]$/i.test(line) &&
-      depth === 1
-    ){
-
-      current =
-        elseLines;
-
-      index++;
-
-      continue;
-
-    }
-
-    current.push(line);
-
-    index++;
-
-  }
-
-  return null;
-
-}
-
-/* =========================================================
-   THEATRE NODE PARSER
-   ========================================================= */
-
-function parseTheatreNode(line){
-
-  var scene =
-    readSceneDirective(line);
-
-  if(scene){
-
-    return {
-
-      type:"theatre",
-
-      directive:"scene",
-
-      id:scene.id,
-
-      image:scene.image
-
-    };
-
-  }
-
-  var beat =
-    readBeatDirective(line);
-
-  if(beat){
-
-    return {
-
-      type:"theatre",
-
-      directive:"beat",
-
-      value:beat
-
-    };
-
-  }
-
-  var shot =
-    readShotDirective(line);
-
-  if(shot){
-
-    return {
-
-      type:"theatre",
-
-      directive:"shot",
-
-      value:shot
-
-    };
-
-  }
-
-  var textSafe =
-    readTextSafeDirective(line);
-
-  if(textSafe){
-
-    return {
-
-      type:"theatre",
-
-      directive:"textsafe",
-
-      value:textSafe
-
-    };
-
-  }
-
-  var transition =
-    readTransitionDirective(line);
-
-  if(transition){
-
-    return {
-
-      type:"theatre",
-
-      directive:"transition",
-
-      value:transition
-
-    };
-
-  }
-
-  var focus =
-    readFocusDirective(line);
-
-  if(focus){
-
-    return {
-
-      type:"theatre",
-
-      directive:"focus",
-
-      value:focus
-
-    };
-
-  }
-
-  return null;
-
-}
-
-/* =========================================================
-   STORY NODE PARSER
-   ========================================================= */
-
-function parseStoryNodes(lines){
-
-  var nodes = [];
-
-  var markdownBuffer = [];
-
-  function flushMarkdown(){
-
-    if(
-      markdownBuffer.length === 0
-    ){
-
-      return;
-
-    }
-
-    var text =
-      markdownBuffer.join("\n");
-
-    if(text.trim()){
-
-      nodes.push({
-
-        type:"markdown",
-
-        text:text
-
-      });
-
-    }
-
-    markdownBuffer = [];
-
-  }
-
-  var index = 0;
-
-  while(
-    index < lines.length
-  ){
-
-    var line =
-      lines[index];
-
-    var trimmed =
-      line.trim();
-
-    /* Theatre */
-
-    var theatreNode =
-      parseTheatreNode(trimmed);
-
-    if(theatreNode){
-
-      flushMarkdown();
-
-      nodes.push(theatreNode);
-
-      index++;
-
-      continue;
-
-    }
-
-    /* Conditional */
-
-    if(
-      /^\[IF:/i.test(trimmed)
-    ){
-
-      flushMarkdown();
-
-      var conditional =
-        parseConditionalNode(
-          lines,
-          index
-        );
-
-      if(conditional){
-
-        nodes.push(
-          conditional.node
-        );
-
-        index =
-          conditional.nextIndex;
-
-        continue;
-
-      }
-
-    }
-
-    /* Choice */
-
-    if(
-      /^\[CHOICE:/i.test(trimmed)
-    ){
-
-      flushMarkdown();
-
-      var choice =
-        parseChoiceNode(
-          lines,
-          index
-        );
-
-      if(choice){
-
-        nodes.push(
-          choice.node
-        );
-
-        index =
-          choice.nextIndex;
-
-        continue;
-
-      }
-
-    }
-
-    /* Game */
-
-    var gameMatch =
-      trimmed.match(
-        /^\[GAME:([^\]]+)\]$/i
-      );
-
-    if(gameMatch){
-
-      flushMarkdown();
-
-      nodes.push({
-
-        type:"game",
-
-        gameId:
-          gameMatch[1].trim()
-
-      });
-
-      index++;
-
-      continue;
-
-    }
-
-    /* Outfit */
-
-    if(
-      /^\[SHOWOUTFIT\]$/i.test(trimmed)
-    ){
-
-      flushMarkdown();
-
-      nodes.push({
-
-        type:"outfit"
-
-      });
-
-      index++;
-
-      continue;
-
-    }
-
-    /* Next */
-
-    var nextMatch =
-      trimmed.match(
-        /^\[NEXT:([^|\]]+)\|([^\]]+)\]$/i
-      );
-
-    if(nextMatch){
-
-      flushMarkdown();
-
-      nodes.push({
-
-        type:"next",
-
-        file:
-          nextMatch[1].trim(),
-
-        label:
-          nextMatch[2].trim()
-
-      });
-
-      index++;
-
-      continue;
-
-    }
-
-    /* Structural markers */
-
-    if(
-      /^\[(ELSE|ENDIF|ENDCHOICE)\]$/i.test(trimmed)
-    ){
-
-      index++;
-
-      continue;
-
-    }
-
-    markdownBuffer.push(line);
-
-    index++;
-
-  }
-
-  flushMarkdown();
-
-  return nodes;
-
-}
-
-/* =========================================================
-   RENDER HELPERS
-   ========================================================= */
-
-function renderProgress(){
-
-  content.innerHTML = "";
-
-  media.innerHTML = "";
-
-  setTheatreMode("reading");
-
-  executeNodes(
-    storyNodes,
-    content
-  );
-
-  renderStatus();
-
-}
-
-function renderStatus(){
-
-  var choices =
-    getChoices();
-
-  var completed =
-    getCompletedGames();
-
-  var choiceCount =
-    Object.keys(choices).length;
-
-  statusBox.textContent =
-    choiceCount || completed.length
-      ? "Story progress saved on this device."
-      : "Story progress will be saved on this device.";
-
-}
-
-function executeNodes(
-  nodes,
-  container
-){
-
-  for(
-    var i = 0;
-    i < nodes.length;
-    i++
-  ){
-
-    var node =
-      nodes[i];
-
-    if(
-      node.type === "markdown"
-    ){
-
-      var wrapper =
-        document.createElement("div");
-
-      wrapper.innerHTML =
-        marked(node.text);
-
-      container.appendChild(
-        wrapper
-      );
-
-      continue;
-
-    }
-
-    if(
-      node.type === "theatre"
-    ){
-
-      applyTheatreDirective(node);
-
-      continue;
-
-    }
-
-    if(
-      node.type === "conditional"
-    ){
-
-      var choices =
-        getChoices();
-
-      var actual =
-        choices[node.choiceId];
-
-      if(
-        actual === node.expected
-      ){
-
-        executeNodesFromLines(
-          node.thenLines,
-          container
-        );
-
-      }else{
-
-        executeNodesFromLines(
-          node.elseLines,
-          container
-        );
-
-      }
-
-      continue;
-
-    }
-
-    if(
-      node.type === "choice"
-    ){
-
-      var saved =
-        getChoices()[node.id];
-
-      if(saved){
-
-        var savedBranch =
-          node.branches[saved];
-
-        if(savedBranch){
-
-          executeNodesFromLines(
-            savedBranch,
-            container
-          );
-
-        }
-
-        continue;
-
-      }
-
-      setTheatreMode("choice");
-
-      renderChoice(
-        node,
-        container
-      );
-
-      return;
-
-    }
-
-    if(
-      node.type === "game"
-    ){
-
-      if(
-        hasCompletedGame(
-          node.gameId
-        )
-      ){
-
-        continue;
-
-      }
-
-      setTheatreMode("game");
-
-      renderGame(
-        node.gameId,
-        container
-      );
-
-      return;
-
-    }
-
-    if(
-      node.type === "outfit"
-    ){
-
-      renderShowOutfit(
-        container
-      );
-
-      continue;
-
-    }
-
-    if(
-      node.type === "next"
-    ){
-
-      setTheatreMode("result");
-
-      renderNext(
-        node,
-        container
-      );
-
-      return;
-
-    }
-
-  }
-
-}
-
-function executeNodesFromLines(
-  lines,
-  container
-){
-
-  var nodes =
-    parseStoryNodes(lines);
-
-  executeNodes(
-    nodes,
-    container
-  );
-
-}
-
-function renderChoice(
-  node,
-  container
-){
-
-  var box =
-    document.createElement("section");
-
-  box.className =
-    "story-choice";
-
-  var title =
-    document.createElement("div");
-
-  title.className =
-    "story-choice-title";
-
-  title.textContent =
-    "What does Lexis do?";
-
-  box.appendChild(title);
-
-  var options =
-    document.createElement("div");
-
-  options.className =
-    "story-choice-options";
-
-  node.options.forEach(
-    function(option){
-
-      var button =
-        document.createElement("button");
-
-      button.type =
-        "button";
-
-      button.className =
-        "story-choice-button";
-
-      button.textContent =
-        option.key + ". " +
-        option.text;
-
-      button.addEventListener(
-        "click",
-        function(){
-
-          saveChoice(
-            node.id,
-            option.key
-          );
-
-          setTheatreMode(
-            "result"
-          );
-
-          renderProgress();
-
-          window.setTimeout(
-            function(){
-
-              box.scrollIntoView({
-                behavior:"smooth",
-                block:"center"
-              });
-
-            },
-            30
-          );
-
-        }
-      );
-
-      options.appendChild(
-        button
-      );
-
-    }
-  );
-
-  box.appendChild(options);
-
-  container.appendChild(box);
-
-}
-
-function renderGame(
-  gameId,
-  container
-){
-
-  var box =
-    document.createElement("section");
-
-  box.className =
-    "story-game";
-
-  var heading =
-    document.createElement("h3");
-
-  heading.textContent =
-    "The story continues through a game.";
-
-  box.appendChild(
-    heading
-  );
-
-  var button =
-    document.createElement("button");
-
-  button.type =
-    "button";
-
-  button.className =
-    "story-game-button";
-
-  button.textContent =
-    "Continue to Game";
-
-  button.addEventListener(
-    "click",
-    function(){
-
-      sessionStorage.setItem(
-        returnFromGameKey,
-        gameId
-      );
-
-      if(
-        gameId === "FASHION-01"
-      ){
-
-        window.location.href =
-          "/games/fashion-01.html";
-
-        return;
-
-      }
-
-    }
-  );
-
-  box.appendChild(button);
-
-  container.appendChild(box);
-
-}
-
-function renderNext(
-  node,
-  container
-){
-
-  var box =
-    document.createElement("section");
-
-  box.className =
-    "story-result";
-
-  var heading =
-    document.createElement("h3");
-
-  heading.textContent =
-    "Chapter complete.";
-
-  box.appendChild(
-    heading
-  );
-
-  var button =
-    document.createElement("button");
-
-  button.type =
-    "button";
-
-  button.className =
-    "story-next-button";
-
-  button.textContent =
-    node.label;
-
-  button.addEventListener(
-    "click",
-    function(){
-
-      window.location.href =
-        "article.html?file=" +
-        encodeURIComponent(
-          node.file
-        );
-
-    }
-  );
-
-  box.appendChild(button);
-
-  container.appendChild(box);
-
-}
-
-function renderShowOutfit(
-  container
-){
-
-  var state =
-    readJSON(
-      playerStateKey,
-      {}
-    );
-
-  var outfit = "";
-
-  if(
-    state &&
-    state.characters &&
-    state.characters.lexis
-  ){
-
-    outfit =
-      state.characters.lexis.currentOutfit ||
-      "";
-
-  }
-
-  var outfitMap = {
-
-    default:
-      "/content/images/characters/lexis/outfits/default.png",
-
-    red:
-      "/content/images/characters/lexis/outfits/red.png",
-
-    black:
-      "/content/images/characters/lexis/outfits/black.png"
-
-  };
-
-  var src =
-    outfitMap[outfit] ||
-    outfitMap.default;
-
-  var box =
-    document.createElement("div");
-
-  box.className =
-    "story-outfit";
-
-  var img =
-    document.createElement("img");
-
-  img.loading =
-    "lazy";
-
-  img.decoding =
-    "async";
-
-  img.src =
-    src;
-
-  img.alt =
-    "Lexis current outfit";
-
-  box.appendChild(img);
-
-  container.appendChild(box);
-
-}
-
-/* =========================================================
-   MEDIA
-   ========================================================= */
-
-function fixMediaPaths(){
-
-  var images =
-    content.querySelectorAll(
-      "img"
-    );
-
-  images.forEach(
-    function(img){
-
-      var src =
-        img.getAttribute("src");
-
-      if(!src){
-        return;
-      }
-
-      img.setAttribute(
-        "src",
-        mediaPath(src)
-      );
-
-      img.loading =
-        "lazy";
-
-      img.decoding =
-        "async";
-
-    }
-  );
-
-}
-
-function handleExtraMedia(
-  frontmatter
-){
-
-  /*
-    Existing media handling remains intentionally
-    lightweight. Theatre does not depend on it.
-  */
-
-  if(
-    !frontmatter
-  ){
-    return;
-  }
-
-}
-
-/* =========================================================
-   GAME RETURN
-   ========================================================= */
-
-function handleGameReturn(){
-
-  var returnedGame =
-    sessionStorage.getItem(
-      returnFromGameKey
-    );
-
-  if(!returnedGame){
-    return;
-  }
-
-  sessionStorage.removeItem(
-    returnFromGameKey
-  );
-
-  var completed =
-    getCompletedGames();
-
-  if(
-    completed.indexOf(
-      returnedGame
-    ) === -1
-  ){
-
-    completed.push(
-      returnedGame
-    );
-
-    writeJSON(
-      completedGamesKey,
-      completed
-    );
-
-  }
-
-}
-
-/* =========================================================
-   RESET
-   ========================================================= */
-
-storyReset.addEventListener(
-  "click",
-  function(){
-
-    try{
-
-      localStorage.removeItem(
-        storageKey
-      );
-
-      localStorage.removeItem(
-        completedGamesKey
-      );
-
-    }catch(error){}
-
-    resetTheatre();
-
-    window.location.reload();
-
-  }
-);
-
-/* =========================================================
-   LOAD STORY
-   ========================================================= */
-
-function loadStory(){
-
-  if(!file){
-
-    statusBox.textContent =
-      "No story file selected.";
-
-    return;
-
-  }
-
-  var path =
-    "../content/articles/" +
-    encodeURIComponent(file) +
-    ".md";
-
-  fetch(path)
-
-    .then(
-      function(response){
-
-        if(!response.ok){
-
-          throw new Error(
-            "Story could not be loaded."
-          );
-
-        }
-
-        return response.text();
-
-      }
-    )
-
-    .then(
-      function(markdown){
-
-        buildStory(markdown);
-
-      }
-    )
-
-    .catch(
-      function(error){
-
-        console.error(error);
-
-        statusBox.textContent =
-          "The story could not be loaded.";
-
-        content.innerHTML =
-          "<p>The story is temporarily unavailable.</p>";
-
-      }
-    );
-
-}
-
-/* =========================================================
-   BUILD STORY
-   ========================================================= */
-
-function buildStory(markdown){
-
-  var frontmatter =
-    parseFrontmatter(markdown);
-
-  var body =
-    cleanLeadingArticleMetadata(
-      frontmatter.body
-    );
-
-  if(
-    frontmatter.title
-  ){
-
-    storyTitle.textContent =
-      frontmatter.title;
-
-    document.title =
-      frontmatter.title +
-      " — CEEQWINN Reader";
-
-  }
-
-  if(
-    frontmatter.credits
-  ){
-
-    credits.textContent =
-      frontmatter.credits;
-
-  }
-
-  if(
-    frontmatter.cover
-  ){
-
-    var img =
-      document.createElement("img");
-
-    img.src =
-      mediaPath(
-        frontmatter.cover
-      );
-
-    img.alt =
-      frontmatter.title ||
-      "Story cover";
-
-    img.decoding =
-      "async";
-
-    cover.innerHTML = "";
-
-    cover.appendChild(img);
-
-  }
-
-  var lines =
-    body.split(/\r?\n/);
-
-  storyNodes =
-    parseStoryNodes(lines);
-
-  handleGameReturn();
-
-  resetTheatre();
-
-  renderProgress();
-
-  fixMediaPaths();
-
-  handleExtraMedia(
-    frontmatter
-  );
-
-}
-
-/* =========================================================
-   PAGE RETURN
-   ========================================================= */
-
-window.addEventListener(
-  "pageshow",
-  function(){
-
-    var returned =
-      sessionStorage.getItem(
-        returnFromGameKey
-      );
-
-    if(returned){
-
-      handleGameReturn();
-
-      if(storyNodes.length){
-
-        renderProgress();
-
-        fixMediaPaths();
-
-      }
-
-    }
-
-  }
-);
 
 /* =========================================================
    START
    ========================================================= */
 
-loadStory();
+if(!file){
 
-})();
+    title.textContent =
+        "Article not found";
+
+    status.textContent =
+        "No article was selected.";
+
+}else{
+
+    loadStory();
+
+}
+
+
+/* =========================================================
+   LOAD MARKDOWN
+   ========================================================= */
+
+function loadStory(){
+
+    status.textContent =
+        "Loading...";
+
+    content.innerHTML = "";
+
+    media.innerHTML = "";
+
+    cover.style.display =
+        "none";
+
+
+    var xhr =
+        new XMLHttpRequest();
+
+
+    xhr.open(
+        "GET",
+        "../content/articles/" +
+        encodeURIComponent(file) +
+        ".md",
+        true
+    );
+
+
+    xhr.onload =
+        function(){
+
+            if(
+                xhr.status !== 200 &&
+                xhr.status !== 0
+            ){
+
+                title.textContent =
+                    "Unable to load article";
+
+                status.textContent =
+                    "The article could not be loaded.";
+
+                return;
+
+            }
+
+
+            buildStory(
+                xhr.responseText
+            );
+
+        };
+
+
+    xhr.onerror =
+        function(){
+
+            title.textContent =
+                "Unable to load article";
+
+            status.textContent =
+                "The article could not be loaded.";
+
+        };
+
+
+    xhr.send();
+
+}
+
+
+/* =========================================================
+   BUILD STORY
+   ========================================================= */
+
+function buildStory(text){
+
+    var data =
+        parseFrontmatter(text);
+
+
+    title.textContent =
+        data.title || file;
+
+
+    credits.innerHTML =
+        data.credits
+        ? "<strong>Credits:</strong> " +
+          escapeHtml(data.credits)
+        : "";
+
+
+    if(data.cover){
+
+        cover.src =
+            mediaPath(data.cover);
+
+        cover.alt =
+            data.title || file;
+
+        cover.style.display =
+            "block";
+
+
+        cover.onerror =
+            function(){
+
+                cover.style.display =
+                    "none";
+
+            };
+
+    }
+
+
+    /*
+     * Convert Markdown into the internal story-node
+     * structure.
+     *
+     * This is what allows ordinary Markdown,
+     * choices, conditions, games and NEXT markers
+     * to coexist.
+     */
+
+    storyNodes =
+        parseStoryNodes(
+            data.body.split(/\r?\n/)
+        );
+
+
+    /*
+     * Game return support.
+     */
+
+    if(returnGame){
+
+        resumeAfterGameId =
+            returnGame;
+
+        returnGame = "";
+
+    }
+
+
+    renderProgress();
+
+    fixMedia();
+
+    renderExtraMedia(data);
+
+    status.textContent = "";
+
+}
+
+
+/* =========================================================
+   FRONTMATTER
+   ========================================================= */
+
+function parseFrontmatter(text){
+
+    var data = {
+        title:"",
+        cover:"",
+        credits:"",
+        video:"",
+        audio:"",
+        body:text
+    };
+
+
+    text =
+        String(text || "")
+        .replace(/^\uFEFF/, "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n");
+
+
+    var match =
+        text.match(
+            /^---[ \t]*\n([\s\S]*?)\n---[ \t]*(?:\n|$)/
+        );
+
+
+    if(!match){
+
+        data.body =
+            cleanLeadingArticleMetadata(text);
+
+        return data;
+
+    }
+
+
+    var front =
+        match[1];
+
+
+    data.body =
+        text.substring(
+            match[0].length
+        );
+
+
+    data.title =
+        frontValue(
+            front,
+            "title"
+        );
+
+    data.cover =
+        frontValue(
+            front,
+            "cover"
+        );
+
+    data.credits =
+        frontValue(
+            front,
+            "credits"
+        );
+
+    data.video =
+        frontValue(
+            front,
+            "video"
+        );
+
+    data.audio =
+        frontValue(
+            front,
+            "audio"
+        );
+
+
+    data.body =
+        cleanLeadingArticleMetadata(
+            data.body
+        );
+
+
+    return data;
+
+}
+
+
+/* =========================================================
+   CLEAN LEADING ARTICLE METADATA
+   ========================================================= */
+
+function cleanLeadingArticleMetadata(text){
+
+    var body =
+        String(text || "")
+        .replace(/^\uFEFF/, "")
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n");
+
+
+    body =
+        body.replace(
+            /^\s*\n/,
+            ""
+        );
+
+
+    var changed = true;
+
+
+    while(changed){
+
+        changed = false;
+
+
+        var duplicateFront =
+            body.match(
+                /^---[ \t]*\n([\s\S]*?)\n---[ \t]*(?:\n|$)/
+            );
+
+
+        if(duplicateFront){
+
+            var possibleMeta =
+                duplicateFront[1];
+
+
+            if(
+                /^\s*(title|cover|credits|video|audio)\s*:/mi.test(
+                    possibleMeta
+                )
+            ){
+
+                body =
+                    body.substring(
+                        duplicateFront[0].length
+                    );
+
+
+                body =
+                    body.replace(
+                        /^\s*\n/,
+                        ""
+                    );
+
+
+                changed = true;
+
+            }
+
+        }
+
+    }
+
+
+    body =
+        body.replace(
+            /^##[ \t]+title\s*:[^\n]*\n+/i,
+            ""
+        );
+
+
+    body =
+        body.replace(
+            /^\s*\n/,
+            ""
+        );
+
+
+    return body;
+
+}
+
+
+/* =========================================================
+   FRONTMATTER VALUE
+   ========================================================= */
+
+function frontValue(
+    text,
+    key
+){
+
+    var re =
+        new RegExp(
+            "^" +
+            key +
+            "\\s*:\\s*[\"']?(.*?)[\"']?$",
+            "mi"
+        );
+
+
+    var match =
+        text.match(re);
+
+
+    return match
+        ? match[1].trim()
+        : "";
+
+}
+
+
+/* =========================================================
+   CLEAN CONTROL LINE
+   ========================================================= */
+
+function cleanControlLine(line){
+
+    return String(line || "")
+        .trim()
+        .replace(/^\*+\s*/, "")
+        .replace(/\s*\*+$/, "")
+        .trim();
+
+}
+
+
+/* =========================================================
+   MARKER TESTS
+   ========================================================= */
+
+function isGameMarker(line){
+
+    return /^\[GAME:\s*[A-Z0-9_-]+\s*\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isChoiceStart(line){
+
+    return /^\[CHOICE:\s*[\w-]+\s*\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isShowOutfitMarker(line){
+
+    return /^\[SHOWOUTFIT\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+/*
+ * NEXT is deliberately tolerant:
+ *
+ * [NEXT:file]
+ * [NEXT:file|Label]
+ * [NEXT: file | Label]
+ *
+ * all work.
+ */
+
+function isNextMarker(line){
+
+    return /^\[NEXT:\s*[^|\]]+(?:\|[^\]]+)?\s*\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isIfMarker(line){
+
+    return /^\[IF:\s*[\w-]+\s*=\s*[A-Z]\s*\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isElseMarker(line){
+
+    return /^\[ELSE\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isEndIfMarker(line){
+
+    return /^\[ENDIF\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isEndChoiceMarker(line){
+
+    return /^\[ENDCHOICE\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+/* =========================================================
+   GET GAME ID
+   ========================================================= */
+
+function getGameId(line){
+
+    var match =
+        cleanControlLine(line).match(
+            /^\[GAME:\s*([A-Z0-9_-]+)\s*\]$/i
+        );
+
+
+    return match
+        ? match[1].toUpperCase()
+        : "";
+
+}
+
+
+/* =========================================================
+   PARSE COMPLETE STORY INTO NODES
+   ========================================================= */
+
+function parseStoryNodes(lines){
+
+    var result = [];
+
+    var normal = [];
+
+    var i = 0;
+
+
+    function flushNormal(){
+
+        if(normal.length){
+
+            result.push({
+                type:"markdown",
+                text:normal.join("\n")
+            });
+
+            normal = [];
+
+        }
+
+    }
+
+
+    while(i < lines.length){
+
+        var line =
+            lines[i];
+
+
+        /* CONDITIONAL */
+
+        if(isIfMarker(line)){
+
+            flushNormal();
+
+
+            var conditional =
+                parseConditionalNode(
+                    lines,
+                    i
+                );
+
+
+            result.push(
+                conditional.node
+            );
+
+
+            i =
+                conditional.next;
+
+            continue;
+
+        }
+
+
+        /* CHOICE */
+
+        if(isChoiceStart(line)){
+
+            flushNormal();
+
+
+            var choice =
+                parseChoiceNode(
+                    lines,
+                    i
+                );
+
+
+            result.push(
+                choice.node
+            );
+
+
+            i =
+                choice.next;
+
+            continue;
+
+        }
+
+
+        /* GAME */
+
+        if(isGameMarker(line)){
+
+            flushNormal();
+
+
+            result.push({
+                type:"game",
+                id:getGameId(line)
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /* SHOW OUTFIT */
+
+        if(isShowOutfitMarker(line)){
+
+            flushNormal();
+
+
+            result.push({
+                type:"outfit"
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /* NEXT CHAPTER */
+
+        if(isNextMarker(line)){
+
+            flushNormal();
+
+
+            result.push({
+                type:"next",
+                line:cleanControlLine(line)
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * These markers belong to a structure already
+         * being parsed. Ignore them here.
+         */
+
+        if(
+            isElseMarker(line) ||
+            isEndIfMarker(line) ||
+            isEndChoiceMarker(line)
+        ){
+
+            i++;
+
+            continue;
+
+        }
+
+
+        normal.push(line);
+
+        i++;
+
+    }
+
+
+    flushNormal();
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   PARSE CHOICE NODE
+   ========================================================= */
+
+function parseChoiceNode(
+    lines,
+    start
+){
+
+    var match =
+        cleanControlLine(
+            lines[start]
+        ).match(
+            /^\[CHOICE:\s*([\w-]+)\s*\]$/i
+        );
+
+
+    if(!match){
+
+        return {
+            node:{
+                type:"markdown",
+                text:""
+            },
+            next:start + 1
+        };
+
+    }
+
+
+    var id =
+        match[1];
+
+
+    var options = [];
+
+    var branches = {};
+
+    var currentLetter =
+        null;
+
+    var currentLines = [];
+
+    var i =
+        start + 1;
+
+    var choiceStarted =
+        false;
+
+
+    function saveBranch(){
+
+        if(
+            currentLetter !== null
+        ){
+
+            branches[
+                currentLetter
+            ] =
+                parseStoryNodes(
+                    currentLines
+                );
+
+            choiceStarted =
+                true;
+
+        }
+
+
+        currentLines = [];
+
+    }
+
+
+    while(i < lines.length){
+
+        var line =
+            lines[i];
+
+        var cleaned =
+            cleanControlLine(line);
+
+
+        /*
+         * CONSEQUENCE
+         */
+
+        var consequence =
+            cleaned.match(
+                /^\[CONSEQUENCE:\s*([A-Z])\s*\]$/i
+            );
+
+
+        if(consequence){
+
+            saveBranch();
+
+
+            currentLetter =
+                consequence[1].toUpperCase();
+
+
+            currentLines = [];
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * ENDCHOICE
+         *
+         * It closes the current branch, NOT the
+         * entire A/B/C collection.
+         */
+
+        if(isEndChoiceMarker(line)){
+
+            saveBranch();
+
+
+            currentLetter =
+                null;
+
+            currentLines = [];
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * OPTIONS
+         */
+
+        var option =
+            cleaned.match(
+                /^\[([A-Z])\]\s*(.+?)\s*$/i
+            );
+
+
+        if(
+            option &&
+            !choiceStarted &&
+            currentLetter === null
+        ){
+
+            options.push({
+                letter:
+                    option[1].toUpperCase(),
+
+                label:
+                    option[2]
+            });
+
+
+            i++;
+
+            continue;
+
+        }
+
+
+        /*
+         * AFTER A CLOSED BRANCH
+         */
+
+        if(
+            currentLetter === null &&
+            choiceStarted
+        ){
+
+            if(cleaned === ""){
+
+                i++;
+
+                continue;
+
+            }
+
+
+            /*
+             * These belong to the outer story parser.
+             */
+
+            if(
+                isChoiceStart(line) ||
+                isGameMarker(line) ||
+                isShowOutfitMarker(line) ||
+                isNextMarker(line) ||
+                isIfMarker(line)
+            ){
+
+                break;
+
+            }
+
+
+            /*
+             * Normal Markdown also means the choice
+             * block has ended.
+             */
+
+            break;
+
+        }
+
+
+        /*
+         * CURRENT BRANCH CONTENT
+         */
+
+        if(
+            currentLetter !== null
+        ){
+
+            currentLines.push(line);
+
+        }
+
+
+        i++;
+
+    }
+
+
+    /*
+     * Save a final branch if the author omitted
+     * [ENDCHOICE].
+     */
+
+    saveBranch();
+
+
+    return {
+
+        node:{
+            type:"choice",
+            id:id,
+            options:options,
+            branches:branches
+        },
+
+        next:i
+
+    };
+
+}
+
+
+/* =========================================================
+   PARSE CONDITIONAL NODE
+   ========================================================= */
+
+function parseConditionalNode(
+    lines,
+    start
+){
+
+    var first =
+        cleanControlLine(
+            lines[start]
+        ).match(
+            /^\[IF:\s*([\w-]+)\s*=\s*([A-Z])\s*\]$/i
+        );
+
+
+    if(!first){
+
+        return {
+            node:{
+                type:"markdown",
+                text:""
+            },
+            next:start + 1
+        };
+
+    }
+
+
+    var id =
+        first[1];
+
+    var letter =
+        first[2].toUpperCase();
+
+
+    var thenLines = [];
+
+    var elseLines = [];
+
+    var current =
+        thenLines;
+
+    var depth = 1;
+
+    var i =
+        start + 1;
+
+
+    while(i < lines.length){
+
+        var line =
+            lines[i];
+
+
+        if(isIfMarker(line)){
+
+            depth++;
+
+            current.push(line);
+
+            i++;
+
+            continue;
+
+        }
+
+
+        if(isEndIfMarker(line)){
+
+            depth--;
+
+
+            if(depth === 0){
+
+                i++;
+
+                break;
+
+            }
+
+
+            current.push(line);
+
+            i++;
+
+            continue;
+
+        }
+
+
+        if(
+            depth === 1 &&
+            isElseMarker(line)
+        ){
+
+            current =
+                elseLines;
+
+            i++;
+
+            continue;
+
+        }
+
+
+        current.push(line);
+
+        i++;
+
+    }
+
+
+    return {
+
+        node:{
+            type:"conditional",
+            id:id,
+            letter:letter,
+
+            thenNodes:
+                parseStoryNodes(
+                    thenLines
+                ),
+
+            elseNodes:
+                parseStoryNodes(
+                    elseLines
+                )
+        },
+
+        next:i
+
+    };
+
+}
+
+
+/* =========================================================
+   RENDER PROGRESS
+   ========================================================= */
+
+function renderProgress(){
+
+    content.innerHTML = "";
+
+
+    var result =
+        executeNodes(
+            storyNodes,
+            content
+        );
+
+
+    if(result.hasProgress){
+
+        reset.style.display =
+            "block";
+
+    }else{
+
+        reset.style.display =
+            "none";
+
+    }
+
+
+    fixMedia();
+
+
+    /*
+     * GAME RETURN
+     */
+
+    if(resumeAfterGameId){
+
+        var gameAnchor =
+            content.querySelector(
+                '[data-resume-game="' +
+                cssEscape(
+                    resumeAfterGameId
+                ) +
+                '"]'
+            );
+
+
+        resumeAfterGameId = "";
+
+
+        if(gameAnchor){
+
+            scrollToElement(
+                gameAnchor
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   EXECUTE STORY NODES
+   ========================================================= */
+
+function executeNodes(
+    nodes,
+    target
+){
+
+    var result = {
+        stopped:false,
+        hasProgress:false
+    };
+
+
+    for(
+        var i = 0;
+        i < nodes.length;
+        i++
+    ){
+
+        var node =
+            nodes[i];
+
+
+        /* =================================================
+           MARKDOWN
+           ================================================= */
+
+        if(
+            node.type ===
+            "markdown"
+        ){
+
+            if(node.text.trim()){
+
+                if(resumeAfterGameId){
+
+                    target.insertAdjacentHTML(
+                        "beforeend",
+                        '<span class="story-resume-anchor" ' +
+                        'data-resume-game="' +
+                        escapeAttr(
+                            resumeAfterGameId
+                        ) +
+                        '"></span>'
+                    );
+
+
+                    resumeAfterGameId = "";
+
+
+                    target.insertAdjacentHTML(
+                        "beforeend",
+                        marked(node.text)
+                    );
+
+                }else{
+
+                    target.insertAdjacentHTML(
+                        "beforeend",
+                        marked(node.text)
+                    );
+
+                }
+
+            }
+
+
+            continue;
+
+        }
+
+
+        /* =================================================
+           SHOW OUTFIT
+           ================================================= */
+
+        if(
+            node.type ===
+            "outfit"
+        ){
+
+            target.insertAdjacentHTML(
+                "beforeend",
+                renderShowOutfit()
+            );
+
+            continue;
+
+        }
+
+
+        /* =================================================
+           CONDITIONAL
+           ================================================= */
+
+        if(
+            node.type ===
+            "conditional"
+        ){
+
+            var choices =
+                getChoices();
+
+
+            var selected =
+                normalizeChoiceLetter(
+                    choices[node.id]
+                );
+
+
+            /*
+             * IMPORTANT:
+             *
+             * If the requested choice matches,
+             * render THEN.
+             *
+             * Otherwise render ELSE.
+             *
+             * This allows Chapter 2 to react to
+             * Chapter 1's saved choice.
+             */
+
+            if(
+                selected ===
+                node.letter
+            ){
+
+                var branchResult =
+                    executeNodes(
+                        node.thenNodes,
+                        target
+                    );
+
+
+                if(branchResult.stopped){
+
+                    result.stopped =
+                        true;
+
+                    result.hasProgress =
+                        true;
+
+                    return result;
+
+                }
+
+            }else{
+
+                var elseResult =
+                    executeNodes(
+                        node.elseNodes,
+                        target
+                    );
+
+
+                if(elseResult.stopped){
+
+                    result.stopped =
+                        true;
+
+                    result.hasProgress =
+                        true;
+
+                    return result;
+
+                }
+
+            }
+
+
+            continue;
+
+        }
+
+
+        /* =================================================
+           CHOICE
+           ================================================= */
+
+        if(
+            node.type ===
+            "choice"
+        ){
+
+            result.hasProgress =
+                true;
+
+
+            var savedChoices =
+                getChoices();
+
+
+            var savedLetter =
+                normalizeChoiceLetter(
+                    savedChoices[node.id]
+                );
+
+
+            /*
+             * CHOICE ALREADY MADE
+             */
+
+            if(savedLetter){
+
+                var savedBranch =
+                    node.branches[
+                        savedLetter
+                    ] || [];
+
+
+                var branchTarget =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                branchTarget.className =
+                    "story-choice-result";
+
+
+                branchTarget.setAttribute(
+                    "data-choice-result",
+                    node.id
+                );
+
+
+                target.appendChild(
+                    branchTarget
+                );
+
+
+                var branchResult =
+                    executeNodes(
+                        savedBranch,
+                        branchTarget
+                    );
+
+
+                if(branchResult.stopped){
+
+                    result.stopped =
+                        true;
+
+                    return result;
+
+                }
+
+
+                continue;
+
+            }
+
+
+            /*
+             * CHOICE NOT YET MADE
+             */
+
+            target.insertAdjacentHTML(
+                "beforeend",
+                renderChoice(node)
+            );
+
+
+            result.stopped =
+                true;
+
+
+            return result;
+
+        }
+
+
+        /* =================================================
+           GAME
+           ================================================= */
+
+        if(
+            node.type ===
+            "game"
+        ){
+
+            result.hasProgress =
+                true;
+
+
+            var completedGames =
+                getCompletedGames();
+
+
+            if(
+                completedGames[
+                    node.id
+                ]
+            ){
+
+                continue;
+
+            }
+
+
+            target.insertAdjacentHTML(
+                "beforeend",
+                renderGame(
+                    node.id
+                )
+            );
+
+
+            result.stopped =
+                true;
+
+
+            return result;
+
+        }
+
+
+        /* =================================================
+           NEXT CHAPTER
+           ================================================= */
+
+        if(
+            node.type ===
+            "next"
+        ){
+
+            result.hasProgress =
+                true;
+
+
+            /*
+             * At this exact point ALL choices already
+             * encountered in the chapter have been
+             * stored in localStorage.
+             *
+             * Therefore clicking NEXT can safely
+             * move to the next chapter.
+             */
+
+            target.insertAdjacentHTML(
+                "beforeend",
+                renderNext(
+                    node.line
+                )
+            );
+
+
+            result.stopped =
+                true;
+
+
+            return result;
+
+        }
+
+    }
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   RENDER CHOICE
+   ========================================================= */
+
+function renderChoice(node){
+
+    var html =
+        '<div class="story-choice" ' +
+        'data-choice="' +
+        escapeAttr(node.id) +
+        '">' +
+
+        '<div class="story-choice-title">' +
+        'What do you do?' +
+        '</div>';
+
+
+    for(
+        var i = 0;
+        i < node.options.length;
+        i++
+    ){
+
+        var option =
+            node.options[i];
+
+
+        html +=
+            '<button ' +
+            'type="button" ' +
+            'class="story-choice-button" ' +
+            'data-choice="' +
+            escapeAttr(node.id) +
+            '" ' +
+            'data-letter="' +
+            escapeAttr(option.letter) +
+            '">' +
+
+            escapeHtml(
+                option.letter +
+                " — " +
+                option.label
+            ) +
+
+            '</button>';
+
+    }
+
+
+    html +=
+        '</div>';
+
+
+    return html;
+
+}
+
+
+/* =========================================================
+   CHOICE CLICK
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        var target =
+            event.target;
+
+
+        if(
+            !target.classList.contains(
+                "story-choice-button"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        var id =
+            target.getAttribute(
+                "data-choice"
+            );
+
+
+        var letter =
+            normalizeChoiceLetter(
+                target.getAttribute(
+                    "data-letter"
+                )
+            );
+
+
+        if(
+            !id ||
+            !letter
+        ){
+
+            return;
+
+        }
+
+
+        var previousTop =
+            window.pageYOffset ||
+            document.documentElement.scrollTop ||
+            document.body.scrollTop ||
+            0;
+
+
+        /*
+         * SAVE FIRST.
+         *
+         * This is critical because the next render,
+         * conditional branches and NEXT chapter all
+         * depend on this state.
+         */
+
+        saveChoice(
+            id,
+            letter
+        );
+
+
+        /*
+         * Rebuild the reachable story.
+         */
+
+        renderProgress();
+
+
+        /*
+         * Scroll to the selected branch.
+         */
+
+        setTimeout(
+            function(){
+
+                var branchResult =
+                    content.querySelector(
+                        '[data-choice-result="' +
+                        cssEscape(id) +
+                        '"]'
+                    );
+
+
+                if(branchResult){
+
+                    scrollToElement(
+                        branchResult
+                    );
+
+                    return;
+
+                }
+
+
+                try{
+
+                    window.scrollTo(
+                        0,
+                        previousTop
+                    );
+
+                }catch(e){}
+
+            },
+            60
+        );
+
+    }
+);
+
+
+/* =========================================================
+   SAVE CHOICE
+   ========================================================= */
+
+function saveChoice(
+    id,
+    letter
+){
+
+    var choices =
+        getChoices();
+
+
+    choices[id] =
+        normalizeChoiceLetter(
+            letter
+        );
+
+
+    try{
+
+        localStorage.setItem(
+            storageKey,
+            JSON.stringify(
+                choices
+            )
+        );
+
+    }catch(e){}
+
+}
+
+
+/* =========================================================
+   NORMALIZE CHOICE LETTER
+   ========================================================= */
+
+function normalizeChoiceLetter(value){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .trim()
+        .toUpperCase();
+
+}
+
+
+/* =========================================================
+   GET CHOICES
+   ========================================================= */
+
+function getChoices(){
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                storageKey
+            );
+
+
+        if(!saved){
+
+            return {};
+
+        }
+
+
+        var parsed =
+            JSON.parse(
+                saved
+            );
+
+
+        if(
+            parsed &&
+            typeof parsed === "object" &&
+            !Array.isArray(parsed)
+        ){
+
+            return parsed;
+
+        }
+
+
+        return {};
+
+    }catch(e){
+
+        return {};
+
+    }
+
+}
+
+
+/* =========================================================
+   GAME COMPLETION
+   ========================================================= */
+
+function getCompletedGames(){
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                "ceeqwinn_completed_games"
+            );
+
+
+        if(!saved){
+
+            return {};
+
+        }
+
+
+        var parsed =
+            JSON.parse(
+                saved
+            );
+
+
+        return parsed &&
+               typeof parsed === "object"
+            ? parsed
+            : {};
+
+    }catch(e){
+
+        return {};
+
+    }
+
+}
+
+
+/* =========================================================
+   GAME BRIDGE
+   ========================================================= */
+
+function renderGame(gameId){
+
+    if(
+        gameId ===
+        "FASHION-01"
+    ){
+
+        return (
+
+            '<div class="story-game">' +
+
+                '<div class="story-game-title">' +
+                    'Lexis needs to choose her outfit.' +
+                '</div>' +
+
+                '<div class="story-game-text">' +
+                    'Choose how she wants to face the evening.' +
+                '</div>' +
+
+                '<button ' +
+                    'type="button" ' +
+                    'class="story-game-button" ' +
+                    'data-game="FASHION-01">' +
+                    'Open Fashion Game' +
+                '</button>' +
+
+            '</div>'
+
+        );
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =========================================================
+   GAME BUTTON CLICK
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        var target =
+            event.target;
+
+
+        if(
+            !target.classList.contains(
+                "story-game-button"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        var gameId =
+            target.getAttribute(
+                "data-game"
+            );
+
+
+        if(
+            gameId ===
+            "FASHION-01"
+        ){
+
+            window.location.href =
+                "/games/fashion-01.html";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   GAME RETURN SIGNAL
+   ========================================================= */
+
+window.addEventListener(
+    "pageshow",
+    function(){
+
+        var returnedGame =
+            "";
+
+
+        try{
+
+            returnedGame =
+                sessionStorage.getItem(
+                    "ceeqwinn_return_from_game"
+                ) || "";
+
+        }catch(e){
+
+            returnedGame =
+                "";
+
+        }
+
+
+        returnedGame =
+            String(
+                returnedGame
+            )
+            .trim()
+            .toUpperCase();
+
+
+        if(
+            returnedGame !==
+            "FASHION-01"
+        ){
+
+            return;
+
+        }
+
+
+        try{
+
+            sessionStorage.removeItem(
+                "ceeqwinn_return_from_game"
+            );
+
+        }catch(e){}
+
+
+        if(
+            storyNodes &&
+            storyNodes.length
+        ){
+
+            resumeAfterGameId =
+                returnedGame;
+
+            renderProgress();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SCROLL TO ELEMENT
+   ========================================================= */
+
+function scrollToElement(element){
+
+    if(!element){
+
+        return;
+
+    }
+
+
+    setTimeout(
+        function(){
+
+            try{
+
+                element.scrollIntoView({
+                    behavior:"smooth",
+                    block:"start"
+                });
+
+            }catch(e){
+
+                try{
+
+                    window.scrollTo(
+                        0,
+                        Math.max(
+                            0,
+                            element.getBoundingClientRect().top +
+                            (
+                                window.pageYOffset ||
+                                document.documentElement.scrollTop ||
+                                document.body.scrollTop ||
+                                0
+                            ) -
+                            20
+                        )
+                    );
+
+                }catch(ignore){}
+
+            }
+
+        },
+        100
+    );
+
+}
+
+
+/* =========================================================
+   SHOW OUTFIT
+   ========================================================= */
+
+function renderShowOutfit(){
+
+    var outfit =
+        "lexis_default";
+
+
+    try{
+
+        var saved =
+            localStorage.getItem(
+                "ceeqwinn_player_state"
+            );
+
+
+        if(saved){
+
+            var state =
+                JSON.parse(
+                    saved
+                );
+
+
+            if(
+                state &&
+                state.characters &&
+                state.characters.lexis &&
+                state.characters.lexis.currentOutfit
+            ){
+
+                outfit =
+                    state.characters.lexis.currentOutfit;
+
+            }
+
+        }
+
+    }catch(e){}
+
+
+    var images = {
+
+        lexis_default:
+            "/content/images/characters/lexis/outfits/lexis_default.png.jpeg",
+
+        lexis_red_dress:
+            "/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg",
+
+        lexis_black_dress:
+            "/content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg"
+
+    };
+
+
+    var src =
+        images[outfit] ||
+        images.lexis_default;
+
+
+    return (
+
+        '<div class="story-outfit">' +
+
+            '<img ' +
+                'src="' +
+                escapeAttr(src) +
+                '" ' +
+                'alt="Lexis outfit" ' +
+                'loading="lazy">' +
+
+        '</div>'
+
+    );
+
+}
+
+
+/* =========================================================
+   NEXT CHAPTER
+   ========================================================= */
+
+function renderNext(line){
+
+    /*
+     * Accept:
+     *
+     * [NEXT:discordant-descendants-chapter-2]
+     *
+     * [NEXT:discordant-descendants-chapter-2|Step into the gathering.]
+     *
+     * [NEXT: discordant-descendants-chapter-2 | Step into the gathering. ]
+     */
+
+    var cleaned =
+        cleanControlLine(line);
+
+
+    var match =
+        cleaned.match(
+            /^\[NEXT:\s*([^|\]]+?)\s*(?:\|\s*([^\]]+?)\s*)?\]$/i
+        );
+
+
+    if(!match){
+
+        return "";
+
+    }
+
+
+    var nextFile =
+        cleanPath(
+            match[1]
+        );
+
+
+    nextFile =
+        nextFile.replace(
+            /\.md$/i,
+            ""
+        );
+
+
+    var label =
+        match[2]
+        ? match[2].trim()
+        : "Enter the next chapter";
+
+
+    if(!nextFile){
+
+        return "";
+
+    }
+
+
+    return (
+
+        '<div class="story-next">' +
+
+            '<div class="story-next-text">' +
+                'The story continues...' +
+            '</div>' +
+
+            '<button ' +
+                'type="button" ' +
+                'class="story-next-button" ' +
+                'data-next="' +
+                escapeAttr(nextFile) +
+                '">' +
+
+                escapeHtml(label) +
+
+            '</button>' +
+
+        '</div>'
+
+    );
+
+}
+
+
+/* =========================================================
+   NEXT CHAPTER CLICK
+   ========================================================= */
+
+document.addEventListener(
+    "click",
+    function(event){
+
+        var target =
+            event.target;
+
+
+        if(
+            !target.classList.contains(
+                "story-next-button"
+            )
+        ){
+
+            return;
+
+        }
+
+
+        if(target.disabled){
+
+            return;
+
+        }
+
+
+        var nextFile =
+            target.getAttribute(
+                "data-next"
+            );
+
+
+        if(!nextFile){
+
+            return;
+
+        }
+
+
+        nextFile =
+            cleanPath(
+                nextFile
+            );
+
+
+        nextFile =
+            nextFile.replace(
+                /\.md$/i,
+                ""
+            );
+
+
+        /*
+         * The story history is NOT cleared here.
+         *
+         * That is the important part.
+         *
+         * Chapter 2 will use the exact same
+         * ceeqwinn_story_history_<base-story> key.
+         */
+
+        window.location.href =
+            "article.html?file=" +
+            encodeURIComponent(
+                nextFile
+            );
+
+    }
+);
+
+
+/* =========================================================
+   RESET STORY
+   ========================================================= */
+
+reset.onclick =
+    function(){
+
+        try{
+
+            localStorage.removeItem(
+                storageKey
+            );
+
+            localStorage.removeItem(
+                "ceeqwinn_completed_games"
+            );
+
+        }catch(e){}
+
+
+        window.location.reload();
+
+    };
+
+
+/* =========================================================
+   STORY ID
+   =========================================================
+   
+   This is the bridge between chapters.
+   
+   Example:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   all become:
+   
+   discordant-descendants
+   ========================================================= */
+
+function getStoryId(path){
+
+    path =
+        String(path || "");
+
+
+    path =
+        path.replace(
+            /\.md$/i,
+            ""
+        );
+
+
+    /*
+     * Remove chapter numbering from the END only.
+     *
+     * This means:
+     *
+     * discordant-descendants-chapter-2
+     *
+     * becomes:
+     *
+     * discordant-descendants
+     *
+     * while unrelated names containing the word
+     * "chapter" elsewhere remain untouched.
+     */
+
+    path =
+        path.replace(
+            /-chapter-\d+$/i,
+            ""
+        );
+
+
+    return path;
+
+}
+
+
+/* =========================================================
+   MEDIA PATH
+   ========================================================= */
+
+function mediaPath(src){
+
+    if(!src){
+
+        return "";
+
+    }
+
+
+    src =
+        src.trim();
+
+
+    if(
+        /^https?:\/\//i.test(src) ||
+        /^data:/i.test(src) ||
+        src.charAt(0) === "/"
+    ){
+
+        return src;
+
+    }
+
+
+    while(
+        src.indexOf("../") === 0
+    ){
+
+        src =
+            src.substring(3);
+
+    }
+
+
+    while(
+        src.indexOf("./") === 0
+    ){
+
+        src =
+            src.substring(2);
+
+    }
+
+
+    if(
+        src.indexOf("content/") === 0
+    ){
+
+        return "/" + src;
+
+    }
+
+
+    return "/content/images/" + src;
+
+}
+
+
+/* =========================================================
+   FIX MEDIA
+   ========================================================= */
+
+function fixMedia(){
+
+    var images =
+        content.getElementsByTagName(
+            "img"
+        );
+
+    var videos =
+        content.getElementsByTagName(
+            "video"
+        );
+
+    var audios =
+        content.getElementsByTagName(
+            "audio"
+        );
+
+
+    var i;
+
+
+    for(
+        i = 0;
+        i < images.length;
+        i++
+    ){
+
+        var imageSrc =
+            images[i].getAttribute(
+                "src"
+            );
+
+
+        if(imageSrc){
+
+            images[i].src =
+                mediaPath(
+                    imageSrc
+                );
+
+        }
+
+
+        images[i].setAttribute(
+            "loading",
+            "lazy"
+        );
+
+    }
+
+
+    for(
+        i = 0;
+        i < videos.length;
+        i++
+    ){
+
+        var videoSrc =
+            videos[i].getAttribute(
+                "src"
+            );
+
+
+        if(videoSrc){
+
+            videos[i].src =
+                mediaPath(
+                    videoSrc
+                );
+
+        }
+
+
+        videos[i].controls =
+            true;
+
+    }
+
+
+    for(
+        i = 0;
+        i < audios.length;
+        i++
+    ){
+
+        var audioSrc =
+            audios[i].getAttribute(
+                "src"
+            );
+
+
+        if(audioSrc){
+
+            audios[i].src =
+                mediaPath(
+                    audioSrc
+                );
+
+        }
+
+
+        audios[i].controls =
+            true;
+
+    }
+
+}
+
+
+/* =========================================================
+   EXTRA MEDIA
+   ========================================================= */
+
+function renderExtraMedia(data){
+
+    var html = "";
+
+
+    if(data.video){
+
+        html +=
+
+            '<h2>Video</h2>' +
+
+            '<video ' +
+                'controls ' +
+                'preload="metadata">' +
+
+                '<source src="' +
+                    escapeAttr(
+                        mediaPath(
+                            data.video
+                        )
+                    ) +
+                '">' +
+
+            '</video>';
+
+    }
+
+
+    if(data.audio){
+
+        html +=
+
+            '<h2>Audio</h2>' +
+
+            '<audio ' +
+                'controls ' +
+                'preload="metadata">' +
+
+                '<source src="' +
+                    escapeAttr(
+                        mediaPath(
+                            data.audio
+                        )
+                    ) +
+                '">' +
+
+            '</audio>';
+
+    }
+
+
+    media.innerHTML =
+        html;
+
+}
+
+
+/* =========================================================
+   CLEAN PATH
+   ========================================================= */
+
+function cleanPath(path){
+
+    path =
+        String(path || "")
+        .replace(
+            /\\/g,
+            "/"
+        )
+        .replace(
+            /^\/+/,
+            ""
+        );
+
+
+    var parts =
+        path.split("/");
+
+
+    var clean = [];
+
+
+    for(
+        var i = 0;
+        i < parts.length;
+        i++
+    ){
+
+        if(
+            parts[i] &&
+            parts[i] !== "." &&
+            parts[i] !== ".."
+        ){
+
+            clean.push(
+                parts[i]
+            );
+
+        }
+
+    }
+
+
+    return clean.join("/");
+
+}
+
+
+/* =========================================================
+   HTML ESCAPING
+   ========================================================= */
+
+function escapeHtml(value){
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#39;"
+        );
+
+}
+
+
+function escapeAttr(value){
+
+    return escapeHtml(
+        value
+    );
+
+}
+
+
+/* =========================================================
+   SIMPLE CSS ESCAPE
+   ========================================================= */
+
+function cssEscape(value){
+
+    return String(value)
+
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+
+        .replace(
+            /"/g,
+            '\\"'
+        );
+
+}
 
 </script>
 
