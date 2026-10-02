@@ -7,6 +7,34 @@ title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 ---
 
+---
+
+## ---
+
+title: DISCORDANT DESCENDANTS — CHAPTER 2
+
+---
+
+---
+
+## title: DISCORDANT DESCENDANTS — CHAPTER 2
+
+## ---
+
+title: DISCORDANT DESCENDANTS — CHAPTER 2
+
+---
+
+## title: DISCORDANT DESCENDANTS — CHAPTER 2
+
+---
+
+# ---
+
+title: DISCORDANT DESCENDANTS — CHAPTER 2
+
+---
+
 # DISCORDANT DESCENDANTS
 
 *Chapter 2 — The Gathering*
@@ -89,7 +117,9 @@ Someone knew about the Okoye family.
 
 And now her father knew that she knew.
 
-Tomorrow's gathering suddenly felt less like a celebration—and more like a trap.
+Tomorrow's gathering suddenly felt less like a celebration—
+
+and more like a trap.
 
 [ENDIF]
 
@@ -229,7 +259,9 @@ Lexis's heart skipped.
 
 Her father slowly reached for her hand.
 
-And for the first time that night—he looked afraid.
+And for the first time that night—
+
+he looked afraid.
 
 Golden lights lined the enormous driveway.
 
@@ -359,7 +391,9 @@ Lexis's heart skipped.
 
 Her father slowly reached for her hand.
 
-And for the first time that night—he looked afraid.
+And for the first time that night—
+
+he looked afraid.
 
 ---
 
@@ -387,7 +421,9 @@ The man raised an old envelope.
 
 It was black.
 
-And on the front—was the crest.
+And on the front—
+
+was the crest.
 
 The same crest Lexis had seen in her father's study.
 
@@ -503,9 +539,7 @@ The elderly man studied her.
 
 “Lexis Azunna.”
 
-“Yes?”
-
-“You carry the bloodline of the First Heir.”
+“Yes?”“You carry the bloodline of the First Heir.”
 
 A murmur moved through the room.
 
@@ -525,7 +559,9 @@ The woman in the photograph was the same mysterious person from Sirena's photogr
 
 The woman whose face had been deliberately obscured.
 
-Except this time—her face was visible.
+Except this time—
+
+her face was visible.
 
 Lexis's breath caught.
 
@@ -651,7 +687,9 @@ Watching her.
 
 Judging her.
 
-Or perhaps—waiting for her.
+Or perhaps—
+
+waiting for her.
 
 Lexis looked toward the woman in green.
 
@@ -905,9 +943,7 @@ A small metal key.
 
 ---
 
-## THE KEY
-
-Lexis held the key between two fingers.
+## THE KEYLexis held the key between two fingers.
 
 It was old.
 
@@ -975,7 +1011,9 @@ Sirena looked frightened for the first time.
 
 “The one your grandfather sealed.”
 
-Before Lexis could respond—the lights went out.
+Before Lexis could respond—
+
+the lights went out.
 
 The mansion fell completely dark.
 
@@ -1003,17 +1041,20 @@ Sirena looked back.
 
 Neither of them spoke.
 
-Then—a lock clicked somewhere beneath the floor.
+Then—
+
+a lock clicked somewhere beneath the floor.
 
 Lexis looked down at the key in her hand.
 
 The crest began to glow faintly beneath the darkness.
 
-And somewhere inside the mansion—something opened.
+And somewhere inside the mansion—
+
+something opened.
 
 ---
 
 ## END OF CHAPTER 2
 
 [NEXT:discordant-descendants-chapter-3|Continue to Chapter 3]
-
