@@ -1,29 +1,15 @@
 ---
 title: DISCORDANT DESCENDANTS — CHAPTER 2
 ---
-
-
----
-
 title: DISCORDANT DESCENDANTS — CHAPTER 2
 
 ---
 
 ---
 
-## title: DISCORDANT DESCENDANTS — CHAPTER 2
+---
 
 ## ---
-
-title: DISCORDANT DESCENDANTS — CHAPTER 2
-
----
-
-## title: DISCORDANT DESCENDANTS — CHAPTER 2
-
----
-
-# ---
 
 title: DISCORDANT DESCENDANTS — CHAPTER 2
 
