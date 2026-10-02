@@ -10,10 +10,6 @@
 
 <style>
 
-/* =========================================================
-   BASE
-   ========================================================= */
-
 body{
     max-width:800px;
     margin:auto;
@@ -87,136 +83,6 @@ h2{
 #content td{
     padding:8px;
     border:1px solid #ccc;
-}
-
-
-/* =========================================================
-   CEEQWINN THEATRE
-   ========================================================= */
-
-#theatre{
-    width:100%;
-    margin:25px 0 35px;
-    background:#151217;
-    border-radius:16px;
-    overflow:hidden;
-    box-shadow:0 12px 30px rgba(0,0,0,.12);
-}
-
-.theatre-stage{
-    position:relative;
-    width:100%;
-    height:0;
-    padding-top:56.25%;
-    overflow:hidden;
-    background:
-        linear-gradient(
-            135deg,
-            #18141a,
-            #28212b
-        );
-}
-
-.theatre-stage-layer{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    object-position:center center;
-    opacity:0;
-    transition:
-        opacity .55s ease,
-        transform .9s ease;
-    transform:scale(1);
-}
-
-.theatre-stage-layer.is-visible{
-    opacity:1;
-}
-
-.theatre-stage-layer.theatre-settle{
-    transform:scale(1.015);
-}
-
-.theatre-empty{
-    position:absolute;
-    top:50%;
-    left:50%;
-    width:90%;
-    transform:translate(-50%,-50%);
-    text-align:center;
-    color:rgba(255,255,255,.72);
-    font-size:.95rem;
-    letter-spacing:.03em;
-}
-
-.theatre-caption{
-    padding:10px 15px;
-    color:rgba(255,255,255,.78);
-    font-size:.78rem;
-    letter-spacing:.08em;
-    text-transform:uppercase;
-    background:rgba(0,0,0,.25);
-}
-
-.theatre-caption:empty{
-    display:none;
-}
-
-.theatre-reading-glass{
-    margin-top:-18px;
-    position:relative;
-    z-index:2;
-    padding:20px 18px 5px;
-    border-radius:16px 16px 0 0;
-    background:rgba(250,250,250,.96);
-}
-
-.theatre-mode-choice #theatre{
-    box-shadow:0 14px 35px rgba(0,0,0,.18);
-}
-
-.theatre-mode-game #theatre{
-    box-shadow:0 14px 35px rgba(0,0,0,.22);
-}
-
-.theatre-mode-result #theatre{
-    box-shadow:0 12px 30px rgba(0,0,0,.14);
-}
-
-.theatre-hidden{
-    display:none !important;
-}
-
-
-/* =========================================================
-   THEATRE VISUAL POSITIONING
-   ========================================================= */
-
-.theatre-shot-full .theatre-stage-layer{
-    object-position:center center;
-}
-
-.theatre-shot-medium .theatre-stage-layer{
-    object-position:center center;
-}
-
-.theatre-shot-close .theatre-stage-layer{
-    object-position:center center;
-}
-
-.theatre-textsafe-bottom{
-    --theatre-text-safe:bottom;
-}
-
-.theatre-textsafe-left{
-    --theatre-text-safe:left;
-}
-
-.theatre-textsafe-right{
-    --theatre-text-safe:right;
 }
 
 
@@ -406,19 +272,6 @@ h2{
         font-size:1.8rem;
     }
 
-    .theatre-stage{
-        padding-top:62%;
-    }
-
-    .theatre-caption{
-        font-size:.7rem;
-    }
-
-    .theatre-reading-glass{
-        padding-left:14px;
-        padding-right:14px;
-    }
-
     .story-choice-button{
         font-size:16px;
         padding:15px;
@@ -432,24 +285,6 @@ h2{
     .story-game-button{
         width:100%;
         box-sizing:border-box;
-    }
-
-}
-
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media(prefers-reduced-motion:reduce){
-
-    .theatre-stage-layer{
-        transition:none;
-        transform:none !important;
-    }
-
-    html{
-        scroll-behavior:auto;
     }
 
 }
@@ -469,66 +304,11 @@ h2{
 
 <div id="status"></div>
 
+<div id="content"></div>
 
-<!-- =======================================================
-     CEEQWINN VISUAL THEATRE
-     ======================================================= -->
-
-<section
-    id="theatre"
-    aria-label="Story Theatre"
->
-
-    <div
-        class="theatre-stage"
-        id="theatreStage"
-    >
-
-        <img
-            id="theatreLayerA"
-            class="theatre-stage-layer"
-            alt=""
-            decoding="async"
-        >
-
-        <img
-            id="theatreLayerB"
-            class="theatre-stage-layer"
-            alt=""
-            decoding="async"
-        >
-
-        <div
-            id="theatreEmpty"
-            class="theatre-empty"
-        >
-            The story world will appear here.
-        </div>
-
-    </div>
-
-    <div
-        id="theatreCaption"
-        class="theatre-caption"
-        aria-live="polite"
-    ></div>
-
-</section>
-
-
-<div
-    id="content"
-    class="theatre-reading-glass"
-></div>
-
-
-<button
-    id="storyReset"
-    type="button"
->
+<button id="storyReset" type="button">
     ↺ Reset Story
 </button>
-
 
 <div id="media"></div>
 
@@ -565,199 +345,6 @@ var reset =
 
 
 /* =========================================================
-   THEATRE ELEMENTS
-   ========================================================= */
-
-var theatre =
-    document.getElementById("theatre");
-
-var theatreStage =
-    document.getElementById("theatreStage");
-
-var theatreLayerA =
-    document.getElementById("theatreLayerA");
-
-var theatreLayerB =
-    document.getElementById("theatreLayerB");
-
-var theatreEmpty =
-    document.getElementById("theatreEmpty");
-
-var theatreCaption =
-    document.getElementById("theatreCaption");
-
-
-/* =========================================================
-   THEATRE STATE
-   ========================================================= */
-
-var theatreState = {
-
-    activeLayer:"A",
-
-    sceneId:"",
-
-    imageSrc:"",
-
-    shot:"FULL",
-
-    textSafe:"BOTTOM",
-
-    transition:"crossfade",
-
-    beat:"",
-
-    focus:""
-
-};
-
-
-/* =========================================================
-   CEEQWINN THEATRE IMAGE LIBRARY
-   =========================================================
-
-   These are the image names you already supplied.
-
-   They are deliberately kept as simple files.
-
-   The Markdown can later say:
-
-   [SCENE:morning-after|A_beautiful_young_woman_full_b.jpeg]
-
-   or:
-
-   [SCENE:morning-after]
-
-   and the Theatre can resolve the image.
-
-   No character/scene classification is required.
-   ========================================================= */
-
-var THEATRE_ASSETS = {
-
-    "2D_cartoon_Disney_character_di (16).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di (16).jpeg",
-
-    "2D_cartoon_Disney_character_di (17).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di (17).jpeg",
-
-    "2D_cartoon_Disney_character_di (2).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di (2).jpeg",
-
-    "2D_cartoon_Disney_character_di (3).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di (3).jpeg",
-
-    "2D_cartoon_Disney_character_di (4).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di (4).jpeg",
-
-    "2D_cartoon_Disney_character_di (6).jpeg":
-        "/content/images/2D_cartoon_Disney_character_di (6).jpeg",
-
-    "678241180_122126493969155968_6391289786818756612_n.jpg":
-        "/content/images/678241180_122126493969155968_6391289786818756612_n.jpg",
-
-    "A_beautiful_18-year-old_young_ (16).jpeg":
-        "/content/images/A_beautiful_18-year-old_young_ (16).jpeg",
-
-    "A_beautiful_young_woman_full_b-1.jpeg":
-        "/content/images/A_beautiful_young_woman_full_b-1.jpeg",
-
-    "A_beautiful_young_woman_full_b-2.jpeg":
-        "/content/images/A_beautiful_young_woman_full_b-2.jpeg",
-
-    "A_beautiful_young_woman_full_b.jpeg":
-        "/content/images/A_beautiful_young_woman_full_b.jpeg",
-
-    "Donald Duck Money GIF-1.gif":
-        "/content/images/Donald Duck Money GIF-1.gif",
-
-    "Donald Duck Money GIF-2.gif":
-        "/content/images/Donald Duck Money GIF-2.gif",
-
-    "Donald Duck Money GIF-3.gif":
-        "/content/images/Donald Duck Money GIF-3.gif",
-
-    "Donald Duck Money GIF.gif":
-        "/content/images/Donald Duck Money GIF.gif",
-
-    "Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg":
-        "/content/images/Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg",
-
-    "Happy Despicable Me GIF-1.gif":
-        "/content/images/Happy Despicable Me GIF-1.gif",
-
-    "Happy Despicable Me GIF-2.gif":
-        "/content/images/Happy Despicable Me GIF-2.gif",
-
-    "Happy Despicable Me GIF.gif":
-        "/content/images/Happy Despicable Me GIF.gif",
-
-    "Im Free Robin Williams GIF-1.gif":
-        "/content/images/Im Free Robin Williams GIF-1.gif",
-
-    "Im Free Robin Williams GIF.gif":
-        "/content/images/Im Free Robin Williams GIF.gif",
-
-    "Luxurious_royal_theatre_curtai (1).jpeg":
-        "/content/images/Luxurious_royal_theatre_curtai (1).jpeg",
-
-    "Luxurious_royal_theatre_curtai (4).jpeg":
-        "/content/images/Luxurious_royal_theatre_curtai (4).jpeg",
-
-    "Shocked Super Mario GIF by Universal Pictures-1.gif":
-        "/content/images/Shocked Super Mario GIF by Universal Pictures-1.gif",
-
-    "IMG_1614278676128I.jpg":
-        "/content/images/IMG_1614278676128I.jpg",
-
-    "Lexis_Azunna_militarily.jpg.jpeg":
-        "/content/images/characters/lexis/outfits/Lexis_Azunna_militarily.jpg.jpeg",
-
-    "Lexis_Azunna_ministry.jpg.jpeg":
-        "/content/images/characters/lexis/outfits/Lexis_Azunna_ministry.jpg.jpeg",
-
-    "Lexis_Azunna_soft.jpg.jpeg":
-        "/content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg",
-
-    "Lexis_Azunna_street.jpg.jpeg":
-        "/content/images/characters/lexis/outfits/Lexis_Azunna_street.jpg.jpeg",
-
-    "lexis_black_dress.png.jpeg":
-        "/content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg",
-
-    "lexis_default.png":
-        "/content/images/characters/lexis/outfits/lexis_default.png",
-
-    "lexis_default.png.jpeg":
-        "/content/images/characters/lexis/outfits/lexis_default.png.jpeg",
-
-    "lexis_red_dress.png.jpeg":
-        "/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg"
-
-};
-
-
-/* =========================================================
-   OPTIONAL SCENE ALIASES
-   =========================================================
-
-   Leave these empty for now.
-
-   Once the Markdown is supplied, we can connect exact
-   story moments to the exact image filenames without
-   changing the engine again.
-
-   Example:
-
-   "morning-after-A":
-       "A_beautiful_young_woman_full_b.jpeg"
-
-   ========================================================= */
-
-var THEATRE_SCENE_ASSETS = {};
-
-
-/* =========================================================
    ARTICLE FILE
    ========================================================= */
 
@@ -781,6 +368,20 @@ returnGame =
 
 /* =========================================================
    STORY ID
+   =========================================================
+   
+   ALL CHAPTERS OF THE SAME STORY MUST USE
+   THE SAME STORAGE KEY.
+   
+   Examples:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   ALL become:
+   
+   discordant-descendants
    ========================================================= */
 
 var storyId =
@@ -839,8 +440,6 @@ function loadStory(){
 
     cover.style.display =
         "none";
-
-    resetTheatre();
 
 
     var xhr =
@@ -943,11 +542,24 @@ function buildStory(text){
     }
 
 
+    /*
+     * Convert Markdown into the internal story-node
+     * structure.
+     *
+     * This is what allows ordinary Markdown,
+     * choices, conditions, games and NEXT markers
+     * to coexist.
+     */
+
     storyNodes =
         parseStoryNodes(
             data.body.split(/\r?\n/)
         );
 
+
+    /*
+     * Game return support.
+     */
 
     if(returnGame){
 
@@ -977,14 +589,12 @@ function buildStory(text){
 function parseFrontmatter(text){
 
     var data = {
-
         title:"",
         cover:"",
         credits:"",
         video:"",
         audio:"",
         body:text
-
     };
 
 
@@ -1027,13 +637,11 @@ function parseFrontmatter(text){
             "title"
         );
 
-
     data.cover =
         frontValue(
             front,
             "cover"
         );
-
 
     data.credits =
         frontValue(
@@ -1041,13 +649,11 @@ function parseFrontmatter(text){
             "credits"
         );
 
-
     data.video =
         frontValue(
             front,
             "video"
         );
-
 
     data.audio =
         frontValue(
@@ -1229,6 +835,16 @@ function isShowOutfitMarker(line){
 }
 
 
+/*
+ * NEXT is deliberately tolerant:
+ *
+ * [NEXT:file]
+ * [NEXT:file|Label]
+ * [NEXT: file | Label]
+ *
+ * all work.
+ */
+
 function isNextMarker(line){
 
     return /^\[NEXT:\s*[^|\]]+(?:\|[^\]]+)?\s*\]$/i.test(
@@ -1275,175 +891,6 @@ function isEndChoiceMarker(line){
 
 
 /* =========================================================
-   THEATRE MARKER TESTS
-   ========================================================= */
-
-function isSceneMarker(line){
-
-    return /^\[SCENE:\s*[^|\]]+(?:\|[^\]]+)?\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-function isBeatMarker(line){
-
-    return /^\[BEAT:\s*[^\]]+\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-function isShotMarker(line){
-
-    return /^\[SHOT:\s*(FULL|MEDIUM|CLOSE)\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-function isTextSafeMarker(line){
-
-    return /^\[TEXTSAFE:\s*(BOTTOM|LEFT|RIGHT)\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-function isTransitionMarker(line){
-
-    return /^\[TRANSITION:\s*(CUT|FADE|CROSSFADE|SLIDE-UP|SLIDE-DOWN|SLIDE-LEFT|SLIDE-RIGHT|SOFT-RISE|SUBTLE-ZOOM|DISSOLVE|ATMOSPHERIC-COLOR-TRANSITION)\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-function isFocusMarker(line){
-
-    return /^\[FOCUS:\s*[^\]]+\s*\]$/i.test(
-        cleanControlLine(line)
-    );
-
-}
-
-
-/* =========================================================
-   THEATRE MARKER READERS
-   ========================================================= */
-
-function getSceneDirective(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[SCENE:\s*([^|\]]+?)(?:\|([^\]]+?))?\s*\]$/i
-        );
-
-
-    if(!match){
-
-        return {
-            id:"",
-            image:""
-        };
-
-    }
-
-
-    return {
-
-        id:match[1].trim(),
-
-        image:
-            match[2]
-            ? match[2].trim()
-            : ""
-
-    };
-
-}
-
-
-function getBeatId(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[BEAT:\s*([^\]]+?)\s*\]$/i
-        );
-
-
-    return match
-        ? match[1].trim()
-        : "";
-
-}
-
-
-function getShotMode(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[SHOT:\s*(FULL|MEDIUM|CLOSE)\s*\]$/i
-        );
-
-
-    return match
-        ? match[1].toUpperCase()
-        : "FULL";
-
-}
-
-
-function getTextSafeMode(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[TEXTSAFE:\s*(BOTTOM|LEFT|RIGHT)\s*\]$/i
-        );
-
-
-    return match
-        ? match[1].toUpperCase()
-        : "BOTTOM";
-
-}
-
-
-function getTransitionMode(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[TRANSITION:\s*(.+?)\s*\]$/i
-        );
-
-
-    return match
-        ? match[1].toUpperCase()
-        : "CROSSFADE";
-
-}
-
-
-function getFocusId(line){
-
-    var match =
-        cleanControlLine(line).match(
-            /^\[FOCUS:\s*([^\]]+?)\s*\]$/i
-        );
-
-
-    return match
-        ? match[1].trim()
-        : "";
-
-}
-
-
-/* =========================================================
    GET GAME ID
    ========================================================= */
 
@@ -1480,11 +927,8 @@ function parseStoryNodes(lines){
         if(normal.length){
 
             result.push({
-
                 type:"markdown",
-
                 text:normal.join("\n")
-
             });
 
             normal = [];
@@ -1562,11 +1006,8 @@ function parseStoryNodes(lines){
 
 
             result.push({
-
                 type:"game",
-
                 id:getGameId(line)
-
             });
 
 
@@ -1585,9 +1026,7 @@ function parseStoryNodes(lines){
 
 
             result.push({
-
                 type:"outfit"
-
             });
 
 
@@ -1606,11 +1045,8 @@ function parseStoryNodes(lines){
 
 
             result.push({
-
                 type:"next",
-
                 line:cleanControlLine(line)
-
             });
 
 
@@ -1621,163 +1057,10 @@ function parseStoryNodes(lines){
         }
 
 
-        /* THEATRE SCENE */
-
-        if(isSceneMarker(line)){
-
-            flushNormal();
-
-
-            var scene =
-                getSceneDirective(line);
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"scene",
-
-                id:scene.id,
-
-                image:scene.image
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        /* THEATRE BEAT */
-
-        if(isBeatMarker(line)){
-
-            flushNormal();
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"beat",
-
-                id:getBeatId(line)
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        /* THEATRE SHOT */
-
-        if(isShotMarker(line)){
-
-            flushNormal();
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"shot",
-
-                mode:getShotMode(line)
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        /* THEATRE TEXT SAFE */
-
-        if(isTextSafeMarker(line)){
-
-            flushNormal();
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"textsafe",
-
-                mode:getTextSafeMode(line)
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        /* THEATRE TRANSITION */
-
-        if(isTransitionMarker(line)){
-
-            flushNormal();
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"transition",
-
-                mode:getTransitionMode(line)
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        /* THEATRE FOCUS */
-
-        if(isFocusMarker(line)){
-
-            flushNormal();
-
-
-            result.push({
-
-                type:"theatre",
-
-                directive:"focus",
-
-                id:getFocusId(line)
-
-            });
-
-
-            i++;
-
-            continue;
-
-        }
-
-
-        /* STRUCTURAL MARKERS */
+        /*
+         * These markers belong to a structure already
+         * being parsed. Ignore them here.
+         */
 
         if(
             isElseMarker(line) ||
@@ -1827,14 +1110,11 @@ function parseChoiceNode(
     if(!match){
 
         return {
-
             node:{
                 type:"markdown",
                 text:""
             },
-
             next:start + 1
-
         };
 
     }
@@ -1842,6 +1122,7 @@ function parseChoiceNode(
 
     var id =
         match[1];
+
 
     var options = [];
 
@@ -1892,6 +1173,10 @@ function parseChoiceNode(
             cleanControlLine(line);
 
 
+        /*
+         * CONSEQUENCE
+         */
+
         var consequence =
             cleaned.match(
                 /^\[CONSEQUENCE:\s*([A-Z])\s*\]$/i
@@ -1916,9 +1201,17 @@ function parseChoiceNode(
         }
 
 
+        /*
+         * ENDCHOICE
+         *
+         * It closes the current branch, NOT the
+         * entire A/B/C collection.
+         */
+
         if(isEndChoiceMarker(line)){
 
             saveBranch();
+
 
             currentLetter =
                 null;
@@ -1931,6 +1224,10 @@ function parseChoiceNode(
 
         }
 
+
+        /*
+         * OPTIONS
+         */
 
         var option =
             cleaned.match(
@@ -1945,13 +1242,11 @@ function parseChoiceNode(
         ){
 
             options.push({
-
                 letter:
                     option[1].toUpperCase(),
 
                 label:
                     option[2]
-
             });
 
 
@@ -1961,6 +1256,10 @@ function parseChoiceNode(
 
         }
 
+
+        /*
+         * AFTER A CLOSED BRANCH
+         */
 
         if(
             currentLetter === null &&
@@ -1976,6 +1275,10 @@ function parseChoiceNode(
             }
 
 
+            /*
+             * These belong to the outer story parser.
+             */
+
             if(
                 isChoiceStart(line) ||
                 isGameMarker(line) ||
@@ -1989,10 +1292,19 @@ function parseChoiceNode(
             }
 
 
+            /*
+             * Normal Markdown also means the choice
+             * block has ended.
+             */
+
             break;
 
         }
 
+
+        /*
+         * CURRENT BRANCH CONTENT
+         */
 
         if(
             currentLetter !== null
@@ -2008,21 +1320,21 @@ function parseChoiceNode(
     }
 
 
+    /*
+     * Save a final branch if the author omitted
+     * [ENDCHOICE].
+     */
+
     saveBranch();
 
 
     return {
 
         node:{
-
             type:"choice",
-
             id:id,
-
             options:options,
-
             branches:branches
-
         },
 
         next:i
@@ -2052,14 +1364,11 @@ function parseConditionalNode(
     if(!first){
 
         return {
-
             node:{
                 type:"markdown",
                 text:""
             },
-
             next:start + 1
-
         };
 
     }
@@ -2152,11 +1461,8 @@ function parseConditionalNode(
     return {
 
         node:{
-
             type:"conditional",
-
             id:id,
-
             letter:letter,
 
             thenNodes:
@@ -2168,7 +1474,6 @@ function parseConditionalNode(
                 parseStoryNodes(
                     elseLines
                 )
-
         },
 
         next:i
@@ -2210,6 +1515,10 @@ function renderProgress(){
     fixMedia();
 
 
+    /*
+     * GAME RETURN
+     */
+
     if(resumeAfterGameId){
 
         var gameAnchor =
@@ -2226,8 +1535,6 @@ function renderProgress(){
 
 
         if(gameAnchor){
-
-            setTheatreMode("result");
 
             scrollToElement(
                 gameAnchor
@@ -2250,11 +1557,8 @@ function executeNodes(
 ){
 
     var result = {
-
         stopped:false,
-
         hasProgress:false
-
     };
 
 
@@ -2318,24 +1622,6 @@ function executeNodes(
 
 
         /* =================================================
-           THEATRE DIRECTIVES
-           ================================================= */
-
-        if(
-            node.type ===
-            "theatre"
-        ){
-
-            applyTheatreDirective(
-                node
-            );
-
-            continue;
-
-        }
-
-
-        /* =================================================
            SHOW OUTFIT
            ================================================= */
 
@@ -2372,6 +1658,18 @@ function executeNodes(
                     choices[node.id]
                 );
 
+
+            /*
+             * IMPORTANT:
+             *
+             * If the requested choice matches,
+             * render THEN.
+             *
+             * Otherwise render ELSE.
+             *
+             * This allows Chapter 2 to react to
+             * Chapter 1's saved choice.
+             */
 
             if(
                 selected ===
@@ -2449,6 +1747,10 @@ function executeNodes(
                 );
 
 
+            /*
+             * CHOICE ALREADY MADE
+             */
+
             if(savedLetter){
 
                 var savedBranch =
@@ -2500,8 +1802,9 @@ function executeNodes(
             }
 
 
-            setTheatreMode("choice");
-
+            /*
+             * CHOICE NOT YET MADE
+             */
 
             target.insertAdjacentHTML(
                 "beforeend",
@@ -2546,9 +1849,6 @@ function executeNodes(
             }
 
 
-            setTheatreMode("game");
-
-
             target.insertAdjacentHTML(
                 "beforeend",
                 renderGame(
@@ -2579,8 +1879,14 @@ function executeNodes(
                 true;
 
 
-            setTheatreMode("result");
-
+            /*
+             * At this exact point ALL choices already
+             * encountered in the chapter have been
+             * stored in localStorage.
+             *
+             * Therefore clicking NEXT can safely
+             * move to the next chapter.
+             */
 
             target.insertAdjacentHTML(
                 "beforeend",
@@ -2601,501 +1907,7 @@ function executeNodes(
     }
 
 
-    setTheatreMode("reading");
-
-
     return result;
-
-}
-
-
-/* =========================================================
-   THEATRE DIRECTIVE EXECUTION
-   ========================================================= */
-
-function applyTheatreDirective(node){
-
-    if(!node){
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "scene"
-    ){
-
-        setTheatreScene(
-            node.id,
-            node.image
-        );
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "beat"
-    ){
-
-        theatreState.beat =
-            node.id || "";
-
-        theatre.className =
-            "theatre-mode-reading";
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "shot"
-    ){
-
-        setTheatreShot(
-            node.mode
-        );
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "textsafe"
-    ){
-
-        setTheatreTextSafe(
-            node.mode
-        );
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "transition"
-    ){
-
-        theatreState.transition =
-            node.mode || "CROSSFADE";
-
-        return;
-
-    }
-
-
-    if(
-        node.directive ===
-        "focus"
-    ){
-
-        theatreState.focus =
-            node.id || "";
-
-        return;
-
-    }
-
-}
-
-
-/* =========================================================
-   THEATRE SCENE
-   ========================================================= */
-
-function setTheatreScene(
-    sceneId,
-    explicitImage
-){
-
-    sceneId =
-        String(sceneId || "")
-        .trim();
-
-
-    theatreState.sceneId =
-        sceneId;
-
-
-    var image =
-        "";
-
-
-    if(explicitImage){
-
-        image =
-            resolveTheatreAsset(
-                explicitImage
-            );
-
-    }
-
-
-    if(!image && sceneId){
-
-        image =
-            resolveTheatreAsset(
-                THEATRE_SCENE_ASSETS[
-                    sceneId
-                ]
-            );
-
-    }
-
-
-    if(image){
-
-        setTheatreVisual(
-            image
-        );
-
-    }else{
-
-        theatreCaption.textContent =
-            sceneId
-            ? sceneId.replace(/[-_]+/g," ")
-            : "";
-
-        theatreEmpty.style.display =
-            "block";
-
-    }
-
-}
-
-
-/* =========================================================
-   THEATRE ASSET RESOLUTION
-   ========================================================= */
-
-function resolveTheatreAsset(
-    value
-){
-
-    if(!value){
-
-        return "";
-
-    }
-
-
-    value =
-        String(value)
-        .trim();
-
-
-    if(
-        THEATRE_ASSETS[value]
-    ){
-
-        return THEATRE_ASSETS[value];
-
-    }
-
-
-    return mediaPath(value);
-
-}
-
-
-/* =========================================================
-   THEATRE VISUAL
-   ========================================================= */
-
-function setTheatreVisual(
-    src
-){
-
-    if(!src){
-
-        theatreEmpty.style.display =
-            "block";
-
-        return;
-
-    }
-
-
-    src =
-        mediaPath(src);
-
-
-    var nextLayer =
-        theatreState.activeLayer === "A"
-        ? theatreLayerB
-        : theatreLayerA;
-
-
-    var currentLayer =
-        theatreState.activeLayer === "A"
-        ? theatreLayerA
-        : theatreLayerB;
-
-
-    var newImage =
-        new Image();
-
-
-    newImage.onload =
-        function(){
-
-            nextLayer.onload =
-                null;
-
-            nextLayer.src =
-                src;
-
-            nextLayer.alt =
-                theatreState.sceneId
-                ? theatreState.sceneId.replace(/[-_]+/g," ")
-                : "Story scene";
-
-
-            nextLayer.style.objectFit =
-                "cover";
-
-
-            theatreEmpty.style.display =
-                "none";
-
-
-            nextLayer.classList.remove(
-                "theatre-settle"
-            );
-
-
-            nextLayer.classList.add(
-                "is-visible"
-            );
-
-
-            currentLayer.classList.remove(
-                "is-visible"
-            );
-
-
-            theatreState.activeLayer =
-                theatreState.activeLayer === "A"
-                ? "B"
-                : "A";
-
-
-            theatreState.imageSrc =
-                src;
-
-
-            theatreCaption.textContent =
-                theatreState.sceneId
-                ? theatreState.sceneId.replace(/[-_]+/g," ")
-                : "";
-
-
-            setTimeout(
-                function(){
-
-                    nextLayer.classList.add(
-                        "theatre-settle"
-                    );
-
-                },
-                40
-            );
-
-        };
-
-
-    newImage.onerror =
-        function(){
-
-            theatreEmpty.style.display =
-                "block";
-
-        };
-
-
-    newImage.src =
-        src;
-
-}
-
-
-/* =========================================================
-   THEATRE SHOT
-   ========================================================= */
-
-function setTheatreShot(
-    mode
-){
-
-    mode =
-        String(mode || "FULL")
-        .toUpperCase();
-
-
-    theatreState.shot =
-        mode;
-
-
-    theatreStage.classList.remove(
-        "theatre-shot-full",
-        "theatre-shot-medium",
-        "theatre-shot-close"
-    );
-
-
-    if(mode === "MEDIUM"){
-
-        theatreStage.classList.add(
-            "theatre-shot-medium"
-        );
-
-    }else if(mode === "CLOSE"){
-
-        theatreStage.classList.add(
-            "theatre-shot-close"
-        );
-
-    }else{
-
-        theatreStage.classList.add(
-            "theatre-shot-full"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   THEATRE TEXT SAFE
-   ========================================================= */
-
-function setTheatreTextSafe(
-    mode
-){
-
-    mode =
-        String(mode || "BOTTOM")
-        .toUpperCase();
-
-
-    theatreState.textSafe =
-        mode;
-
-
-    content.classList.remove(
-        "theatre-textsafe-bottom",
-        "theatre-textsafe-left",
-        "theatre-textsafe-right"
-    );
-
-
-    content.classList.add(
-        "theatre-textsafe-" +
-        mode.toLowerCase()
-    );
-
-}
-
-
-/* =========================================================
-   THEATRE MODE
-   ========================================================= */
-
-function setTheatreMode(
-    mode
-){
-
-    mode =
-        String(mode || "reading")
-        .toLowerCase();
-
-
-    document.body.classList.remove(
-        "theatre-mode-reading",
-        "theatre-mode-choice",
-        "theatre-mode-game",
-        "theatre-mode-result"
-    );
-
-
-    document.body.classList.add(
-        "theatre-mode-" +
-        mode
-    );
-
-}
-
-
-/* =========================================================
-   RESET THEATRE
-   ========================================================= */
-
-function resetTheatre(){
-
-    theatreState = {
-
-        activeLayer:"A",
-
-        sceneId:"",
-
-        imageSrc:"",
-
-        shot:"FULL",
-
-        textSafe:"BOTTOM",
-
-        transition:"CROSSFADE",
-
-        beat:"",
-
-        focus:""
-
-    };
-
-
-    theatreLayerA.src =
-        "";
-
-    theatreLayerB.src =
-        "";
-
-    theatreLayerA.classList.remove(
-        "is-visible",
-        "theatre-settle"
-    );
-
-    theatreLayerB.classList.remove(
-        "is-visible",
-        "theatre-settle"
-    );
-
-
-    theatreEmpty.style.display =
-        "block";
-
-
-    theatreCaption.textContent =
-        "";
-
-
-    theatreStage.className =
-        "theatre-stage";
-
-
-    setTheatreMode(
-        "reading"
-    );
 
 }
 
@@ -3212,19 +2024,30 @@ document.addEventListener(
             0;
 
 
+        /*
+         * SAVE FIRST.
+         *
+         * This is critical because the next render,
+         * conditional branches and NEXT chapter all
+         * depend on this state.
+         */
+
         saveChoice(
             id,
             letter
         );
 
 
-        setTheatreMode(
-            "result"
-        );
-
+        /*
+         * Rebuild the reachable story.
+         */
 
         renderProgress();
 
+
+        /*
+         * Scroll to the selected branch.
+         */
 
         setTimeout(
             function(){
@@ -3487,11 +2310,6 @@ document.addEventListener(
             "FASHION-01"
         ){
 
-            setTheatreMode(
-                "game"
-            );
-
-
             window.location.href =
                 "/games/fashion-01.html";
 
@@ -3563,10 +2381,6 @@ window.addEventListener(
             resumeAfterGameId =
                 returnedGame;
 
-            setTheatreMode(
-                "result"
-            );
-
             renderProgress();
 
         }
@@ -3594,11 +2408,8 @@ function scrollToElement(element){
             try{
 
                 element.scrollIntoView({
-
                     behavior:"smooth",
-
                     block:"start"
-
                 });
 
             }catch(e){
@@ -3716,6 +2527,16 @@ function renderShowOutfit(){
    ========================================================= */
 
 function renderNext(line){
+
+    /*
+     * Accept:
+     *
+     * [NEXT:discordant-descendants-chapter-2]
+     *
+     * [NEXT:discordant-descendants-chapter-2|Step into the gathering.]
+     *
+     * [NEXT: discordant-descendants-chapter-2 | Step into the gathering. ]
+     */
 
     var cleaned =
         cleanControlLine(line);
@@ -3842,10 +2663,14 @@ document.addEventListener(
             );
 
 
-        setTheatreMode(
-            "result"
-        );
-
+        /*
+         * The story history is NOT cleared here.
+         *
+         * That is the important part.
+         *
+         * Chapter 2 will use the exact same
+         * ceeqwinn_story_history_<base-story> key.
+         */
 
         window.location.href =
             "article.html?file=" +
@@ -3877,9 +2702,6 @@ reset.onclick =
         }catch(e){}
 
 
-        resetTheatre();
-
-
         window.location.reload();
 
     };
@@ -3887,6 +2709,19 @@ reset.onclick =
 
 /* =========================================================
    STORY ID
+   =========================================================
+   
+   This is the bridge between chapters.
+   
+   Example:
+   
+   discordant-descendants
+   discordant-descendants-chapter-1
+   discordant-descendants-chapter-2
+   
+   all become:
+   
+   discordant-descendants
    ========================================================= */
 
 function getStoryId(path){
@@ -3901,6 +2736,21 @@ function getStoryId(path){
             ""
         );
 
+
+    /*
+     * Remove chapter numbering from the END only.
+     *
+     * This means:
+     *
+     * discordant-descendants-chapter-2
+     *
+     * becomes:
+     *
+     * discordant-descendants
+     *
+     * while unrelated names containing the word
+     * "chapter" elsewhere remain untouched.
+     */
 
     path =
         path.replace(
@@ -3928,7 +2778,7 @@ function mediaPath(src){
 
 
     src =
-        String(src).trim();
+        src.trim();
 
 
     if(
@@ -4026,12 +2876,6 @@ function fixMedia(){
         images[i].setAttribute(
             "loading",
             "lazy"
-        );
-
-
-        images[i].setAttribute(
-            "decoding",
-            "async"
         );
 
     }
@@ -4277,3 +3121,4 @@ function cssEscape(value){
 </body>
 
 </html>
+
