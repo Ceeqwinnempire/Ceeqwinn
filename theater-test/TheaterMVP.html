@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CEEQWINN — Theater MVP</title>
+
+<link rel="stylesheet" href="TheaterMVP.css">
+
+</head>
+
+<body>
+
+<main class="theater">
+
+    <!-- =====================================================
+         THEATRE HEADER
+    ====================================================== -->
+
+    <header class="theater-header">
+
+        <div class="brand">
+            CEEQWINN
+        </div>
+
+        <div class="chapter-label">
+            CHAPTER 02
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         STORY INTRO
+    ====================================================== -->
+
+    <section class="story-intro">
+
+        <p class="eyebrow">
+            DISCORDANT DESCENDANTS
+        </p>
+
+        <h1>
+            The Gathering
+        </h1>
+
+        <p class="intro-text">
+            Some mornings arrive quietly.
+            Others arrive carrying questions.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         SLIDESHOW 01
+    ====================================================== -->
+
+    <section
+        class="visual-sequence"
+        data-sequence="morning"
+        data-lock-scroll="true"
+    >
+
+        <div class="visual-frame">
+
+            <div class="visual-image-wrap">
+
+                <img
+                    class="sequence-image"
+                    src="images/morning-01.jpg"
+                    alt="Lexis in the quiet of her bedroom in the morning"
+                >
+
+            </div>
+
+            <div class="visual-caption">
+
+                <span class="sequence-status">
+                    THE MORNING AFTER
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         STORY TEXT 01
+    ====================================================== -->
+
+    <section class="story-section">
+
+        <p>
+            Lexis had barely slept.
+        </p>
+
+        <p>
+            Her father's silence from the night before
+            had followed her into the morning.
+        </p>
+
+        <p>
+            Somewhere beyond the walls of the house,
+            preparations for the gathering were already beginning.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         SLIDESHOW 02
+    ====================================================== -->
+
+    <section
+        class="visual-sequence"
+        data-sequence="gathering"
+        data-lock-scroll="true"
+    >
+
+        <div class="visual-frame">
+
+            <div class="visual-image-wrap">
+
+                <img
+                    class="sequence-image"
+                    src="images/gathering-01.jpg"
+                    alt="The gathering at the Okoye residence"
+                >
+
+            </div>
+
+            <div class="visual-caption">
+
+                <span class="sequence-status">
+                    THE NIGHT OF THE GATHERING
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         STORY TEXT 02
+    ====================================================== -->
+
+    <section class="story-section">
+
+        <p>
+            By nightfall, the Okoye residence was glowing.
+        </p>
+
+        <p>
+            Cars arrived one after another.
+            Golden light spilled across the entrance.
+        </p>
+
+        <p>
+            Lexis stood at the staircase,
+            watching people she barely knew move through
+            a world her family had kept carefully hidden.
+        </p>
+
+        <p>
+            Then an elderly man stepped forward.
+        </p>
+
+        <p>
+            The room became quiet.
+        </p>
+
+        <p>
+            “There is something you must know.”
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         CHOICE
+    ====================================================== -->
+
+    <section class="choice-section">
+
+        <div class="choice-card">
+
+            <p class="choice-label">
+                LEXIS MUST DECIDE
+            </p>
+
+            <h2>
+                What does she do?
+            </h2>
+
+            <div class="choices">
+
+                <button
+                    class="choice-button"
+                    data-choice="forward"
+                >
+                    Walk forward
+                </button>
+
+                <button
+                    class="choice-button"
+                    data-choice="leave"
+                >
+                    Leave
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CONSEQUENCE
+    ====================================================== -->
+
+    <section
+        class="consequence"
+        id="consequence"
+        aria-live="polite"
+    >
+
+        <!-- JavaScript places the consequence here. -->
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="theater-footer">
+
+        <span>
+            CEEQWINN THEATER MVP
+        </span>
+
+        <button
+            id="restartButton"
+            class="restart-button"
+        >
+            Restart
+        </button>
+
+    </footer>
+
+</main>
+
+
+<script src="TheaterMVP.js"></script>
+
+</body>
+</html>
