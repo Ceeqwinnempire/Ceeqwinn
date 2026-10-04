@@ -1,0 +1,820 @@
+/* =========================================================
+   CEEQWINN THEATER MVP
+   Version 2
+========================================================= */
+
+
+/* =========================================================
+   ROOT
+========================================================= */
+
+:root {
+
+    --pearl: #fffafc;
+    --soft-pearl: #f8f0f5;
+
+    --ink: #241d25;
+    --soft-ink: #756b75;
+
+    --ruby: #9f2748;
+    --plum: #633b67;
+    --emerald: #356653;
+
+    --gold: #b79258;
+
+    --glass: rgba(255, 255, 255, 0.78);
+
+    --border: rgba(120, 70, 100, 0.14);
+
+    --shadow:
+        0 18px 45px rgba(55, 25, 50, 0.10);
+
+    --small-shadow:
+        0 8px 25px rgba(55, 25, 50, 0.08);
+
+    --radius-large: 28px;
+    --radius-medium: 20px;
+
+    --content-width: 760px;
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+
+    margin: 0;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(255, 220, 235, 0.55),
+            transparent 38%
+        ),
+        linear-gradient(
+            180deg,
+            #fffafd 0%,
+            #f8f0f5 45%,
+            #fffafd 100%
+        );
+
+    color: var(--ink);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    line-height: 1.75;
+
+}
+
+
+/* =========================================================
+   MAIN THEATRE
+========================================================= */
+
+.theater {
+
+    width: min(
+        calc(100% - 32px),
+        var(--content-width)
+    );
+
+    margin: 0 auto;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.theater-header {
+
+    min-height: 82px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-bottom: 1px solid var(--border);
+
+    font-size: 0.72rem;
+
+    letter-spacing: 0.16em;
+
+}
+
+.brand {
+
+    font-weight: 800;
+
+    letter-spacing: 0.2em;
+
+}
+
+.chapter-label {
+
+    color: var(--soft-ink);
+
+}
+
+
+/* =========================================================
+   STORY INTRO
+========================================================= */
+
+.story-intro {
+
+    text-align: center;
+
+    padding:
+        88px
+        0
+        72px;
+
+}
+
+.eyebrow {
+
+    margin: 0 0 12px;
+
+    color: var(--ruby);
+
+    font-size: 0.72rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.2em;
+
+}
+
+.story-intro h1 {
+
+    margin: 0;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(2.4rem, 8vw, 4.6rem);
+
+    font-weight: 500;
+
+    line-height: 1.05;
+
+    letter-spacing: -0.035em;
+
+}
+
+.intro-text {
+
+    max-width: 480px;
+
+    margin:
+        24px
+        auto
+        0;
+
+    color: var(--soft-ink);
+
+    font-size: 1rem;
+
+}
+
+
+/* =========================================================
+   VISUAL SEQUENCE
+========================================================= */
+
+.visual-sequence {
+
+    position: relative;
+
+    width: 100%;
+
+    min-height: 82vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding:
+        40px
+        0;
+
+}
+
+
+/* =========================================================
+   VISUAL FRAME
+========================================================= */
+
+.visual-frame {
+
+    width: min(
+        100%,
+        610px
+    );
+
+    position: relative;
+
+    overflow: hidden;
+
+    background: var(--glass);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.9);
+
+    border-radius: var(--radius-large);
+
+    box-shadow: var(--shadow);
+
+    isolation: isolate;
+
+}
+
+
+/*
+   Jewel-like edge.
+   Lightweight: no giant animated gradient.
+*/
+
+.visual-frame::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border-radius: inherit;
+
+    padding: 1px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,0.95),
+            rgba(159,39,72,0.18),
+            rgba(99,59,103,0.20),
+            rgba(255,255,255,0.95)
+        );
+
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+
+    -webkit-mask-composite: xor;
+
+    mask-composite: exclude;
+
+    pointer-events: none;
+
+    z-index: 3;
+
+}
+
+
+/* =========================================================
+   IMAGE
+========================================================= */
+
+.visual-image-wrap {
+
+    width: 100%;
+
+    aspect-ratio: 4 / 5;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f6e9ef,
+            #eee3ed
+        );
+
+    overflow: hidden;
+
+}
+
+.sequence-image {
+
+    display: block;
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+
+    opacity: 1;
+
+    transform: scale(1);
+
+    transition:
+        opacity 420ms ease,
+        transform 700ms ease;
+
+}
+
+
+/* =========================================================
+   IMAGE TRANSITION
+========================================================= */
+
+.sequence-image.is-changing {
+
+    opacity: 0;
+
+    transform: scale(1.018);
+
+}
+
+
+/* =========================================================
+   VISUAL CAPTION
+========================================================= */
+
+.visual-caption {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    padding:
+        70px
+        24px
+        22px;
+
+    background:
+        linear-gradient(
+            transparent,
+            rgba(20, 10, 20, 0.48)
+        );
+
+    color: white;
+
+    z-index: 4;
+
+}
+
+.sequence-status {
+
+    display: block;
+
+    font-size: 0.68rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.16em;
+
+    text-shadow:
+        0 1px 8px rgba(0,0,0,0.2);
+
+}
+
+
+/* =========================================================
+   SEQUENCE ACTIVE STATE
+========================================================= */
+
+.visual-sequence.sequence-active
+.visual-frame {
+
+    box-shadow:
+        0 24px 55px rgba(55,25,50,0.14);
+
+}
+
+
+/* =========================================================
+   STORY TEXT
+========================================================= */
+
+.story-section {
+
+    padding:
+        42px
+        0
+        86px;
+
+}
+
+.story-section p {
+
+    max-width: 640px;
+
+    margin:
+        0
+        auto
+        24px;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size:
+        clamp(1.08rem, 2.4vw, 1.28rem);
+
+    line-height: 1.9;
+
+}
+
+.story-section p:last-child {
+
+    margin-bottom: 0;
+
+}
+
+
+/* =========================================================
+   CHOICE
+========================================================= */
+
+.choice-section {
+
+    padding:
+        30px
+        0
+        100px;
+
+}
+
+.choice-card {
+
+    padding:
+        42px
+        30px;
+
+    text-align: center;
+
+    background:
+        rgba(255,255,255,0.72);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius:
+        var(--radius-large);
+
+    box-shadow:
+        var(--small-shadow);
+
+}
+
+.choice-label {
+
+    margin: 0 0 8px;
+
+    color: var(--ruby);
+
+    font-size: 0.68rem;
+
+    font-weight: 800;
+
+    letter-spacing: 0.16em;
+
+}
+
+.choice-card h2 {
+
+    margin:
+        0
+        0
+        28px;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 1.65rem;
+
+    font-weight: 500;
+
+}
+
+
+/* =========================================================
+   CHOICE BUTTONS
+========================================================= */
+
+.choices {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 12px;
+
+}
+
+.choice-button {
+
+    min-width: 170px;
+
+    padding:
+        14px
+        22px;
+
+    border: 0;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #9f2748,
+            #633b67
+        );
+
+    color: white;
+
+    font: inherit;
+
+    font-size: 0.9rem;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 8px 22px rgba(99,59,103,0.18);
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+
+}
+
+.choice-button:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 12px 26px rgba(99,59,103,0.24);
+
+}
+
+.choice-button:active {
+
+    transform: translateY(0);
+
+}
+
+
+/* =========================================================
+   CONSEQUENCE
+========================================================= */
+
+.consequence {
+
+    display: none;
+
+    padding:
+        10px
+        0
+        100px;
+
+}
+
+.consequence.visible {
+
+    display: block;
+
+}
+
+.consequence-card {
+
+    padding:
+        34px
+        28px;
+
+    text-align: center;
+
+    background:
+        rgba(255,255,255,0.8);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius:
+        var(--radius-large);
+
+    box-shadow:
+        var(--small-shadow);
+
+}
+
+.consequence-card p {
+
+    max-width: 580px;
+
+    margin:
+        0
+        auto;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 1.12rem;
+
+    line-height: 1.85;
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.theater-footer {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding:
+        30px
+        0
+        40px;
+
+    border-top:
+        1px solid
+        var(--border);
+
+    color: var(--soft-ink);
+
+    font-size: 0.68rem;
+
+    letter-spacing: 0.12em;
+
+}
+
+.restart-button {
+
+    padding:
+        8px
+        14px;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 999px;
+
+    background: white;
+
+    color: var(--soft-ink);
+
+    cursor: pointer;
+
+    font: inherit;
+
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+.choice-button:focus-visible,
+.restart-button:focus-visible {
+
+    outline:
+        3px solid
+        rgba(159,39,72,0.35);
+
+    outline-offset: 3px;
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    * {
+        transition: none !important;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL SCREENS
+========================================================= */
+
+@media (max-width: 520px) {
+
+    .theater {
+
+        width:
+            min(
+                calc(100% - 22px),
+                var(--content-width)
+            );
+
+    }
+
+    .theater-header {
+
+        min-height: 68px;
+
+    }
+
+    .story-intro {
+
+        padding:
+            62px
+            0
+            48px;
+
+    }
+
+    .visual-sequence {
+
+        min-height: 76vh;
+
+        padding:
+            25px
+            0;
+
+    }
+
+    .visual-frame {
+
+        border-radius: 22px;
+
+    }
+
+    .story-section {
+
+        padding:
+            34px
+            0
+            70px;
+
+    }
+
+    .choice-card {
+
+        padding:
+            32px
+            20px;
+
+    }
+
+    .choice-button {
+
+        width: 100%;
+
+    }
+
+    .theater-footer {
+
+        flex-direction: column;
+
+        gap: 16px;
+
+    }
+
+}
