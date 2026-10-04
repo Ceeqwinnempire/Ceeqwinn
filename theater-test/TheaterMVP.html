@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>CEEQWINN — Theater MVP</title>
+
+    <link
+        rel="stylesheet"
+        href="TheaterMVP.css"
+    >
+
+</head>
+
+
+<body>
+
+<main class="theater">
+
+
+    <!-- =====================================================
+         TOP BAR
+    ====================================================== -->
+
+    <header class="theater-bar">
+
+        <div class="theater-brand">
+            CEEQWINN
+        </div>
+
+        <div class="theater-section">
+            THE GATHERING
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         STORY OPENING
+    ====================================================== -->
+
+    <section class="story-opening">
+
+        <p class="eyebrow">
+            DISCORDANT DESCENDANTS
+        </p>
+
+        <h1>
+            The Gathering
+        </h1>
+
+        <p class="opening-copy">
+            Some mornings arrive quietly.
+            Others arrive carrying questions.
+        </p>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SCENE 01
+         
+         IMAGE + DIALOGUE BELONG TOGETHER.
+    ====================================================== -->
+
+    <section
+        class="theater-scene"
+        data-scene="morning"
+    >
+
+        <div class="scene-stage">
+
+
+            <!-- IMAGE CARD -->
+
+            <div class="image-card">
+
+                <div class="image-glow"></div>
+
+                <img
+                    class="scene-image"
+                    src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg"
+                    alt="Lexis Azunna in the quiet of the morning"
+                >
+
+                <div class="image-label">
+                    THE MORNING AFTER
+                </div>
+
+            </div>
+
+
+            <!-- DIALOGUE -->
+
+            <div class="scene-dialogue">
+
+                <p class="dialogue-line active">
+                    Lexis had barely slept.
+                </p>
+
+            </div>
+
+
+            <!-- SMALL SCENE INDICATOR -->
+
+            <div class="scene-progress">
+
+                <span class="progress-current">
+                    1
+                </span>
+
+                <span class="progress-divider">
+                    /
+                </span>
+
+                <span class="progress-total">
+                    3
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PROSE AFTER SCENE 01
+    ====================================================== -->
+
+    <section class="prose">
+
+        <p>
+            Her father's silence from the night before
+            had followed her into the morning.
+        </p>
+
+        <p>
+            Somewhere beyond the walls of the house,
+            preparations for the gathering were already beginning.
+        </p>
+
+        <p>
+            Lexis knew only one thing.
+        </p>
+
+        <p class="emphasis">
+            Something had changed.
+        </p>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SCENE 02
+    ====================================================== -->
+
+    <section
+        class="theater-scene"
+        data-scene="gathering"
+    >
+
+        <div class="scene-stage">
+
+
+            <!-- IMAGE CARD -->
+
+            <div class="image-card">
+
+                <div class="image-glow"></div>
+
+                <img
+                    class="scene-image"
+                    src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg"
+                    alt="Lexis preparing for the gathering"
+                >
+
+                <div class="image-label">
+                    THE NIGHT OF THE GATHERING
+                </div>
+
+            </div>
+
+
+            <!-- DIALOGUE -->
+
+            <div class="scene-dialogue">
+
+                <p class="dialogue-line active">
+                    By nightfall, the Okoye residence
+                    was glowing.
+                </p>
+
+            </div>
+
+
+            <!-- PROGRESS -->
+
+            <div class="scene-progress">
+
+                <span class="progress-current">
+                    1
+                </span>
+
+                <span class="progress-divider">
+                    /
+                </span>
+
+                <span class="progress-total">
+                    3
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PROSE AFTER SCENE 02
+    ====================================================== -->
+
+    <section class="prose">
+
+        <p>
+            Cars arrived one after another.
+            Golden light spilled across the entrance.
+        </p>
+
+        <p>
+            Lexis stood at the staircase,
+            watching people she barely knew move
+            through a world her family had kept hidden.
+        </p>
+
+        <p>
+            Then an elderly man stepped forward.
+        </p>
+
+        <p class="emphasis">
+            The room became quiet.
+        </p>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CHOICE
+    ====================================================== -->
+
+    <section class="choice-section">
+
+        <div class="choice-card">
+
+            <p class="choice-eyebrow">
+                LEXIS MUST DECIDE
+            </p>
+
+            <h2>
+                What does she do?
+            </h2>
+
+            <div class="choice-buttons">
+
+                <button
+                    class="choice-button"
+                    data-choice="forward"
+                >
+                    Walk forward
+                </button>
+
+                <button
+                    class="choice-button secondary"
+                    data-choice="leave"
+                >
+                    Leave
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CONSEQUENCE
+    ====================================================== -->
+
+    <section
+        id="consequence"
+        class="consequence"
+        aria-live="polite"
+    ></section>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <span>
+            CEEQWINN THEATER MVP
+        </span>
+
+        <button
+            id="restartButton"
+        >
+            Restart
+        </button>
+
+    </footer>
+
+
+</main>
+
+
+<script src="TheaterMVP.js"></script>
+
+</body>
+
+</html>
