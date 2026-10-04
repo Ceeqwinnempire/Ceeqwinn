@@ -1,6 +1,6 @@
 /* =========================================================
    CEEQWINN THEATER MVP
-   VERSION 2
+   VERSION 2.1
 ========================================================= */
 
 
@@ -33,6 +33,9 @@
 
     --emerald:
         #376650;
+
+    --sapphire:
+        #46658c;
 
     --gold:
         #b7965d;
@@ -128,26 +131,33 @@ body {
 
 .theater-bar {
 
-    position: sticky;
+    position:
+        sticky;
 
-    top: 0;
+    top:
+        0;
 
-    z-index: 100;
+    z-index:
+        100;
 
-    height: 64px;
+    height:
+        64px;
 
-    display: flex;
+    display:
+        flex;
 
-    align-items: center;
+    align-items:
+        center;
 
-    justify-content: space-between;
+    justify-content:
+        space-between;
 
     border-bottom:
         1px solid
         var(--line);
 
     background:
-        rgba(255,250,253,0.88);
+        rgba(255,250,253,0.90);
 
     backdrop-filter:
         blur(10px);
@@ -264,13 +274,6 @@ body {
 
 .theater-scene {
 
-    /*
-       This is the important part.
-
-       The visual scene occupies the central viewing
-       position while it is active.
-    */
-
     min-height:
         105vh;
 
@@ -279,6 +282,10 @@ body {
 
 }
 
+
+/*
+   The image + dialogue remain together.
+*/
 
 .scene-stage {
 
@@ -298,7 +305,7 @@ body {
         0 auto;
 
     padding:
-        18px 0 30px;
+        18px 0 35px;
 
 }
 
@@ -318,8 +325,17 @@ body {
     width:
         100%;
 
-    aspect-ratio:
-        4 / 5;
+    /*
+       IMPORTANT:
+
+       No forced height.
+       No fixed aspect ratio.
+
+       The image determines its own height.
+    */
+
+    height:
+        auto;
 
     border-radius:
         var(--radius);
@@ -340,58 +356,39 @@ body {
 }
 
 
-/*
-   Subtle jewel edge.
-*/
-
-.image-card::before {
-
-    content:
-        "";
-
-    position:
-        absolute;
-
-    inset:
-        0;
-
-    z-index:
-        5;
-
-    border-radius:
-        inherit;
-
-    pointer-events:
-        none;
-
-    border:
-        1px solid
-        rgba(183,150,93,0.20);
-
-}
-
-
 /* =========================================================
    IMAGE
 ========================================================= */
 
 .scene-image {
 
+    display:
+        block;
+
     width:
         100%;
 
     height:
-        100%;
+        auto;
 
-    display:
-        block;
+    /*
+       NEVER CROP.
+
+       The original image ratio is respected.
+    */
 
     object-fit:
-        cover;
+        contain;
+
+    opacity:
+        1;
+
+    transform:
+        scale(1);
 
     transition:
         opacity 420ms ease,
-        transform 650ms ease;
+        transform 520ms ease;
 
 }
 
@@ -402,13 +399,13 @@ body {
         0;
 
     transform:
-        scale(1.015);
+        scale(1.008);
 
 }
 
 
 /* =========================================================
-   IMAGE LIGHT
+   LIGHT OVERLAY
 ========================================================= */
 
 .image-glow {
@@ -428,9 +425,9 @@ body {
     background:
         linear-gradient(
             180deg,
-            rgba(255,255,255,0.06),
-            transparent 30%,
-            rgba(20,10,20,0.30)
+            rgba(255,255,255,0.05),
+            transparent 35%,
+            rgba(20,10,20,0.24)
         );
 
 }
@@ -452,7 +449,7 @@ body {
         18px;
 
     z-index:
-        6;
+        5;
 
     color:
         white;
@@ -468,7 +465,7 @@ body {
 
     text-shadow:
         0 2px 10px
-        rgba(0,0,0,0.30);
+        rgba(0,0,0,0.35);
 
 }
 
@@ -479,11 +476,8 @@ body {
 
 .scene-dialogue {
 
-    position:
-        relative;
-
     padding:
-        22px 10px 8px;
+        20px 12px 8px;
 
     text-align:
         center;
@@ -491,10 +485,25 @@ body {
 }
 
 
-/*
-   The dialogue is intentionally UNDER
-   the image rather than floating over it.
-*/
+.speaker {
+
+    margin-bottom:
+        7px;
+
+    color:
+        var(--ruby);
+
+    font-size:
+        0.63rem;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        0.18em;
+
+}
+
 
 .dialogue-line {
 
@@ -519,11 +528,9 @@ body {
     line-height:
         1.75;
 
-    opacity:
-        1;
-
     transition:
-        opacity 300ms ease;
+        opacity 260ms ease,
+        transform 260ms ease;
 
 }
 
@@ -533,11 +540,14 @@ body {
     opacity:
         0;
 
+    transform:
+        translateY(5px);
+
 }
 
 
 /* =========================================================
-   SCENE PROGRESS
+   PROGRESS
 ========================================================= */
 
 .scene-progress {
@@ -561,10 +571,7 @@ body {
         var(--muted);
 
     font-size:
-        0.65rem;
-
-    letter-spacing:
-        0.08em;
+        0.64rem;
 
 }
 
@@ -647,13 +654,13 @@ body {
 .choice-card {
 
     padding:
-        42px 28px;
+        44px 28px;
 
     text-align:
         center;
 
     background:
-        rgba(255,255,255,0.76);
+        rgba(255,255,255,0.78);
 
     border:
         1px solid
@@ -691,7 +698,7 @@ body {
 .choice-card h2 {
 
     margin:
-        0 0 28px;
+        0 0 30px;
 
     font-family:
         Georgia,
@@ -708,7 +715,7 @@ body {
 
 
 /* =========================================================
-   BUTTONS
+   CHOICE BUTTONS
 ========================================================= */
 
 .choice-buttons {
@@ -716,11 +723,11 @@ body {
     display:
         flex;
 
-    justify-content:
-        center;
+    flex-direction:
+        column;
 
-    flex-wrap:
-        wrap;
+    align-items:
+        center;
 
     gap:
         12px;
@@ -730,33 +737,45 @@ body {
 
 .choice-button {
 
-    min-width:
-        175px;
-
-    padding:
-        14px 24px;
-
-    border:
-        0;
-
-    border-radius:
-        999px;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--ruby),
-            var(--plum)
+    width:
+        min(
+            100%,
+            420px
         );
 
-    color:
+    min-height:
+        60px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    gap:
+        15px;
+
+    padding:
+        14px 20px;
+
+    border:
+        1px solid
+        var(--line);
+
+    border-radius:
+        18px;
+
+    background:
         white;
+
+    color:
+        var(--ink);
 
     font:
         inherit;
 
     font-size:
-        0.88rem;
+        0.92rem;
 
     font-weight:
         700;
@@ -765,39 +784,177 @@ body {
         pointer;
 
     box-shadow:
-        0 8px 22px
-        rgba(100,50,90,0.16);
+        0 6px 18px
+        rgba(60,25,55,0.06);
 
-    transition:
-        transform 180ms ease,
-        box-shadow 180ms ease;
+    /*
+       This animation is for appearance,
+       not hover.
+    */
 
-}
-
-
-.choice-button:hover {
+    opacity:
+        0;
 
     transform:
-        translateY(-2px);
+        translateY(16px);
 
-    box-shadow:
-        0 12px 26px
-        rgba(100,50,90,0.22);
+    animation:
+        choiceAppear
+        620ms
+        cubic-bezier(.2,.8,.2,1)
+        forwards;
 
 }
 
 
-.choice-button.secondary {
+.choice-button:nth-child(2) {
+
+    animation-delay:
+        160ms;
+
+}
+
+
+@keyframes choiceAppear {
+
+    from {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(16px);
+
+    }
+
+    to {
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+/* =========================================================
+   CHOICE NUMBER
+========================================================= */
+
+.choice-number {
+
+    width:
+        30px;
+
+    height:
+        30px;
+
+    flex:
+        0 0 30px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    border-radius:
+        50%;
+
+    font-size:
+        0.63rem;
+
+    font-weight:
+        800;
+
+}
+
+
+/* First choice */
+
+.choice-forward {
+
+    border-color:
+        rgba(158,41,73,0.18);
+
+}
+
+
+.choice-forward
+.choice-number {
 
     background:
-        white;
+        rgba(158,41,73,0.10);
 
     color:
-        var(--plum);
+        var(--ruby);
 
-    border:
-        1px solid
-        var(--line);
+}
+
+
+/* Second choice */
+
+.choice-leave {
+
+    border-color:
+        rgba(55,102,80,0.18);
+
+}
+
+
+.choice-leave
+.choice-number {
+
+    background:
+        rgba(55,102,80,0.10);
+
+    color:
+        var(--emerald);
+
+}
+
+
+/*
+   Tap feedback.
+
+   This is useful on phones.
+*/
+
+.choice-button:active {
+
+    transform:
+        scale(0.98);
+
+    box-shadow:
+        0 3px 10px
+        rgba(60,25,55,0.08);
+
+}
+
+
+/*
+   Desktop-only bonus.
+   The experience does NOT depend on it.
+*/
+
+@media (hover: hover) {
+
+    .choice-button:hover {
+
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 12px 26px
+            rgba(60,25,55,0.11);
+
+    }
 
 }
 
@@ -822,6 +979,37 @@ body {
     display:
         block;
 
+    animation:
+        consequenceAppear
+        600ms
+        ease
+        both;
+
+}
+
+
+@keyframes consequenceAppear {
+
+    from {
+
+        opacity:
+            0;
+
+        transform:
+            translateY(20px);
+
+    }
+
+    to {
+
+        opacity:
+            1;
+
+        transform:
+            translateY(0);
+
+    }
+
 }
 
 
@@ -834,7 +1022,7 @@ body {
         center;
 
     background:
-        rgba(255,255,255,0.80);
+        rgba(255,255,255,0.82);
 
     border:
         1px solid
@@ -842,6 +1030,29 @@ body {
 
     border-radius:
         var(--radius);
+
+    box-shadow:
+        var(--tiny-shadow);
+
+}
+
+
+.consequence-card .consequence-speaker {
+
+    margin-bottom:
+        10px;
+
+    color:
+        var(--ruby);
+
+    font-size:
+        0.64rem;
+
+    font-weight:
+        800;
+
+    letter-spacing:
+        0.16em;
 
 }
 
@@ -955,6 +1166,20 @@ button:focus-visible {
             auto;
     }
 
+    .choice-button,
+    .consequence.visible {
+
+        animation:
+            none;
+
+        opacity:
+            1;
+
+        transform:
+            none;
+
+    }
+
     * {
         transition:
             none !important;
@@ -996,7 +1221,7 @@ button:focus-visible {
     .theater-scene {
 
         min-height:
-            98vh;
+            100vh;
 
     }
 
@@ -1020,7 +1245,7 @@ button:focus-visible {
     .scene-dialogue {
 
         padding:
-            18px 6px 8px;
+            18px 5px 8px;
 
     }
 
