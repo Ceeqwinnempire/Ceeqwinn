@@ -1,6 +1,6 @@
 /* ============================================================
    CEEQWINN LIVING SCROLL THEATRE
-   MVP CSS
+   POLISHED MVP
 ============================================================ */
 
 
@@ -18,7 +18,9 @@ html {
 
 body {
   margin: 0;
-  background: #f7f5f1;
+
+  background: #f7f4ed;
+
   color: #111111;
 
   font-family:
@@ -29,13 +31,11 @@ body {
   line-height: 1.75;
 
   -webkit-font-smoothing: antialiased;
+
   text-rendering: optimizeLegibility;
 }
 
-button,
-input,
-textarea,
-select {
+button {
   font: inherit;
 }
 
@@ -46,35 +46,45 @@ select {
 
 .topbar {
   position: sticky;
+
   top: 0;
+
   z-index: 1000;
 
-  background: rgba(247, 245, 241, 0.92);
+  background:
+    rgba(247, 244, 237, 0.93);
 
   border-bottom:
-    1px solid rgba(0, 0, 0, 0.08);
+    1px solid rgba(0, 0, 0, 0.07);
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter:
+    blur(14px);
+
+  -webkit-backdrop-filter:
+    blur(14px);
 }
 
 .topbar-inner {
-  width: min(1180px, calc(100% - 32px));
+  width:
+    min(1180px, calc(100% - 32px));
 
-  min-height: 62px;
+  min-height:
+    62px;
 
-  margin: 0 auto;
+  margin:
+    0 auto;
 
-  display: grid;
+  display:
+    grid;
 
   grid-template-columns:
-    auto
-    1fr
-    minmax(140px, 260px);
+    auto 1fr minmax(140px, 260px);
 
-  align-items: center;
+  align-items:
+    center;
 
-  gap: 24px;
+  gap:
+    24px;
 }
 
 .brand-mark {
@@ -83,49 +93,52 @@ select {
     Helvetica,
     sans-serif;
 
-  font-size: 12px;
+  font-size:
+    12px;
 
-  font-weight: 800;
+  font-weight:
+    800;
 
-  letter-spacing: 0.18em;
+  letter-spacing:
+    0.18em;
 }
 
 .theatre-mark {
-  text-align: center;
+  text-align:
+    center;
 
   font-family:
     Arial,
     Helvetica,
     sans-serif;
 
-  font-size: 10px;
+  font-size:
+    9px;
 
-  letter-spacing: 0.18em;
+  letter-spacing:
+    0.18em;
 
-  opacity: 0.5;
-}
-
-.progress-wrap {
-  width: 100%;
+  opacity:
+    0.42;
 }
 
 .progress-track {
-  width: 100%;
-  height: 3px;
+  height:
+    2px;
 
-  background: rgba(0, 0, 0, 0.08);
-
-  overflow: hidden;
+  background:
+    rgba(0, 0, 0, 0.08);
 }
 
 .progress-bar {
-  width: 0%;
-  height: 100%;
+  width:
+    0%;
 
-  background: #111111;
+  height:
+    100%;
 
-  transition:
-    width 0.15s linear;
+  background:
+    #111111;
 }
 
 
@@ -134,13 +147,14 @@ select {
 ============================================================ */
 
 .intro {
-  width: min(760px, calc(100% - 40px));
-
-  margin:
-    0 auto;
+  width:
+    min(760px, calc(100% - 40px));
 
   min-height:
     calc(100vh - 62px);
+
+  margin:
+    0 auto;
 
   display:
     flex;
@@ -161,15 +175,20 @@ select {
     Helvetica,
     sans-serif;
 
-  font-size: 10px;
+  font-size:
+    9px;
 
-  font-weight: 700;
+  font-weight:
+    700;
 
-  letter-spacing: 0.22em;
+  letter-spacing:
+    0.22em;
 
-  text-transform: uppercase;
+  text-transform:
+    uppercase;
 
-  opacity: 0.48;
+  opacity:
+    0.46;
 }
 
 .intro h1 {
@@ -177,71 +196,86 @@ select {
     18px 0 28px;
 
   font-size:
-    clamp(48px, 8vw, 96px);
+    clamp(48px, 8vw, 94px);
 
-  line-height: 0.98;
+  line-height:
+    0.98;
 
-  font-weight: 500;
+  font-weight:
+    500;
 
-  letter-spacing: -0.045em;
+  letter-spacing:
+    -0.045em;
 }
 
 .intro-lede {
-  max-width: 610px;
+  max-width:
+    620px;
 
-  margin: 0;
+  margin:
+    0;
 
   font-size:
     clamp(21px, 3vw, 30px);
 
-  line-height: 1.45;
+  line-height:
+    1.45;
 }
 
 .intro-rule {
-  width: 90px;
-  height: 1px;
+  width:
+    90px;
 
-  background: #111111;
+  height:
+    1px;
 
   margin:
     34px 0 24px;
+
+  background:
+    #111111;
 }
 
 .intro-note {
-  margin: 0;
+  margin:
+    0;
 
   font-family:
     Arial,
     Helvetica,
     sans-serif;
 
-  font-size: 13px;
+  font-size:
+    12px;
 
-  opacity: 0.6;
+  opacity:
+    0.55;
 }
 
 
 /* ============================================================
-   LIVING SCENE
+   LIVING SCENES
 ============================================================ */
 
 .living-scene {
-  position: relative;
+  position:
+    relative;
 
-  width: 100%;
+  width:
+    100%;
 
   padding:
-    20px 0 120px;
+    30px 0 110px;
 }
 
 
 /* ============================================================
-   STAGE SHELL
+   STAGE
 ============================================================ */
 
 .scene-stage-shell {
   width:
-    min(1240px, calc(100% - 32px));
+    min(1280px, calc(100% - 28px));
 
   margin:
     0 auto;
@@ -250,7 +284,7 @@ select {
     sticky;
 
   top:
-    82px;
+    78px;
 
   z-index:
     20;
@@ -260,10 +294,11 @@ select {
 }
 
 .scene-stage {
-  width: 100%;
+  position:
+    relative;
 
   min-height:
-    min(78vh, 820px);
+    min(76vh, 800px);
 
   display:
     flex;
@@ -277,70 +312,85 @@ select {
   align-items:
     center;
 
-  position:
-    relative;
-
-  border:
-    1px solid rgba(0, 0, 0, 0.08);
-
-  background:
-    rgba(255, 255, 255, 0.48);
-
-  box-shadow:
-    0 24px 80px rgba(0, 0, 0, 0.08);
-
   overflow:
     hidden;
 
-  transition:
-    background 0.6s ease,
-    box-shadow 0.6s ease;
+  border:
+    1px solid rgba(0, 0, 0, 0.07);
+
+  background:
+    rgba(255, 255, 255, 0.42);
+
+  box-shadow:
+    0 28px 90px rgba(0, 0, 0, 0.08);
 }
 
 .stage-kicker {
-  position: absolute;
+  position:
+    absolute;
 
-  left: 22px;
-  top: 20px;
+  left:
+    22px;
 
-  z-index: 30;
+  top:
+    19px;
+
+  z-index:
+    30;
 
   font-family:
     Arial,
     Helvetica,
     sans-serif;
 
-  font-size: 9px;
+  font-size:
+    8px;
 
-  font-weight: 700;
+  font-weight:
+    700;
 
-  letter-spacing: 0.18em;
+  letter-spacing:
+    0.2em;
 
-  opacity: 0.45;
+  opacity:
+    0.4;
 }
 
 .stage-status {
-  position: absolute;
+  position:
+    absolute;
 
-  right: 22px;
-  top: 20px;
+  right:
+    22px;
 
-  z-index: 30;
+  top:
+    19px;
+
+  z-index:
+    30;
+
+  max-width:
+    40%;
+
+  text-align:
+    right;
 
   font-family:
     Arial,
     Helvetica,
     sans-serif;
 
-  font-size: 9px;
+  font-size:
+    8px;
 
-  letter-spacing: 0.1em;
+  letter-spacing:
+    0.1em;
 
-  text-transform: uppercase;
+  text-transform:
+    uppercase;
 
-  opacity: 0.42;
-
-  text-align: right;
+  opacity:
+    0.35;
 }
 
 
@@ -350,13 +400,13 @@ select {
 
 .visual-stage {
   width:
-    min(1120px, calc(100% - 60px));
+    min(1160px, calc(100% - 50px));
 
   height:
-    min(67vh, 690px);
+    min(67vh, 680px);
 
   margin:
-    48px auto 30px;
+    44px auto 20px;
 
   display:
     flex;
@@ -369,14 +419,14 @@ select {
 }
 
 .visual-frame {
+  position:
+    relative;
+
   width:
     100%;
 
   height:
     100%;
-
-  position:
-    relative;
 
   display:
     flex;
@@ -388,18 +438,21 @@ select {
     center;
 
   transition:
-    transform 0.55s ease,
-    opacity 0.55s ease;
+    opacity 0.45s ease,
+    transform 0.55s ease;
 }
 
 .visual-frame.changing {
-  opacity: 0.15;
-  transform: scale(0.985);
+  opacity:
+    0.15;
+
+  transform:
+    scale(0.988);
 }
 
 
 /* ============================================================
-   IMAGE WRAP
+   IMAGE
 ============================================================ */
 
 .visual-image-wrap {
@@ -420,9 +473,6 @@ select {
 
   justify-content:
     center;
-
-  overflow:
-    hidden;
 }
 
 .scene-image {
@@ -454,8 +504,8 @@ select {
     scale(0.985);
 
   transition:
-    opacity 0.55s ease,
-    transform 0.7s ease;
+    opacity 0.6s ease,
+    transform 0.75s ease;
 
   user-select:
     none;
@@ -474,36 +524,65 @@ select {
 
 
 /* ============================================================
-   IMAGE VIGNETTE
+   VISUAL CAPTION
 ============================================================ */
 
-.image-vignette {
+.visual-caption {
   position:
     absolute;
 
-  inset:
+  left:
+    50%;
+
+  bottom:
+    18px;
+
+  transform:
+    translateX(-50%);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    8px;
+
+  letter-spacing:
+    0.14em;
+
+  text-transform:
+    uppercase;
+
+  opacity:
     0;
+
+  transition:
+    opacity 0.4s ease;
 
   pointer-events:
     none;
+}
 
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.03),
-      transparent 20%,
-      transparent 78%,
-      rgba(0,0,0,0.07)
-    );
-
+.visual-caption.visible {
   opacity:
-    0.35;
+    0.45;
 }
 
 
 /* ============================================================
    READING GLASS
 ============================================================ */
+
+/*
+   This is deliberately NOT a permanent text card.
+
+   It only appears when the current story beat
+   asks for protection over the image.
+
+   Golden / pearl glass:
+   quiet, translucent, readable.
+*/
 
 .reading-glass {
   position:
@@ -513,31 +592,36 @@ select {
     50%;
 
   bottom:
-    32px;
-
-  transform:
-    translate(-50%, 20px);
+    28px;
 
   width:
-    min(720px, calc(100% - 48px));
+    min(720px, calc(100% - 60px));
 
   padding:
-    18px 24px;
+    17px 24px;
+
+  transform:
+    translate(-50%, 18px);
 
   background:
-    rgba(255, 255, 255, 0.76);
+    linear-gradient(
+      90deg,
+      rgba(255, 249, 226, 0.78),
+      rgba(255, 255, 255, 0.72),
+      rgba(255, 249, 226, 0.78)
+    );
 
   border:
-    1px solid rgba(255, 255, 255, 0.9);
+    1px solid rgba(181, 145, 62, 0.24);
 
   box-shadow:
-    0 18px 50px rgba(0, 0, 0, 0.14);
+    0 18px 50px rgba(64, 45, 13, 0.12);
 
   backdrop-filter:
-    blur(14px);
+    blur(16px);
 
   -webkit-backdrop-filter:
-    blur(14px);
+    blur(16px);
 
   opacity:
     0;
@@ -550,7 +634,7 @@ select {
     transform 0.45s ease;
 
   z-index:
-    20;
+    30;
 }
 
 .reading-glass.visible {
@@ -561,28 +645,9 @@ select {
     translate(-50%, 0);
 }
 
-.glass-label {
-  margin-bottom:
-    5px;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
-  font-size:
-    8px;
-
-  letter-spacing:
-    0.2em;
-
-  opacity:
-    0.4;
-}
-
 .glass-inner {
   font-size:
-    clamp(16px, 2vw, 20px);
+    clamp(15px, 1.8vw, 19px);
 
   line-height:
     1.55;
@@ -601,13 +666,13 @@ select {
     50;
 
   width:
-    min(720px, calc(100% - 40px));
+    min(690px, calc(100% - 40px));
 
   margin:
     0 auto;
 
   padding:
-    8vh 0 14vh;
+    5vh 0 13vh;
 }
 
 .story-beat,
@@ -616,7 +681,7 @@ select {
     relative;
 
   min-height:
-    55vh;
+    54vh;
 
   display:
     flex;
@@ -628,19 +693,19 @@ select {
     center;
 
   padding:
-    60px 0;
+    55px 0;
 }
 
 .story-beat p,
 .dialogue-beat p {
   margin:
-    0 0 1.4em;
+    0 0 1.35em;
 
   font-size:
-    clamp(20px, 2.2vw, 27px);
+    clamp(19px, 2vw, 25px);
 
   line-height:
-    1.72;
+    1.76;
 }
 
 .story-beat p:last-child,
@@ -650,11 +715,8 @@ select {
 }
 
 .beat-number {
-  display:
-    inline-block;
-
   margin-bottom:
-    20px;
+    18px;
 
   font-family:
     Arial,
@@ -662,31 +724,51 @@ select {
     sans-serif;
 
   font-size:
-    9px;
+    8px;
 
   letter-spacing:
     0.18em;
 
   opacity:
-    0.35;
+    0.3;
 }
 
-.story-beat::after,
-.dialogue-beat::after {
+
+/* ============================================================
+   FADE EDGES AROUND READING BEATS
+============================================================ */
+
+/*
+   The actual prose stays OUTSIDE the image.
+
+   These fades are simply visual breathing room.
+*/
+
+.story-beat::before,
+.dialogue-beat::before {
   content:
     "";
 
+  position:
+    absolute;
+
+  left:
+    50%;
+
+  top:
+    0;
+
   width:
-    42px;
+    60px;
 
   height:
     1px;
 
-  background:
-    rgba(0, 0, 0, 0.16);
+  transform:
+    translateX(-50%);
 
-  margin-top:
-    38px;
+  background:
+    rgba(0, 0, 0, 0.12);
 }
 
 
@@ -698,17 +780,17 @@ select {
   display:
     flex;
 
-  align-items:
-    center;
-
   justify-content:
     center;
 
+  align-items:
+    center;
+
   gap:
-    9px;
+    10px;
 
   margin:
-    0 0 24px;
+    0 0 22px;
 }
 
 .sequence-dot {
@@ -718,17 +800,17 @@ select {
   height:
     6px;
 
-  border-radius:
-    50%;
+  padding:
+    0;
 
   border:
     0;
 
-  padding:
-    0;
+  border-radius:
+    50%;
 
   background:
-    rgba(0, 0, 0, 0.18);
+    rgba(0, 0, 0, 0.17);
 
   transition:
     transform 0.25s ease,
@@ -736,11 +818,11 @@ select {
 }
 
 .sequence-dot.active {
-  transform:
-    scale(1.8);
-
   background:
-    #111111;
+    #9d7a29;
+
+  transform:
+    scale(1.7);
 }
 
 
@@ -750,31 +832,35 @@ select {
 
 .dialogue-stage {
   min-height:
-    min(82vh, 860px);
+    min(82vh, 850px);
 }
 
 .dialogue-visual {
   width:
-    min(1080px, calc(100% - 60px));
+    min(1100px, calc(100% - 55px));
 
   height:
-    min(60vh, 590px);
+    min(59vh, 590px);
 
   margin:
-    54px auto 20px;
+    54px auto 0;
 
   display:
     grid;
 
   grid-template-columns:
-    1fr 70px 1fr;
+    minmax(0, 1fr)
+    54px
+    minmax(0, 1fr);
 
   align-items:
     end;
-
-  gap:
-    10px;
 }
+
+
+/* ============================================================
+   CHARACTER
+============================================================ */
 
 .character-character {
   height:
@@ -793,10 +879,13 @@ select {
     flex-end;
 
   opacity:
-    0.52;
+    0.43;
 
   transform:
-    scale(0.97);
+    scale(0.965);
+
+  filter:
+    saturate(0.72);
 
   transition:
     opacity 0.55s ease,
@@ -812,34 +901,120 @@ select {
     scale(1.025);
 
   filter:
+    saturate(1)
     drop-shadow(
-      0 0 24px rgba(255, 255, 255, 0.8)
+      0 0 28px rgba(179, 139, 48, 0.28)
     );
 }
 
-.character-image-wrap {
-  height:
-    calc(100% - 42px);
+.character-expression {
+  position:
+    relative;
 
   width:
+    100%;
+
+  height:
+    calc(100% - 36px);
+
+  display:
+    flex;
+
+  align-items:
+    flex-end;
+
+  justify-content:
+    center;
+}
+
+
+/* ============================================================
+   EXPRESSION BADGE
+============================================================ */
+
+.expression-badge {
+  position:
+    absolute;
+
+  top:
+    12px;
+
+  left:
+    50%;
+
+  transform:
+    translateX(-50%);
+
+  padding:
+    5px 10px;
+
+  border:
+    1px solid rgba(181, 145, 62, 0.18);
+
+  background:
+    rgba(255, 249, 226, 0.72);
+
+  backdrop-filter:
+    blur(10px);
+
+  -webkit-backdrop-filter:
+    blur(10px);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    7px;
+
+  letter-spacing:
+    0.16em;
+
+  text-transform:
+    uppercase;
+
+  opacity:
+    0;
+
+  transition:
+    opacity 0.4s ease;
+}
+
+.character-character.speaking
+.expression-badge {
+  opacity:
+    0.72;
+}
+
+
+/* ============================================================
+   CHARACTER IMAGE
+============================================================ */
+
+.character-image-wrap {
+  width:
+    100%;
+
+  height:
     100%;
 
   display:
     flex;
 
   align-items:
-    end;
+    flex-end;
 
   justify-content:
     center;
+
+  overflow:
+    hidden;
 }
 
 .character-image-wrap img {
-  max-width:
-    100%;
-
-  max-height:
-    100%;
+  display:
+    block;
 
   width:
     auto;
@@ -847,17 +1022,26 @@ select {
   height:
     auto;
 
+  max-width:
+    100%;
+
+  max-height:
+    100%;
+
   object-fit:
     contain;
 
-  display:
-    block;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
 
-  user-select:
-    none;
+.character-image-wrap img.expression-changing {
+  opacity:
+    0;
 
-  -webkit-user-drag:
-    none;
+  transform:
+    scale(0.985);
 }
 
 .character-name {
@@ -870,14 +1054,19 @@ select {
     sans-serif;
 
   font-size:
-    9px;
+    8px;
 
   letter-spacing:
     0.2em;
 
   opacity:
-    0.55;
+    0.5;
 }
+
+
+/* ============================================================
+   DIALOGUE DIVIDER
+============================================================ */
 
 .dialogue-divider {
   height:
@@ -898,40 +1087,50 @@ select {
     1px;
 
   height:
-    60%;
+    56%;
 
   background:
-    rgba(0, 0, 0, 0.12);
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgba(157, 122, 41, 0.3),
+      transparent
+    );
 }
+
+
+/* ============================================================
+   DIALOGUE PANEL
+============================================================ */
 
 .dialogue-panel {
   width:
     min(720px, calc(100% - 40px));
 
   margin:
-    0 auto 30px;
+    24px auto 28px;
 
   padding:
-    22px 26px;
+    18px 24px;
 
   background:
-    rgba(255, 255, 255, 0.78);
+    rgba(255, 250, 233, 0.76);
 
   border:
-    1px solid rgba(0, 0, 0, 0.08);
+    1px solid rgba(181, 145, 62, 0.2);
 
   box-shadow:
-    0 18px 50px rgba(0, 0, 0, 0.08);
+    0 18px 55px rgba(62, 46, 18, 0.1);
 
   backdrop-filter:
-    blur(12px);
+    blur(14px);
 
   -webkit-backdrop-filter:
-    blur(12px);
+    blur(14px);
 
   transition:
-    opacity 0.4s ease,
-    transform 0.4s ease;
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
 
 .speaker-label {
@@ -944,36 +1143,24 @@ select {
     sans-serif;
 
   font-size:
-    9px;
+    8px;
 
   font-weight:
     800;
 
   letter-spacing:
     0.18em;
+
+  color:
+    #80621f;
 }
 
 .dialogue-text {
   font-size:
-    clamp(19px, 2.4vw, 28px);
+    clamp(18px, 2.2vw, 26px);
 
   line-height:
-    1.45;
-}
-
-
-/* ============================================================
-   DIALOGUE READING
-============================================================ */
-
-.dialogue-reading {
-  padding-top:
-    4vh;
-}
-
-.dialogue-lead {
-  font-style:
-    italic;
+    1.48;
 }
 
 
@@ -983,20 +1170,17 @@ select {
 
 .portrait-scene .visual-stage {
   width:
-    min(900px, calc(100% - 60px));
+    min(960px, calc(100% - 50px));
 }
 
 .portrait-scene .scene-image {
   max-width:
-    75%;
-
-  max-height:
-    100%;
+    78%;
 }
 
 
 /* ============================================================
-   CHOICE SCENE
+   CHOICES
 ============================================================ */
 
 .choice-scene {
@@ -1013,12 +1197,12 @@ select {
     center;
 
   padding:
-    120px 20px;
+    110px 20px;
 }
 
 .choice-inner {
   width:
-    min(780px, 100%);
+    min(760px, 100%);
 
   text-align:
     center;
@@ -1029,7 +1213,7 @@ select {
     18px 0 10px;
 
   font-size:
-    clamp(38px, 6vw, 64px);
+    clamp(40px, 6vw, 64px);
 
   line-height:
     1.05;
@@ -1038,18 +1222,18 @@ select {
     500;
 
   letter-spacing:
-    -0.035em;
+    -0.04em;
 }
 
 .choice-intro {
   margin:
-    0 auto 42px;
+    0 auto 40px;
 
   font-size:
     18px;
 
   opacity:
-    0.62;
+    0.6;
 }
 
 .choice-grid {
@@ -1057,7 +1241,7 @@ select {
     grid;
 
   gap:
-    14px;
+    13px;
 
   text-align:
     left;
@@ -1071,22 +1255,22 @@ select {
     grid;
 
   grid-template-columns:
-    50px 1fr;
+    46px 1fr;
 
   gap:
-    18px;
+    17px;
 
   align-items:
     center;
 
   padding:
-    20px;
+    19px;
 
   border:
-    1px solid rgba(0, 0, 0, 0.12);
+    1px solid rgba(0, 0, 0, 0.11);
 
   background:
-    rgba(255, 255, 255, 0.62);
+    rgba(255, 255, 255, 0.54);
 
   color:
     #111111;
@@ -1102,24 +1286,21 @@ select {
 
 .story-choice:hover {
   transform:
-    translateY(-3px);
+    translateY(-2px);
 
   background:
     #ffffff;
 
   box-shadow:
-    0 14px 35px rgba(0, 0, 0, 0.08);
+    0 15px 38px rgba(0, 0, 0, 0.07);
 }
 
 .choice-letter {
   width:
-    38px;
+    36px;
 
   height:
-    38px;
-
-  border:
-    1px solid rgba(0, 0, 0, 0.18);
+    36px;
 
   display:
     flex;
@@ -1130,13 +1311,19 @@ select {
   justify-content:
     center;
 
+  border:
+    1px solid rgba(157, 122, 41, 0.32);
+
+  color:
+    #80621f;
+
   font-family:
     Arial,
     Helvetica,
     sans-serif;
 
   font-size:
-    12px;
+    11px;
 }
 
 .choice-copy {
@@ -1152,15 +1339,15 @@ select {
 
 .choice-copy strong {
   font-size:
-    18px;
+    17px;
 }
 
 .choice-copy small {
   font-size:
-    13px;
+    12px;
 
   opacity:
-    0.55;
+    0.52;
 }
 
 .choice-result {
@@ -1168,24 +1355,29 @@ select {
     80px;
 
   margin:
-    34px auto 0;
+    32px auto 0;
 
   font-size:
-    20px;
+    19px;
 
   line-height:
     1.55;
 }
 
+.choice-result strong {
+  color:
+    #80621f;
+}
+
 .restart-button {
   margin-top:
-    20px;
+    18px;
 
   padding:
-    11px 18px;
+    10px 17px;
 
   border:
-    1px solid rgba(0, 0, 0, 0.14);
+    1px solid rgba(0, 0, 0, 0.12);
 
   background:
     transparent;
@@ -1199,21 +1391,21 @@ select {
     sans-serif;
 
   font-size:
-    10px;
+    9px;
 
   letter-spacing:
-    0.12em;
+    0.13em;
 
   text-transform:
     uppercase;
 
   opacity:
-    0.65;
+    0.6;
 }
 
 
 /* ============================================================
-   FINAL NOTE
+   FINAL
 ============================================================ */
 
 .final-note {
@@ -1224,7 +1416,7 @@ select {
     0 auto;
 
   padding:
-    80px 0 160px;
+    70px 0 150px;
 
   text-align:
     center;
@@ -1232,24 +1424,24 @@ select {
 
 .final-rule {
   width:
-    70px;
+    65px;
 
   height:
     1px;
 
   margin:
-    0 auto 30px;
+    0 auto 28px;
 
   background:
-    rgba(0, 0, 0, 0.2);
+    rgba(0, 0, 0, 0.18);
 }
 
 .final-note p {
   margin:
-    0 0 10px;
+    0 0 9px;
 
   font-size:
-    18px;
+    17px;
 }
 
 .final-small {
@@ -1259,18 +1451,18 @@ select {
     sans-serif;
 
   font-size:
-    11px !important;
+    10px !important;
 
   letter-spacing:
     0.08em;
 
   opacity:
-    0.42;
+    0.4;
 }
 
 
 /* ============================================================
-   SCENE ATMOSPHERE VARIATIONS
+   ATMOSPHERE
 ============================================================ */
 
 [data-scene="arrival"] .scene-stage {
@@ -1278,7 +1470,7 @@ select {
     linear-gradient(
       145deg,
       rgba(255,255,255,0.72),
-      rgba(239,234,226,0.7)
+      rgba(239,234,226,0.72)
     );
 }
 
@@ -1311,35 +1503,20 @@ select {
 
 
 /* ============================================================
-   ACTIVE BEAT
+   MOBILE
 ============================================================ */
 
-.story-beat.active,
-.dialogue-beat.active {
-  opacity:
-    1;
-}
-
-.story-beat:not(.active),
-.dialogue-beat:not(.active) {
-  opacity:
-    0.68;
-
-  transition:
-    opacity 0.5s ease;
-}
-
-
-/* ============================================================
-   RESPONSIVE — TABLET
-============================================================ */
-
-@media (max-width: 900px) {
+@media (max-width: 700px) {
 
   .topbar-inner {
+    width:
+      calc(100% - 20px);
+
+    min-height:
+      54px;
+
     grid-template-columns:
-      auto
-      1fr;
+      auto 1fr;
   }
 
   .theatre-mark {
@@ -1350,70 +1527,8 @@ select {
   .progress-wrap {
     grid-column:
       1 / -1;
-
-    padding-bottom:
-      8px;
   }
 
-  .scene-stage-shell {
-    top:
-      70px;
-  }
-
-  .scene-stage {
-    min-height:
-      72vh;
-  }
-
-  .visual-stage {
-    width:
-      calc(100% - 40px);
-
-    height:
-      min(58vh, 600px);
-  }
-
-  .dialogue-visual {
-    grid-template-columns:
-      1fr 34px 1fr;
-
-    width:
-      calc(100% - 40px);
-
-    height:
-      min(54vh, 520px);
-  }
-
-  .character-image-wrap {
-    height:
-      calc(100% - 36px);
-  }
-}
-
-
-/* ============================================================
-   RESPONSIVE — PHONE
-============================================================ */
-
-@media (max-width: 600px) {
-
-  body {
-    line-height:
-      1.65;
-  }
-
-  .topbar-inner {
-    width:
-      calc(100% - 20px);
-
-    min-height:
-      54px;
-  }
-
-  .brand-mark {
-    font-size:
-      10px;
-  }
 
   .intro {
     width:
@@ -1436,14 +1551,10 @@ select {
       19px;
   }
 
-  .living-scene {
-    padding-bottom:
-      70px;
-  }
 
   .scene-stage-shell {
     width:
-      calc(100% - 16px);
+      calc(100% - 12px);
 
     top:
       62px;
@@ -1451,109 +1562,110 @@ select {
 
   .scene-stage {
     min-height:
-      68vh;
+      66vh;
   }
 
   .stage-kicker {
     left:
-      13px;
+      12px;
 
     top:
-      13px;
-
-    font-size:
-      8px;
-  }
-
-  .stage-status {
-    right:
-      13px;
-
-    top:
-      13px;
-
-    max-width:
-      45%;
+      12px;
 
     font-size:
       7px;
   }
 
+  .stage-status {
+    right:
+      12px;
+
+    top:
+      12px;
+
+    max-width:
+      46%;
+
+    font-size:
+      7px;
+  }
+
+
   .visual-stage {
     width:
-      calc(100% - 20px);
+      calc(100% - 18px);
 
     height:
-      53vh;
+      51vh;
 
     margin-top:
-      40px;
+      38px;
   }
+
 
   .reading-column {
     width:
-      calc(100% - 30px);
+      calc(100% - 28px);
 
     padding:
-      4vh 0 10vh;
+      3vh 0 9vh;
   }
 
   .story-beat,
   .dialogue-beat {
     min-height:
-      52vh;
+      51vh;
 
     padding:
-      48px 0;
+      46px 0;
   }
 
   .story-beat p,
   .dialogue-beat p {
     font-size:
-      19px;
+      18px;
 
     line-height:
-      1.68;
+      1.72;
   }
+
 
   .reading-glass {
     width:
       calc(100% - 24px);
 
     bottom:
-      18px;
+      17px;
 
     padding:
-      15px 17px;
+      14px 16px;
   }
 
   .glass-inner {
     font-size:
-      16px;
+      15px;
   }
 
-  .portrait-scene .scene-image {
-    max-width:
-      92%;
-  }
+
+  /* Dialogue */
 
   .dialogue-stage {
     min-height:
-      72vh;
+      70vh;
   }
 
   .dialogue-visual {
     width:
-      calc(100% - 20px);
+      calc(100% - 14px);
 
     height:
-      46vh;
+      45vh;
 
     grid-template-columns:
-      1fr 16px 1fr;
+      1fr 12px 1fr;
 
     margin-top:
-      42px;
+      38px;
   }
 
   .character-name {
@@ -1561,25 +1673,44 @@ select {
       7px;
   }
 
-  .dialogue-panel {
-    width:
-      calc(100% - 22px);
+  .expression-badge {
+    font-size:
+      6px;
 
     padding:
-      16px 18px;
+      4px 7px;
+  }
+
+  .dialogue-panel {
+    width:
+      calc(100% - 18px);
+
+    padding:
+      15px 17px;
 
     margin-bottom:
-      18px;
+      15px;
   }
 
   .dialogue-text {
     font-size:
-      18px;
+      17px;
   }
+
+
+  /* Portrait */
+
+  .portrait-scene .scene-image {
+    max-width:
+      92%;
+  }
+
+
+  /* Choices */
 
   .choice-scene {
     padding:
-      90px 15px;
+      90px 14px;
   }
 
   .choice-inner h2 {
@@ -1589,7 +1720,7 @@ select {
 
   .story-choice {
     grid-template-columns:
-      42px 1fr;
+      40px 1fr;
 
     gap:
       12px;
@@ -1600,13 +1731,14 @@ select {
 
   .choice-copy strong {
     font-size:
-      16px;
+      15px;
   }
 
   .choice-copy small {
     font-size:
-      12px;
+      11px;
   }
+
 }
 
 
@@ -1633,11 +1765,12 @@ select {
     transition-duration:
       0.01ms !important;
   }
+
 }
 
 
 /* ============================================================
-   HOVER DEVICE ONLY
+   TOUCH DEVICES
 ============================================================ */
 
 @media (hover: none) {
@@ -1648,8 +1781,6 @@ select {
 
     box-shadow:
       none;
-
-    background:
-      rgba(255,255,255,0.62);
   }
+
 }
