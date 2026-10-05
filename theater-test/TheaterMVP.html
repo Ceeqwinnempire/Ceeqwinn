@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0, viewport-fit=cover"
@@ -15,21 +16,34 @@
 <body>
 
 <header class="theater-header">
+
     <div class="header-inner">
-        <div class="brand-mark">CEEQWINN</div>
-        <div class="header-title">THEATRE MVP</div>
+
+        <div class="brand-mark">
+            CEEQWINN
+        </div>
+
+        <div class="header-title">
+            VISUAL STORY THEATRE
+        </div>
+
     </div>
+
 </header>
 
 
 <main class="theatre-page">
 
-    <!-- =========================================================
+
+    <!-- ======================================================
          INTRO
-    ========================================================== -->
+    ======================================================= -->
 
     <section class="intro-block">
-        <p class="eyebrow">VISUAL STORY THEATRE</p>
+
+        <p class="eyebrow">
+            VISUAL STORY THEATRE
+        </p>
 
         <h1>
             The story does not sit on the page.
@@ -37,17 +51,18 @@
         </h1>
 
         <p class="intro-copy">
-            Scroll gently. Read normally. When the story needs you to look,
-            the theatre takes over.
+            Read normally. When the story needs you to look,
+            the theatre opens.
         </p>
+
     </section>
 
 
-    <!-- =========================================================
+    <!-- ======================================================
          OPENING PROSE
-    ========================================================== -->
+    ======================================================= -->
 
-    <section class="prose-section">
+    <section class="normal-prose">
 
         <p>
             The house was quieter than Lexis remembered.
@@ -64,66 +79,73 @@
     </section>
 
 
-    <!-- =========================================================
-         VISUAL THEATRE
-         
-         One stage.
-         Multiple visual beats.
-         No pile of images.
-    ========================================================== -->
+    <!-- ======================================================
+         PROSE VISUAL THEATRE
+
+         IMPORTANT:
+
+         There is NO prose underneath this image.
+
+         The trigger text is copied into the Reading Glass.
+         That is the ONLY visual copy shown during the image.
+    ======================================================= -->
 
     <section
-        class="living-scroll"
-        id="livingScroll"
-        aria-label="Cinematic visual sequence"
+        class="prose-theatre"
+        id="proseTheatre"
     >
 
-        <div class="living-stage">
+        <div class="prose-stage">
 
-            <div class="stage-heading">
-                <span id="visualKicker">THE HOUSE</span>
-                <span id="visualCounter">01 / 04</span>
+            <div class="prose-stage-label">
+
+                <span id="proseKicker">
+                    THE HOUSE
+                </span>
+
+                <span id="proseCounter">
+                    01 / 04
+                </span>
+
             </div>
 
 
             <div
-                class="visual-stage"
-                id="visualStage"
+                class="prose-image-stage"
+                id="proseImageStage"
             >
 
-                <div class="visual-media">
-
-                    <img
-                        id="visualImage"
-                        class="visual-image"
-                        src=""
-                        alt=""
-                    >
-
-                    <div class="visual-shade"></div>
+                <img
+                    id="proseImage"
+                    class="prose-image"
+                    src=""
+                    alt=""
+                >
 
 
-                    <!-- =================================================
-                         READING GLASS
+                <!-- ==================================================
+                     THE ONLY PROSE TEXT DISPLAY
 
-                         This is intentionally visible.
+                     This is the visible text.
 
-                         It is NOT a barely-visible transparent layer.
+                     It fades away before midpoint.
+                =================================================== -->
 
-                         JS fades it away before the midpoint.
-                    ================================================== -->
+                <div
+                    class="prose-reading-glass"
+                    id="proseReadingGlass"
+                >
 
                     <div
-                        class="reading-glass"
-                        id="readingGlass"
-                        aria-live="polite"
+                        class="prose-glass-label"
+                        id="proseGlassLabel"
                     >
-                        <div class="glass-kicker" id="glassKicker">
-                            THE MOMENT
-                        </div>
-
-                        <p id="glassText"></p>
+                        THE MOMENT
                     </div>
+
+                    <p
+                        id="proseGlassText"
+                    ></p>
 
                 </div>
 
@@ -131,95 +153,71 @@
 
 
             <div
-                class="visual-dots"
-                id="visualDots"
-                aria-label="Visual sequence progress"
+                class="prose-dots"
+                id="proseDots"
             ></div>
 
         </div>
 
 
-        <!-- =========================================================
-             VISUAL SCROLL TRIGGERS
+        <!-- ==================================================
+             INVISIBLE SCROLL BEATS
 
-             The reader still scrolls normally.
+             These contain the source text for the glass.
 
-             These blocks tell the theatre what moment is active.
-        ========================================================== -->
+             They are NOT rendered as visible paragraphs.
+        =================================================== -->
 
-        <div class="visual-scroll-track">
+        <div class="prose-beats">
 
-            <article
-                class="visual-trigger"
-                data-visual="entry"
-                data-glass="true"
+            <div
+                class="prose-beat"
+                data-visual="house"
+                data-label="THE HOUSE"
             >
-                <div class="trigger-inner">
-                    <span class="trigger-number">01</span>
-
-                    <p>
-                        Lexis stepped into the room and immediately knew
-                        that something had changed.
-                    </p>
-                </div>
-            </article>
+                Lexis stepped into the room and immediately knew
+                that something had changed.
+            </div>
 
 
-            <article
-                class="visual-trigger"
-                data-visual="atmosphere"
-                data-glass="true"
+            <div
+                class="prose-beat"
+                data-visual="silence"
+                data-label="THE SILENCE"
             >
-                <div class="trigger-inner">
-                    <span class="trigger-number">02</span>
-
-                    <p>
-                        The silence seemed to have a shape of its own.
-                        It rested against the walls and waited.
-                    </p>
-                </div>
-            </article>
+                The silence seemed to have a shape of its own.
+                It rested against the walls and waited.
+            </div>
 
 
-            <article
-                class="visual-trigger"
-                data-visual="fashion"
-                data-glass="true"
+            <div
+                class="prose-beat"
+                data-visual="discovery"
+                data-label="THE DISCOVERY"
             >
-                <div class="trigger-inner">
-                    <span class="trigger-number">03</span>
-
-                    <p>
-                        Then she noticed what had been left waiting for her.
-                    </p>
-                </div>
-            </article>
+                Then she noticed what had been left waiting for her.
+            </div>
 
 
-            <article
-                class="visual-trigger"
+            <div
+                class="prose-beat"
                 data-visual="detail"
-                data-glass="false"
+                data-label="THE DETAIL"
+                data-no-glass="true"
             >
-                <div class="trigger-inner">
-                    <span class="trigger-number">04</span>
-
-                    <p>
-                        She did not touch it.
-                    </p>
-                </div>
-            </article>
+                She did not touch it.
+            </div>
 
         </div>
 
     </section>
 
 
-    <!-- =========================================================
-         NORMAL PROSE AGAIN
-    ========================================================== -->
+    <!-- ======================================================
+         NORMAL PROSE
+    ======================================================= -->
 
-    <section class="prose-section">
+    <section class="normal-prose">
 
         <p>
             For several seconds, Lexis simply stood there.
@@ -230,142 +228,144 @@
         </p>
 
         <p>
-            And then she heard footsteps.
+            Then she heard footsteps.
         </p>
 
     </section>
 
 
-    <!-- =========================================================
+    <!-- ======================================================
          DIALOGUE THEATRE
-         
-         The user scrolls INTO this section.
-         
-         Once activated:
-         - dialogue runs itself
-         - two character carousels change
-         - active speaker glows
-         - text types itself
-         - user can interrupt/skip
-    ========================================================== -->
+
+         TWO CHARACTER VISUALS.
+
+         Each character owns their own dialogue.
+
+         No centre dialogue box.
+    ======================================================= -->
 
     <section
         class="dialogue-theatre"
         id="dialogueTheatre"
-        aria-label="Dialogue scene"
     >
 
-        <div class="dialogue-stage-wrap">
+        <div class="dialogue-sticky">
 
-            <div class="dialogue-stage">
+            <div class="dialogue-header">
 
-                <!-- =================================================
-                     LEXIS PANEL
-                ================================================== -->
+                <span>
+                    THE CONVERSATION
+                </span>
+
+                <span id="dialogueCounter">
+                    01 / 06
+                </span>
+
+            </div>
+
+
+            <div class="character-stage">
+
+
+                <!-- ==================================================
+                     LEXIS
+                =================================================== -->
 
                 <article
                     class="character-panel"
                     id="lexisPanel"
-                    data-character="lexis"
                 >
 
                     <div class="character-name">
                         LEXIS
                     </div>
 
-                    <div class="character-image-frame">
+
+                    <div class="character-visual">
 
                         <img
                             id="lexisImage"
-                            class="character-image"
                             src=""
                             alt="Lexis"
                         >
 
+
+                        <!-- Lexis dialogue belongs to Lexis -->
+
+                        <div
+                            class="character-dialogue"
+                            id="lexisDialogue"
+                        >
+
+                            <div class="character-dialogue-name">
+                                LEXIS
+                            </div>
+
+                            <p
+                                class="character-dialogue-text"
+                                id="lexisDialogueText"
+                            ></p>
+
+                        </div>
+
                     </div>
+
 
                     <div
                         class="expression-dots"
-                        id="lexisDots"
-                        aria-hidden="true"
+                        id="lexisExpressionDots"
                     ></div>
 
                 </article>
 
 
-                <!-- =================================================
-                     CENTER DIALOGUE
-                ================================================== -->
-
-                <div class="dialogue-center">
-
-                    <div
-                        class="dialogue-status"
-                        id="dialogueStatus"
-                    >
-                        THE CONVERSATION
-                    </div>
-
-
-                    <div
-                        class="dialogue-card"
-                        id="dialogueCard"
-                    >
-
-                        <div
-                            class="dialogue-speaker"
-                            id="dialogueSpeaker"
-                        >
-                            LEXIS
-                        </div>
-
-                        <p
-                            class="dialogue-line"
-                            id="dialogueLine"
-                            aria-live="polite"
-                        ></p>
-
-                    </div>
-
-
-                    <div
-                        class="dialogue-progress"
-                        id="dialogueProgress"
-                        aria-label="Dialogue progress"
-                    ></div>
-
-                </div>
-
-
-                <!-- =================================================
-                     FATHER PANEL
-                ================================================== -->
+                <!-- ==================================================
+                     FATHER
+                =================================================== -->
 
                 <article
                     class="character-panel"
                     id="fatherPanel"
-                    data-character="father"
                 >
 
                     <div class="character-name">
                         FATHER
                     </div>
 
-                    <div class="character-image-frame">
+
+                    <div class="character-visual">
 
                         <img
                             id="fatherImage"
-                            class="character-image"
                             src=""
                             alt="Father"
                         >
 
+
+                        <!-- Father's dialogue belongs to Father -->
+
+                        <div
+                            class="character-dialogue"
+                            id="fatherDialogue"
+                        >
+
+                            <div class="character-dialogue-name">
+                                FATHER
+                            </div>
+
+                            <p
+                                class="character-dialogue-text"
+                                id="fatherDialogueText"
+                            ></p>
+
+                        </div>
+
                     </div>
+
 
                     <div
                         class="expression-dots"
-                        id="fatherDots"
-                        aria-hidden="true"
+                        id="fatherExpressionDots"
                     ></div>
 
                 </article>
@@ -373,58 +373,63 @@
             </div>
 
 
-            <div class="dialogue-hint">
-                <span class="hint-desktop">
-                    Let the scene play. Scroll if you want to interrupt.
+            <div
+                class="dialogue-progress"
+                id="dialogueProgress"
+            ></div>
+
+
+            <div class="dialogue-instruction">
+                <span class="desktop-instruction">
+                    Let the conversation play.
+                    Tap while text is typing to finish the line.
                 </span>
 
-                <span class="hint-mobile">
-                    Rest your hand. Let the scene play.
+                <span class="mobile-instruction">
+                    Let it play. Tap to finish a line.
                 </span>
             </div>
 
         </div>
 
 
-        <!-- =========================================================
-             DIALOGUE SCROLL RAIL
+        <!-- ==================================================
+             INVISIBLE DIALOGUE TIMELINE
 
-             These are deliberately short.
-             They are not another giant text document.
+             These provide scroll space.
 
-             They simply give the browser enough scroll space
-             to allow the theatre to remain active.
-        ========================================================== -->
+             The actual dialogue is ONLY on the characters.
+        =================================================== -->
 
-        <div class="dialogue-scroll-rail">
+        <div class="dialogue-timeline">
 
             <div
-                class="dialogue-trigger"
+                class="dialogue-beat"
                 data-dialogue="0"
             ></div>
 
             <div
-                class="dialogue-trigger"
+                class="dialogue-beat"
                 data-dialogue="1"
             ></div>
 
             <div
-                class="dialogue-trigger"
+                class="dialogue-beat"
                 data-dialogue="2"
             ></div>
 
             <div
-                class="dialogue-trigger"
+                class="dialogue-beat"
                 data-dialogue="3"
             ></div>
 
             <div
-                class="dialogue-trigger"
+                class="dialogue-beat"
                 data-dialogue="4"
             ></div>
 
             <div
-                class="dialogue-trigger"
+                class="dialogue-beat"
                 data-dialogue="5"
             ></div>
 
@@ -433,11 +438,11 @@
     </section>
 
 
-    <!-- =========================================================
+    <!-- ======================================================
          PROSE AFTER DIALOGUE
-    ========================================================== -->
+    ======================================================= -->
 
-    <section class="prose-section">
+    <section class="normal-prose">
 
         <p>
             The footsteps stopped outside the room.
@@ -458,12 +463,13 @@
     </section>
 
 
-    <!-- =========================================================
-         SECOND HUGE NORMAL IMAGE
-         
-         No reading glass.
-         Image simply gets to exist.
-    ========================================================== -->
+    <!-- ======================================================
+         HUGE NORMAL IMAGE
+
+         No overlay.
+         No text.
+         Just image.
+    ======================================================= -->
 
     <section class="standalone-visual">
 
@@ -471,36 +477,37 @@
             THE WORLD CONTINUES
         </div>
 
-        <div class="standalone-image-frame">
+        <div class="standalone-frame">
 
             <img
-                src=""
                 id="standaloneImage"
-                alt="A cinematic story moment"
+                src=""
+                alt="Cinematic story moment"
             >
 
         </div>
 
-        <p class="standalone-caption">
-            Sometimes the story does not need to explain what you are seeing.
+        <p>
+            Sometimes the story does not need to explain
+            what you are seeing.
         </p>
 
     </section>
 
 
-    <!-- =========================================================
-         CHOICE ONE
-    ========================================================== -->
+    <!-- ======================================================
+         CHOICES
+    ======================================================= -->
 
     <section class="choice-section">
 
-        <div class="choice-heading">
-            <span>YOUR TURN</span>
+        <p class="eyebrow">
+            YOUR TURN
+        </p>
 
-            <h2>
-                What does Lexis do?
-            </h2>
-        </div>
+        <h2>
+            What does Lexis do?
+        </h2>
 
 
         <div class="choice-list">
@@ -509,10 +516,7 @@
                 class="choice-button"
                 data-choice="listen"
             >
-                <span class="choice-number">01</span>
-                <span>
-                    Stay quiet and listen.
-                </span>
+                Stay quiet and listen.
             </button>
 
 
@@ -520,10 +524,7 @@
                 class="choice-button"
                 data-choice="question"
             >
-                <span class="choice-number">02</span>
-                <span>
-                    Ask the question she came to ask.
-                </span>
+                Ask the question she came to ask.
             </button>
 
 
@@ -531,10 +532,7 @@
                 class="choice-button"
                 data-choice="leave"
             >
-                <span class="choice-number">03</span>
-                <span>
-                    Leave before anyone can stop her.
-                </span>
+                Leave before anyone can stop her.
             </button>
 
         </div>
@@ -543,68 +541,21 @@
         <div
             class="choice-result"
             id="choiceResult"
-            aria-live="polite"
         ></div>
 
     </section>
 
 
-    <!-- =========================================================
-         SECOND DIALOGUE / CHOICE TEST
-         
-         Gives us another opportunity to test theatre behavior.
-    ========================================================== -->
-
-    <section class="prose-section small-prose">
-
-        <p>
-            Whatever Lexis decided, the morning was no longer ordinary.
-        </p>
-
-    </section>
-
-
-    <section class="mini-choice-section">
-
-        <p class="eyebrow">
-            SECOND TEST
-        </p>
-
-        <h2>
-            How should the moment feel?
-        </h2>
-
-        <div class="tone-grid">
-
-            <button class="tone-button" data-tone="calm">
-                Calm
-            </button>
-
-            <button class="tone-button" data-tone="tension">
-                Tension
-            </button>
-
-            <button class="tone-button" data-tone="mystery">
-                Mystery
-            </button>
-
-            <button class="tone-button" data-tone="wonder">
-                Wonder
-            </button>
-
-        </div>
-
-        <p
-            class="tone-result"
-            id="toneResult"
-        ></p>
-
-    </section>
-
-
     <footer class="theatre-footer">
-        <span>CEEQWINN</span>
-        <span>VISUAL STORY THEATRE MVP</span>
+
+        <span>
+            CEEQWINN
+        </span>
+
+        <span>
+            VISUAL STORY THEATRE MVP
+        </span>
+
     </footer>
 
 </main>
