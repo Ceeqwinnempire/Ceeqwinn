@@ -1,0 +1,1655 @@
+/* ============================================================
+   CEEQWINN LIVING SCROLL THEATRE
+   MVP CSS
+============================================================ */
+
+
+/* ============================================================
+   RESET
+============================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #f7f5f1;
+  color: #111111;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  line-height: 1.75;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+
+/* ============================================================
+   TOP BAR
+============================================================ */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background: rgba(247, 245, 241, 0.92);
+
+  border-bottom:
+    1px solid rgba(0, 0, 0, 0.08);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.topbar-inner {
+  width: min(1180px, calc(100% - 32px));
+
+  min-height: 62px;
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    auto
+    1fr
+    minmax(140px, 260px);
+
+  align-items: center;
+
+  gap: 24px;
+}
+
+.brand-mark {
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 12px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.18em;
+}
+
+.theatre-mark {
+  text-align: center;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 10px;
+
+  letter-spacing: 0.18em;
+
+  opacity: 0.5;
+}
+
+.progress-wrap {
+  width: 100%;
+}
+
+.progress-track {
+  width: 100%;
+  height: 3px;
+
+  background: rgba(0, 0, 0, 0.08);
+
+  overflow: hidden;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+
+  background: #111111;
+
+  transition:
+    width 0.15s linear;
+}
+
+
+/* ============================================================
+   INTRO
+============================================================ */
+
+.intro {
+  width: min(760px, calc(100% - 40px));
+
+  margin:
+    0 auto;
+
+  min-height:
+    calc(100vh - 62px);
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  justify-content:
+    center;
+
+  padding:
+    100px 0;
+}
+
+.eyebrow {
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.22em;
+
+  text-transform: uppercase;
+
+  opacity: 0.48;
+}
+
+.intro h1 {
+  margin:
+    18px 0 28px;
+
+  font-size:
+    clamp(48px, 8vw, 96px);
+
+  line-height: 0.98;
+
+  font-weight: 500;
+
+  letter-spacing: -0.045em;
+}
+
+.intro-lede {
+  max-width: 610px;
+
+  margin: 0;
+
+  font-size:
+    clamp(21px, 3vw, 30px);
+
+  line-height: 1.45;
+}
+
+.intro-rule {
+  width: 90px;
+  height: 1px;
+
+  background: #111111;
+
+  margin:
+    34px 0 24px;
+}
+
+.intro-note {
+  margin: 0;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 13px;
+
+  opacity: 0.6;
+}
+
+
+/* ============================================================
+   LIVING SCENE
+============================================================ */
+
+.living-scene {
+  position: relative;
+
+  width: 100%;
+
+  padding:
+    20px 0 120px;
+}
+
+
+/* ============================================================
+   STAGE SHELL
+============================================================ */
+
+.scene-stage-shell {
+  width:
+    min(1240px, calc(100% - 32px));
+
+  margin:
+    0 auto;
+
+  position:
+    sticky;
+
+  top:
+    82px;
+
+  z-index:
+    20;
+
+  pointer-events:
+    none;
+}
+
+.scene-stage {
+  width: 100%;
+
+  min-height:
+    min(78vh, 820px);
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  justify-content:
+    center;
+
+  align-items:
+    center;
+
+  position:
+    relative;
+
+  border:
+    1px solid rgba(0, 0, 0, 0.08);
+
+  background:
+    rgba(255, 255, 255, 0.48);
+
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.08);
+
+  overflow:
+    hidden;
+
+  transition:
+    background 0.6s ease,
+    box-shadow 0.6s ease;
+}
+
+.stage-kicker {
+  position: absolute;
+
+  left: 22px;
+  top: 20px;
+
+  z-index: 30;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.18em;
+
+  opacity: 0.45;
+}
+
+.stage-status {
+  position: absolute;
+
+  right: 22px;
+  top: 20px;
+
+  z-index: 30;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 9px;
+
+  letter-spacing: 0.1em;
+
+  text-transform: uppercase;
+
+  opacity: 0.42;
+
+  text-align: right;
+}
+
+
+/* ============================================================
+   VISUAL STAGE
+============================================================ */
+
+.visual-stage {
+  width:
+    min(1120px, calc(100% - 60px));
+
+  height:
+    min(67vh, 690px);
+
+  margin:
+    48px auto 30px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+}
+
+.visual-frame {
+  width:
+    100%;
+
+  height:
+    100%;
+
+  position:
+    relative;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  transition:
+    transform 0.55s ease,
+    opacity 0.55s ease;
+}
+
+.visual-frame.changing {
+  opacity: 0.15;
+  transform: scale(0.985);
+}
+
+
+/* ============================================================
+   IMAGE WRAP
+============================================================ */
+
+.visual-image-wrap {
+  position:
+    relative;
+
+  width:
+    100%;
+
+  height:
+    100%;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  overflow:
+    hidden;
+}
+
+.scene-image {
+  display:
+    block;
+
+  width:
+    auto;
+
+  height:
+    auto;
+
+  max-width:
+    100%;
+
+  max-height:
+    100%;
+
+  object-fit:
+    contain;
+
+  object-position:
+    center;
+
+  opacity:
+    0;
+
+  transform:
+    scale(0.985);
+
+  transition:
+    opacity 0.55s ease,
+    transform 0.7s ease;
+
+  user-select:
+    none;
+
+  -webkit-user-drag:
+    none;
+}
+
+.scene-image.loaded {
+  opacity:
+    1;
+
+  transform:
+    scale(1);
+}
+
+
+/* ============================================================
+   IMAGE VIGNETTE
+============================================================ */
+
+.image-vignette {
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  pointer-events:
+    none;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.03),
+      transparent 20%,
+      transparent 78%,
+      rgba(0,0,0,0.07)
+    );
+
+  opacity:
+    0.35;
+}
+
+
+/* ============================================================
+   READING GLASS
+============================================================ */
+
+.reading-glass {
+  position:
+    absolute;
+
+  left:
+    50%;
+
+  bottom:
+    32px;
+
+  transform:
+    translate(-50%, 20px);
+
+  width:
+    min(720px, calc(100% - 48px));
+
+  padding:
+    18px 24px;
+
+  background:
+    rgba(255, 255, 255, 0.76);
+
+  border:
+    1px solid rgba(255, 255, 255, 0.9);
+
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.14);
+
+  backdrop-filter:
+    blur(14px);
+
+  -webkit-backdrop-filter:
+    blur(14px);
+
+  opacity:
+    0;
+
+  pointer-events:
+    none;
+
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+
+  z-index:
+    20;
+}
+
+.reading-glass.visible {
+  opacity:
+    1;
+
+  transform:
+    translate(-50%, 0);
+}
+
+.glass-label {
+  margin-bottom:
+    5px;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    8px;
+
+  letter-spacing:
+    0.2em;
+
+  opacity:
+    0.4;
+}
+
+.glass-inner {
+  font-size:
+    clamp(16px, 2vw, 20px);
+
+  line-height:
+    1.55;
+}
+
+
+/* ============================================================
+   READING COLUMN
+============================================================ */
+
+.reading-column {
+  position:
+    relative;
+
+  z-index:
+    50;
+
+  width:
+    min(720px, calc(100% - 40px));
+
+  margin:
+    0 auto;
+
+  padding:
+    8vh 0 14vh;
+}
+
+.story-beat,
+.dialogue-beat {
+  position:
+    relative;
+
+  min-height:
+    55vh;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  justify-content:
+    center;
+
+  padding:
+    60px 0;
+}
+
+.story-beat p,
+.dialogue-beat p {
+  margin:
+    0 0 1.4em;
+
+  font-size:
+    clamp(20px, 2.2vw, 27px);
+
+  line-height:
+    1.72;
+}
+
+.story-beat p:last-child,
+.dialogue-beat p:last-child {
+  margin-bottom:
+    0;
+}
+
+.beat-number {
+  display:
+    inline-block;
+
+  margin-bottom:
+    20px;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    9px;
+
+  letter-spacing:
+    0.18em;
+
+  opacity:
+    0.35;
+}
+
+.story-beat::after,
+.dialogue-beat::after {
+  content:
+    "";
+
+  width:
+    42px;
+
+  height:
+    1px;
+
+  background:
+    rgba(0, 0, 0, 0.16);
+
+  margin-top:
+    38px;
+}
+
+
+/* ============================================================
+   SEQUENCE DOTS
+============================================================ */
+
+.sequence-dots {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  gap:
+    9px;
+
+  margin:
+    0 0 24px;
+}
+
+.sequence-dot {
+  width:
+    6px;
+
+  height:
+    6px;
+
+  border-radius:
+    50%;
+
+  border:
+    0;
+
+  padding:
+    0;
+
+  background:
+    rgba(0, 0, 0, 0.18);
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease;
+}
+
+.sequence-dot.active {
+  transform:
+    scale(1.8);
+
+  background:
+    #111111;
+}
+
+
+/* ============================================================
+   DIALOGUE STAGE
+============================================================ */
+
+.dialogue-stage {
+  min-height:
+    min(82vh, 860px);
+}
+
+.dialogue-visual {
+  width:
+    min(1080px, calc(100% - 60px));
+
+  height:
+    min(60vh, 590px);
+
+  margin:
+    54px auto 20px;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    1fr 70px 1fr;
+
+  align-items:
+    end;
+
+  gap:
+    10px;
+}
+
+.character-character {
+  height:
+    100%;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  align-items:
+    center;
+
+  justify-content:
+    flex-end;
+
+  opacity:
+    0.52;
+
+  transform:
+    scale(0.97);
+
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s ease,
+    filter 0.55s ease;
+}
+
+.character-character.speaking {
+  opacity:
+    1;
+
+  transform:
+    scale(1.025);
+
+  filter:
+    drop-shadow(
+      0 0 24px rgba(255, 255, 255, 0.8)
+    );
+}
+
+.character-image-wrap {
+  height:
+    calc(100% - 42px);
+
+  width:
+    100%;
+
+  display:
+    flex;
+
+  align-items:
+    end;
+
+  justify-content:
+    center;
+}
+
+.character-image-wrap img {
+  max-width:
+    100%;
+
+  max-height:
+    100%;
+
+  width:
+    auto;
+
+  height:
+    auto;
+
+  object-fit:
+    contain;
+
+  display:
+    block;
+
+  user-select:
+    none;
+
+  -webkit-user-drag:
+    none;
+}
+
+.character-name {
+  margin-top:
+    8px;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    9px;
+
+  letter-spacing:
+    0.2em;
+
+  opacity:
+    0.55;
+}
+
+.dialogue-divider {
+  height:
+    100%;
+
+  display:
+    flex;
+
+  justify-content:
+    center;
+
+  align-items:
+    center;
+}
+
+.dialogue-divider span {
+  width:
+    1px;
+
+  height:
+    60%;
+
+  background:
+    rgba(0, 0, 0, 0.12);
+}
+
+.dialogue-panel {
+  width:
+    min(720px, calc(100% - 40px));
+
+  margin:
+    0 auto 30px;
+
+  padding:
+    22px 26px;
+
+  background:
+    rgba(255, 255, 255, 0.78);
+
+  border:
+    1px solid rgba(0, 0, 0, 0.08);
+
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.08);
+
+  backdrop-filter:
+    blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
+
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+
+.speaker-label {
+  margin-bottom:
+    6px;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    9px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    0.18em;
+}
+
+.dialogue-text {
+  font-size:
+    clamp(19px, 2.4vw, 28px);
+
+  line-height:
+    1.45;
+}
+
+
+/* ============================================================
+   DIALOGUE READING
+============================================================ */
+
+.dialogue-reading {
+  padding-top:
+    4vh;
+}
+
+.dialogue-lead {
+  font-style:
+    italic;
+}
+
+
+/* ============================================================
+   PORTRAIT SCENE
+============================================================ */
+
+.portrait-scene .visual-stage {
+  width:
+    min(900px, calc(100% - 60px));
+}
+
+.portrait-scene .scene-image {
+  max-width:
+    75%;
+
+  max-height:
+    100%;
+}
+
+
+/* ============================================================
+   CHOICE SCENE
+============================================================ */
+
+.choice-scene {
+  min-height:
+    100vh;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  padding:
+    120px 20px;
+}
+
+.choice-inner {
+  width:
+    min(780px, 100%);
+
+  text-align:
+    center;
+}
+
+.choice-inner h2 {
+  margin:
+    18px 0 10px;
+
+  font-size:
+    clamp(38px, 6vw, 64px);
+
+  line-height:
+    1.05;
+
+  font-weight:
+    500;
+
+  letter-spacing:
+    -0.035em;
+}
+
+.choice-intro {
+  margin:
+    0 auto 42px;
+
+  font-size:
+    18px;
+
+  opacity:
+    0.62;
+}
+
+.choice-grid {
+  display:
+    grid;
+
+  gap:
+    14px;
+
+  text-align:
+    left;
+}
+
+.story-choice {
+  width:
+    100%;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    50px 1fr;
+
+  gap:
+    18px;
+
+  align-items:
+    center;
+
+  padding:
+    20px;
+
+  border:
+    1px solid rgba(0, 0, 0, 0.12);
+
+  background:
+    rgba(255, 255, 255, 0.62);
+
+  color:
+    #111111;
+
+  cursor:
+    pointer;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.story-choice:hover {
+  transform:
+    translateY(-3px);
+
+  background:
+    #ffffff;
+
+  box-shadow:
+    0 14px 35px rgba(0, 0, 0, 0.08);
+}
+
+.choice-letter {
+  width:
+    38px;
+
+  height:
+    38px;
+
+  border:
+    1px solid rgba(0, 0, 0, 0.18);
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    12px;
+}
+
+.choice-copy {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    4px;
+}
+
+.choice-copy strong {
+  font-size:
+    18px;
+}
+
+.choice-copy small {
+  font-size:
+    13px;
+
+  opacity:
+    0.55;
+}
+
+.choice-result {
+  min-height:
+    80px;
+
+  margin:
+    34px auto 0;
+
+  font-size:
+    20px;
+
+  line-height:
+    1.55;
+}
+
+.restart-button {
+  margin-top:
+    20px;
+
+  padding:
+    11px 18px;
+
+  border:
+    1px solid rgba(0, 0, 0, 0.14);
+
+  background:
+    transparent;
+
+  cursor:
+    pointer;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    10px;
+
+  letter-spacing:
+    0.12em;
+
+  text-transform:
+    uppercase;
+
+  opacity:
+    0.65;
+}
+
+
+/* ============================================================
+   FINAL NOTE
+============================================================ */
+
+.final-note {
+  width:
+    min(680px, calc(100% - 40px));
+
+  margin:
+    0 auto;
+
+  padding:
+    80px 0 160px;
+
+  text-align:
+    center;
+}
+
+.final-rule {
+  width:
+    70px;
+
+  height:
+    1px;
+
+  margin:
+    0 auto 30px;
+
+  background:
+    rgba(0, 0, 0, 0.2);
+}
+
+.final-note p {
+  margin:
+    0 0 10px;
+
+  font-size:
+    18px;
+}
+
+.final-small {
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size:
+    11px !important;
+
+  letter-spacing:
+    0.08em;
+
+  opacity:
+    0.42;
+}
+
+
+/* ============================================================
+   SCENE ATMOSPHERE VARIATIONS
+============================================================ */
+
+[data-scene="arrival"] .scene-stage {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,0.72),
+      rgba(239,234,226,0.7)
+    );
+}
+
+[data-scene="garden-sequence"] .scene-stage {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(248,249,245,0.74),
+      rgba(229,237,226,0.72)
+    );
+}
+
+[data-scene="father-dialogue"] .scene-stage {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(241,239,235,0.78),
+      rgba(222,221,218,0.74)
+    );
+}
+
+[data-scene="wardrobe"] .scene-stage {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(246,241,244,0.78),
+      rgba(235,227,233,0.72)
+    );
+}
+
+
+/* ============================================================
+   ACTIVE BEAT
+============================================================ */
+
+.story-beat.active,
+.dialogue-beat.active {
+  opacity:
+    1;
+}
+
+.story-beat:not(.active),
+.dialogue-beat:not(.active) {
+  opacity:
+    0.68;
+
+  transition:
+    opacity 0.5s ease;
+}
+
+
+/* ============================================================
+   RESPONSIVE — TABLET
+============================================================ */
+
+@media (max-width: 900px) {
+
+  .topbar-inner {
+    grid-template-columns:
+      auto
+      1fr;
+  }
+
+  .theatre-mark {
+    display:
+      none;
+  }
+
+  .progress-wrap {
+    grid-column:
+      1 / -1;
+
+    padding-bottom:
+      8px;
+  }
+
+  .scene-stage-shell {
+    top:
+      70px;
+  }
+
+  .scene-stage {
+    min-height:
+      72vh;
+  }
+
+  .visual-stage {
+    width:
+      calc(100% - 40px);
+
+    height:
+      min(58vh, 600px);
+  }
+
+  .dialogue-visual {
+    grid-template-columns:
+      1fr 34px 1fr;
+
+    width:
+      calc(100% - 40px);
+
+    height:
+      min(54vh, 520px);
+  }
+
+  .character-image-wrap {
+    height:
+      calc(100% - 36px);
+  }
+}
+
+
+/* ============================================================
+   RESPONSIVE — PHONE
+============================================================ */
+
+@media (max-width: 600px) {
+
+  body {
+    line-height:
+      1.65;
+  }
+
+  .topbar-inner {
+    width:
+      calc(100% - 20px);
+
+    min-height:
+      54px;
+  }
+
+  .brand-mark {
+    font-size:
+      10px;
+  }
+
+  .intro {
+    width:
+      calc(100% - 30px);
+
+    min-height:
+      calc(100vh - 54px);
+
+    padding:
+      70px 0;
+  }
+
+  .intro h1 {
+    font-size:
+      clamp(43px, 14vw, 68px);
+  }
+
+  .intro-lede {
+    font-size:
+      19px;
+  }
+
+  .living-scene {
+    padding-bottom:
+      70px;
+  }
+
+  .scene-stage-shell {
+    width:
+      calc(100% - 16px);
+
+    top:
+      62px;
+  }
+
+  .scene-stage {
+    min-height:
+      68vh;
+  }
+
+  .stage-kicker {
+    left:
+      13px;
+
+    top:
+      13px;
+
+    font-size:
+      8px;
+  }
+
+  .stage-status {
+    right:
+      13px;
+
+    top:
+      13px;
+
+    max-width:
+      45%;
+
+    font-size:
+      7px;
+  }
+
+  .visual-stage {
+    width:
+      calc(100% - 20px);
+
+    height:
+      53vh;
+
+    margin-top:
+      40px;
+  }
+
+  .reading-column {
+    width:
+      calc(100% - 30px);
+
+    padding:
+      4vh 0 10vh;
+  }
+
+  .story-beat,
+  .dialogue-beat {
+    min-height:
+      52vh;
+
+    padding:
+      48px 0;
+  }
+
+  .story-beat p,
+  .dialogue-beat p {
+    font-size:
+      19px;
+
+    line-height:
+      1.68;
+  }
+
+  .reading-glass {
+    width:
+      calc(100% - 24px);
+
+    bottom:
+      18px;
+
+    padding:
+      15px 17px;
+  }
+
+  .glass-inner {
+    font-size:
+      16px;
+  }
+
+  .portrait-scene .scene-image {
+    max-width:
+      92%;
+  }
+
+  .dialogue-stage {
+    min-height:
+      72vh;
+  }
+
+  .dialogue-visual {
+    width:
+      calc(100% - 20px);
+
+    height:
+      46vh;
+
+    grid-template-columns:
+      1fr 16px 1fr;
+
+    margin-top:
+      42px;
+  }
+
+  .character-name {
+    font-size:
+      7px;
+  }
+
+  .dialogue-panel {
+    width:
+      calc(100% - 22px);
+
+    padding:
+      16px 18px;
+
+    margin-bottom:
+      18px;
+  }
+
+  .dialogue-text {
+    font-size:
+      18px;
+  }
+
+  .choice-scene {
+    padding:
+      90px 15px;
+  }
+
+  .choice-inner h2 {
+    font-size:
+      42px;
+  }
+
+  .story-choice {
+    grid-template-columns:
+      42px 1fr;
+
+    gap:
+      12px;
+
+    padding:
+      16px;
+  }
+
+  .choice-copy strong {
+    font-size:
+      16px;
+  }
+
+  .choice-copy small {
+    font-size:
+      12px;
+  }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior:
+      auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration:
+      0.01ms !important;
+
+    animation-iteration-count:
+      1 !important;
+
+    transition-duration:
+      0.01ms !important;
+  }
+}
+
+
+/* ============================================================
+   HOVER DEVICE ONLY
+============================================================ */
+
+@media (hover: none) {
+
+  .story-choice:hover {
+    transform:
+      none;
+
+    box-shadow:
+      none;
+
+    background:
+      rgba(255,255,255,0.62);
+  }
+}
