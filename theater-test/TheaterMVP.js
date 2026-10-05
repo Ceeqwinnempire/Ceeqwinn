@@ -1,22 +1,12 @@
 /* ============================================================
    CEEQWINN LIVING SCROLL THEATRE
-   MVP JAVASCRIPT
+   POLISHED MVP JAVASCRIPT
 ============================================================ */
 
 
 /* ============================================================
-   IMAGE LIBRARY
+   IMAGE BASE
 ============================================================ */
-
-/*
-   We use the GitHub RAW repository directly.
-
-   IMPORTANT:
-   The theatre does NOT inspect images.
-   It only knows which image belongs to which story beat.
-
-   That keeps the system deterministic.
-*/
 
 const RAW_BASE =
   "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/";
@@ -26,73 +16,84 @@ const LEXIS_BASE =
   "characters/lexis/outfits/";
 
 
+function rawImage(path) {
+
+  return RAW_BASE +
+    path
+      .split("/")
+      .map(function(part) {
+        return encodeURIComponent(part);
+      })
+      .join("/");
+
+}
+
+
+/* ============================================================
+   IMAGE LIBRARY
+============================================================ */
+
 const IMAGE_LIBRARY = {
 
   house:
-    RAW_BASE +
-    encodeURIComponent(
+    rawImage(
       "Luxurious_royal_theatre_curtai (1).jpeg"
     ),
 
   gate:
-    RAW_BASE +
-    encodeURIComponent(
+    rawImage(
       "Luxurious_royal_theatre_curtai (4).jpeg"
     ),
 
   garden:
-    RAW_BASE +
-    encodeURIComponent(
+    rawImage(
       "rainy_atmosphere_cinematic_rai.jpeg"
     ),
 
   detail:
-    RAW_BASE +
-    encodeURIComponent(
+    rawImage(
       "image-1.png"
     ),
 
   arrivalEnd:
-    RAW_BASE +
-    encodeURIComponent(
+    rawImage(
       "Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg"
     ),
 
 
-  /* Visual sequence */
+  /* ========================================================
+     VISUAL SEQUENCE
+  ======================================================== */
 
   sequence0:
-    RAW_BASE +
-    encodeURIComponent(
+    rawImage(
       "adorable_cute_kawaii_A_beautif (1).jpeg"
     ),
 
   sequence1:
-    RAW_BASE +
-    encodeURIComponent(
+    rawImage(
       "young_woman_rainy_atmosphere_c.jpeg"
     ),
 
   sequence2:
-    RAW_BASE +
-    encodeURIComponent(
+    rawImage(
       "cinematic_character_portrait_p (1).jpeg"
     ),
 
   sequence3:
-    RAW_BASE +
-    encodeURIComponent(
+    rawImage(
       "image-2.png"
     ),
 
   sequence4:
-    RAW_BASE +
-    encodeURIComponent(
+    rawImage(
       "editorial_fashion_portrait_pri.jpeg"
     ),
 
 
-  /* Wardrobe */
+  /* ========================================================
+     WARDROBE
+  ======================================================== */
 
   wardrobe:
     LEXIS_BASE +
@@ -119,83 +120,175 @@ const IMAGE_LIBRARY = {
     ),
 
 
-  /* Dialogue characters */
+  /* ========================================================
+     LEXIS EXPRESSIONS
+  ======================================================== */
 
-  lexis:
+  lexisNeutral:
     LEXIS_BASE +
     encodeURIComponent(
       "lexis_default.png.jpeg"
     ),
 
-  father:
-    RAW_BASE +
+  lexisCurious:
+    LEXIS_BASE +
     encodeURIComponent(
+      "Lexis_Azunna_soft.jpg.jpeg"
+    ),
+
+  lexisSuspicious:
+    LEXIS_BASE +
+    encodeURIComponent(
+      "Lexis_Azunna_street.jpg.jpeg"
+    ),
+
+  lexisDetermined:
+    LEXIS_BASE +
+    encodeURIComponent(
+      "Lexis_Azunna_militarily.jpg.jpeg"
+    ),
+
+
+  /* ========================================================
+     FATHER EXPRESSION PLACEHOLDERS
+     
+     IMPORTANT:
+     These are temporary test assets.
+     Replace them later with actual Father expression
+     images when you add them to GitHub.
+  ======================================================== */
+
+  fatherCalm:
+    rawImage(
       "cinematic_character_portrait_p-1.jpeg"
+    ),
+
+  fatherGuarded:
+    rawImage(
+      "cinematic_character_portrait_p.jpeg"
+    ),
+
+  fatherConcerned:
+    rawImage(
+      "cinematic_character_portrait_p (2).jpeg"
+    ),
+
+  fatherResigned:
+    rawImage(
+      "Full-body_cinematic_portrait_o - 2025-10-30T110920.194.jpeg"
     )
 
 };
 
 
 /* ============================================================
-   UTILITY
+   CHARACTER EXPRESSION MAPS
 ============================================================ */
 
-function sleep(ms) {
+const CHARACTER_EXPRESSIONS = {
 
-  return new Promise(function(resolve) {
-    setTimeout(resolve, ms);
-  });
+  lexis: {
 
-}
+    neutral:
+      IMAGE_LIBRARY.lexisNeutral,
+
+    curious:
+      IMAGE_LIBRARY.lexisCurious,
+
+    suspicious:
+      IMAGE_LIBRARY.lexisSuspicious,
+
+    determined:
+      IMAGE_LIBRARY.lexisDetermined
+
+  },
+
+
+  father: {
+
+    calm:
+      IMAGE_LIBRARY.fatherCalm,
+
+    guarded:
+      IMAGE_LIBRARY.fatherGuarded,
+
+    concerned:
+      IMAGE_LIBRARY.fatherConcerned,
+
+    resigned:
+      IMAGE_LIBRARY.fatherResigned
+
+  }
+
+};
 
 
 /* ============================================================
-   IMAGE PRELOADER
+   PRELOAD
 ============================================================ */
 
 function preloadImage(src) {
 
-  return new Promise(function(resolve) {
+  return new Promise(
+    function(resolve) {
 
-    const img =
-      new Image();
+      const image =
+        new Image();
 
-    img.onload =
-      function() {
-        resolve(true);
-      };
+      image.onload =
+        function() {
+          resolve(true);
+        };
 
-    img.onerror =
-      function() {
-        resolve(false);
-      };
+      image.onerror =
+        function() {
+          resolve(false);
+        };
 
-    img.src =
-      src;
+      image.src =
+        src;
 
-  });
+    }
+  );
 
 }
 
 
 /* ============================================================
-   VISUAL IMAGE SWITCHER
+   VISUAL CHANGE
 ============================================================ */
 
 function changeVisual(options) {
 
-  const {
-    image,
-    alt,
-    mode,
-    imageElement,
-    frameElement,
-    glassElement,
-    glassTextElement,
-    glassText,
-    statusElement,
-    status
-  } = options;
+  const image =
+    options.image;
+
+  const imageElement =
+    options.imageElement;
+
+  const frameElement =
+    options.frameElement;
+
+  const glassElement =
+    options.glassElement;
+
+  const glassTextElement =
+    options.glassTextElement;
+
+  const glassText =
+    options.glassText || "";
+
+  const mode =
+    options.mode;
+
+  const alt =
+    options.alt || "";
+
+  const statusElement =
+    options.statusElement;
+
+  const status =
+    options.status || "";
 
 
   if (!imageElement) {
@@ -203,16 +296,11 @@ function changeVisual(options) {
   }
 
 
-  const oldSrc =
-    imageElement.dataset.currentSrc || "";
-
-
   if (
-    oldSrc === image &&
-    imageElement.classList.contains("loaded")
+    imageElement.dataset.currentSrc === image
   ) {
 
-    updateGlass(
+    updateReadingGlass(
       glassElement,
       glassTextElement,
       glassText
@@ -229,6 +317,13 @@ function changeVisual(options) {
       "changing"
     );
 
+    if (mode) {
+
+      frameElement.dataset.mode =
+        mode;
+
+    }
+
   }
 
 
@@ -237,7 +332,7 @@ function changeVisual(options) {
   );
 
 
-  if (statusElement && status) {
+  if (statusElement) {
 
     statusElement.textContent =
       status;
@@ -245,58 +340,47 @@ function changeVisual(options) {
   }
 
 
-  if (mode) {
-
-    frameElement.dataset.mode =
-      mode;
-
-  }
-
-
   preloadImage(image)
-    .then(function(success) {
+    .then(
+      function(success) {
 
-      if (!success) {
-
-        imageElement.alt =
-          alt || "Visual unavailable";
-
-        return;
-
-      }
+        if (!success) {
+          return;
+        }
 
 
-      imageElement.onload =
-        function() {
+        imageElement.onload =
+          function() {
 
-          imageElement.classList.add(
-            "loaded"
-          );
-
-          if (frameElement) {
-
-            frameElement.classList.remove(
-              "changing"
+            imageElement.classList.add(
+              "loaded"
             );
 
-          }
+            if (frameElement) {
 
-        };
+              frameElement.classList.remove(
+                "changing"
+              );
 
+            }
 
-      imageElement.src =
-        image;
-
-      imageElement.alt =
-        alt || "";
-
-      imageElement.dataset.currentSrc =
-        image;
-
-    });
+          };
 
 
-  updateGlass(
+        imageElement.src =
+          image;
+
+        imageElement.alt =
+          alt;
+
+        imageElement.dataset.currentSrc =
+          image;
+
+      }
+    );
+
+
+  updateReadingGlass(
     glassElement,
     glassTextElement,
     glassText
@@ -309,10 +393,10 @@ function changeVisual(options) {
    READING GLASS
 ============================================================ */
 
-function updateGlass(
+function updateReadingGlass(
   glassElement,
   glassTextElement,
-  glassText
+  text
 ) {
 
   if (!glassElement) {
@@ -321,16 +405,12 @@ function updateGlass(
 
 
   if (
-    glassText &&
-    glassText.trim() !== ""
+    text &&
+    text.trim() !== ""
   ) {
 
-    if (glassTextElement) {
-
-      glassTextElement.textContent =
-        glassText;
-
-    }
+    glassTextElement.textContent =
+      text;
 
     glassElement.classList.add(
       "visible"
@@ -348,174 +428,7 @@ function updateGlass(
 
 
 /* ============================================================
-   SCENE STATE
-============================================================ */
-
-const sceneStates = {};
-
-
-/* ============================================================
-   ARRIVAL SCENE
-============================================================ */
-
-function setupArrivalScene() {
-
-  const scene =
-    document.querySelector(
-      '[data-scene="arrival"]'
-    );
-
-  if (!scene) {
-    return;
-  }
-
-
-  const imageElement =
-    document.getElementById(
-      "arrivalImage"
-    );
-
-  const frameElement =
-    document.getElementById(
-      "arrivalVisual"
-    );
-
-  const glassElement =
-    document.getElementById(
-      "arrivalGlass"
-    );
-
-  const glassTextElement =
-    document.getElementById(
-      "arrivalGlassText"
-    );
-
-  const statusElement =
-    document.getElementById(
-      "arrivalStatus"
-    );
-
-
-  const beats =
-    Array.from(
-      scene.querySelectorAll(
-        ".story-beat"
-      )
-    );
-
-
-  const visualMap = {
-
-    house: {
-      image: IMAGE_LIBRARY.house,
-      mode: "cinematic"
-    },
-
-    gate: {
-      image: IMAGE_LIBRARY.gate,
-      mode: "cinematic"
-    },
-
-    garden: {
-      image: IMAGE_LIBRARY.garden,
-      mode: "cinematic"
-    },
-
-    detail: {
-      image: IMAGE_LIBRARY.detail,
-      mode: "detail"
-    },
-
-    "arrival-end": {
-      image: IMAGE_LIBRARY.arrivalEnd,
-      mode: "cinematic"
-    }
-
-  };
-
-
-  function activateBeat(beat) {
-
-    if (!beat) {
-      return;
-    }
-
-
-    beats.forEach(function(item) {
-
-      item.classList.remove(
-        "active"
-      );
-
-    });
-
-
-    beat.classList.add(
-      "active"
-    );
-
-
-    const key =
-      beat.dataset.visual;
-
-    const visual =
-      visualMap[key];
-
-    if (!visual) {
-      return;
-    }
-
-
-    changeVisual({
-
-      image:
-        visual.image,
-
-      alt:
-        beat.dataset.alt,
-
-      mode:
-        beat.dataset.mode ||
-        visual.mode,
-
-      imageElement,
-      frameElement,
-      glassElement,
-      glassTextElement,
-
-      glassText:
-        beat.dataset.glass || "",
-
-      statusElement,
-
-      status:
-        beat.dataset.status || ""
-
-    });
-
-  }
-
-
-  sceneStates.arrival = {
-    activateBeat
-  };
-
-
-  observeBeats(
-    beats,
-    activateBeat
-  );
-
-
-  activateBeat(
-    beats[0]
-  );
-
-}
-
-
-/* ============================================================
-   GENERIC BEAT OBSERVER
+   BEAT OBSERVER
 ============================================================ */
 
 function observeBeats(
@@ -540,53 +453,219 @@ function observeBeats(
     new IntersectionObserver(
       function(entries) {
 
-        entries.forEach(function(entry) {
+        entries.forEach(
+          function(entry) {
 
-          if (
-            entry.isIntersecting
-          ) {
+            if (
+              entry.isIntersecting
+            ) {
 
-            callback(
-              entry.target
-            );
+              callback(
+                entry.target
+              );
+
+            }
 
           }
-
-        });
+        );
 
       },
       {
-        root: null,
+
+        root:
+          null,
 
         /*
-          The beat becomes active
-          when its reading position
-          enters the middle of
-          the screen.
+           This is important.
+
+           We are NOT triggering the visual
+           as soon as the text touches the
+           bottom of the screen.
+
+           We wait until the reading beat
+           reaches the central reading zone.
         */
 
         rootMargin:
-          "-38% 0px -42% 0px",
+          "-40% 0px -42% 0px",
 
         threshold:
           0
+
       }
     );
 
 
-  beats.forEach(function(beat) {
+  beats.forEach(
+    function(beat) {
 
-    observer.observe(
-      beat
-    );
+      observer.observe(
+        beat
+      );
 
-  });
+    }
+  );
 
 }
 
 
 /* ============================================================
-   GARDEN VISUAL SEQUENCE
+   ARRIVAL
+============================================================ */
+
+function setupArrivalScene() {
+
+  const scene =
+    document.querySelector(
+      '[data-scene="arrival"]'
+    );
+
+  if (!scene) {
+    return;
+  }
+
+
+  const imageElement =
+    document.getElementById(
+      "arrivalImage"
+    );
+
+  const frameElement =
+    document.getElementById(
+      "arrivalVisual"
+    );
+
+  const statusElement =
+    document.getElementById(
+      "arrivalStatus"
+    );
+
+
+  const beats =
+    Array.from(
+      scene.querySelectorAll(
+        ".story-beat"
+      )
+    );
+
+
+  const visuals = {
+
+    house: {
+      image:
+        IMAGE_LIBRARY.house,
+
+      mode:
+        "cinematic"
+    },
+
+    gate: {
+      image:
+        IMAGE_LIBRARY.gate,
+
+      mode:
+        "cinematic"
+    },
+
+    garden: {
+      image:
+        IMAGE_LIBRARY.garden,
+
+      mode:
+        "cinematic"
+    },
+
+    detail: {
+      image:
+        IMAGE_LIBRARY.detail,
+
+      mode:
+        "detail"
+    },
+
+    "arrival-end": {
+      image:
+        IMAGE_LIBRARY.arrivalEnd,
+
+      mode:
+        "cinematic"
+    }
+
+  };
+
+
+  function activate(
+    beat
+  ) {
+
+    beats.forEach(
+      function(item) {
+
+        item.classList.remove(
+          "active"
+        );
+
+      }
+    );
+
+
+    beat.classList.add(
+      "active"
+    );
+
+
+    const visual =
+      visuals[
+        beat.dataset.visual
+      ];
+
+
+    if (!visual) {
+      return;
+    }
+
+
+    changeVisual({
+
+      image:
+        visual.image,
+
+      mode:
+        beat.dataset.mode ||
+        visual.mode,
+
+      alt:
+        beat.dataset.visual,
+
+      imageElement,
+
+      frameElement,
+
+      statusElement,
+
+      status:
+        beat.dataset.status
+
+    });
+
+  }
+
+
+  observeBeats(
+    beats,
+    activate
+  );
+
+
+  activate(
+    beats[0]
+  );
+
+}
+
+
+/* ============================================================
+   GARDEN SEQUENCE
 ============================================================ */
 
 function setupGardenSequence() {
@@ -647,10 +726,7 @@ function setupGardenSequence() {
         IMAGE_LIBRARY.sequence0,
 
       mode:
-        "cinematic",
-
-      alt:
-        "A beautiful garden-like scene."
+        "cinematic"
     },
 
     {
@@ -658,10 +734,7 @@ function setupGardenSequence() {
         IMAGE_LIBRARY.sequence1,
 
       mode:
-        "cinematic",
-
-      alt:
-        "A cinematic arrival."
+        "cinematic"
     },
 
     {
@@ -669,10 +742,7 @@ function setupGardenSequence() {
         IMAGE_LIBRARY.sequence2,
 
       mode:
-        "portrait",
-
-      alt:
-        "A mysterious figure."
+        "portrait"
     },
 
     {
@@ -680,10 +750,7 @@ function setupGardenSequence() {
         IMAGE_LIBRARY.sequence3,
 
       mode:
-        "detail",
-
-      alt:
-        "A small symbolic detail."
+        "detail"
     },
 
     {
@@ -691,21 +758,14 @@ function setupGardenSequence() {
         IMAGE_LIBRARY.sequence4,
 
       mode:
-        "cinematic",
-
-      alt:
-        "A fashion-forward cinematic moment."
+        "cinematic"
     }
 
   ];
 
 
   /*
-     Create dots.
-
-     The dots are NOT the main interaction.
-     They simply let the reader know
-     that a visual sequence is happening.
+     Create optional navigation dots.
   */
 
   sequence.forEach(
@@ -716,15 +776,15 @@ function setupGardenSequence() {
           "button"
         );
 
-      dot.className =
-        "sequence-dot";
-
       dot.type =
         "button";
 
+      dot.className =
+        "sequence-dot";
+
       dot.setAttribute(
         "aria-label",
-        "Show visual " +
+        "Visual " +
         (index + 1)
       );
 
@@ -733,12 +793,9 @@ function setupGardenSequence() {
         "click",
         function() {
 
-          const target =
-            beats[index];
+          if (beats[index]) {
 
-          if (target) {
-
-            target.scrollIntoView({
+            beats[index].scrollIntoView({
               behavior:
                 "smooth",
 
@@ -766,20 +823,19 @@ function setupGardenSequence() {
     );
 
 
-  function activateBeat(beat) {
+  function activate(
+    beat
+  ) {
 
-    if (!beat) {
-      return;
-    }
+    beats.forEach(
+      function(item) {
 
+        item.classList.remove(
+          "active"
+        );
 
-    beats.forEach(function(item) {
-
-      item.classList.remove(
-        "active"
-      );
-
-    });
+      }
+    );
 
 
     beat.classList.add(
@@ -802,14 +858,16 @@ function setupGardenSequence() {
     }
 
 
-    dots.forEach(function(dot, i) {
+    dots.forEach(
+      function(dot, i) {
 
-      dot.classList.toggle(
-        "active",
-        i === index
-      );
+        dot.classList.toggle(
+          "active",
+          i === index
+        );
 
-    });
+      }
+    );
 
 
     changeVisual({
@@ -817,18 +875,19 @@ function setupGardenSequence() {
       image:
         visual.image,
 
-      alt:
-        beat.dataset.glass
-          ? beat.dataset.glass
-          : visual.alt,
-
       mode:
         beat.dataset.mode ||
         visual.mode,
 
+      alt:
+        "Visual sequence",
+
       imageElement,
+
       frameElement,
+
       glassElement,
+
       glassTextElement,
 
       glassText:
@@ -837,27 +896,124 @@ function setupGardenSequence() {
       statusElement,
 
       status:
-        beat.dataset.status || ""
+        beat.dataset.status
 
     });
 
   }
 
 
-  sceneStates.garden = {
-    activateBeat
-  };
-
-
   observeBeats(
     beats,
-    activateBeat
+    activate
   );
 
 
-  activateBeat(
+  activate(
     beats[0]
   );
+
+}
+
+
+/* ============================================================
+   CHARACTER EXPRESSION CHANGE
+============================================================ */
+
+function changeCharacterExpression(
+  character,
+  expression
+) {
+
+  const imageElement =
+    document.getElementById(
+      character === "lexis"
+        ? "lexisCharacterImage"
+        : "fatherCharacterImage"
+    );
+
+
+  const labelElement =
+    document.getElementById(
+      character === "lexis"
+        ? "lexisExpression"
+        : "fatherExpression"
+    );
+
+
+  if (!imageElement) {
+    return;
+  }
+
+
+  const map =
+    CHARACTER_EXPRESSIONS[
+      character
+    ];
+
+
+  if (!map) {
+    return;
+  }
+
+
+  const image =
+    map[expression];
+
+
+  if (!image) {
+    return;
+  }
+
+
+  if (
+    imageElement.dataset.currentExpression ===
+    expression
+  ) {
+    return;
+  }
+
+
+  imageElement.classList.add(
+    "expression-changing"
+  );
+
+
+  preloadImage(image)
+    .then(
+      function(success) {
+
+        if (!success) {
+          return;
+        }
+
+
+        imageElement.onload =
+          function() {
+
+            imageElement.classList.remove(
+              "expression-changing"
+            );
+
+          };
+
+
+        imageElement.src =
+          image;
+
+        imageElement.dataset.currentExpression =
+          expression;
+
+
+        if (labelElement) {
+
+          labelElement.textContent =
+            expression;
+
+        }
+
+      }
+    );
 
 }
 
@@ -888,16 +1044,6 @@ function setupDialogueScene() {
       "fatherCharacter"
     );
 
-  const lexisImage =
-    document.getElementById(
-      "lexisCharacterImage"
-    );
-
-  const fatherImage =
-    document.getElementById(
-      "fatherCharacterImage"
-    );
-
   const speakerLabel =
     document.getElementById(
       "speakerLabel"
@@ -914,20 +1060,6 @@ function setupDialogueScene() {
     );
 
 
-  /*
-     Character images are loaded once.
-
-     The theatre does NOT replace the whole
-     stage every time someone talks.
-  */
-
-  lexisImage.src =
-    IMAGE_LIBRARY.lexis;
-
-  fatherImage.src =
-    IMAGE_LIBRARY.father;
-
-
   const beats =
     Array.from(
       scene.querySelectorAll(
@@ -936,22 +1068,19 @@ function setupDialogueScene() {
     );
 
 
-  function activateDialogue(
+  function activate(
     beat
   ) {
 
-    if (!beat) {
-      return;
-    }
+    beats.forEach(
+      function(item) {
 
+        item.classList.remove(
+          "active"
+        );
 
-    beats.forEach(function(item) {
-
-      item.classList.remove(
-        "active"
-      );
-
-    });
+      }
+    );
 
 
     beat.classList.add(
@@ -962,12 +1091,16 @@ function setupDialogueScene() {
     const speaker =
       beat.dataset.speaker;
 
+    const expression =
+      beat.dataset.expression;
+
     const dialogue =
       beat.dataset.dialogue;
 
-    const status =
-      beat.dataset.status;
 
+    /*
+       Speaker focus.
+    */
 
     lexisCharacter.classList.toggle(
       "speaking",
@@ -980,17 +1113,27 @@ function setupDialogueScene() {
     );
 
 
-    if (speaker === "lexis") {
+    /*
+       Expression carousel.
 
-      speakerLabel.textContent =
-        "LEXIS";
+       Each scroll beat can independently
+       select an expression.
+    */
 
-    } else {
+    changeCharacterExpression(
+      speaker,
+      expression
+    );
 
-      speakerLabel.textContent =
-        "FATHER";
 
-    }
+    /*
+       Dialogue text.
+    */
+
+    speakerLabel.textContent =
+      speaker === "lexis"
+        ? "LEXIS"
+        : "FATHER";
 
 
     dialogueText.textContent =
@@ -998,12 +1141,12 @@ function setupDialogueScene() {
 
 
     statusElement.textContent =
-      status;
+      beat.dataset.status;
 
 
     /*
-       Tiny visual movement inside
-       the dialogue panel.
+       Give the dialogue panel
+       a very small entrance movement.
     */
 
     const panel =
@@ -1011,8 +1154,9 @@ function setupDialogueScene() {
         "dialoguePanel"
       );
 
+
     panel.style.transform =
-      "translateY(4px)";
+      "translateY(5px)";
 
 
     requestAnimationFrame(
@@ -1027,18 +1171,13 @@ function setupDialogueScene() {
   }
 
 
-  sceneStates.dialogue = {
-    activateDialogue
-  };
-
-
   observeBeats(
     beats,
-    activateDialogue
+    activate
   );
 
 
-  activateDialogue(
+  activate(
     beats[0]
   );
 
@@ -1046,7 +1185,7 @@ function setupDialogueScene() {
 
 
 /* ============================================================
-   WARDROBE SCENE
+   WARDROBE
 ============================================================ */
 
 function setupWardrobeScene() {
@@ -1095,7 +1234,7 @@ function setupWardrobeScene() {
     );
 
 
-  const visualMap = {
+  const visuals = {
 
     wardrobe: {
       image:
@@ -1132,20 +1271,19 @@ function setupWardrobeScene() {
   };
 
 
-  function activateBeat(beat) {
+  function activate(
+    beat
+  ) {
 
-    if (!beat) {
-      return;
-    }
+    beats.forEach(
+      function(item) {
 
+        item.classList.remove(
+          "active"
+        );
 
-    beats.forEach(function(item) {
-
-      item.classList.remove(
-        "active"
-      );
-
-    });
+      }
+    );
 
 
     beat.classList.add(
@@ -1154,7 +1292,7 @@ function setupWardrobeScene() {
 
 
     const visual =
-      visualMap[
+      visuals[
         beat.dataset.visual
       ];
 
@@ -1169,16 +1307,19 @@ function setupWardrobeScene() {
       image:
         visual.image,
 
-      alt:
-        "Lexis visual scene",
-
       mode:
         beat.dataset.mode ||
         visual.mode,
 
+      alt:
+        "Lexis wardrobe moment",
+
       imageElement,
+
       frameElement,
+
       glassElement,
+
       glassTextElement,
 
       glassText:
@@ -1187,25 +1328,20 @@ function setupWardrobeScene() {
       statusElement,
 
       status:
-        beat.dataset.status || ""
+        beat.dataset.status
 
     });
 
   }
 
 
-  sceneStates.wardrobe = {
-    activateBeat
-  };
-
-
   observeBeats(
     beats,
-    activateBeat
+    activate
   );
 
 
-  activateBeat(
+  activate(
     beats[0]
   );
 
@@ -1239,27 +1375,33 @@ function setupChoices() {
   const outcomes = {
 
     follow: {
+
       title:
         "Lexis follows the crest.",
 
       text:
         "The old hallway seems to grow longer as she walks. Somewhere beyond the final door, something answers with a single metallic click."
+
     },
 
     question: {
+
       title:
         "Lexis asks again.",
 
       text:
-        "Her father closes his eyes. When he opens them, he says one sentence: “Then you deserve to know why the family kept the second line hidden.”"
+        "Her father closes his eyes. When he opens them, he finally admits that the family has been hiding a second line."
+
     },
 
     leave: {
+
       title:
         "Lexis leaves the room.",
 
       text:
         "She steps into the quiet corridor. Behind her, the door closes without being touched. For tonight, the mystery waits."
+
     }
 
   };
@@ -1279,7 +1421,7 @@ function setupChoices() {
                 true;
 
               other.style.opacity =
-                "0.45";
+                "0.4";
 
             }
           );
@@ -1289,12 +1431,10 @@ function setupChoices() {
             "1";
 
 
-          const choice =
-            button.dataset.choice;
-
-
           const outcome =
-            outcomes[choice];
+            outcomes[
+              button.dataset.choice
+            ];
 
 
           if (!outcome) {
@@ -1343,7 +1483,7 @@ function setupChoices() {
           window.location.reload();
 
         },
-        500
+        450
       );
 
     }
@@ -1353,7 +1493,7 @@ function setupChoices() {
 
 
 /* ============================================================
-   READING PROGRESS
+   PROGRESS BAR
 ============================================================ */
 
 function setupProgressBar() {
@@ -1363,22 +1503,15 @@ function setupProgressBar() {
       "progressBar"
     );
 
-  if (!bar) {
-    return;
-  }
-
 
   function update() {
 
-    const scrollTop =
-      window.scrollY;
-
-    const scrollHeight =
+    const maximum =
       document.documentElement.scrollHeight -
       window.innerHeight;
 
 
-    if (scrollHeight <= 0) {
+    if (maximum <= 0) {
 
       bar.style.width =
         "0%";
@@ -1390,8 +1523,8 @@ function setupProgressBar() {
 
     const progress =
       (
-        scrollTop /
-        scrollHeight
+        window.scrollY /
+        maximum
       ) * 100;
 
 
@@ -1424,7 +1557,7 @@ function setupProgressBar() {
 
 
 /* ============================================================
-   PRELOAD IMPORTANT IMAGES
+   IMAGE PRELOADING
 ============================================================ */
 
 function preloadTheatreImages() {
@@ -1435,22 +1568,13 @@ function preloadTheatreImages() {
     );
 
 
-  /*
-     We deliberately don't wait
-     for all images before showing
-     the page.
-
-     Low-end devices should be
-     allowed to start reading.
-  */
-
   sources.forEach(
     function(src) {
 
-      const img =
+      const image =
         new Image();
 
-      img.src =
+      image.src =
         src;
 
     }
@@ -1460,7 +1584,7 @@ function preloadTheatreImages() {
 
 
 /* ============================================================
-   INITIALISE
+   INIT
 ============================================================ */
 
 function initTheatre() {
