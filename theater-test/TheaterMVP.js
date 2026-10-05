@@ -1,1686 +1,802 @@
-/* ============================================================
+/* =========================================================
    CEEQWINN THEATRE MVP
-============================================================ */
+   Living Scroll Theatre
+   ========================================================= */
 
 
-/* ============================================================
-   GITHUB IMAGE HELPER
-============================================================ */
-
-const GITHUB_ROOT =
-    "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/";
-
-
-function githubImage(path) {
-
-    return GITHUB_ROOT +
-        path
-            .split("/")
-            .map(part => encodeURIComponent(part))
-            .join("/");
-}
-
-
-/* ============================================================
+/* =========================
    IMAGE LIBRARY
-============================================================ */
+   ========================= */
 
 const IMAGES = {
 
-    /* --------------------------------------------------------
-       LEXIS
-    -------------------------------------------------------- */
-
-    lexisSoft:
-        githubImage(
-            "content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg"
-        ),
-
-    lexisStreet:
-        githubImage(
-            "content/images/characters/lexis/outfits/Lexis_Azunna_street.jpg.jpeg"
-        ),
-
-    lexisMinistry:
-        githubImage(
-            "content/images/characters/lexis/outfits/Lexis_Azunna_ministry.jpg.jpeg"
-        ),
-
-    lexisBlack:
-        githubImage(
-            "content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg"
-        ),
-
-    lexisRed:
-        githubImage(
-            "content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg"
-        ),
-
-
-    /* --------------------------------------------------------
-       TEMPORARY FATHER TEST STATES
-    -------------------------------------------------------- */
-
-    father01:
-        githubImage(
-            "content/images/cinematic_character_portrait_p.jpeg"
-        ),
-
-    father02:
-        githubImage(
-            "content/images/cinematic_character_portrait_p-1.jpeg"
-        ),
-
-    father03:
-        githubImage(
-            "content/images/cinematic_character_portrait_p (1).jpeg"
-        ),
-
-    father04:
-        githubImage(
-            "content/images/cinematic_character_portrait_p (1)-1.jpeg"
-        ),
-
-    father05:
-        githubImage(
-            "content/images/cinematic_character_portrait_p (2).jpeg"
-        ),
-
-    father06:
-        githubImage(
-            "content/images/cinematic_character_portrait_p (2)-1.jpeg"
-        ),
-
-
-    /* --------------------------------------------------------
-       GENERAL VISUALS
-    -------------------------------------------------------- */
-
+  prose: {
     house:
-        githubImage(
-            "content/images/Luxurious_royal_theatre_curtai (1).jpeg"
-        ),
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg",
 
     silence:
-        githubImage(
-            "content/images/rainy_atmosphere_cinematic_rai.jpeg"
-        ),
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/rainy_atmosphere_cinematic_rai.jpeg",
 
     discovery:
-        githubImage(
-            "content/images/editorial_fashion_portrait_pri.jpeg"
-        ),
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/young_woman_rainy_atmosphere_c.jpeg"
+  },
 
-    detail:
-        githubImage(
-            "content/images/image-1.png"
-        ),
+  lexis: {
+    soft:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg",
 
-    standalone:
-        githubImage(
-            "content/images/breathtaking_alla_prima_oil_pa.jpg.jpeg"
-        )
+    street:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_street.jpg.jpeg",
+
+    ministry:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_ministry.jpg.jpeg",
+
+    black:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/lexis_black_dress.png.jpeg",
+
+    red:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg"
+  },
+
+  father: {
+    father1:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/cinematic_character_portrait_p.jpeg",
+
+    father2:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/cinematic_character_portrait_p-1.jpeg",
+
+    father3:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/cinematic_character_portrait_p%20(1).jpeg",
+
+    father4:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/cinematic_character_portrait_p%20(2).jpeg",
+
+    father5:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/cinematic_character_portrait_p%20(1)-1.jpeg",
+
+    father6:
+      "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/cinematic_character_portrait_p%20(2)-1.jpeg"
+  }
+
 };
 
 
-/* ============================================================
+/* =========================
+   ELEMENTS
+   ========================= */
+
+const proseImage =
+  document.getElementById("proseImage");
+
+const proseGlass =
+  document.getElementById("proseReadingGlass");
+
+const proseGlassLabel =
+  document.getElementById("proseGlassLabel");
+
+const proseGlassText =
+  document.getElementById("proseGlassText");
+
+const proseBeats =
+  [...document.querySelectorAll(".prose-beat")];
+
+const dialogueTheatre =
+  document.getElementById("dialogueTheatre");
+
+const dialogueBeats =
+  [...document.querySelectorAll(".dialogue-beat")];
+
+const lexisPanel =
+  document.getElementById("lexisPanel");
+
+const fatherPanel =
+  document.getElementById("fatherPanel");
+
+const lexisImage =
+  document.getElementById("lexisImage");
+
+const fatherImage =
+  document.getElementById("fatherImage");
+
+const lexisDialogue =
+  document.getElementById("lexisDialogue");
+
+const fatherDialogue =
+  document.getElementById("fatherDialogue");
+
+const lexisText =
+  document.getElementById("lexisText");
+
+const fatherText =
+  document.getElementById("fatherText");
+
+const lexisExpressions =
+  [...document.querySelectorAll("#lexisExpressions span")];
+
+const fatherExpressions =
+  [...document.querySelectorAll("#fatherExpressions span")];
+
+const dialogueProgress =
+  [...document.querySelectorAll("#dialogueProgress span")];
+
+
+/* =========================
    PRELOAD
-============================================================ */
+   ========================= */
 
 function preloadImages() {
 
-    Object.values(IMAGES).forEach(
-        src => {
+  Object.values(IMAGES).forEach(group => {
 
-            const image =
-                new Image();
+    Object.values(group).forEach(src => {
 
-            image.src =
-                src;
-        }
-    );
+      const image = new Image();
+
+      image.src = src;
+
+    });
+
+  });
+
 }
 
+preloadImages();
 
-/* ============================================================
-   PROSE VISUAL DATA
-============================================================ */
 
-const PROSE_VISUALS = {
+/* =========================
+   PROSE THEATRE
+   ========================= */
 
-    house: {
+let activeProseBeat = -1;
 
-        image: IMAGES.house,
-
-        alt:
-            "Cinematic environment",
-
-        label:
-            "THE HOUSE"
-    },
-
-
-    silence: {
-
-        image: IMAGES.silence,
-
-        alt:
-            "Atmospheric cinematic scene",
-
-        label:
-            "THE SILENCE"
-    },
-
-
-    discovery: {
-
-        image: IMAGES.discovery,
-
-        alt:
-            "Fashion discovery",
-
-        label:
-            "THE DISCOVERY"
-    },
-
-
-    detail: {
-
-        image: IMAGES.detail,
-
-        alt:
-            "Story detail",
-
-        label:
-            "THE DETAIL"
-    }
-};
-
-
-/* ============================================================
-   PROSE ELEMENTS
-============================================================ */
-
-const proseImageStage =
-    document.getElementById(
-        "proseImageStage"
-    );
-
-const proseImage =
-    document.getElementById(
-        "proseImage"
-    );
-
-const proseKicker =
-    document.getElementById(
-        "proseKicker"
-    );
-
-const proseCounter =
-    document.getElementById(
-        "proseCounter"
-    );
-
-const proseReadingGlass =
-    document.getElementById(
-        "proseReadingGlass"
-    );
-
-const proseGlassLabel =
-    document.getElementById(
-        "proseGlassLabel"
-    );
-
-const proseGlassText =
-    document.getElementById(
-        "proseGlassText"
-    );
-
-const proseDots =
-    document.getElementById(
-        "proseDots"
-    );
-
-const proseBeats =
-    [
-        ...document.querySelectorAll(
-            ".prose-beat"
-        )
-    ];
-
-
-/* ============================================================
-   PROSE DOTS
-============================================================ */
-
-proseBeats.forEach(
-    (_, index) => {
-
-        const dot =
-            document.createElement(
-                "span"
-            );
-
-        dot.className =
-            "prose-dot";
-
-        if (index === 0) {
-
-            dot.classList.add(
-                "is-active"
-            );
-        }
-
-        proseDots.appendChild(
-            dot
-        );
-    }
-);
-
-
-const proseDotElements =
-    [
-        ...proseDots.querySelectorAll(
-            ".prose-dot"
-        )
-    ];
-
-
-/* ============================================================
-   PROSE STATE
-============================================================ */
-
-let currentProseKey =
-    null;
-
-let proseToken =
-    0;
-
-
-/* ============================================================
-   SHOW PROSE VISUAL
-============================================================ */
-
-async function showProseVisual(
-    key,
-    beat
-) {
-
-    const visual =
-        PROSE_VISUALS[key];
-
-    if (!visual) {
-        return;
-    }
-
-
-    const token =
-        ++proseToken;
-
-
-    /* --------------------------------------------------------
-       FIRST: TEXT DISAPPEARS
-    -------------------------------------------------------- */
-
-    hideProseGlass();
-
-
-    proseImageStage.classList.add(
-        "is-changing"
-    );
-
-
-    proseImage.classList.add(
-        "is-hidden"
-    );
-
-
-    await wait(240);
-
-
-    if (token !== proseToken) {
-        return;
-    }
-
-
-    /* --------------------------------------------------------
-       NOW CHANGE IMAGE
-    -------------------------------------------------------- */
-
-    proseImage.src =
-        visual.image;
-
-    proseImage.alt =
-        visual.alt;
-
-    proseKicker.textContent =
-        visual.label;
-
-
-    const index =
-        proseBeats.indexOf(
-            beat
-        );
-
-
-    proseCounter.textContent =
-        String(index + 1).padStart(2, "0") +
-        " / " +
-        String(proseBeats.length).padStart(2, "0");
-
-
-    proseDotElements.forEach(
-        (dot, dotIndex) => {
-
-            dot.classList.toggle(
-                "is-active",
-                dotIndex === index
-            );
-        }
-    );
-
-
-    proseBeats.forEach(
-        item =>
-            item.classList.remove(
-                "is-active"
-            )
-    );
-
-
-    beat.classList.add(
-        "is-active"
-    );
-
-
-    await wait(100);
-
-
-    if (token !== proseToken) {
-        return;
-    }
-
-
-    proseImage.classList.remove(
-        "is-hidden"
-    );
-
-    proseImageStage.classList.remove(
-        "is-changing"
-    );
-
-
-    /* --------------------------------------------------------
-       TEXT RETURNS ONLY IF THIS BEAT NEEDS IT
-    -------------------------------------------------------- */
-
-    if (
-        beat.dataset.noGlass !== "true"
-    ) {
-
-        proseGlassLabel.textContent =
-            beat.dataset.label ||
-            "THE MOMENT";
-
-        proseGlassText.textContent =
-            beat.textContent.trim();
-
-
-        showProseGlass();
-    }
-}
-
-
-/* ============================================================
-   GLASS
-============================================================ */
-
-function showProseGlass() {
-
-    proseReadingGlass.classList.remove(
-        "is-fading"
-    );
-
-    proseReadingGlass.classList.add(
-        "is-visible"
-    );
-}
-
-
-function hideProseGlass() {
-
-    proseReadingGlass.classList.remove(
-        "is-visible"
-    );
-
-    proseReadingGlass.classList.add(
-        "is-fading"
-    );
-}
-
-
-/* ============================================================
-   PROSE OBSERVER
-============================================================ */
-
-const proseObserver =
-    new IntersectionObserver(
-        entries => {
-
-            entries.forEach(
-                entry => {
-
-                    if (
-                        !entry.isIntersecting
-                    ) {
-                        return;
-                    }
-
-
-                    const beat =
-                        entry.target;
-
-                    const key =
-                        beat.dataset.visual;
-
-
-                    if (
-                        key !== currentProseKey
-                    ) {
-
-                        currentProseKey =
-                            key;
-
-                        showProseVisual(
-                            key,
-                            beat
-                        );
-                    }
-
-                }
-            );
-        },
-        {
-            threshold: 0.35,
-
-            rootMargin:
-                "-25% 0px -45% 0px"
-        }
-    );
-
-
-proseBeats.forEach(
-    beat =>
-        proseObserver.observe(
-            beat
-        )
-);
-
-
-/* ============================================================
-   HARD MIDPOINT RULE
-============================================================ */
 
 /*
-    THIS is deliberately strict.
+  Start with the image present,
+  but NO reading glass.
 
-    The prose glass is allowed to exist only while the image
-    is in its upper half.
-
-    As the stage approaches its midpoint in the viewport,
-    the text fades away.
-
-    At / beyond the midpoint:
-
-        NO TEXT.
-
-        NO GLASS.
-
-        IMAGE ONLY.
+  The glass appears when the
+  reader actually reaches the beat.
 */
 
-function enforceProseMidpoint() {
-
-    if (
-        !proseImageStage ||
-        !proseReadingGlass.classList.contains(
-            "is-visible"
-        )
-    ) {
-        return;
-    }
+proseGlass.classList.remove("is-visible");
 
 
-    const rect =
-        proseImageStage.getBoundingClientRect();
+function showProseVisual(index) {
+
+  if (index === activeProseBeat) {
+    return;
+  }
+
+  activeProseBeat = index;
+
+  const beat = proseBeats[index];
+
+  if (!beat) {
+    return;
+  }
+
+  const imageKey =
+    beat.dataset.image;
+
+  const imageSrc =
+    IMAGES.prose[imageKey];
+
+  const label =
+    beat.dataset.label;
+
+  const text =
+    beat.dataset.text;
 
 
-    const midpoint =
-        rect.top +
-        rect.height * 0.50;
+  proseGlass.classList.remove("is-visible");
+  proseGlass.classList.add("is-fading");
 
 
-    const viewportTop =
-        window.innerHeight * 0.18;
+  setTimeout(() => {
 
+    proseImage.style.opacity = "0.25";
 
-    /*
-       Calculate how close the visual is to the point where
-       the reader reaches the middle of the image.
+    setTimeout(() => {
 
-       Once the midpoint enters the upper 18% of the
-       viewport, the text is already leaving.
-    */
+      proseImage.src = imageSrc;
 
-    const fadeStart =
-        window.innerHeight * 0.38;
+      proseGlassLabel.textContent = label;
+      proseGlassText.textContent = text;
 
+      proseImage.onload = () => {
 
-    const distance =
-        midpoint - fadeStart;
+        proseImage.style.opacity = "1";
 
+        proseGlass.classList.remove("is-fading");
 
-    if (
-        distance <= 0
-    ) {
+        proseGlass.classList.add("is-visible");
 
-        hideProseGlass();
+      };
 
-        proseReadingGlass.style.opacity =
-            "0";
+    }, 220);
 
-        return;
-    }
+  }, 220);
 
-
-    const fadeDistance =
-        Math.max(
-            1,
-            rect.height * 0.25
-        );
-
-
-    const opacity =
-        Math.min(
-            1,
-            distance / fadeDistance
-        );
-
-
-    proseReadingGlass.style.opacity =
-        opacity.toFixed(3);
-
-
-    /*
-       Once the midpoint is reached, enforce zero.
-    */
-
-    if (
-        midpoint <= viewportTop
-    ) {
-
-        hideProseGlass();
-
-        proseReadingGlass.style.opacity =
-            "0";
-    }
 }
 
 
-window.addEventListener(
-    "scroll",
-    enforceProseMidpoint,
-    {
-        passive: true
-    }
-);
+const proseObserver =
+  new IntersectionObserver(
 
+    entries => {
 
-window.addEventListener(
-    "resize",
-    enforceProseMidpoint
-);
+      entries.forEach(entry => {
 
+        if (entry.isIntersecting) {
 
-/* ============================================================
-   DIALOGUE DATA
-============================================================ */
+          const index =
+            proseBeats.indexOf(entry.target);
 
-const DIALOGUE = [
+          showProseVisual(index);
 
-    {
-        speaker: "lexis",
-
-        text:
-            "You knew I was coming.",
-
-        lexis:
-            0,
-
-        father:
-            0
-    },
-
-
-    {
-        speaker: "father",
-
-        text:
-            "I knew you would eventually ask.",
-
-        lexis:
-            1,
-
-        father:
-            1
-    },
-
-
-    {
-        speaker: "lexis",
-
-        text:
-            "That isn't what I asked.",
-
-        lexis:
-            2,
-
-        father:
-            2
-    },
-
-
-    {
-        speaker: "father",
-
-        text:
-            "No. It isn't.",
-
-        lexis:
-            3,
-
-        father:
-            3
-    },
-
-
-    {
-        speaker: "lexis",
-
-        text:
-            "Then tell me the truth.",
-
-        lexis:
-            4,
-
-        father:
-            4
-    },
-
-
-    {
-        speaker: "father",
-
-        text:
-            "The truth is usually less comforting than the story we tell ourselves.",
-
-        lexis:
-            1,
-
-        father:
-            5
-    }
-
-];
-
-
-/* ============================================================
-   CHARACTER IMAGE STATES
-============================================================ */
-
-const LEXIS_STATES = [
-
-    IMAGES.lexisSoft,
-    IMAGES.lexisStreet,
-    IMAGES.lexisMinistry,
-    IMAGES.lexisBlack,
-    IMAGES.lexisRed
-];
-
-
-const FATHER_STATES = [
-
-    IMAGES.father01,
-    IMAGES.father02,
-    IMAGES.father03,
-    IMAGES.father04,
-    IMAGES.father05,
-    IMAGES.father06
-];
-
-
-/* ============================================================
-   DIALOGUE ELEMENTS
-============================================================ */
-
-const dialogueTheatre =
-    document.getElementById(
-        "dialogueTheatre"
-    );
-
-
-const lexisPanel =
-    document.getElementById(
-        "lexisPanel"
-    );
-
-
-const fatherPanel =
-    document.getElementById(
-        "fatherPanel"
-    );
-
-
-const lexisImage =
-    document.getElementById(
-        "lexisImage"
-    );
-
-
-const fatherImage =
-    document.getElementById(
-        "fatherImage"
-    );
-
-
-const lexisDialogue =
-    document.getElementById(
-        "lexisDialogue"
-    );
-
-
-const fatherDialogue =
-    document.getElementById(
-        "fatherDialogue"
-    );
-
-
-const lexisDialogueText =
-    document.getElementById(
-        "lexisDialogueText"
-    );
-
-
-const fatherDialogueText =
-    document.getElementById(
-        "fatherDialogueText"
-    );
-
-
-const dialogueCounter =
-    document.getElementById(
-        "dialogueCounter"
-    );
-
-
-const dialogueProgress =
-    document.getElementById(
-        "dialogueProgress"
-    );
-
-
-const lexisExpressionDots =
-    document.getElementById(
-        "lexisExpressionDots"
-    );
-
-
-const fatherExpressionDots =
-    document.getElementById(
-        "fatherExpressionDots"
-    );
-
-
-/* ============================================================
-   EXPRESSION DOTS
-============================================================ */
-
-function createDots(
-    container,
-    count
-) {
-
-    container.innerHTML = "";
-
-    for (
-        let i = 0;
-        i < count;
-        i++
-    ) {
-
-        const dot =
-            document.createElement(
-                "span"
-            );
-
-        dot.className =
-            "expression-dot";
-
-        container.appendChild(
-            dot
-        );
-    }
-}
-
-
-createDots(
-    lexisExpressionDots,
-    LEXIS_STATES.length
-);
-
-
-createDots(
-    fatherExpressionDots,
-    FATHER_STATES.length
-);
-
-
-const lexisExpressionDotElements =
-    [
-        ...lexisExpressionDots.querySelectorAll(
-            ".expression-dot"
-        )
-    ];
-
-
-const fatherExpressionDotElements =
-    [
-        ...fatherExpressionDots.querySelectorAll(
-            ".expression-dot"
-        )
-    ];
-
-
-/* ============================================================
-   DIALOGUE PROGRESS DOTS
-============================================================ */
-
-DIALOGUE.forEach(
-    (_, index) => {
-
-        const dot =
-            document.createElement(
-                "span"
-            );
-
-        dot.className =
-            "dialogue-progress-dot";
-
-        if (index === 0) {
-
-            dot.classList.add(
-                "is-active"
-            );
         }
 
-        dialogueProgress.appendChild(
-            dot
-        );
+      });
+
+    },
+
+    {
+      threshold: 0.45
     }
+
+  );
+
+
+proseBeats.forEach(beat => {
+
+  proseObserver.observe(beat);
+
+});
+
+
+/*
+  HARD RULE:
+
+  The Reading Glass must disappear
+  before the image reaches its midpoint.
+*/
+
+function enforceProseGlassPosition() {
+
+  const stage =
+    document.querySelector(".prose-image-stage");
+
+  if (!stage) {
+    return;
+  }
+
+  const rect =
+    stage.getBoundingClientRect();
+
+  const midpoint =
+    rect.top + rect.height * 0.46;
+
+
+  /*
+    Once the reader has moved far enough
+    into the image, remove the glass.
+
+    The image remains.
+    Only the words disappear.
+  */
+
+  if (rect.top <= 0 && midpoint <= window.innerHeight * 0.62) {
+
+    proseGlass.classList.remove("is-visible");
+
+    proseGlass.classList.add("is-fading");
+
+  }
+
+}
+
+
+window.addEventListener(
+  "scroll",
+  enforceProseGlassPosition,
+  { passive: true }
 );
 
 
-const dialogueProgressDots =
-    [
-        ...dialogueProgress.querySelectorAll(
-            ".dialogue-progress-dot"
-        )
-    ];
+/* =========================
+   DIALOGUE DATA
+   ========================= */
+
+const dialogue = [
+
+  {
+    speaker: "lexis",
+
+    text:
+      "You knew I was coming.",
+
+    expression: 0,
+
+    lexisImage: "soft",
+    fatherImage: "father1"
+  },
+
+  {
+    speaker: "father",
+
+    text:
+      "I knew you would eventually ask.",
+
+    expression: 0,
+
+    lexisImage: "street",
+    fatherImage: "father2"
+  },
+
+  {
+    speaker: "lexis",
+
+    text:
+      "That isn't what I asked.",
+
+    expression: 1,
+
+    lexisImage: "ministry",
+    fatherImage: "father3"
+  },
+
+  {
+    speaker: "father",
+
+    text:
+      "No. It isn't.",
+
+    expression: 1,
+
+    lexisImage: "black",
+    fatherImage: "father4"
+  },
+
+  {
+    speaker: "lexis",
+
+    text:
+      "Then tell me the truth.",
+
+    expression: 2,
+
+    lexisImage: "red",
+    fatherImage: "father5"
+  },
+
+  {
+    speaker: "father",
+
+    text:
+      "The truth is usually less comforting than the story we tell ourselves.",
+
+    expression: 2,
+
+    lexisImage: "soft",
+    fatherImage: "father6"
+  }
+
+];
 
 
-/* ============================================================
+/* =========================
    DIALOGUE STATE
-============================================================ */
+   ========================= */
 
-let dialogueStarted =
-    false;
+let dialogueStarted = false;
+let currentDialogueIndex = -1;
 
-let dialoguePlaying =
-    false;
-
-let dialogueIndex =
-    -1;
-
-let dialogueToken =
-    0;
-
-let typingInProgress =
-    false;
-
-let skipTyping =
-    false;
+let typingTimer = null;
+let skipTyping = false;
+let dialoguePlaying = false;
 
 
-/* ============================================================
-   ENTER DIALOGUE
-============================================================ */
+/* =========================
+   DIALOGUE VISIBILITY
+   ========================= */
+
+function hideDialogue() {
+
+  lexisDialogue.classList.remove("is-visible");
+  fatherDialogue.classList.remove("is-visible");
+
+}
+
+
+function setSpeaker(speaker) {
+
+  if (speaker === "lexis") {
+
+    lexisPanel.classList.add("is-speaking");
+    lexisPanel.classList.remove("is-listening");
+
+    fatherPanel.classList.remove("is-speaking");
+    fatherPanel.classList.add("is-listening");
+
+  } else {
+
+    fatherPanel.classList.add("is-speaking");
+    fatherPanel.classList.remove("is-listening");
+
+    lexisPanel.classList.remove("is-speaking");
+    lexisPanel.classList.add("is-listening");
+
+  }
+
+}
+
+
+/* =========================
+   EXPRESSION DOTS
+   ========================= */
+
+function setExpressions(index) {
+
+  lexisExpressions.forEach((dot, i) => {
+
+    dot.classList.toggle(
+      "active",
+      i === index
+    );
+
+  });
+
+  fatherExpressions.forEach((dot, i) => {
+
+    dot.classList.toggle(
+      "active",
+      i === index
+    );
+
+  });
+
+}
+
+
+/* =========================
+   PROGRESS DOTS
+   ========================= */
+
+function setDialogueProgress(index) {
+
+  dialogueProgress.forEach((dot, i) => {
+
+    dot.classList.toggle(
+      "active",
+      i === index
+    );
+
+  });
+
+}
+
+
+/* =========================
+   IMAGE CHANGE
+   ========================= */
+
+function changeCharacterImages(beat) {
+
+  lexisImage.style.opacity = "0.2";
+  fatherImage.style.opacity = "0.2";
+
+  setTimeout(() => {
+
+    lexisImage.src =
+      IMAGES.lexis[beat.lexisImage];
+
+    fatherImage.src =
+      IMAGES.father[beat.fatherImage];
+
+    lexisImage.onload = () => {
+
+      lexisImage.style.opacity = "1";
+
+    };
+
+    fatherImage.onload = () => {
+
+      fatherImage.style.opacity = "1";
+
+    };
+
+  }, 180);
+
+}
+
+
+/* =========================
+   SLOW TYPING
+   ========================= */
+
+function typeDialogue(text, element) {
+
+  return new Promise(resolve => {
+
+    clearInterval(typingTimer);
+
+    skipTyping = false;
+
+    element.textContent = "";
+
+    let index = 0;
+
+    typingTimer = setInterval(() => {
+
+      if (skipTyping) {
+
+        clearInterval(typingTimer);
+
+        element.textContent = text;
+
+        resolve();
+
+        return;
+      }
+
+
+      if (index >= text.length) {
+
+        clearInterval(typingTimer);
+
+        resolve();
+
+        return;
+      }
+
+
+      element.textContent += text[index];
+
+      index++;
+
+
+    }, 72);
+
+  });
+
+}
+
+
+/* =========================
+   PLAY ONE BEAT
+   ========================= */
+
+async function playDialogueBeat(index) {
+
+  if (index >= dialogue.length) {
+
+    finishDialogue();
+
+    return;
+  }
+
+
+  currentDialogueIndex = index;
+
+  const beat =
+    dialogue[index];
+
+
+  dialoguePlaying = true;
+
+  setDialogueProgress(index);
+
+  setSpeaker(beat.speaker);
+
+  setExpressions(beat.expression);
+
+  changeCharacterImages(beat);
+
+
+  hideDialogue();
+
+
+  await new Promise(resolve => {
+
+    setTimeout(resolve, 450);
+
+  });
+
+
+  let textElement;
+
+  let dialogueElement;
+
+
+  if (beat.speaker === "lexis") {
+
+    textElement = lexisText;
+    dialogueElement = lexisDialogue;
+
+  } else {
+
+    textElement = fatherText;
+    dialogueElement = fatherDialogue;
+
+  }
+
+
+  dialogueElement.classList.add("is-visible");
+
+
+  await typeDialogue(
+    beat.text,
+    textElement
+  );
+
+
+  /*
+    Give the sentence room to breathe.
+  */
+
+  await new Promise(resolve => {
+
+    setTimeout(resolve, 1400);
+
+  });
+
+
+  if (index < dialogue.length - 1) {
+
+    await playDialogueBeat(index + 1);
+
+  } else {
+
+    finishDialogue();
+
+  }
+
+}
+
+
+/* =========================
+   START DIALOGUE
+   ========================= */
 
 function startDialogue() {
 
-    if (dialogueStarted) {
-        return;
-    }
+  if (dialogueStarted) {
+    return;
+  }
 
-    dialogueStarted =
-        true;
+  dialogueStarted = true;
 
-    dialoguePlaying =
-        true;
+  playDialogueBeat(0);
 
-    dialogueIndex =
-        -1;
-
-    playDialogueBeat(0);
 }
 
 
-/* ============================================================
-   PLAY DIALOGUE BEAT
-============================================================ */
-
-async function playDialogueBeat(
-    index
-) {
-
-    if (
-        index >= DIALOGUE.length
-    ) {
-
-        finishDialogue();
-
-        return;
-    }
-
-
-    const token =
-        ++dialogueToken;
-
-
-    const beat =
-        DIALOGUE[index];
-
-
-    dialogueIndex =
-        index;
-
-
-    dialogueCounter.textContent =
-        String(index + 1).padStart(2, "0") +
-        " / " +
-        String(DIALOGUE.length).padStart(2, "0");
-
-
-    /* --------------------------------------------------------
-       ACTIVE SPEAKER
-    -------------------------------------------------------- */
-
-    const lexisSpeaking =
-        beat.speaker === "lexis";
-
-
-    lexisPanel.classList.toggle(
-        "is-speaking",
-        lexisSpeaking
-    );
-
-
-    lexisPanel.classList.toggle(
-        "is-listening",
-        !lexisSpeaking
-    );
-
-
-    fatherPanel.classList.toggle(
-        "is-speaking",
-        !lexisSpeaking
-    );
-
-
-    fatherPanel.classList.toggle(
-        "is-listening",
-        lexisSpeaking
-    );
-
-
-    /* --------------------------------------------------------
-       HIDE OLD DIALOGUE
-    -------------------------------------------------------- */
-
-    lexisDialogue.classList.remove(
-        "is-visible"
-    );
-
-    fatherDialogue.classList.remove(
-        "is-visible"
-    );
-
-
-    await wait(160);
-
-
-    if (
-        token !== dialogueToken
-    ) {
-        return;
-    }
-
-
-    /* --------------------------------------------------------
-       CHANGE BOTH VISUAL STATES
-    -------------------------------------------------------- */
-
-    await changeImage(
-        lexisImage,
-        LEXIS_STATES[beat.lexis],
-        token
-    );
-
-
-    await changeImage(
-        fatherImage,
-        FATHER_STATES[beat.father],
-        token
-    );
-
-
-    updateDots(
-        lexisExpressionDotElements,
-        beat.lexis
-    );
-
-
-    updateDots(
-        fatherExpressionDotElements,
-        beat.father
-    );
-
-
-    dialogueProgressDots.forEach(
-        (dot, dotIndex) => {
-
-            dot.classList.toggle(
-                "is-active",
-                dotIndex === index
-            );
-        }
-    );
-
-
-    /* --------------------------------------------------------
-       CLEAR BOTH LINES
-    -------------------------------------------------------- */
-
-    lexisDialogueText.textContent =
-        "";
-
-    fatherDialogueText.textContent =
-        "";
-
-
-    /* --------------------------------------------------------
-       PUT THE CURRENT SPEAKER'S GLASS ON THEIR IMAGE
-    -------------------------------------------------------- */
-
-    const activeDialogue =
-        lexisSpeaking
-            ? lexisDialogue
-            : fatherDialogue;
-
-
-    const activeText =
-        lexisSpeaking
-            ? lexisDialogueText
-            : fatherDialogueText;
-
-
-    activeDialogue.classList.add(
-        "is-visible"
-    );
-
-
-    /*
-       TYPE SLOWLY.
-
-       This is intentionally NOT 38ms.
-
-       65ms gives a much more human rhythm.
-    */
-
-    skipTyping =
-        false;
-
-    typingInProgress =
-        true;
-
-
-    await typeDialogue(
-        activeText,
-        beat.text,
-        token
-    );
-
-
-    typingInProgress =
-        false;
-
-
-    if (
-        token !== dialogueToken ||
-        !dialoguePlaying
-    ) {
-        return;
-    }
-
-
-    /* --------------------------------------------------------
-       NATURAL PAUSE
-
-       Gives the reader time to actually read the completed
-       sentence before the next person speaks.
-    -------------------------------------------------------- */
-
-    await wait(1200);
-
-
-    if (
-        token !== dialogueToken ||
-        !dialoguePlaying
-    ) {
-        return;
-    }
-
-
-    playDialogueBeat(
-        index + 1
-    );
-}
-
-
-/* ============================================================
-   CHANGE CHARACTER IMAGE
-============================================================ */
-
-async function changeImage(
-    imageElement,
-    source,
-    token
-) {
-
-    imageElement.classList.add(
-        "is-changing"
-    );
-
-
-    await wait(130);
-
-
-    if (
-        token !== dialogueToken
-    ) {
-        return;
-    }
-
-
-    imageElement.src =
-        source;
-
-
-    await wait(170);
-
-
-    if (
-        token !== dialogueToken
-    ) {
-        return;
-    }
-
-
-    imageElement.classList.remove(
-        "is-changing"
-    );
-}
-
-
-/* ============================================================
-   TYPE DIALOGUE
-============================================================ */
-
-/*
-    THIS is the behavior you asked for.
-
-    Normal:
-        text appears character-by-character.
-
-    If reader taps/clicks:
-        current sentence instantly completes.
-
-    The tap does NOT advance the conversation.
-
-    It simply tells the theatre:
-
-        "I'm done waiting for this sentence."
-*/
-
-async function typeDialogue(
-    element,
-    text,
-    token
-) {
-
-    element.textContent =
-        "";
-
-
-    for (
-        let i = 0;
-        i < text.length;
-        i++
-    ) {
-
-        if (
-            token !== dialogueToken
-        ) {
-            return;
-        }
-
-
-        /*
-           Reader asked us to finish it.
-        */
-
-        if (skipTyping) {
-
-            element.textContent =
-                text;
-
-            skipTyping =
-                false;
-
-            return;
-        }
-
-
-        element.textContent =
-            text.slice(
-                0,
-                i + 1
-            );
-
-
-        let delay =
-            68;
-
-
-        /*
-           Natural punctuation pauses.
-        */
-
-        const character =
-            text[i];
-
-
-        if (
-            character === "," ||
-            character === ";" ||
-            character === ":"
-        ) {
-
-            delay =
-                150;
-        }
-
-
-        if (
-            character === "." ||
-            character === "!" ||
-            character === "?"
-        ) {
-
-            delay =
-                300;
-        }
-
-
-        await wait(delay);
-    }
-}
-
-
-/* ============================================================
-   TAP / CLICK = FINISH CURRENT LINE
-============================================================ */
-
-function handleDialogueInteraction(
-    event
-) {
-
-    if (
-        !dialoguePlaying ||
-        !typingInProgress
-    ) {
-        return;
-    }
-
-
-    /*
-       IMPORTANT:
-
-       We do NOT change the beat.
-
-       We do NOT advance the story.
-
-       We only finish the sentence currently typing.
-    */
-
-    skipTyping =
-        true;
-}
-
-
-dialogueTheatre.addEventListener(
-    "click",
-    handleDialogueInteraction
-);
-
-
-dialogueTheatre.addEventListener(
-    "pointerdown",
-    handleDialogueInteraction
-);
-
-
-dialogueTheatre.addEventListener(
-    "touchstart",
-    handleDialogueInteraction,
-    {
-        passive: true
-    }
-);
-
-
-/* ============================================================
-   UPDATE EXPRESSION DOTS
-============================================================ */
-
-function updateDots(
-    dots,
-    activeIndex
-) {
-
-    dots.forEach(
-        (dot, index) => {
-
-            dot.classList.toggle(
-                "is-active",
-                index === activeIndex
-            );
-        }
-    );
-}
-
-
-/* ============================================================
+/* =========================
    FINISH DIALOGUE
-============================================================ */
+   ========================= */
 
 function finishDialogue() {
 
-    dialoguePlaying =
-        false;
+  dialoguePlaying = false;
 
-    typingInProgress =
-        false;
+  setTimeout(() => {
 
-    dialogueCounter.textContent =
-        "DONE";
+    hideDialogue();
 
-    lexisPanel.classList.remove(
-        "is-speaking"
-    );
+    lexisPanel.classList.remove("is-speaking");
+    fatherPanel.classList.remove("is-speaking");
 
-    fatherPanel.classList.remove(
-        "is-speaking"
-    );
+    lexisPanel.classList.remove("is-listening");
+    fatherPanel.classList.remove("is-listening");
 
-    lexisPanel.classList.remove(
-        "is-listening"
-    );
+  }, 1800);
 
-    fatherPanel.classList.remove(
-        "is-listening"
-    );
-
-
-    /*
-       Leave the final dialogue visible briefly.
-
-       Then the theatre becomes quiet.
-    */
-
-    setTimeout(
-        () => {
-
-            lexisDialogue.classList.remove(
-                "is-visible"
-            );
-
-            fatherDialogue.classList.remove(
-                "is-visible"
-            );
-
-        },
-
-        1800
-    );
 }
 
 
-/* ============================================================
-   DIALOGUE OBSERVER
-============================================================ */
+/* =========================
+   START WHEN DIALOGUE
+   ENTERS VIEW
+   ========================= */
 
-const dialogueBeats =
-    [
-        ...document.querySelectorAll(
-            ".dialogue-beat"
-        )
-    ];
+const dialogueStarter =
+  new IntersectionObserver(
 
+    entries => {
 
-const dialogueObserver =
-    new IntersectionObserver(
-        entries => {
+      entries.forEach(entry => {
 
-            entries.forEach(
-                entry => {
+        if (
+          entry.isIntersecting &&
+          !dialogueStarted
+        ) {
 
-                    if (
-                        !entry.isIntersecting
-                    ) {
-                        return;
-                    }
+          startDialogue();
 
-
-                    const index =
-                        Number(
-                            entry.target.dataset.dialogue
-                        );
-
-
-                    /*
-                       Only entering the dialogue starts
-                       the self-running theatre.
-
-                       We do NOT use every scroll beat
-                       to change every sentence.
-                    */
-
-                    if (
-                        index === 0 &&
-                        !dialogueStarted
-                    ) {
-
-                        startDialogue();
-                    }
-
-                }
-            );
-        },
-        {
-            threshold: .55
         }
-    );
+
+      });
+
+    },
+
+    {
+      threshold: 0.35
+    }
+
+  );
 
 
-dialogueBeats.forEach(
-    beat =>
-        dialogueObserver.observe(
-            beat
-        )
+if (dialogueTheatre) {
+
+  dialogueStarter.observe(dialogueTheatre);
+
+}
+
+
+/* =========================
+   TAP ACTIVE CHARACTER
+   ========================= */
+
+function handleDialogueTap(event) {
+
+  if (!dialoguePlaying) {
+    return;
+  }
+
+
+  const clickedLexis =
+    event.target.closest("#lexisPanel");
+
+  const clickedFather =
+    event.target.closest("#fatherPanel");
+
+
+  const current =
+    dialogue[currentDialogueIndex];
+
+
+  if (
+    current.speaker === "lexis" &&
+    clickedLexis
+  ) {
+
+    skipTyping = true;
+
+  }
+
+
+  if (
+    current.speaker === "father" &&
+    clickedFather
+  ) {
+
+    skipTyping = true;
+
+  }
+
+}
+
+
+dialogueTheatre.addEventListener(
+  "pointerdown",
+  handleDialogueTap
 );
 
 
-/* ============================================================
-   CHOICE TEST
-============================================================ */
+/* =========================
+   DEBUG-FRIENDLY START
+   ========================= */
 
-const choiceResult =
-    document.getElementById(
-        "choiceResult"
-    );
+console.log(
+  "CEEQWINN Theatre MVP loaded."
+);
 
+console.log(
+  "Prose beats:",
+  proseBeats.length
+);
 
-const choiceResponses = {
-
-    listen:
-        "Lexis stays quiet. Sometimes silence reveals more than a question.",
-
-    question:
-        "She asks the question anyway. The room suddenly feels smaller.",
-
-    leave:
-        "She turns toward the door. Whatever happens next will happen outside this room."
-};
-
-
-document
-    .querySelectorAll(
-        ".choice-button"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    const choice =
-                        button.dataset.choice;
-
-                    choiceResult.textContent =
-                        choiceResponses[choice];
-
-                }
-            );
-
-        }
-    );
-
-
-/* ============================================================
-   UTILITY
-============================================================ */
-
-function wait(
-    milliseconds
-) {
-
-    return new Promise(
-        resolve =>
-            setTimeout(
-                resolve,
-                milliseconds
-            )
-    );
-}
-
-
-/* ============================================================
-   INITIALIZE
-============================================================ */
-
-function initialize() {
-
-    preloadImages();
-
-
-    /* --------------------------------------------------------
-       First prose image
-    -------------------------------------------------------- */
-
-    if (
-        proseBeats[0]
-    ) {
-
-        currentProseKey =
-            proseBeats[0].dataset.visual;
-
-        showProseVisual(
-            currentProseKey,
-            proseBeats[0]
-        );
-    }
-
-
-    /* --------------------------------------------------------
-       Initial character images
-    -------------------------------------------------------- */
-
-    lexisImage.src =
-        LEXIS_STATES[0];
-
-    fatherImage.src =
-        FATHER_STATES[0];
-
-
-    /* --------------------------------------------------------
-       Standalone image
-    -------------------------------------------------------- */
-
-    const standaloneImage =
-        document.getElementById(
-            "standaloneImage"
-        );
-
-
-    standaloneImage.src =
-        IMAGES.standalone;
-
-
-    /* --------------------------------------------------------
-       Initial expression indicators
-    -------------------------------------------------------- */
-
-    updateDots(
-        lexisExpressionDotElements,
-        0
-    );
-
-    updateDots(
-        fatherExpressionDotElements,
-        0
-    );
-}
-
-
-initialize();
+console.log(
+  "Dialogue beats:",
+  dialogue.length
+);
