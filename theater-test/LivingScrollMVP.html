@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>CEEQWINN Living Scroll MVP</title>
+
+  <link
+    rel="stylesheet"
+    href="LivingScrollMVP.css"
+  >
+
+</head>
+
+<body>
+
+
+<header class="site-header">
+
+  <div class="eyebrow">
+    CEEQWINN THEATRE MVP
+  </div>
+
+  <h1>The Question</h1>
+
+  <p>
+    A living scroll story experiment.
+  </p>
+
+</header>
+
+
+
+<main>
+
+
+  <!-- =========================================
+       OPENING PROSE
+       ========================================= -->
+
+  <section class="normal-prose">
+
+    <p>
+      By the time Lexis reached the house, the rain had already
+      settled into the quiet rhythm of the evening.
+    </p>
+
+    <p>
+      Nothing looked different from the outside.
+      The same windows. The same old walls.
+      The same light beneath the door.
+    </p>
+
+  </section>
+
+
+
+  <!-- =========================================
+       LIVING SCROLL PROSE THEATRE
+       ========================================= -->
+
+  <section
+    class="living-scroll"
+    id="livingScroll"
+  >
+
+    <div class="living-stage">
+
+      <div class="living-image">
+
+        <img
+          id="livingImage"
+          src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg"
+          alt="Lexis"
+        >
+
+
+        <!--
+          ONE reading surface.
+          It remains with the scene while
+          the prose and visual change.
+        -->
+
+        <div
+          class="living-reading-glass"
+          id="livingReadingGlass"
+        >
+
+          <div
+            class="glass-label"
+            id="livingGlassLabel"
+          >
+            THE HOUSE
+          </div>
+
+          <div
+            class="glass-text"
+            id="livingGlassText"
+          >
+            The house looked exactly as Lexis
+            remembered it. That was what frightened her.
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!--
+      Scroll markers only.
+      Their text is intentionally invisible.
+    -->
+
+    <div class="living-beats">
+
+      <div
+        class="living-beat"
+        data-image="house"
+        data-label="THE HOUSE"
+        data-text="The house looked exactly as Lexis remembered it. That was what frightened her."
+      ></div>
+
+
+      <div
+        class="living-beat"
+        data-image="silence"
+        data-label="THE SILENCE"
+        data-text="Inside, everything was quiet. Too quiet for a house that knew she had come home."
+      ></div>
+
+
+      <div
+        class="living-beat"
+        data-image="discovery"
+        data-label="THE DISCOVERY"
+        data-text="Then she saw him sitting alone in the room, waiting as though he had known this moment was coming."
+      ></div>
+
+    </div>
+
+  </section>
+
+
+
+  <!-- =========================================
+       PROSE AFTER LIVING SCROLL
+       ========================================= -->
+
+  <section class="normal-prose">
+
+    <p>
+      Lexis stopped in the doorway.
+    </p>
+
+    <p>
+      Her father did not look surprised.
+    </p>
+
+    <p>
+      For a few seconds neither of them said anything.
+    </p>
+
+  </section>
+
+
+
+  <!-- =========================================
+       DIALOGUE THEATRE
+       ========================================= -->
+
+  <section
+    class="dialogue-theatre"
+    id="dialogueTheatre"
+  >
+
+
+    <div class="dialogue-intro">
+
+      <div class="eyebrow">
+        THE CONVERSATION
+      </div>
+
+      <h2>The Question</h2>
+
+      <p>
+        Watch the conversation unfold.
+      </p>
+
+    </div>
+
+
+
+    <div class="dialogue-sticky">
+
+
+      <div class="character-stage">
+
+
+        <!-- LEXIS -->
+
+        <article
+          class="character-panel"
+          id="lexisPanel"
+        >
+
+          <div class="character-visual">
+
+            <img
+              id="lexisImage"
+              src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg"
+              alt="Lexis"
+            >
+
+
+            <div
+              class="character-dialogue"
+              id="lexisDialogue"
+            >
+
+              <div class="character-name">
+                LEXIS
+              </div>
+
+              <div
+                class="character-text"
+                id="lexisText"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="expression-dots"
+            id="lexisExpressions"
+          >
+
+            <span class="active"></span>
+            <span></span>
+            <span></span>
+
+          </div>
+
+        </article>
+
+
+
+        <!-- FATHER -->
+
+        <article
+          class="character-panel"
+          id="fatherPanel"
+        >
+
+          <div class="character-visual">
+
+            <img
+              id="fatherImage"
+              src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/cinematic_character_portrait_p.jpeg"
+              alt="Lexis's father"
+            >
+
+
+            <div
+              class="character-dialogue"
+              id="fatherDialogue"
+            >
+
+              <div class="character-name">
+                FATHER
+              </div>
+
+              <div
+                class="character-text"
+                id="fatherText"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="expression-dots"
+            id="fatherExpressions"
+          >
+
+            <span class="active"></span>
+            <span></span>
+            <span></span>
+
+          </div>
+
+        </article>
+
+
+      </div>
+
+
+
+      <div
+        class="dialogue-progress"
+        id="dialogueProgress"
+      >
+
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+
+      </div>
+
+
+      <div class="tap-hint">
+        Tap the speaking character to finish a line instantly.
+      </div>
+
+
+    </div>
+
+
+
+    <!--
+      Invisible dialogue timeline.
+    -->
+
+    <div class="dialogue-timeline">
+
+      <div class="dialogue-beat"></div>
+      <div class="dialogue-beat"></div>
+      <div class="dialogue-beat"></div>
+      <div class="dialogue-beat"></div>
+      <div class="dialogue-beat"></div>
+      <div class="dialogue-beat"></div>
+
+    </div>
+
+
+  </section>
+
+
+
+  <!-- =========================================
+       AFTER DIALOGUE
+       ========================================= -->
+
+  <section class="normal-prose after-dialogue">
+
+    <p>
+      The answer did not come immediately.
+    </p>
+
+    <p>
+      But Lexis already knew that whatever came next would
+      change the way she understood the house, her family,
+      and herself.
+    </p>
+
+    <p>
+      She waited.
+    </p>
+
+  </section>
+
+
+
+  <!-- =========================================
+       STANDALONE CINEMATIC IMAGE
+       ========================================= -->
+
+  <section class="final-image">
+
+    <img
+      src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/breathtaking_alla_prima_oil_pa.jpg.jpeg"
+      alt="A quiet painted scene"
+    >
+
+  </section>
+
+
+
+  <section class="ending">
+
+    <h2>The scene ends.</h2>
+
+    <p>
+      The theatre gives the page back to the reader.
+    </p>
+
+  </section>
+
+
+</main>
+
+
+
+<script src="LivingScrollMVP.js"></script>
+
+</body>
+</html>
