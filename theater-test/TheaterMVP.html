@@ -1,562 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
+  <title>CEEQWINN Theatre MVP</title>
 
-    <title>CEEQWINN Theatre MVP</title>
-
-    <link rel="stylesheet" href="TheaterMVP.css">
+  <link rel="stylesheet" href="TheaterMVP.css">
 </head>
 
 <body>
 
-<header class="theater-header">
-
-    <div class="header-inner">
-
-        <div class="brand-mark">
-            CEEQWINN
-        </div>
-
-        <div class="header-title">
-            VISUAL STORY THEATRE
-        </div>
-
-    </div>
-
+<header class="site-header">
+  <div class="eyebrow">CEEQWINN THEATRE MVP</div>
+  <h1>The Question</h1>
+  <p>A small test of living prose and character dialogue.</p>
 </header>
 
 
-<main class="theatre-page">
+<main>
+
+  <!-- =========================
+       OPENING PROSE
+       ========================= -->
+
+  <section class="normal-prose">
+    <p>
+      By the time Lexis reached the house, the rain had already begun to settle
+      into the quiet rhythm of the evening.
+    </p>
+
+    <p>
+      Nothing looked different from the outside. The same windows. The same
+      old walls. The same light beneath the door.
+    </p>
+  </section>
 
 
-    <!-- ======================================================
-         INTRO
-    ======================================================= -->
+  <!-- =========================
+       PROSE THEATRE
+       ========================= -->
 
-    <section class="intro-block">
+  <section class="prose-theatre" id="proseTheatre">
 
-        <p class="eyebrow">
-            VISUAL STORY THEATRE
-        </p>
+    <div class="prose-stage">
 
-        <h1>
-            The story does not sit on the page.
-            <span>It happens there.</span>
-        </h1>
+      <div class="prose-image-stage">
 
-        <p class="intro-copy">
-            Read normally. When the story needs you to look,
-            the theatre opens.
-        </p>
+        <img
+          id="proseImage"
+          src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg"
+          alt="Lexis standing quietly in the evening"
+        >
 
-    </section>
+        <div class="reading-glass" id="proseReadingGlass">
 
+          <div class="glass-label" id="proseGlassLabel">
+            THE HOUSE
+          </div>
 
-    <!-- ======================================================
-         OPENING PROSE
-    ======================================================= -->
-
-    <section class="normal-prose">
-
-        <p>
-            The house was quieter than Lexis remembered.
-        </p>
-
-        <p>
-            Not empty. Quiet.
-        </p>
-
-        <p>
-            There was a difference.
-        </p>
-
-    </section>
-
-
-    <!-- ======================================================
-         PROSE VISUAL THEATRE
-
-         IMPORTANT:
-
-         There is NO prose underneath this image.
-
-         The trigger text is copied into the Reading Glass.
-         That is the ONLY visual copy shown during the image.
-    ======================================================= -->
-
-    <section
-        class="prose-theatre"
-        id="proseTheatre"
-    >
-
-        <div class="prose-stage">
-
-            <div class="prose-stage-label">
-
-                <span id="proseKicker">
-                    THE HOUSE
-                </span>
-
-                <span id="proseCounter">
-                    01 / 04
-                </span>
-
-            </div>
-
-
-            <div
-                class="prose-image-stage"
-                id="proseImageStage"
-            >
-
-                <img
-                    id="proseImage"
-                    class="prose-image"
-                    src=""
-                    alt=""
-                >
-
-
-                <!-- ==================================================
-                     THE ONLY PROSE TEXT DISPLAY
-
-                     This is the visible text.
-
-                     It fades away before midpoint.
-                =================================================== -->
-
-                <div
-                    class="prose-reading-glass"
-                    id="proseReadingGlass"
-                >
-
-                    <div
-                        class="prose-glass-label"
-                        id="proseGlassLabel"
-                    >
-                        THE MOMENT
-                    </div>
-
-                    <p
-                        id="proseGlassText"
-                    ></p>
-
-                </div>
-
-            </div>
-
-
-            <div
-                class="prose-dots"
-                id="proseDots"
-            ></div>
+          <div class="glass-text" id="proseGlassText">
+            The house looked exactly as Lexis remembered it.
+            That was what frightened her.
+          </div>
 
         </div>
 
+      </div>
 
-        <!-- ==================================================
-             INVISIBLE SCROLL BEATS
+    </div>
 
-             These contain the source text for the glass.
+    <!--
+      These are scroll triggers only.
+      Their text is NOT displayed.
+    -->
+    <div class="prose-beats">
 
-             They are NOT rendered as visible paragraphs.
-        =================================================== -->
+      <div
+        class="prose-beat"
+        data-image="house"
+        data-label="THE HOUSE"
+        data-text="The house looked exactly as Lexis remembered it. That was what frightened her."
+      ></div>
 
-        <div class="prose-beats">
+      <div
+        class="prose-beat"
+        data-image="silence"
+        data-label="THE SILENCE"
+        data-text="Inside, everything was quiet. Too quiet for a house that knew she had come home."
+      ></div>
 
-            <div
-                class="prose-beat"
-                data-visual="house"
-                data-label="THE HOUSE"
-            >
-                Lexis stepped into the room and immediately knew
-                that something had changed.
-            </div>
+      <div
+        class="prose-beat"
+        data-image="discovery"
+        data-label="THE DISCOVERY"
+        data-text="Then she saw him sitting alone in the room, waiting as though he had known this moment was coming."
+      ></div>
 
+    </div>
 
-            <div
-                class="prose-beat"
-                data-visual="silence"
-                data-label="THE SILENCE"
-            >
-                The silence seemed to have a shape of its own.
-                It rested against the walls and waited.
-            </div>
+  </section>
 
 
-            <div
-                class="prose-beat"
-                data-visual="discovery"
-                data-label="THE DISCOVERY"
-            >
-                Then she noticed what had been left waiting for her.
-            </div>
+  <!-- =========================
+       NORMAL PROSE
+       ========================= -->
 
+  <section class="normal-prose">
+    <p>
+      Lexis stopped in the doorway.
+    </p>
 
-            <div
-                class="prose-beat"
-                data-visual="detail"
-                data-label="THE DETAIL"
-                data-no-glass="true"
-            >
-                She did not touch it.
-            </div>
+    <p>
+      Her father did not look surprised.
+    </p>
 
-        </div>
+    <p>
+      For a few seconds neither of them said anything.
+    </p>
+  </section>
 
-    </section>
 
+  <!-- =========================
+       DIALOGUE THEATRE
+       ========================= -->
 
-    <!-- ======================================================
-         NORMAL PROSE
-    ======================================================= -->
+  <section class="dialogue-theatre" id="dialogueTheatre">
 
-    <section class="normal-prose">
+    <div class="dialogue-intro">
+      <div class="eyebrow">THE CONVERSATION</div>
+      <h2>The Question</h2>
+      <p>Watch the conversation unfold.</p>
+    </div>
 
-        <p>
-            For several seconds, Lexis simply stood there.
-        </p>
 
-        <p>
-            Whatever was happening had already begun without her.
-        </p>
+    <div class="dialogue-sticky">
 
-        <p>
-            Then she heard footsteps.
-        </p>
+      <div class="character-stage">
 
-    </section>
+        <!-- LEXIS -->
 
+        <article class="character-panel" id="lexisPanel">
 
-    <!-- ======================================================
-         DIALOGUE THEATRE
-
-         TWO CHARACTER VISUALS.
-
-         Each character owns their own dialogue.
-
-         No centre dialogue box.
-    ======================================================= -->
-
-    <section
-        class="dialogue-theatre"
-        id="dialogueTheatre"
-    >
-
-        <div class="dialogue-sticky">
-
-            <div class="dialogue-header">
-
-                <span>
-                    THE CONVERSATION
-                </span>
-
-                <span id="dialogueCounter">
-                    01 / 06
-                </span>
-
-            </div>
-
-
-            <div class="character-stage">
-
-
-                <!-- ==================================================
-                     LEXIS
-                =================================================== -->
-
-                <article
-                    class="character-panel"
-                    id="lexisPanel"
-                >
-
-                    <div class="character-name">
-                        LEXIS
-                    </div>
-
-
-                    <div class="character-visual">
-
-                        <img
-                            id="lexisImage"
-                            src=""
-                            alt="Lexis"
-                        >
-
-
-                        <!-- Lexis dialogue belongs to Lexis -->
-
-                        <div
-                            class="character-dialogue"
-                            id="lexisDialogue"
-                        >
-
-                            <div class="character-dialogue-name">
-                                LEXIS
-                            </div>
-
-                            <p
-                                class="character-dialogue-text"
-                                id="lexisDialogueText"
-                            ></p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="expression-dots"
-                        id="lexisExpressionDots"
-                    ></div>
-
-                </article>
-
-
-                <!-- ==================================================
-                     FATHER
-                =================================================== -->
-
-                <article
-                    class="character-panel"
-                    id="fatherPanel"
-                >
-
-                    <div class="character-name">
-                        FATHER
-                    </div>
-
-
-                    <div class="character-visual">
-
-                        <img
-                            id="fatherImage"
-                            src=""
-                            alt="Father"
-                        >
-
-
-                        <!-- Father's dialogue belongs to Father -->
-
-                        <div
-                            class="character-dialogue"
-                            id="fatherDialogue"
-                        >
-
-                            <div class="character-dialogue-name">
-                                FATHER
-                            </div>
-
-                            <p
-                                class="character-dialogue-text"
-                                id="fatherDialogueText"
-                            ></p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="expression-dots"
-                        id="fatherExpressionDots"
-                    ></div>
-
-                </article>
-
-            </div>
-
-
-            <div
-                class="dialogue-progress"
-                id="dialogueProgress"
-            ></div>
-
-
-            <div class="dialogue-instruction">
-                <span class="desktop-instruction">
-                    Let the conversation play.
-                    Tap while text is typing to finish the line.
-                </span>
-
-                <span class="mobile-instruction">
-                    Let it play. Tap to finish a line.
-                </span>
-            </div>
-
-        </div>
-
-
-        <!-- ==================================================
-             INVISIBLE DIALOGUE TIMELINE
-
-             These provide scroll space.
-
-             The actual dialogue is ONLY on the characters.
-        =================================================== -->
-
-        <div class="dialogue-timeline">
-
-            <div
-                class="dialogue-beat"
-                data-dialogue="0"
-            ></div>
-
-            <div
-                class="dialogue-beat"
-                data-dialogue="1"
-            ></div>
-
-            <div
-                class="dialogue-beat"
-                data-dialogue="2"
-            ></div>
-
-            <div
-                class="dialogue-beat"
-                data-dialogue="3"
-            ></div>
-
-            <div
-                class="dialogue-beat"
-                data-dialogue="4"
-            ></div>
-
-            <div
-                class="dialogue-beat"
-                data-dialogue="5"
-            ></div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ======================================================
-         PROSE AFTER DIALOGUE
-    ======================================================= -->
-
-    <section class="normal-prose">
-
-        <p>
-            The footsteps stopped outside the room.
-        </p>
-
-        <p>
-            Lexis looked toward the door.
-        </p>
-
-        <p>
-            The conversation had answered one question.
-        </p>
-
-        <p>
-            Unfortunately, it had created three more.
-        </p>
-
-    </section>
-
-
-    <!-- ======================================================
-         HUGE NORMAL IMAGE
-
-         No overlay.
-         No text.
-         Just image.
-    ======================================================= -->
-
-    <section class="standalone-visual">
-
-        <div class="standalone-label">
-            THE WORLD CONTINUES
-        </div>
-
-        <div class="standalone-frame">
+          <div class="character-visual">
 
             <img
-                id="standaloneImage"
-                src=""
-                alt="Cinematic story moment"
+              id="lexisImage"
+              src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg"
+              alt="Lexis"
             >
 
-        </div>
+            <div class="character-dialogue" id="lexisDialogue">
 
-        <p>
-            Sometimes the story does not need to explain
-            what you are seeing.
-        </p>
+              <div class="character-name">
+                LEXIS
+              </div>
 
-    </section>
+              <div class="character-text" id="lexisText"></div>
 
+            </div>
 
-    <!-- ======================================================
-         CHOICES
-    ======================================================= -->
+          </div>
 
-    <section class="choice-section">
+          <div class="expression-dots" id="lexisExpressions">
+            <span class="active"></span>
+            <span></span>
+            <span></span>
+          </div>
 
-        <p class="eyebrow">
-            YOUR TURN
-        </p>
-
-        <h2>
-            What does Lexis do?
-        </h2>
+        </article>
 
 
-        <div class="choice-list">
+        <!-- FATHER -->
 
-            <button
-                class="choice-button"
-                data-choice="listen"
+        <article class="character-panel" id="fatherPanel">
+
+          <div class="character-visual">
+
+            <img
+              id="fatherImage"
+              src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/cinematic_character_portrait_p.jpeg"
+              alt="Lexis's father"
             >
-                Stay quiet and listen.
-            </button>
+
+            <div class="character-dialogue" id="fatherDialogue">
+
+              <div class="character-name">
+                FATHER
+              </div>
+
+              <div class="character-text" id="fatherText"></div>
+
+            </div>
+
+          </div>
+
+          <div class="expression-dots" id="fatherExpressions">
+            <span class="active"></span>
+            <span></span>
+            <span></span>
+          </div>
+
+        </article>
+
+      </div>
+
+      <div class="dialogue-progress" id="dialogueProgress">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="tap-hint">
+        Tap the speaking character to finish a line instantly.
+      </div>
+
+    </div>
 
 
-            <button
-                class="choice-button"
-                data-choice="question"
-            >
-                Ask the question she came to ask.
-            </button>
+    <!-- Invisible reading timeline -->
+    <div class="dialogue-timeline">
+
+      <div class="dialogue-beat"
+           data-speaker="lexis"
+           data-expression="0"
+           data-lexis-image="soft"
+           data-father-image="father1">
+      </div>
+
+      <div class="dialogue-beat"
+           data-speaker="father"
+           data-expression="0"
+           data-lexis-image="street"
+           data-father-image="father2">
+      </div>
+
+      <div class="dialogue-beat"
+           data-speaker="lexis"
+           data-expression="1"
+           data-lexis-image="ministry"
+           data-father-image="father3">
+      </div>
+
+      <div class="dialogue-beat"
+           data-speaker="father"
+           data-expression="1"
+           data-lexis-image="black"
+           data-father-image="father4">
+      </div>
+
+      <div class="dialogue-beat"
+           data-speaker="lexis"
+           data-expression="2"
+           data-lexis-image="red"
+           data-father-image="father5">
+      </div>
+
+      <div class="dialogue-beat"
+           data-speaker="father"
+           data-expression="2"
+           data-lexis-image="soft"
+           data-father-image="father6">
+      </div>
+
+    </div>
+
+  </section>
 
 
-            <button
-                class="choice-button"
-                data-choice="leave"
-            >
-                Leave before anyone can stop her.
-            </button>
+  <!-- =========================
+       AFTER DIALOGUE
+       ========================= -->
 
-        </div>
+  <section class="normal-prose after-dialogue">
+
+    <p>
+      The answer did not come immediately.
+    </p>
+
+    <p>
+      But Lexis already knew that whatever came next would change the way she
+      understood the house, her family, and herself.
+    </p>
+
+    <p>
+      She waited.
+    </p>
+
+  </section>
 
 
-        <div
-            class="choice-result"
-            id="choiceResult"
-        ></div>
+  <!-- =========================
+       FINAL IMAGE
+       ========================= -->
 
-    </section>
+  <section class="final-image">
+    <img
+      src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/breathtaking_alla_prima_oil_pa.jpg.jpeg"
+      alt="A quiet painted scene"
+    >
+  </section>
 
 
-    <footer class="theatre-footer">
-
-        <span>
-            CEEQWINN
-        </span>
-
-        <span>
-            VISUAL STORY THEATRE MVP
-        </span>
-
-    </footer>
+  <section class="ending">
+    <h2>The scene ends.</h2>
+    <p>The theatre gives the page back to the reader.</p>
+  </section>
 
 </main>
 
