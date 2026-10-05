@@ -1,1487 +1,497 @@
-/* ============================================================
-   CEEQWINN THEATRE MVP
-============================================================ */
-
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
-    margin: 0;
-
-    background: #f6f2ea;
-    color: #181613;
-
-    font-family:
-        Georgia,
-        "Times New Roman",
-        serif;
-
-    overflow-x: hidden;
+  margin: 0;
+  background: #f5f1e8;
+  color: #171512;
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.8;
 }
 
-button {
-    font: inherit;
+.site-header {
+  min-height: 70vh;
+  padding: 12vh 8vw 10vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
 }
 
-img {
-    display: block;
-    max-width: 100%;
+.eyebrow,
+.glass-label,
+.character-name {
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
-
-:root {
-
-    --page-width: 1180px;
-    --reading-width: 720px;
-
-    --gold: #b18a42;
-    --gold-dark: #76581d;
-
-    --paper: #f6f2ea;
-
-    --dark: #11100f;
-
-    --transition:
-        500ms cubic-bezier(.22,.61,.36,1);
+.site-header h1 {
+  margin: 0.4rem 0;
+  font-size: clamp(2.6rem, 7vw, 6rem);
+  font-weight: 500;
 }
 
-
-/* ============================================================
-   HEADER
-============================================================ */
-
-.theater-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-
-    height: 58px;
-
-    background: rgba(246,242,234,.94);
-
-    border-bottom:
-        1px solid rgba(24,22,19,.08);
-
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+.site-header p {
+  max-width: 600px;
+  margin: 0 auto;
+  color: #625c52;
 }
 
-.header-inner {
-    width:
-        min(
-            var(--page-width),
-            calc(100% - 30px)
-        );
-
-    height: 100%;
-
-    margin: auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.brand-mark {
-    font-family: Arial, sans-serif;
-
-    font-size: 12px;
-    font-weight: 800;
-
-    letter-spacing: .2em;
-}
-
-.header-title {
-    font-family: Arial, sans-serif;
-
-    font-size: 9px;
-    letter-spacing: .17em;
-
-    color: #777068;
-}
-
-
-/* ============================================================
-   PAGE
-============================================================ */
-
-.theatre-page {
-    width:
-        min(
-            var(--page-width),
-            calc(100% - 30px)
-        );
-
-    margin: auto;
-}
-
-
-/* ============================================================
-   INTRO
-============================================================ */
-
-.intro-block {
-    width:
-        min(
-            var(--reading-width),
-            100%
-        );
-
-    margin: auto;
-
-    padding:
-        110px 0 100px;
-}
-
-.eyebrow {
-    margin: 0 0 18px;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 10px;
-    font-weight: 800;
-
-    letter-spacing: .2em;
-
-    color: var(--gold-dark);
-}
-
-.intro-block h1 {
-    margin: 0;
-
-    font-size:
-        clamp(
-            42px,
-            6vw,
-            76px
-        );
-
-    line-height: .98;
-
-    font-weight: 400;
-
-    letter-spacing: -.045em;
-}
-
-.intro-block h1 span {
-    display: block;
-
-    color: var(--gold-dark);
-}
-
-.intro-copy {
-    max-width: 590px;
-
-    margin-top: 30px;
-
-    font-size: 21px;
-    line-height: 1.7;
-
-    color: #625c54;
-}
-
-
-/* ============================================================
-   NORMAL PROSE
-============================================================ */
 
 .normal-prose {
-    width:
-        min(
-            var(--reading-width),
-            100%
-        );
-
-    margin: auto;
-
-    padding:
-        70px 0;
+  width: min(680px, 86vw);
+  margin: 0 auto;
+  padding: 12vh 0;
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
 }
 
 .normal-prose p {
-    margin: 0 0 30px;
-
-    font-size:
-        clamp(
-            19px,
-            2vw,
-            24px
-        );
-
-    line-height: 1.85;
-}
-
-.normal-prose p:last-child {
-    margin-bottom: 0;
+  margin: 0 0 2.5rem;
 }
 
 
-/* ============================================================
+/* =========================
    PROSE THEATRE
-============================================================ */
+   ========================= */
 
 .prose-theatre {
-    position: relative;
+  position: relative;
 }
-
-
-/* ============================================================
-   STICKY IMAGE STAGE
-============================================================ */
 
 .prose-stage {
-    position: sticky;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 600px;
 
-    top: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    z-index: 20;
+  background: #111;
+  overflow: hidden;
 }
-
-
-.prose-stage-label {
-    width: 100%;
-
-    margin-bottom: 10px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 9px;
-    font-weight: 800;
-
-    letter-spacing: .18em;
-
-    color: var(--gold-dark);
-}
-
 
 .prose-image-stage {
-    position: relative;
+  position: relative;
 
-    width: 100%;
+  width: min(1100px, 96vw);
+  height: min(82svh, 850px);
 
-    height:
-        min(
-            76svh,
-            780px
-        );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-    min-height: 420px;
+.prose-image-stage img {
+  width: 100%;
+  height: 100%;
 
-    overflow: hidden;
+  object-fit: contain;
 
-    background: #121110;
+  display: block;
 
-    border-radius: 3px;
-
-    box-shadow:
-        0 35px 90px
-        rgba(0,0,0,.18);
-
-    transition:
-        opacity 450ms ease,
-        transform 450ms ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
 }
 
 
-.prose-image-stage.is-changing {
-    opacity: .35;
-
-    transform:
-        scale(.995);
-}
-
-
-.prose-image {
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
-    object-position: center;
-
-    opacity: 1;
-
-    transition:
-        opacity 450ms ease;
-}
-
-
-.prose-image.is-hidden {
-    opacity: 0;
-}
-
-
-/* ============================================================
+/* =========================
    READING GLASS
+   ========================= */
 
-   This is deliberately visible.
+.reading-glass {
+  position: absolute;
 
-   It is a REAL visual panel over the image.
+  left: 6%;
+  right: 6%;
+  bottom: 7%;
 
-   It disappears before the midpoint.
-============================================================ */
+  max-width: 720px;
+  margin: auto;
 
-.prose-reading-glass {
+  padding: 1.15rem 1.4rem;
 
-    position: absolute;
+  background: rgba(255, 244, 211, 0.9);
 
-    left: 50%;
-    bottom: 10%;
+  border: 1px solid rgba(185, 145, 69, 0.75);
 
-    transform:
-        translateX(-50%);
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.28);
 
-    width:
-        min(
-            760px,
-            calc(100% - 50px)
-        );
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
 
-    padding:
-        20px 26px 22px;
+  color: #19140d;
 
-    background:
-        rgba(
-            255,
-            244,
-            211,
-            .90
-        );
+  opacity: 0;
+  transform: translateY(18px);
 
-    border:
-        1px solid
-        rgba(
-            185,
-            145,
-            69,
-            .72
-        );
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s ease;
+}
 
-    box-shadow:
-        0 18px 45px
-        rgba(0,0,0,.22);
+.reading-glass.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-    backdrop-filter:
-        blur(9px);
+.reading-glass.is-fading {
+  opacity: 0;
+  transform: translateY(-12px);
+}
 
-    -webkit-backdrop-filter:
-        blur(9px);
+.glass-label {
+  margin-bottom: 0.35rem;
+  color: #785b24;
+}
 
-    opacity: 0;
-
-    visibility: hidden;
-
-    pointer-events: none;
-
-    transition:
-        opacity 300ms ease,
-        transform 300ms ease,
-        visibility 300ms ease;
+.glass-text {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.6;
 }
 
 
-.prose-reading-glass.is-visible {
-
-    opacity: 1;
-
-    visibility: visible;
-
-    transform:
-        translateX(-50%)
-        translateY(0);
-}
-
-
-.prose-reading-glass.is-fading {
-
-    opacity: 0;
-
-    transform:
-        translateX(-50%)
-        translateY(-10px);
-}
-
-
-.prose-glass-label {
-
-    margin-bottom: 8px;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 9px;
-    font-weight: 800;
-
-    letter-spacing: .2em;
-
-    color: #71531d;
-}
-
-
-.prose-reading-glass p {
-
-    margin: 0;
-
-    font-size:
-        clamp(
-            18px,
-            2vw,
-            25px
-        );
-
-    line-height: 1.45;
-
-    color: #211c14;
-}
-
-
-/* ============================================================
-   PROSE DOTS
-============================================================ */
-
-.prose-dots {
-
-    min-height: 20px;
-
-    padding-top: 13px;
-
-    display: flex;
-
-    justify-content: center;
-
-    gap: 7px;
-}
-
-
-.prose-dot {
-
-    width: 6px;
-    height: 6px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(24,22,19,.18);
-
-    transition:
-        width 220ms ease,
-        background 220ms ease;
-}
-
-
-.prose-dot.is-active {
-
-    width: 22px;
-
-    border-radius: 8px;
-
-    background: var(--gold);
-}
-
-
-/* ============================================================
-   INVISIBLE PROSE BEATS
-
-   They create the scroll rhythm.
-
-   THEY DO NOT DISPLAY THE TEXT.
-============================================================ */
+/*
+  Scroll triggers.
+  They deliberately contain no visible prose.
+*/
 
 .prose-beats {
-
-    width:
-        min(
-            var(--reading-width),
-            100%
-        );
-
-    margin: auto;
+  position: relative;
 }
-
 
 .prose-beat {
-
-    height: 78vh;
-
-    font-size: 0;
-
-    color: transparent;
-
-    user-select: none;
+  height: 85vh;
+  font-size: 0;
+  color: transparent;
 }
 
 
-/* ============================================================
-   DIALOGUE THEATRE
-============================================================ */
+/* =========================
+   DIALOGUE
+   ========================= */
 
 .dialogue-theatre {
+  position: relative;
+  background: #151311;
+  color: #f6f1e7;
+}
 
-    position: relative;
+.dialogue-intro {
+  text-align: center;
+  padding: 15vh 5vw 10vh;
+}
 
-    min-height: 440vh;
+.dialogue-intro h2 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 500;
+  margin: 0.5rem 0;
+}
+
+.dialogue-intro p {
+  color: #aaa198;
 }
 
 
 .dialogue-sticky {
+  position: sticky;
+  top: 0;
 
-    position: sticky;
+  min-height: 100svh;
 
-    top: 68px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
-    z-index: 30;
+  padding: 3vh 2vw;
 
-    min-height:
-        calc(
-            100svh - 85px
-        );
+  background: #151311;
 
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    padding: 12px 0;
+  overflow: hidden;
 }
 
-
-.dialogue-header {
-
-    width: 100%;
-
-    margin-bottom: 10px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 9px;
-    font-weight: 800;
-
-    letter-spacing: .18em;
-
-    color: var(--gold-dark);
-}
-
-
-/* ============================================================
-   CHARACTER STAGE
-
-   CLOSE TOGETHER.
-
-   NO HUGE EMPTY CENTER.
-============================================================ */
 
 .character-stage {
+  width: min(1180px, 98vw);
+  margin: 0 auto;
 
-    display: grid;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 
-    grid-template-columns:
-        1fr
-        1fr;
+  gap: 12px;
 
-    gap: 12px;
-
-    width: 100%;
+  align-items: center;
 }
 
-
-/* ============================================================
-   CHARACTER PANEL
-============================================================ */
 
 .character-panel {
+  min-width: 0;
 
-    min-width: 0;
+  opacity: 0.48;
 
-    transition:
-        opacity 450ms ease,
-        transform 450ms ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
-
 
 .character-panel.is-speaking {
-
-    opacity: 1;
-
-    transform:
-        translateY(-3px);
-
+  opacity: 1;
+  transform: translateY(-4px);
 }
-
 
 .character-panel.is-listening {
-
-    opacity: .68;
-
+  opacity: 0.55;
 }
 
-
-.character-name {
-
-    margin-bottom: 7px;
-
-    text-align: center;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 9px;
-    font-weight: 800;
-
-    letter-spacing: .2em;
-
-    color: #716a61;
-}
-
-
-.character-panel.is-speaking
-.character-name {
-
-    color: var(--gold-dark);
-}
-
-
-/* ============================================================
-   CHARACTER VISUAL
-
-   Dialogue lives INSIDE this visual.
-============================================================ */
 
 .character-visual {
+  position: relative;
 
-    position: relative;
+  height: min(73svh, 760px);
+  min-height: 430px;
 
-    width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-    height:
-        min(
-            73svh,
-            760px
-        );
+  background: #201d19;
 
-    min-height: 430px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    overflow: hidden;
-
-    background: #11100f;
-
-    border-radius: 3px;
-
-    border:
-        1px solid
-        rgba(24,22,19,.12);
-
-    transition:
-        box-shadow 400ms ease,
-        border-color 400ms ease;
-}
-
-
-.character-panel.is-speaking
-.character-visual {
-
-    border-color:
-        rgba(
-            177,
-            138,
-            66,
-            .70
-        );
-
-    box-shadow:
-        0 0 0 1px
-        rgba(
-            177,
-            138,
-            66,
-            .18
-        ),
-
-        0 18px 50px
-        rgba(
-            177,
-            138,
-            66,
-            .12
-        );
+  overflow: hidden;
 }
 
 
 .character-visual img {
+  width: 100%;
+  height: 100%;
 
-    width: 100%;
-    height: 100%;
+  object-fit: contain;
 
-    object-fit: contain;
+  display: block;
 
-    transition:
-        opacity 350ms ease,
-        transform 500ms ease;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
 }
 
 
-.character-visual img.is-changing {
-
-    opacity: 0;
-
-    transform:
-        scale(.985);
-}
-
-
-/* ============================================================
-   CHARACTER DIALOGUE
-
-   THIS IS THE DIALOGUE.
-
-   It belongs to the character image.
-============================================================ */
+/* =========================
+   CHARACTER-OWNED DIALOGUE
+   ========================= */
 
 .character-dialogue {
+  position: absolute;
 
-    position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 5%;
 
-    left: 6%;
-    right: 6%;
+  padding: 1rem 1.1rem;
 
-    bottom: 5%;
+  background: rgba(15, 13, 11, 0.82);
 
-    padding:
-        14px 17px 16px;
+  border: 1px solid rgba(255, 244, 211, 0.22);
 
-    background:
-        rgba(
-            12,
-            11,
-            10,
-            .76
-        );
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
 
-    border:
-        1px solid
-        rgba(
-            255,
-            255,
-            255,
-            .16
-        );
+  opacity: 0;
+  transform: translateY(15px);
 
-    backdrop-filter:
-        blur(8px);
-
-    -webkit-backdrop-filter:
-        blur(8px);
-
-    opacity: 0;
-
-    transform:
-        translateY(12px);
-
-    transition:
-        opacity 300ms ease,
-        transform 300ms ease;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
-
 
 .character-dialogue.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-    opacity: 1;
+.character-name {
+  color: #d7b66a;
+  margin-bottom: 0.25rem;
+}
 
-    transform:
-        translateY(0);
+.character-text {
+  min-height: 3.2em;
+
+  font-size: clamp(0.95rem, 1.7vw, 1.18rem);
+
+  line-height: 1.55;
 }
 
 
-.character-dialogue-name {
-
-    margin-bottom: 6px;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 8px;
-    font-weight: 800;
-
-    letter-spacing: .18em;
-
-    color: #d2ae62;
-}
-
-
-.character-dialogue-text {
-
-    min-height: 54px;
-
-    margin: 0;
-
-    color: #fffaf0;
-
-    font-size:
-        clamp(
-            16px,
-            1.7vw,
-            22px
-        );
-
-    line-height: 1.45;
-}
-
-
-/* ============================================================
+/* =========================
    EXPRESSION DOTS
-============================================================ */
+   ========================= */
 
 .expression-dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  padding-top: 10px;
+}
 
-    min-height: 13px;
+.expression-dots span,
+.dialogue-progress span {
+  width: 6px;
+  height: 6px;
 
-    padding-top: 8px;
+  display: block;
 
-    display: flex;
+  border-radius: 50%;
 
-    justify-content: center;
+  background: #5f5951;
 
-    gap: 5px;
+  transition: 0.3s ease;
+}
+
+.expression-dots span.active,
+.dialogue-progress span.active {
+  background: #d7b66a;
+  transform: scale(1.4);
 }
 
 
-.expression-dot {
-
-    width: 5px;
-    height: 5px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(
-            24,
-            22,
-            19,
-            .18
-        );
-}
-
-
-.expression-dot.is-active {
-
-    width: 17px;
-
-    border-radius: 8px;
-
-    background: var(--gold);
-}
-
-
-/* ============================================================
+/* =========================
    DIALOGUE PROGRESS
-============================================================ */
+   ========================= */
 
 .dialogue-progress {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 
-    display: flex;
+  margin-top: 18px;
+}
 
-    justify-content: center;
+.tap-hint {
+  text-align: center;
 
-    gap: 7px;
+  margin-top: 15px;
 
-    padding-top: 12px;
+  color: #77716a;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
 }
 
 
-.dialogue-progress-dot {
-
-    width: 6px;
-    height: 6px;
-
-    border-radius: 50%;
-
-    background:
-        rgba(
-            24,
-            22,
-            19,
-            .18
-        );
-
-    transition:
-        width 220ms ease,
-        background 220ms ease;
-}
-
-
-.dialogue-progress-dot.is-active {
-
-    width: 22px;
-
-    border-radius: 8px;
-
-    background: var(--gold);
-}
-
-
-/* ============================================================
-   DIALOGUE INSTRUCTION
-============================================================ */
-
-.dialogue-instruction {
-
-    margin-top: 10px;
-
-    text-align: center;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 8px;
-
-    letter-spacing: .11em;
-
-    text-transform: uppercase;
-
-    color:
-        rgba(
-            24,
-            22,
-            19,
-            .42
-        );
-}
-
-
-.mobile-instruction {
-    display: none;
-}
-
-
-/* ============================================================
-   INVISIBLE DIALOGUE TIMELINE
-============================================================ */
+/* Invisible dialogue scroll triggers */
 
 .dialogue-timeline {
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    right: 0;
+  height: 20px;
 }
-
 
 .dialogue-beat {
-
-    height: 73vh;
-
-    pointer-events: none;
-
-    font-size: 0;
+  height: 1px;
 }
 
 
-/* ============================================================
-   STANDALONE IMAGE
-============================================================ */
+/* =========================
+   ENDING
+   ========================= */
 
-.standalone-visual {
+.after-dialogue {
+  background: #f5f1e8;
+}
 
-    padding:
-        100px 0 130px;
+.final-image {
+  width: min(1100px, 94vw);
+  margin: 12vh auto;
+}
+
+.final-image img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  max-height: 90vh;
+
+  object-fit: contain;
+}
+
+.ending {
+  text-align: center;
+  padding: 15vh 5vw;
+}
+
+.ending h2 {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 500;
 }
 
 
-.standalone-label {
-
-    width:
-        min(
-            var(--reading-width),
-            100%
-        );
-
-    margin:
-        0 auto 16px;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 9px;
-    font-weight: 800;
-
-    letter-spacing: .18em;
-
-    color: var(--gold-dark);
-}
-
-
-.standalone-frame {
-
-    width: 100%;
-
-    min-height: 500px;
-
-    background: #111;
-
-    display: flex;
-
-    justify-content: center;
-    align-items: center;
-
-    overflow: hidden;
-}
-
-
-.standalone-frame img {
-
-    width: 100%;
-    height:
-        min(
-            78svh,
-            820px
-        );
-
-    object-fit: contain;
-}
-
-
-.standalone-visual > p {
-
-    width:
-        min(
-            var(--reading-width),
-            100%
-        );
-
-    margin:
-        22px auto 0;
-
-    font-size: 18px;
-
-    line-height: 1.7;
-
-    color: #6a635b;
-}
-
-
-/* ============================================================
-   CHOICES
-============================================================ */
-
-.choice-section {
-
-    width:
-        min(
-            var(--reading-width),
-            100%
-        );
-
-    margin: auto;
-
-    padding:
-        100px 0 140px;
-}
-
-
-.choice-section h2 {
-
-    margin:
-        0 0 38px;
-
-    font-size:
-        clamp(
-            34px,
-            5vw,
-            54px
-        );
-
-    font-weight: 400;
-
-    letter-spacing: -.035em;
-}
-
-
-.choice-list {
-
-    display: grid;
-
-    gap: 10px;
-}
-
-
-.choice-button {
-
-    width: 100%;
-
-    padding:
-        20px;
-
-    text-align: left;
-
-    background: transparent;
-
-    border:
-        1px solid
-        rgba(
-            24,
-            22,
-            19,
-            .14
-        );
-
-    cursor: pointer;
-
-    transition:
-        transform 200ms ease,
-        background 200ms ease,
-        border-color 200ms ease;
-}
-
-
-.choice-button:hover {
-
-    transform:
-        translateX(4px);
-
-    background:
-        rgba(
-            177,
-            138,
-            66,
-            .08
-        );
-
-    border-color:
-        rgba(
-            177,
-            138,
-            66,
-            .5
-        );
-}
-
-
-.choice-result {
-
-    min-height: 40px;
-
-    margin-top: 22px;
-
-    font-size: 18px;
-
-    line-height: 1.7;
-
-    color: #635d55;
-}
-
-
-/* ============================================================
-   FOOTER
-============================================================ */
-
-.theatre-footer {
-
-    padding:
-        35px 0;
-
-    border-top:
-        1px solid
-        rgba(
-            24,
-            22,
-            19,
-            .1
-        );
-
-    display: flex;
-
-    justify-content: space-between;
-
-    font-family: Arial, sans-serif;
-
-    font-size: 9px;
-    font-weight: 800;
-
-    letter-spacing: .18em;
-
-    color:
-        rgba(
-            24,
-            22,
-            19,
-            .42
-        );
-}
-
-
-/* ============================================================
+/* =========================
    MOBILE
-============================================================ */
+   ========================= */
 
 @media (max-width: 700px) {
 
-    .theatre-page {
-
-        width:
-            calc(
-                100% - 20px
-            );
-    }
-
-
-    .header-inner {
-
-        width:
-            calc(
-                100% - 20px
-            );
-    }
-
-
-    .header-title {
-        display: none;
-    }
-
-
-    .intro-block {
-
-        padding:
-            75px 5px 70px;
-    }
-
-
-    .intro-block h1 {
-
-        font-size:
-            clamp(
-                39px,
-                12vw,
-                58px
-            );
-    }
-
-
-    .normal-prose {
-
-        padding:
-            60px 5px;
-    }
-
-
-    .normal-prose p {
-
-        font-size: 19px;
-
-        line-height: 1.8;
-    }
-
-
-    /* ========================================================
-       PROSE VISUAL
-    ====================================================== */
-
-    .prose-stage {
-
-        top: 66px;
-    }
-
-
-    .prose-image-stage {
-
-        height:
-            min(
-                64svh,
-                570px
-            );
-
-        min-height: 320px;
-    }
-
-
-    .prose-reading-glass {
-
-        width:
-            calc(
-                100% - 24px
-            );
-
-        bottom: 8%;
-
-        padding:
-            15px 16px 17px;
-    }
-
-
-    .prose-reading-glass p {
-
-        font-size: 17px;
-
-        line-height: 1.42;
-    }
-
-
-    .prose-beat {
-
-        height: 68vh;
-    }
-
-
-    /* ========================================================
-       DIALOGUE
-    ====================================================== */
-
-    .dialogue-theatre {
-
-        min-height:
-            410vh;
-    }
-
-
-    .dialogue-sticky {
-
-        top: 62px;
-
-        min-height:
-            calc(
-                100svh - 72px
-            );
-    }
-
-
-    .character-stage {
-
-        gap: 7px;
-    }
-
-
-    .character-visual {
-
-        height:
-            min(
-                61svh,
-                520px
-            );
-
-        min-height: 330px;
-    }
-
-
-    .character-dialogue {
-
-        left: 5%;
-        right: 5%;
-
-        bottom: 4%;
-
-        padding:
-            12px 12px 13px;
-    }
-
-
-    .character-dialogue-text {
-
-        min-height: 47px;
-
-        font-size: 15px;
-
-        line-height: 1.4;
-    }
-
-
-    .character-dialogue-name {
-
-        font-size: 7px;
-    }
-
-
-    .dialogue-instruction {
-
-        font-size: 7px;
-    }
-
-
-    .desktop-instruction {
-
-        display: none;
-    }
-
-
-    .mobile-instruction {
-
-        display: inline;
-    }
-
-
-    .dialogue-beat {
-
-        height: 68vh;
-    }
-
-
-    /* ========================================================
-       STANDALONE
-    ====================================================== */
-
-    .standalone-visual {
-
-        padding:
-            70px 0 100px;
-    }
-
-
-    .standalone-frame {
-
-        min-height: 330px;
-    }
-
-
-    .standalone-frame img {
-
-        height:
-            min(
-                68svh,
-                600px
-            );
-    }
-
-
-    /* ========================================================
-       FOOTER
-    ====================================================== */
-
-    .theatre-footer {
-
-        flex-direction: column;
-
-        gap: 10px;
-    }
+  .site-header {
+    min-height: 60vh;
+  }
+
+  .prose-stage {
+    min-height: 500px;
+  }
+
+  .prose-image-stage {
+    width: 100%;
+    height: 78svh;
+  }
+
+  .reading-glass {
+    left: 4%;
+    right: 4%;
+    bottom: 5%;
+  }
+
+  .character-stage {
+    gap: 7px;
+  }
+
+  .character-visual {
+    height: 66svh;
+    min-height: 380px;
+  }
+
+  .character-dialogue {
+    left: 4%;
+    right: 4%;
+    bottom: 3%;
+    padding: 0.75rem;
+  }
+
+  .character-text {
+    font-size: 0.86rem;
+  }
+
+  .tap-hint {
+    font-size: 0.65rem;
+  }
 }
 
 
-/* ============================================================
-   REDUCED MOTION
-============================================================ */
-
 @media (prefers-reduced-motion: reduce) {
 
-    html {
-        scroll-behavior: auto;
-    }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 
-    *,
-    *::before,
-    *::after {
-
-        transition-duration:
-            .01ms !important;
-    }
 }
