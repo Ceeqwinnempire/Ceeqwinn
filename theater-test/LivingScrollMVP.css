@@ -1,0 +1,813 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+
+  background: #f5f1e8;
+  color: #171512;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  line-height: 1.8;
+}
+
+
+/* =========================================
+   HEADER
+   ========================================= */
+
+.site-header {
+
+  min-height: 70vh;
+
+  padding:
+    12vh
+    8vw
+    10vh;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+}
+
+.eyebrow,
+.glass-label,
+.character-name {
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  letter-spacing: 0.16em;
+
+  font-size: 0.72rem;
+
+  font-weight: 700;
+}
+
+.site-header h1 {
+
+  margin:
+    0.4rem
+    0;
+
+  font-size:
+    clamp(
+      2.6rem,
+      7vw,
+      6rem
+    );
+
+  font-weight: 500;
+}
+
+.site-header p {
+
+  max-width: 600px;
+
+  margin: 0 auto;
+
+  color: #625c52;
+}
+
+
+/* =========================================
+   NORMAL PROSE
+   ========================================= */
+
+.normal-prose {
+
+  width:
+    min(
+      680px,
+      86vw
+    );
+
+  margin: 0 auto;
+
+  padding:
+    12vh
+    0;
+
+  font-size:
+    clamp(
+      1.05rem,
+      2vw,
+      1.3rem
+    );
+}
+
+.normal-prose p {
+
+  margin:
+    0
+    0
+    2.5rem;
+}
+
+
+/* =========================================
+   LIVING SCROLL
+   ========================================= */
+
+.living-scroll {
+
+  position: relative;
+}
+
+
+/*
+  The stage remains still while
+  the reader moves through the
+  story beats.
+*/
+
+.living-stage {
+
+  position: sticky;
+
+  top: 0;
+
+  height: 100svh;
+
+  min-height: 600px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #11100e;
+
+  overflow: hidden;
+}
+
+
+.living-image {
+
+  position: relative;
+
+  width:
+    min(
+      1200px,
+      96vw
+    );
+
+  height:
+    min(
+      88svh,
+      900px
+    );
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+}
+
+
+.living-image img {
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s ease;
+}
+
+
+/* =========================================
+   LUXURY READING GLASS
+   ========================================= */
+
+.living-reading-glass {
+
+  position: absolute;
+
+  left: 7%;
+  right: 7%;
+
+  bottom: 7%;
+
+  max-width: 820px;
+
+  margin: auto;
+
+  padding:
+    1.35rem
+    1.65rem;
+
+  /*
+    Dark smoked-glass material.
+    More opaque and much richer
+    than the previous pale orange card.
+  */
+
+  background:
+    rgba(
+      18,
+      15,
+      11,
+      0.90
+    );
+
+  border:
+    1px solid
+    rgba(
+      211,
+      176,
+      102,
+      0.72
+    );
+
+  box-shadow:
+    0
+    18px
+    55px
+    rgba(
+      0,
+      0,
+      0,
+      0.38
+    );
+
+  backdrop-filter:
+    blur(10px);
+
+  -webkit-backdrop-filter:
+    blur(10px);
+
+  color:
+    #f6eddb;
+}
+
+
+.glass-label {
+
+  margin-bottom:
+    0.4rem;
+
+  color:
+    #d7b66a;
+}
+
+
+.glass-text {
+
+  font-size:
+    clamp(
+      1rem,
+      2vw,
+      1.28rem
+    );
+
+  line-height: 1.65;
+
+  max-width: 740px;
+}
+
+
+/* =========================================
+   LIVING SCROLL BEATS
+   ========================================= */
+
+.living-beats {
+
+  position: relative;
+}
+
+
+.living-beat {
+
+  height: 85vh;
+
+  /*
+    No duplicate prose.
+  */
+
+  font-size: 0;
+
+  color: transparent;
+}
+
+
+/* =========================================
+   DIALOGUE THEATRE
+   ========================================= */
+
+.dialogue-theatre {
+
+  position: relative;
+
+  background: #151311;
+
+  color: #f6f1e7;
+}
+
+
+.dialogue-intro {
+
+  text-align: center;
+
+  padding:
+    15vh
+    5vw
+    10vh;
+}
+
+
+.dialogue-intro h2 {
+
+  font-size:
+    clamp(
+      2rem,
+      5vw,
+      4rem
+    );
+
+  font-weight: 500;
+
+  margin:
+    0.5rem
+    0;
+}
+
+
+.dialogue-intro p {
+
+  color: #aaa198;
+}
+
+
+/* =========================================
+   DIALOGUE STAGE
+   ========================================= */
+
+.dialogue-sticky {
+
+  position: sticky;
+
+  top: 0;
+
+  min-height: 100svh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  padding:
+    3vh
+    1vw;
+
+  background: #151311;
+
+  overflow: hidden;
+}
+
+
+.character-stage {
+
+  width:
+    min(
+      1220px,
+      99vw
+    );
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  /*
+    Deliberately tight.
+  */
+
+  gap: 4px;
+
+  align-items: center;
+}
+
+
+.character-panel {
+
+  min-width: 0;
+
+  opacity: 0.46;
+
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+
+
+.character-panel.is-speaking {
+
+  opacity: 1;
+
+  transform:
+    translateY(-4px);
+}
+
+
+.character-panel.is-listening {
+
+  opacity: 0.52;
+}
+
+
+.character-visual {
+
+  position: relative;
+
+  height:
+    min(
+      73svh,
+      760px
+    );
+
+  min-height: 430px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #201d19;
+
+  overflow: hidden;
+}
+
+
+.character-visual img {
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  display: block;
+
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
+}
+
+
+/* =========================================
+   CHARACTER-OWNED DIALOGUE
+   ========================================= */
+
+.character-dialogue {
+
+  position: absolute;
+
+  left: 5%;
+  right: 5%;
+
+  bottom: 5%;
+
+  padding:
+    1rem
+    1.1rem;
+
+  background:
+    rgba(
+      12,
+      11,
+      10,
+      0.86
+    );
+
+  border:
+    1px solid
+    rgba(
+      255,
+      244,
+      211,
+      0.24
+    );
+
+  backdrop-filter:
+    blur(7px);
+
+  -webkit-backdrop-filter:
+    blur(7px);
+
+  opacity: 0;
+
+  transform:
+    translateY(15px);
+
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+
+
+.character-dialogue.is-visible {
+
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+
+.character-name {
+
+  color:
+    #d7b66a;
+
+  margin-bottom:
+    0.25rem;
+}
+
+
+.character-text {
+
+  min-height:
+    3.2em;
+
+  font-size:
+    clamp(
+      0.95rem,
+      1.7vw,
+      1.18rem
+    );
+
+  line-height: 1.55;
+}
+
+
+/* =========================================
+   EXPRESSION DOTS
+   ========================================= */
+
+.expression-dots {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  padding-top: 10px;
+}
+
+
+.expression-dots span,
+.dialogue-progress span {
+
+  width: 6px;
+  height: 6px;
+
+  display: block;
+
+  border-radius: 50%;
+
+  background: #5f5951;
+
+  transition: 0.3s ease;
+}
+
+
+.expression-dots span.active,
+.dialogue-progress span.active {
+
+  background:
+    #d7b66a;
+
+  transform:
+    scale(1.4);
+}
+
+
+/* =========================================
+   DIALOGUE PROGRESS
+   ========================================= */
+
+.dialogue-progress {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 8px;
+
+  margin-top: 18px;
+}
+
+
+.tap-hint {
+
+  text-align: center;
+
+  margin-top: 15px;
+
+  color: #77716a;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 0.72rem;
+
+  letter-spacing: 0.06em;
+}
+
+
+/*
+  Dialogue is started by entering
+  the theatre. These markers do not
+  visually occupy the conversation.
+*/
+
+.dialogue-timeline {
+
+  height: 20px;
+}
+
+.dialogue-beat {
+
+  height: 1px;
+}
+
+
+/* =========================================
+   FINAL IMAGE
+   ========================================= */
+
+.final-image {
+
+  width:
+    min(
+      1200px,
+      94vw
+    );
+
+  margin:
+    14vh
+    auto;
+}
+
+
+.final-image img {
+
+  display: block;
+
+  width: 100%;
+
+  height: auto;
+
+  max-height:
+    92vh;
+
+  object-fit: contain;
+}
+
+
+.ending {
+
+  text-align: center;
+
+  padding:
+    15vh
+    5vw;
+}
+
+
+.ending h2 {
+
+  font-size:
+    clamp(
+      2rem,
+      5vw,
+      4rem
+    );
+
+  font-weight: 500;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  .site-header {
+
+    min-height: 60vh;
+  }
+
+
+  .living-stage {
+
+    min-height: 500px;
+  }
+
+
+  .living-image {
+
+    width: 100%;
+
+    height: 80svh;
+  }
+
+
+  .living-reading-glass {
+
+    left: 4%;
+    right: 4%;
+
+    bottom: 5%;
+
+    padding:
+      1rem
+      1.1rem;
+  }
+
+
+  .character-stage {
+
+    gap: 2px;
+  }
+
+
+  .character-visual {
+
+    height: 66svh;
+
+    min-height: 380px;
+  }
+
+
+  .character-dialogue {
+
+    left: 4%;
+    right: 4%;
+
+    bottom: 3%;
+
+    padding:
+      0.75rem;
+  }
+
+
+  .character-text {
+
+    font-size:
+      0.86rem;
+  }
+
+
+  .tap-hint {
+
+    font-size:
+      0.65rem;
+  }
+
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+
+    scroll-behavior: auto !important;
+
+    transition-duration:
+      0.01ms !important;
+  }
+
+}
