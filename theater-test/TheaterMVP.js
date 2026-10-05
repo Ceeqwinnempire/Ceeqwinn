@@ -1,6 +1,5 @@
 /* ============================================================
    CEEQWINN THEATRE MVP
-   Visual Story Theatre
 ============================================================ */
 
 
@@ -10,6 +9,7 @@
 
 const GITHUB_ROOT =
     "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/";
+
 
 function githubImage(path) {
 
@@ -58,14 +58,7 @@ const IMAGES = {
 
 
     /* --------------------------------------------------------
-       TEMPORARY FATHER TEST PORTRAITS
-
-       These come from the generic image pool you supplied.
-
-       They are intentionally just mechanical test assets.
-
-       When you have dedicated Father expression images,
-       replace these URLs only.
+       TEMPORARY FATHER TEST STATES
     -------------------------------------------------------- */
 
     father01:
@@ -100,20 +93,20 @@ const IMAGES = {
 
 
     /* --------------------------------------------------------
-       CINEMATIC / GENERAL VISUAL TEST ASSETS
+       GENERAL VISUALS
     -------------------------------------------------------- */
 
-    theatre:
+    house:
         githubImage(
             "content/images/Luxurious_royal_theatre_curtai (1).jpeg"
         ),
 
-    atmosphere:
+    silence:
         githubImage(
             "content/images/rainy_atmosphere_cinematic_rai.jpeg"
         ),
 
-    fashion:
+    discovery:
         githubImage(
             "content/images/editorial_fashion_portrait_pri.jpeg"
         ),
@@ -136,432 +129,516 @@ const IMAGES = {
 
 function preloadImages() {
 
-    Object.values(IMAGES).forEach(src => {
+    Object.values(IMAGES).forEach(
+        src => {
 
-        const image = new Image();
+            const image =
+                new Image();
 
-        image.src = src;
-
-    });
+            image.src =
+                src;
+        }
+    );
 }
 
 
 /* ============================================================
-   VISUAL THEATRE
+   PROSE VISUAL DATA
 ============================================================ */
 
-const VISUALS = {
+const PROSE_VISUALS = {
 
-    entry: {
-        kicker: "THE HOUSE",
-        image: IMAGES.theatre,
-        alt: "Cinematic opening environment",
-        glass: true,
-        glassKicker: "THE MOMENT"
+    house: {
+
+        image: IMAGES.house,
+
+        alt:
+            "Cinematic environment",
+
+        label:
+            "THE HOUSE"
     },
 
-    atmosphere: {
-        kicker: "THE SILENCE",
-        image: IMAGES.atmosphere,
-        alt: "Atmospheric cinematic scene",
-        glass: true,
-        glassKicker: "THE SILENCE"
+
+    silence: {
+
+        image: IMAGES.silence,
+
+        alt:
+            "Atmospheric cinematic scene",
+
+        label:
+            "THE SILENCE"
     },
 
-    fashion: {
-        kicker: "WHAT WAS LEFT",
-        image: IMAGES.fashion,
-        alt: "Fashion portrait",
-        glass: true,
-        glassKicker: "THE DISCOVERY"
+
+    discovery: {
+
+        image: IMAGES.discovery,
+
+        alt:
+            "Fashion discovery",
+
+        label:
+            "THE DISCOVERY"
     },
+
 
     detail: {
-        kicker: "THE DETAIL",
+
         image: IMAGES.detail,
-        alt: "Story detail",
-        glass: false,
-        glassKicker: ""
+
+        alt:
+            "Story detail",
+
+        label:
+            "THE DETAIL"
     }
 };
 
 
-const visualStage =
-    document.getElementById("visualStage");
+/* ============================================================
+   PROSE ELEMENTS
+============================================================ */
 
-const visualImage =
-    document.getElementById("visualImage");
+const proseImageStage =
+    document.getElementById(
+        "proseImageStage"
+    );
 
-const visualKicker =
-    document.getElementById("visualKicker");
+const proseImage =
+    document.getElementById(
+        "proseImage"
+    );
 
-const visualCounter =
-    document.getElementById("visualCounter");
+const proseKicker =
+    document.getElementById(
+        "proseKicker"
+    );
 
-const visualDots =
-    document.getElementById("visualDots");
+const proseCounter =
+    document.getElementById(
+        "proseCounter"
+    );
 
-const readingGlass =
-    document.getElementById("readingGlass");
+const proseReadingGlass =
+    document.getElementById(
+        "proseReadingGlass"
+    );
 
-const glassText =
-    document.getElementById("glassText");
+const proseGlassLabel =
+    document.getElementById(
+        "proseGlassLabel"
+    );
 
-const glassKicker =
-    document.getElementById("glassKicker");
+const proseGlassText =
+    document.getElementById(
+        "proseGlassText"
+    );
 
-const visualTriggers =
-    [...document.querySelectorAll(".visual-trigger")];
+const proseDots =
+    document.getElementById(
+        "proseDots"
+    );
 
-
-let currentVisual = null;
-let visualChangeToken = 0;
+const proseBeats =
+    [
+        ...document.querySelectorAll(
+            ".prose-beat"
+        )
+    ];
 
 
 /* ============================================================
-   VISUAL DOTS
+   PROSE DOTS
 ============================================================ */
 
-visualTriggers.forEach((trigger, index) => {
+proseBeats.forEach(
+    (_, index) => {
 
-    const dot = document.createElement("span");
+        const dot =
+            document.createElement(
+                "span"
+            );
 
-    dot.className = "visual-dot";
+        dot.className =
+            "prose-dot";
 
-    if (index === 0) {
-        dot.classList.add("is-active");
+        if (index === 0) {
+
+            dot.classList.add(
+                "is-active"
+            );
+        }
+
+        proseDots.appendChild(
+            dot
+        );
     }
-
-    visualDots.appendChild(dot);
-
-});
+);
 
 
-const visualDotElements =
-    [...visualDots.querySelectorAll(".visual-dot")];
+const proseDotElements =
+    [
+        ...proseDots.querySelectorAll(
+            ".prose-dot"
+        )
+    ];
 
 
 /* ============================================================
-   SHOW VISUAL
+   PROSE STATE
 ============================================================ */
 
-async function showVisual(key, trigger) {
+let currentProseKey =
+    null;
 
-    if (!VISUALS[key]) {
+let proseToken =
+    0;
+
+
+/* ============================================================
+   SHOW PROSE VISUAL
+============================================================ */
+
+async function showProseVisual(
+    key,
+    beat
+) {
+
+    const visual =
+        PROSE_VISUALS[key];
+
+    if (!visual) {
         return;
     }
 
-    const visual = VISUALS[key];
 
-    if (currentVisual === key) {
+    const token =
+        ++proseToken;
 
-        updateGlass(
-            trigger,
-            visual
+
+    /* --------------------------------------------------------
+       FIRST: TEXT DISAPPEARS
+    -------------------------------------------------------- */
+
+    hideProseGlass();
+
+
+    proseImageStage.classList.add(
+        "is-changing"
+    );
+
+
+    proseImage.classList.add(
+        "is-hidden"
+    );
+
+
+    await wait(240);
+
+
+    if (token !== proseToken) {
+        return;
+    }
+
+
+    /* --------------------------------------------------------
+       NOW CHANGE IMAGE
+    -------------------------------------------------------- */
+
+    proseImage.src =
+        visual.image;
+
+    proseImage.alt =
+        visual.alt;
+
+    proseKicker.textContent =
+        visual.label;
+
+
+    const index =
+        proseBeats.indexOf(
+            beat
         );
 
-        return;
-    }
 
-    currentVisual = key;
-
-    visualChangeToken += 1;
-
-    const token = visualChangeToken;
-
-
-    /* --------------------------------------------------------
-       FIRST: REMOVE TEXT
-
-       This happens BEFORE the picture changes.
-
-       This is deliberate.
-    -------------------------------------------------------- */
-
-    hideReadingGlass();
-
-
-    visualStage.classList.add("is-swapping");
-
-    visualImage.classList.add("is-fading");
-
-
-    await wait(230);
-
-
-    if (token !== visualChangeToken) {
-        return;
-    }
-
-
-    /* --------------------------------------------------------
-       CHANGE IMAGE
-    -------------------------------------------------------- */
-
-    visualImage.src = visual.image;
-    visualImage.alt = visual.alt;
-
-    visualKicker.textContent =
-        visual.kicker;
-
-    const activeIndex =
-        visualTriggers.indexOf(trigger);
-
-    visualCounter.textContent =
-        String(activeIndex + 1).padStart(2, "0") +
+    proseCounter.textContent =
+        String(index + 1).padStart(2, "0") +
         " / " +
-        String(visualTriggers.length).padStart(2, "0");
+        String(proseBeats.length).padStart(2, "0");
 
 
-    visualDotElements.forEach(
-        (dot, index) => {
+    proseDotElements.forEach(
+        (dot, dotIndex) => {
 
             dot.classList.toggle(
                 "is-active",
-                index === activeIndex
+                dotIndex === index
             );
-
         }
     );
 
 
-    visualTriggers.forEach(
-        item => item.classList.remove("is-active")
+    proseBeats.forEach(
+        item =>
+            item.classList.remove(
+                "is-active"
+            )
     );
 
-    trigger.classList.add("is-active");
+
+    beat.classList.add(
+        "is-active"
+    );
 
 
-    await wait(90);
+    await wait(100);
 
 
-    visualImage.classList.remove("is-fading");
+    if (token !== proseToken) {
+        return;
+    }
 
-    visualStage.classList.remove("is-swapping");
+
+    proseImage.classList.remove(
+        "is-hidden"
+    );
+
+    proseImageStage.classList.remove(
+        "is-changing"
+    );
 
 
     /* --------------------------------------------------------
-       READING GLASS
+       TEXT RETURNS ONLY IF THIS BEAT NEEDS IT
     -------------------------------------------------------- */
 
     if (
-        trigger.dataset.glass === "true" &&
-        trigger.querySelector("p")
+        beat.dataset.noGlass !== "true"
     ) {
 
-        glassKicker.textContent =
-            visual.glassKicker;
+        proseGlassLabel.textContent =
+            beat.dataset.label ||
+            "THE MOMENT";
 
-        glassText.textContent =
-            trigger.querySelector("p").textContent.trim();
+        proseGlassText.textContent =
+            beat.textContent.trim();
 
 
-        await wait(80);
-
-        if (token !== visualChangeToken) {
-            return;
-        }
-
-        showReadingGlass();
+        showProseGlass();
     }
 }
 
 
 /* ============================================================
-   READING GLASS HELPERS
+   GLASS
 ============================================================ */
 
-function showReadingGlass() {
+function showProseGlass() {
 
-    readingGlass.classList.remove("is-fading");
+    proseReadingGlass.classList.remove(
+        "is-fading"
+    );
 
-    readingGlass.classList.add("is-visible");
+    proseReadingGlass.classList.add(
+        "is-visible"
+    );
 }
 
 
-function hideReadingGlass() {
+function hideProseGlass() {
 
-    readingGlass.classList.remove("is-visible");
+    proseReadingGlass.classList.remove(
+        "is-visible"
+    );
 
-    readingGlass.classList.add("is-fading");
-}
-
-
-function updateGlass(trigger, visual) {
-
-    if (
-        trigger.dataset.glass === "true" &&
-        trigger.querySelector("p")
-    ) {
-
-        glassKicker.textContent =
-            visual.glassKicker;
-
-        glassText.textContent =
-            trigger.querySelector("p").textContent.trim();
-
-        showReadingGlass();
-
-    } else {
-
-        hideReadingGlass();
-
-    }
+    proseReadingGlass.classList.add(
+        "is-fading"
+    );
 }
 
 
 /* ============================================================
-   VISUAL INTERSECTION OBSERVER
+   PROSE OBSERVER
 ============================================================ */
 
-/*
-    IMPORTANT:
-
-    The observer activates a visual while the reader is
-    approaching it.
-
-    The actual Reading Glass itself is not allowed to survive
-    indefinitely.
-
-    A separate scroll calculation below forces the glass to
-    disappear as the reader reaches the midpoint of the image.
-*/
-
-const visualObserver =
+const proseObserver =
     new IntersectionObserver(
         entries => {
 
-            entries.forEach(entry => {
+            entries.forEach(
+                entry => {
 
-                if (!entry.isIntersecting) {
-                    return;
+                    if (
+                        !entry.isIntersecting
+                    ) {
+                        return;
+                    }
+
+
+                    const beat =
+                        entry.target;
+
+                    const key =
+                        beat.dataset.visual;
+
+
+                    if (
+                        key !== currentProseKey
+                    ) {
+
+                        currentProseKey =
+                            key;
+
+                        showProseVisual(
+                            key,
+                            beat
+                        );
+                    }
+
                 }
-
-                const trigger =
-                    entry.target;
-
-                const key =
-                    trigger.dataset.visual;
-
-                showVisual(
-                    key,
-                    trigger
-                );
-
-            });
-
+            );
         },
         {
-            root: null,
-
-            threshold: 0.42,
+            threshold: 0.35,
 
             rootMargin:
-                "-20% 0px -38% 0px"
+                "-25% 0px -45% 0px"
         }
     );
 
 
-visualTriggers.forEach(
-    trigger => visualObserver.observe(trigger)
+proseBeats.forEach(
+    beat =>
+        proseObserver.observe(
+            beat
+        )
 );
 
 
 /* ============================================================
-   HARD 50% READING GLASS RULE
+   HARD MIDPOINT RULE
 ============================================================ */
 
 /*
-    This is the important part.
+    THIS is deliberately strict.
 
-    The glass is tied to the VISUAL STAGE itself.
+    The prose glass is allowed to exist only while the image
+    is in its upper half.
 
-    Once the reader reaches roughly the midpoint of the
-    currently visible image stage, the glass disappears.
+    As the stage approaches its midpoint in the viewport,
+    the text fades away.
 
-    This means text can never comfortably sit over the
-    face/chest/lower half of the image.
+    At / beyond the midpoint:
+
+        NO TEXT.
+
+        NO GLASS.
+
+        IMAGE ONLY.
 */
 
-function enforceHalfwayTextExit() {
+function enforceProseMidpoint() {
 
-    if (!currentVisual) {
+    if (
+        !proseImageStage ||
+        !proseReadingGlass.classList.contains(
+            "is-visible"
+        )
+    ) {
         return;
     }
+
 
     const rect =
-        visualStage.getBoundingClientRect();
-
-    const imageHeight =
-        rect.height;
-
-    if (imageHeight <= 0) {
-        return;
-    }
+        proseImageStage.getBoundingClientRect();
 
 
     const midpoint =
         rect.top +
-        imageHeight * 0.50;
+        rect.height * 0.50;
+
+
+    const viewportTop =
+        window.innerHeight * 0.18;
 
 
     /*
-       As the image approaches the midpoint of the viewport,
-       the glass starts disappearing.
+       Calculate how close the visual is to the point where
+       the reader reaches the middle of the image.
 
-       The glass is therefore gone before the reader reaches
-       the middle region of the image.
+       Once the midpoint enters the upper 18% of the
+       viewport, the text is already leaving.
     */
 
-    const viewportMid =
-        window.innerHeight * 0.50;
+    const fadeStart =
+        window.innerHeight * 0.38;
 
 
     const distance =
-        midpoint - viewportMid;
+        midpoint - fadeStart;
 
 
-    if (distance < 0) {
+    if (
+        distance <= 0
+    ) {
 
-        hideReadingGlass();
+        hideProseGlass();
+
+        proseReadingGlass.style.opacity =
+            "0";
 
         return;
     }
 
 
+    const fadeDistance =
+        Math.max(
+            1,
+            rect.height * 0.25
+        );
+
+
+    const opacity =
+        Math.min(
+            1,
+            distance / fadeDistance
+        );
+
+
+    proseReadingGlass.style.opacity =
+        opacity.toFixed(3);
+
+
     /*
-       Begin fading slightly before the midpoint.
+       Once the midpoint is reached, enforce zero.
     */
 
-    if (distance < imageHeight * 0.18) {
+    if (
+        midpoint <= viewportTop
+    ) {
 
-        const opacity =
-            Math.max(
-                0,
-                distance / (imageHeight * 0.18)
-            );
+        hideProseGlass();
 
-        readingGlass.style.opacity =
-            opacity.toFixed(3);
-
-    } else {
-
-        readingGlass.style.opacity = "";
+        proseReadingGlass.style.opacity =
+            "0";
     }
 }
 
 
 window.addEventListener(
     "scroll",
-    enforceHalfwayTextExit,
+    enforceProseMidpoint,
     {
         passive: true
     }
 );
 
+
 window.addEventListener(
     "resize",
-    enforceHalfwayTextExit
+    enforceProseMidpoint
 );
 
 
@@ -569,81 +646,96 @@ window.addEventListener(
    DIALOGUE DATA
 ============================================================ */
 
-/*
-    Each dialogue beat controls BOTH character carousels.
-
-    The theatre decides which expression/state is visible.
-
-    There is no need for the reader to operate either carousel.
-*/
-
 const DIALOGUE = [
 
     {
         speaker: "lexis",
 
-        line:
+        text:
             "You knew I was coming.",
 
-        lexis: 0,
-        father: 0
+        lexis:
+            0,
+
+        father:
+            0
     },
+
 
     {
         speaker: "father",
 
-        line:
+        text:
             "I knew you would eventually ask.",
 
-        lexis: 1,
-        father: 1
+        lexis:
+            1,
+
+        father:
+            1
     },
+
 
     {
         speaker: "lexis",
 
-        line:
+        text:
             "That isn't what I asked.",
 
-        lexis: 2,
-        father: 2
+        lexis:
+            2,
+
+        father:
+            2
     },
+
 
     {
         speaker: "father",
 
-        line:
+        text:
             "No. It isn't.",
 
-        lexis: 3,
-        father: 3
+        lexis:
+            3,
+
+        father:
+            3
     },
+
 
     {
         speaker: "lexis",
 
-        line:
+        text:
             "Then tell me the truth.",
 
-        lexis: 4,
-        father: 4
+        lexis:
+            4,
+
+        father:
+            4
     },
+
 
     {
         speaker: "father",
 
-        line:
+        text:
             "The truth is usually less comforting than the story we tell ourselves.",
 
-        lexis: 1,
-        father: 5
+        lexis:
+            1,
+
+        father:
+            5
     }
 
 ];
 
 
 /* ============================================================
-   DIALOGUE IMAGE ARRAYS
+   CHARACTER IMAGE STATES
 ============================================================ */
 
 const LEXIS_STATES = [
@@ -672,76 +764,141 @@ const FATHER_STATES = [
 ============================================================ */
 
 const dialogueTheatre =
-    document.getElementById("dialogueTheatre");
+    document.getElementById(
+        "dialogueTheatre"
+    );
+
 
 const lexisPanel =
-    document.getElementById("lexisPanel");
+    document.getElementById(
+        "lexisPanel"
+    );
+
 
 const fatherPanel =
-    document.getElementById("fatherPanel");
+    document.getElementById(
+        "fatherPanel"
+    );
+
 
 const lexisImage =
-    document.getElementById("lexisImage");
+    document.getElementById(
+        "lexisImage"
+    );
+
 
 const fatherImage =
-    document.getElementById("fatherImage");
+    document.getElementById(
+        "fatherImage"
+    );
 
-const dialogueSpeaker =
-    document.getElementById("dialogueSpeaker");
 
-const dialogueLine =
-    document.getElementById("dialogueLine");
+const lexisDialogue =
+    document.getElementById(
+        "lexisDialogue"
+    );
+
+
+const fatherDialogue =
+    document.getElementById(
+        "fatherDialogue"
+    );
+
+
+const lexisDialogueText =
+    document.getElementById(
+        "lexisDialogueText"
+    );
+
+
+const fatherDialogueText =
+    document.getElementById(
+        "fatherDialogueText"
+    );
+
+
+const dialogueCounter =
+    document.getElementById(
+        "dialogueCounter"
+    );
+
 
 const dialogueProgress =
-    document.getElementById("dialogueProgress");
+    document.getElementById(
+        "dialogueProgress"
+    );
 
-const lexisDots =
-    document.getElementById("lexisDots");
 
-const fatherDots =
-    document.getElementById("fatherDots");
+const lexisExpressionDots =
+    document.getElementById(
+        "lexisExpressionDots"
+    );
 
-const dialogueTriggers =
-    [...document.querySelectorAll(".dialogue-trigger")];
+
+const fatherExpressionDots =
+    document.getElementById(
+        "fatherExpressionDots"
+    );
 
 
 /* ============================================================
    EXPRESSION DOTS
 ============================================================ */
 
-function buildExpressionDots(container, count) {
+function createDots(
+    container,
+    count
+) {
 
     container.innerHTML = "";
 
-    for (let i = 0; i < count; i++) {
+    for (
+        let i = 0;
+        i < count;
+        i++
+    ) {
 
         const dot =
-            document.createElement("span");
+            document.createElement(
+                "span"
+            );
 
         dot.className =
             "expression-dot";
 
-        container.appendChild(dot);
+        container.appendChild(
+            dot
+        );
     }
 }
 
 
-buildExpressionDots(
-    lexisDots,
+createDots(
+    lexisExpressionDots,
     LEXIS_STATES.length
 );
 
-buildExpressionDots(
-    fatherDots,
+
+createDots(
+    fatherExpressionDots,
     FATHER_STATES.length
 );
 
 
-const lexisDotElements =
-    [...lexisDots.querySelectorAll(".expression-dot")];
+const lexisExpressionDotElements =
+    [
+        ...lexisExpressionDots.querySelectorAll(
+            ".expression-dot"
+        )
+    ];
 
-const fatherDotElements =
-    [...fatherDots.querySelectorAll(".expression-dot")];
+
+const fatherExpressionDotElements =
+    [
+        ...fatherExpressionDots.querySelectorAll(
+            ".expression-dot"
+        )
+    ];
 
 
 /* ============================================================
@@ -749,19 +906,26 @@ const fatherDotElements =
 ============================================================ */
 
 DIALOGUE.forEach(
-    (beat, index) => {
+    (_, index) => {
 
         const dot =
-            document.createElement("span");
+            document.createElement(
+                "span"
+            );
 
         dot.className =
             "dialogue-progress-dot";
 
         if (index === 0) {
-            dot.classList.add("is-active");
+
+            dot.classList.add(
+                "is-active"
+            );
         }
 
-        dialogueProgress.appendChild(dot);
+        dialogueProgress.appendChild(
+            dot
+        );
     }
 );
 
@@ -778,19 +942,22 @@ const dialogueProgressDots =
    DIALOGUE STATE
 ============================================================ */
 
-let currentDialogue =
-    -1;
+let dialogueStarted =
+    false;
 
 let dialoguePlaying =
     false;
 
-let dialogueTimer =
-    null;
+let dialogueIndex =
+    -1;
 
 let dialogueToken =
     0;
 
-let userInterruptedDialogue =
+let typingInProgress =
+    false;
+
+let skipTyping =
     false;
 
 
@@ -798,17 +965,20 @@ let userInterruptedDialogue =
    ENTER DIALOGUE
 ============================================================ */
 
-function enterDialogue() {
+function startDialogue() {
 
-    if (dialoguePlaying) {
+    if (dialogueStarted) {
         return;
     }
 
-    dialoguePlaying = true;
+    dialogueStarted =
+        true;
 
-    userInterruptedDialogue = false;
+    dialoguePlaying =
+        true;
 
-    dialogueToken += 1;
+    dialogueIndex =
+        -1;
 
     playDialogueBeat(0);
 }
@@ -818,9 +988,13 @@ function enterDialogue() {
    PLAY DIALOGUE BEAT
 ============================================================ */
 
-async function playDialogueBeat(index) {
+async function playDialogueBeat(
+    index
+) {
 
-    if (index < 0 || index >= DIALOGUE.length) {
+    if (
+        index >= DIALOGUE.length
+    ) {
 
         finishDialogue();
 
@@ -829,73 +1003,104 @@ async function playDialogueBeat(index) {
 
 
     const token =
-        dialogueToken;
+        ++dialogueToken;
+
 
     const beat =
         DIALOGUE[index];
 
-    currentDialogue =
+
+    dialogueIndex =
         index;
+
+
+    dialogueCounter.textContent =
+        String(index + 1).padStart(2, "0") +
+        " / " +
+        String(DIALOGUE.length).padStart(2, "0");
 
 
     /* --------------------------------------------------------
        ACTIVE SPEAKER
     -------------------------------------------------------- */
 
+    const lexisSpeaking =
+        beat.speaker === "lexis";
+
+
     lexisPanel.classList.toggle(
         "is-speaking",
-        beat.speaker === "lexis"
+        lexisSpeaking
     );
+
 
     lexisPanel.classList.toggle(
         "is-listening",
-        beat.speaker !== "lexis"
+        !lexisSpeaking
     );
 
 
     fatherPanel.classList.toggle(
         "is-speaking",
-        beat.speaker === "father"
+        !lexisSpeaking
     );
+
 
     fatherPanel.classList.toggle(
         "is-listening",
-        beat.speaker !== "father"
+        lexisSpeaking
     );
 
 
     /* --------------------------------------------------------
-       UPDATE EXPRESSIONS
+       HIDE OLD DIALOGUE
     -------------------------------------------------------- */
 
-    await changeCharacterImage(
-        lexisImage,
-        beat.lexis,
-        LEXIS_STATES,
-        token
+    lexisDialogue.classList.remove(
+        "is-visible"
+    );
+
+    fatherDialogue.classList.remove(
+        "is-visible"
     );
 
 
-    await changeCharacterImage(
-        fatherImage,
-        beat.father,
-        FATHER_STATES,
-        token
-    );
+    await wait(160);
 
 
-    if (token !== dialogueToken) {
+    if (
+        token !== dialogueToken
+    ) {
         return;
     }
 
 
-    updateExpressionDots(
-        lexisDotElements,
+    /* --------------------------------------------------------
+       CHANGE BOTH VISUAL STATES
+    -------------------------------------------------------- */
+
+    await changeImage(
+        lexisImage,
+        LEXIS_STATES[beat.lexis],
+        token
+    );
+
+
+    await changeImage(
+        fatherImage,
+        FATHER_STATES[beat.father],
+        token
+    );
+
+
+    updateDots(
+        lexisExpressionDotElements,
         beat.lexis
     );
 
-    updateExpressionDots(
-        fatherDotElements,
+
+    updateDots(
+        fatherExpressionDotElements,
         beat.father
     );
 
@@ -907,52 +1112,66 @@ async function playDialogueBeat(index) {
                 "is-active",
                 dotIndex === index
             );
-
         }
     );
 
 
-    dialogueSpeaker.textContent =
-        beat.speaker.toUpperCase();
+    /* --------------------------------------------------------
+       CLEAR BOTH LINES
+    -------------------------------------------------------- */
 
+    lexisDialogueText.textContent =
+        "";
 
-    dialogueLine.textContent =
+    fatherDialogueText.textContent =
         "";
 
 
     /* --------------------------------------------------------
-       TYPE THE LINE
+       PUT THE CURRENT SPEAKER'S GLASS ON THEIR IMAGE
     -------------------------------------------------------- */
 
-    const finishedNaturally =
-        await typeDialogue(
-            beat.line,
-            token
-        );
+    const activeDialogue =
+        lexisSpeaking
+            ? lexisDialogue
+            : fatherDialogue;
 
 
-    if (
-        token !== dialogueToken ||
-        !dialoguePlaying
-    ) {
-        return;
-    }
+    const activeText =
+        lexisSpeaking
+            ? lexisDialogueText
+            : fatherDialogueText;
+
+
+    activeDialogue.classList.add(
+        "is-visible"
+    );
 
 
     /*
-       If the user interrupted the typing,
-       don't force an unnecessary delay.
+       TYPE SLOWLY.
+
+       This is intentionally NOT 38ms.
+
+       65ms gives a much more human rhythm.
     */
 
-    if (finishedNaturally) {
+    skipTyping =
+        false;
 
-        await wait(850);
+    typingInProgress =
+        true;
 
-    } else {
 
-        await wait(220);
+    await typeDialogue(
+        activeText,
+        beat.text,
+        token
+    );
 
-    }
+
+    typingInProgress =
+        false;
 
 
     if (
@@ -963,54 +1182,65 @@ async function playDialogueBeat(index) {
     }
 
 
-    playDialogueBeat(index + 1);
+    /* --------------------------------------------------------
+       NATURAL PAUSE
+
+       Gives the reader time to actually read the completed
+       sentence before the next person speaks.
+    -------------------------------------------------------- */
+
+    await wait(1200);
+
+
+    if (
+        token !== dialogueToken ||
+        !dialoguePlaying
+    ) {
+        return;
+    }
+
+
+    playDialogueBeat(
+        index + 1
+    );
 }
 
 
 /* ============================================================
-   CHARACTER IMAGE CHANGE
+   CHANGE CHARACTER IMAGE
 ============================================================ */
 
-async function changeCharacterImage(
+async function changeImage(
     imageElement,
-    index,
-    states,
+    source,
     token
 ) {
-
-    const src =
-        states[
-            Math.max(
-                0,
-                Math.min(
-                    index,
-                    states.length - 1
-                )
-            )
-        ];
-
 
     imageElement.classList.add(
         "is-changing"
     );
 
 
-    await wait(120);
+    await wait(130);
 
 
-    if (token !== dialogueToken) {
+    if (
+        token !== dialogueToken
+    ) {
         return;
     }
 
 
     imageElement.src =
-        src;
+        source;
 
 
-    await wait(100);
+    await wait(170);
 
 
-    if (token !== dialogueToken) {
+    if (
+        token !== dialogueToken
+    ) {
         return;
     }
 
@@ -1022,10 +1252,167 @@ async function changeCharacterImage(
 
 
 /* ============================================================
-   EXPRESSION DOT UPDATE
+   TYPE DIALOGUE
 ============================================================ */
 
-function updateExpressionDots(
+/*
+    THIS is the behavior you asked for.
+
+    Normal:
+        text appears character-by-character.
+
+    If reader taps/clicks:
+        current sentence instantly completes.
+
+    The tap does NOT advance the conversation.
+
+    It simply tells the theatre:
+
+        "I'm done waiting for this sentence."
+*/
+
+async function typeDialogue(
+    element,
+    text,
+    token
+) {
+
+    element.textContent =
+        "";
+
+
+    for (
+        let i = 0;
+        i < text.length;
+        i++
+    ) {
+
+        if (
+            token !== dialogueToken
+        ) {
+            return;
+        }
+
+
+        /*
+           Reader asked us to finish it.
+        */
+
+        if (skipTyping) {
+
+            element.textContent =
+                text;
+
+            skipTyping =
+                false;
+
+            return;
+        }
+
+
+        element.textContent =
+            text.slice(
+                0,
+                i + 1
+            );
+
+
+        let delay =
+            68;
+
+
+        /*
+           Natural punctuation pauses.
+        */
+
+        const character =
+            text[i];
+
+
+        if (
+            character === "," ||
+            character === ";" ||
+            character === ":"
+        ) {
+
+            delay =
+                150;
+        }
+
+
+        if (
+            character === "." ||
+            character === "!" ||
+            character === "?"
+        ) {
+
+            delay =
+                300;
+        }
+
+
+        await wait(delay);
+    }
+}
+
+
+/* ============================================================
+   TAP / CLICK = FINISH CURRENT LINE
+============================================================ */
+
+function handleDialogueInteraction(
+    event
+) {
+
+    if (
+        !dialoguePlaying ||
+        !typingInProgress
+    ) {
+        return;
+    }
+
+
+    /*
+       IMPORTANT:
+
+       We do NOT change the beat.
+
+       We do NOT advance the story.
+
+       We only finish the sentence currently typing.
+    */
+
+    skipTyping =
+        true;
+}
+
+
+dialogueTheatre.addEventListener(
+    "click",
+    handleDialogueInteraction
+);
+
+
+dialogueTheatre.addEventListener(
+    "pointerdown",
+    handleDialogueInteraction
+);
+
+
+dialogueTheatre.addEventListener(
+    "touchstart",
+    handleDialogueInteraction,
+    {
+        passive: true
+    }
+);
+
+
+/* ============================================================
+   UPDATE EXPRESSION DOTS
+============================================================ */
+
+function updateDots(
     dots,
     activeIndex
 ) {
@@ -1037,105 +1424,8 @@ function updateExpressionDots(
                 "is-active",
                 index === activeIndex
             );
-
         }
     );
-}
-
-
-/* ============================================================
-   TYPEWRITER
-============================================================ */
-
-/*
-    40ms is intentionally moderate.
-
-    It should feel like speech appearing,
-    not like waiting for a computer to type.
-
-    If the user scrolls/taps during typing,
-    the current sentence immediately completes.
-*/
-
-async function typeDialogue(
-    text,
-    token
-) {
-
-    let interrupted =
-        userInterruptedDialogue;
-
-    if (interrupted) {
-
-        dialogueLine.textContent =
-            text;
-
-        return false;
-    }
-
-
-    for (
-        let i = 0;
-        i < text.length;
-        i++
-    ) {
-
-        if (
-            token !== dialogueToken ||
-            !dialoguePlaying
-        ) {
-            return false;
-        }
-
-
-        if (userInterruptedDialogue) {
-
-            dialogueLine.textContent =
-                text;
-
-            return false;
-        }
-
-
-        dialogueLine.textContent =
-            text.slice(0, i + 1);
-
-
-        /*
-           Slightly longer pause after punctuation.
-        */
-
-        let delay = 38;
-
-        const character =
-            text[i];
-
-        if (
-            character === "," ||
-            character === ";" ||
-            character === ":"
-        ) {
-
-            delay = 90;
-
-        }
-
-        if (
-            character === "." ||
-            character === "!" ||
-            character === "?"
-        ) {
-
-            delay = 180;
-
-        }
-
-
-        await wait(delay);
-    }
-
-
-    return true;
 }
 
 
@@ -1145,15 +1435,14 @@ async function typeDialogue(
 
 function finishDialogue() {
 
-    dialoguePlaying = false;
+    dialoguePlaying =
+        false;
 
-    currentDialogue =
-        DIALOGUE.length - 1;
+    typingInProgress =
+        false;
 
-    dialogueStatusText(
-        "CONVERSATION COMPLETE"
-    );
-
+    dialogueCounter.textContent =
+        "DONE";
 
     lexisPanel.classList.remove(
         "is-speaking"
@@ -1170,168 +1459,99 @@ function finishDialogue() {
     fatherPanel.classList.remove(
         "is-listening"
     );
-}
 
 
-function dialogueStatusText(text) {
+    /*
+       Leave the final dialogue visible briefly.
 
-    const element =
-        document.getElementById(
-            "dialogueStatus"
-        );
+       Then the theatre becomes quiet.
+    */
 
-    if (element) {
-        element.textContent = text;
-    }
+    setTimeout(
+        () => {
+
+            lexisDialogue.classList.remove(
+                "is-visible"
+            );
+
+            fatherDialogue.classList.remove(
+                "is-visible"
+            );
+
+        },
+
+        1800
+    );
 }
 
 
 /* ============================================================
-   DIALOGUE AUTO ACTIVATION
+   DIALOGUE OBSERVER
 ============================================================ */
+
+const dialogueBeats =
+    [
+        ...document.querySelectorAll(
+            ".dialogue-beat"
+        )
+    ];
+
 
 const dialogueObserver =
     new IntersectionObserver(
         entries => {
 
-            entries.forEach(entry => {
+            entries.forEach(
+                entry => {
 
-                if (!entry.isIntersecting) {
-                    return;
+                    if (
+                        !entry.isIntersecting
+                    ) {
+                        return;
+                    }
+
+
+                    const index =
+                        Number(
+                            entry.target.dataset.dialogue
+                        );
+
+
+                    /*
+                       Only entering the dialogue starts
+                       the self-running theatre.
+
+                       We do NOT use every scroll beat
+                       to change every sentence.
+                    */
+
+                    if (
+                        index === 0 &&
+                        !dialogueStarted
+                    ) {
+
+                        startDialogue();
+                    }
+
                 }
-
-                const trigger =
-                    entry.target;
-
-                const index =
-                    Number(
-                        trigger.dataset.dialogue
-                    );
-
-
-                /*
-                   The first trigger enters the theatre.
-
-                   Later triggers are mainly there to give the
-                   browser enough scroll rhythm.
-
-                   The actual dialogue plays itself.
-                */
-
-                if (
-                    index === 0 &&
-                    !dialoguePlaying
-                ) {
-
-                    enterDialogue();
-                }
-
-            });
-
+            );
         },
         {
-            threshold: 0.65
+            threshold: .55
         }
     );
 
 
-dialogueTriggers.forEach(
-    trigger => dialogueObserver.observe(trigger)
+dialogueBeats.forEach(
+    beat =>
+        dialogueObserver.observe(
+            beat
+        )
 );
 
 
 /* ============================================================
-   USER INTERRUPTION
-============================================================ */
-
-/*
-    If the reader deliberately interacts while dialogue is
-    typing, finish the current sentence rather than forcing
-    them to wait.
-*/
-
-function interruptDialogueTyping() {
-
-    if (!dialoguePlaying) {
-        return;
-    }
-
-    userInterruptedDialogue = true;
-}
-
-
-window.addEventListener(
-    "wheel",
-    interruptDialogueTyping,
-    {
-        passive: true
-    }
-);
-
-window.addEventListener(
-    "touchstart",
-    interruptDialogueTyping,
-    {
-        passive: true
-    }
-);
-
-window.addEventListener(
-    "pointerdown",
-    interruptDialogueTyping,
-    {
-        passive: true
-    }
-);
-
-
-/* ============================================================
-   DIALOGUE PROGRESS DOT CLICK
-============================================================ */
-
-dialogueProgressDots.forEach(
-    (dot, index) => {
-
-        dot.style.cursor = "pointer";
-
-        dot.addEventListener(
-            "click",
-            () => {
-
-                dialogueToken += 1;
-
-                clearTimeout(
-                    dialogueTimer
-                );
-
-                dialoguePlaying = true;
-
-                userInterruptedDialogue = true;
-
-                playDialogueBeat(index);
-
-            }
-        );
-
-    }
-);
-
-
-/* ============================================================
-   STANDALONE IMAGE
-============================================================ */
-
-const standaloneImage =
-    document.getElementById(
-        "standaloneImage"
-    );
-
-standaloneImage.src =
-    IMAGES.standalone;
-
-
-/* ============================================================
-   CHOICES
+   CHOICE TEST
 ============================================================ */
 
 const choiceResult =
@@ -1343,10 +1563,10 @@ const choiceResult =
 const choiceResponses = {
 
     listen:
-        "Lexis says nothing. Sometimes silence reveals more than a question.",
+        "Lexis stays quiet. Sometimes silence reveals more than a question.",
 
     question:
-        "She asks the question anyway. The room seems to become smaller.",
+        "She asks the question anyway. The room suddenly feels smaller.",
 
     leave:
         "She turns toward the door. Whatever happens next will happen outside this room."
@@ -1354,88 +1574,36 @@ const choiceResponses = {
 
 
 document
-    .querySelectorAll(".choice-button")
-    .forEach(button => {
+    .querySelectorAll(
+        ".choice-button"
+    )
+    .forEach(
+        button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+            button.addEventListener(
+                "click",
+                () => {
 
-                const choice =
-                    button.dataset.choice;
+                    const choice =
+                        button.dataset.choice;
 
-                choiceResult.textContent =
-                    choiceResponses[choice];
+                    choiceResult.textContent =
+                        choiceResponses[choice];
 
-                document
-                    .querySelectorAll(".choice-button")
-                    .forEach(
-                        other =>
-                            other.disabled = true
-                    );
+                }
+            );
 
-                button.style.background =
-                    "rgba(177,138,66,0.09)";
-
-                button.style.borderColor =
-                    "rgba(177,138,66,0.45)";
-            }
-        );
-
-    });
-
-
-/* ============================================================
-   SECOND TEST
-============================================================ */
-
-const toneResult =
-    document.getElementById(
-        "toneResult"
+        }
     );
-
-
-const toneResponses = {
-
-    calm:
-        "The theatre settles. Longer visual holds. Softer transitions. More breathing room.",
-
-    tension:
-        "The theatre tightens. Dialogue becomes more immediate. Visual changes happen closer together.",
-
-    mystery:
-        "The theatre withholds information. Images linger longer than the explanations.",
-
-    wonder:
-        "The theatre opens up. Larger visuals. More silence. More time to simply look."
-};
-
-
-document
-    .querySelectorAll(".tone-button")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                const tone =
-                    button.dataset.tone;
-
-                toneResult.textContent =
-                    toneResponses[tone];
-
-            }
-        );
-
-    });
 
 
 /* ============================================================
    UTILITY
 ============================================================ */
 
-function wait(milliseconds) {
+function wait(
+    milliseconds
+) {
 
     return new Promise(
         resolve =>
@@ -1451,27 +1619,32 @@ function wait(milliseconds) {
    INITIALIZE
 ============================================================ */
 
-function initializeTheatre() {
+function initialize() {
 
     preloadImages();
 
 
-    /*
-       Start first visual.
-    */
+    /* --------------------------------------------------------
+       First prose image
+    -------------------------------------------------------- */
 
-    if (visualTriggers[0]) {
+    if (
+        proseBeats[0]
+    ) {
 
-        showVisual(
-            visualTriggers[0].dataset.visual,
-            visualTriggers[0]
+        currentProseKey =
+            proseBeats[0].dataset.visual;
+
+        showProseVisual(
+            currentProseKey,
+            proseBeats[0]
         );
     }
 
 
-    /*
-       Initial dialogue portraits.
-    */
+    /* --------------------------------------------------------
+       Initial character images
+    -------------------------------------------------------- */
 
     lexisImage.src =
         LEXIS_STATES[0];
@@ -1480,35 +1653,34 @@ function initializeTheatre() {
         FATHER_STATES[0];
 
 
-    /*
-       First dialogue progress state.
-    */
+    /* --------------------------------------------------------
+       Standalone image
+    -------------------------------------------------------- */
 
-    updateExpressionDots(
-        lexisDotElements,
-        0
-    );
+    const standaloneImage =
+        document.getElementById(
+            "standaloneImage"
+        );
 
-    updateExpressionDots(
-        fatherDotElements,
-        0
-    );
-
-
-    dialogueSpeaker.textContent =
-        "LEXIS";
-
-    dialogueLine.textContent =
-        "";
-
-
-    /*
-       Initial standalone image.
-    */
 
     standaloneImage.src =
         IMAGES.standalone;
+
+
+    /* --------------------------------------------------------
+       Initial expression indicators
+    -------------------------------------------------------- */
+
+    updateDots(
+        lexisExpressionDotElements,
+        0
+    );
+
+    updateDots(
+        fatherExpressionDotElements,
+        0
+    );
 }
 
 
-initializeTheatre();
+initialize();
