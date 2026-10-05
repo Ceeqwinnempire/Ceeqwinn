@@ -1,1106 +1,616 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
 
-  <meta charset="UTF-8">
+    <title>CEEQWINN Theatre MVP</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <meta
-    name="theme-color"
-    content="#f7f4ed"
-  >
-
-  <title>CEEQWINN — Living Scroll Theatre</title>
-
-  <link
-    rel="stylesheet"
-    href="TheaterMVP.css"
-  >
-
+    <link rel="stylesheet" href="TheaterMVP.css">
 </head>
 
 <body>
 
-
-  <!-- ========================================================
-       TOP BAR
-  ========================================================= -->
-
-  <header class="topbar">
-
-    <div class="topbar-inner">
-
-      <div class="brand-mark">
-        CEEQWINN
-      </div>
-
-      <div class="theatre-mark">
-        LIVING SCROLL THEATRE
-      </div>
-
-      <div class="progress-wrap">
-
-        <div class="progress-track">
-
-          <div
-            class="progress-bar"
-            id="progressBar"
-          ></div>
-
-        </div>
-
-      </div>
-
+<header class="theater-header">
+    <div class="header-inner">
+        <div class="brand-mark">CEEQWINN</div>
+        <div class="header-title">THEATRE MVP</div>
     </div>
-
-  </header>
-
+</header>
 
 
-  <!-- ========================================================
-       STORY
-  ========================================================= -->
+<main class="theatre-page">
 
-  <main id="story">
-
-
-    <!-- ======================================================
+    <!-- =========================================================
          INTRO
-    ======================================================= -->
+    ========================================================== -->
 
-    <section class="intro">
+    <section class="intro-block">
+        <p class="eyebrow">VISUAL STORY THEATRE</p>
 
-      <div class="eyebrow">
-        THEATRE EXPERIMENT 02
-      </div>
+        <h1>
+            The story does not sit on the page.
+            <span>It happens there.</span>
+        </h1>
 
-      <h1>
-        The House That<br>
-        Remembered Her
-      </h1>
-
-      <p class="intro-lede">
-        Read normally.
-        The world will move when you arrive.
-      </p>
-
-      <div class="intro-rule"></div>
-
-      <p class="intro-note">
-        The theatre does not ask you to operate it.
-        It watches where you are in the story.
-      </p>
-
+        <p class="intro-copy">
+            Scroll gently. Read normally. When the story needs you to look,
+            the theatre takes over.
+        </p>
     </section>
 
 
+    <!-- =========================================================
+         OPENING PROSE
+    ========================================================== -->
 
-    <!-- ======================================================
-         SCENE 01
-         IMAGE + READING SPACE
-    ======================================================= -->
+    <section class="prose-section">
 
-    <section
-      class="living-scene"
-      data-scene="arrival"
-    >
-
-      <div class="scene-stage-shell">
-
-        <div class="scene-stage">
-
-          <div class="stage-kicker">
-            SCENE 01 · ARRIVAL
-          </div>
-
-          <div
-            class="stage-status"
-            id="arrivalStatus"
-          >
-            The theatre is waiting.
-          </div>
-
-
-          <div class="visual-stage">
-
-            <div
-              class="visual-frame"
-              id="arrivalVisual"
-              data-mode="cinematic"
-            >
-
-              <div class="visual-image-wrap">
-
-                <img
-                  class="scene-image"
-                  id="arrivalImage"
-                  src=""
-                  alt=""
-                >
-
-              </div>
-
-
-              <div
-                class="visual-caption"
-                id="arrivalCaption"
-              ></div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <!-- READING HAPPENS BELOW THE STAGE -->
-
-      <div class="reading-column">
-
-        <article
-          class="story-beat"
-          data-visual="house"
-          data-mode="cinematic"
-          data-status="The house appears."
-        >
-
-          <span class="beat-number">
-            01
-          </span>
-
-          <p>
-            By the time Lexis reached the end of the road,
-            evening had already begun to settle over the city.
-          </p>
-
-          <p>
-            The house waited beyond the iron gate.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat"
-          data-visual="gate"
-          data-mode="cinematic"
-          data-status="The gate remembers her."
-        >
-
-          <span class="beat-number">
-            02
-          </span>
-
-          <p>
-            She had seen the gate before.
-          </p>
-
-          <p>
-            At least, she thought she had.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat"
-          data-visual="garden"
-          data-mode="cinematic"
-          data-status="The garden opens."
-          data-glass="The flowers seemed brighter than they should have been."
-        >
-
-          <span class="beat-number">
-            03
-          </span>
-
-          <p>
-            When she stepped through,
-            she noticed the flowers first.
-          </p>
-
-          <p>
-            They were everywhere.
-            Along the path.
-            Beneath the windows.
-            Even around the old stone fountain.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat"
-          data-visual="detail"
-          data-mode="detail"
-          data-status="Something catches her eye."
-        >
-
-          <span class="beat-number">
-            04
-          </span>
-
-          <p>
-            Something silver rested beneath the leaves.
-          </p>
-
-          <p>
-            Lexis stopped.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat"
-          data-visual="arrival-end"
-          data-mode="cinematic"
-          data-status="The first moment settles."
-        >
-
-          <span class="beat-number">
-            05
-          </span>
-
-          <p>
-            She did not pick it up.
-          </p>
-
-          <p>
-            Not yet.
-          </p>
-
-        </article>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ======================================================
-         SCENE 02
-         ONE STAGE / MULTIPLE VISUAL BEATS
-    ======================================================= -->
-
-    <section
-      class="living-scene sequence-scene"
-      data-scene="garden-sequence"
-    >
-
-      <div class="scene-stage-shell">
-
-        <div class="scene-stage">
-
-          <div class="stage-kicker">
-            SCENE 02 · VISUAL SEQUENCE
-          </div>
-
-          <div
-            class="stage-status"
-            id="gardenStatus"
-          >
-            The garden begins to move.
-          </div>
-
-
-          <div class="visual-stage">
-
-            <div
-              class="visual-frame"
-              id="gardenVisual"
-            >
-
-              <div class="visual-image-wrap">
-
-                <img
-                  class="scene-image"
-                  id="gardenImage"
-                  src=""
-                  alt=""
-                >
-
-              </div>
-
-
-              <div
-                class="visual-caption"
-                id="gardenCaption"
-              ></div>
-
-
-              <!--
-                   THIS IS THE READING GLASS.
-
-                   It only appears when a story beat
-                   explicitly requests it.
-              -->
-
-              <div
-                class="reading-glass"
-                id="gardenGlass"
-              >
-
-                <div
-                  class="glass-inner"
-                  id="gardenGlassText"
-                ></div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <div
-            class="sequence-dots"
-            id="gardenDots"
-            aria-label="Visual sequence position"
-          ></div>
-
-        </div>
-
-      </div>
-
-
-      <div class="reading-column">
-
-        <article
-          class="story-beat sequence-beat"
-          data-sequence="0"
-          data-mode="cinematic"
-          data-status="The flowers fill the path."
-          data-glass="The garden seemed almost too beautiful to be real."
-        >
-
-          <span class="beat-number">
-            01
-          </span>
-
-          <p>
-            Lexis walked slowly.
-          </p>
-
-          <p>
-            The flowers followed the path in waves of colour,
-            as though someone had arranged them only moments ago.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat sequence-beat"
-          data-sequence="1"
-          data-mode="cinematic"
-          data-status="The driveway opens."
-        >
-
-          <span class="beat-number">
-            02
-          </span>
-
-          <p>
-            Then she heard an engine.
-          </p>
-
-          <p>
-            A dark car turned through the gates.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat sequence-beat"
-          data-sequence="2"
-          data-mode="portrait"
-          data-status="Someone has arrived."
-        >
-
-          <span class="beat-number">
-            03
-          </span>
-
-          <p>
-            A figure stepped out.
-          </p>
-
-          <p>
-            Lexis could not see the person's face clearly.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat sequence-beat"
-          data-sequence="3"
-          data-mode="detail"
-          data-status="The detail changes everything."
-          data-glass="A small emblem caught the evening light."
-        >
-
-          <span class="beat-number">
-            04
-          </span>
-
-          <p>
-            But something on their hand caught the light.
-          </p>
-
-          <p>
-            A crest.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat sequence-beat"
-          data-sequence="4"
-          data-mode="cinematic"
-          data-status="The sequence closes."
-        >
-
-          <span class="beat-number">
-            05
-          </span>
-
-          <p>
-            Lexis knew that crest.
-          </p>
-
-          <p>
-            She had seen it once before.
-          </p>
-
-        </article>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ======================================================
-         SCENE 03
-         DIALOGUE THEATRE
-    ======================================================= -->
-
-    <section
-      class="living-scene dialogue-scene"
-      data-scene="father-dialogue"
-    >
-
-      <div class="scene-stage-shell">
-
-        <div class="scene-stage dialogue-stage">
-
-          <div class="stage-kicker">
-            SCENE 03 · DIALOGUE
-          </div>
-
-          <div
-            class="stage-status"
-            id="dialogueStatus"
-          >
-            Someone is about to speak.
-          </div>
-
-
-          <!-- =================================================
-               CHARACTER STAGE
-          ================================================== -->
-
-          <div class="dialogue-visual">
-
-
-            <!-- LEXIS -->
-
-            <div
-              class="character-character"
-              id="lexisCharacter"
-            >
-
-              <div class="character-expression">
-
-                <div class="expression-badge">
-                  <span id="lexisExpression">
-                    neutral
-                  </span>
-                </div>
-
-                <div class="character-image-wrap">
-
-                  <img
-                    src=""
-                    id="lexisCharacterImage"
-                    alt="Lexis"
-                  >
-
-                </div>
-
-              </div>
-
-              <div class="character-name">
-                LEXIS
-              </div>
-
-            </div>
-
-
-
-            <!-- CENTER DIVIDER -->
-
-            <div class="dialogue-divider">
-
-              <span></span>
-
-            </div>
-
-
-
-            <!-- FATHER -->
-
-            <div
-              class="character-character"
-              id="fatherCharacter"
-            >
-
-              <div class="character-expression">
-
-                <div class="expression-badge">
-                  <span id="fatherExpression">
-                    calm
-                  </span>
-                </div>
-
-                <div class="character-image-wrap">
-
-                  <img
-                    src=""
-                    id="fatherCharacterImage"
-                    alt="Lexis's father"
-                  >
-
-                </div>
-
-              </div>
-
-              <div class="character-name">
-                FATHER
-              </div>
-
-            </div>
-
-          </div>
-
-
-
-          <!-- =================================================
-               DIALOGUE PANEL
-          ================================================== -->
-
-          <div
-            class="dialogue-panel"
-            id="dialoguePanel"
-          >
-
-            <div
-              class="speaker-label"
-              id="speakerLabel"
-            >
-              THEATRE
-            </div>
-
-            <div
-              class="dialogue-text"
-              id="dialogueText"
-            >
-              The room waits.
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-
-      <!-- DIALOGUE READING COLUMN -->
-
-      <div class="reading-column dialogue-reading">
-
-
-        <article
-          class="dialogue-beat"
-          data-speaker="lexis"
-          data-expression="curious"
-          data-dialogue="Dad... why is that crest on the gate?"
-          data-status="Lexis speaks."
-        >
-
-          <span class="beat-number">
-            01
-          </span>
-
-          <p class="dialogue-lead">
-            Lexis finally broke the silence.
-          </p>
-
-          <p>
-            Her voice was quieter than she intended.
-          </p>
-
-        </article>
-
-
-
-        <article
-          class="dialogue-beat"
-          data-speaker="father"
-          data-expression="guarded"
-          data-dialogue="Which crest?"
-          data-status="Father answers."
-        >
-
-          <span class="beat-number">
-            02
-          </span>
-
-          <p class="dialogue-lead">
-            Her father did not look up immediately.
-          </p>
-
-          <p>
-            That was what frightened her.
-          </p>
-
-        </article>
-
-
-
-        <article
-          class="dialogue-beat"
-          data-speaker="lexis"
-          data-expression="suspicious"
-          data-dialogue="The one everyone keeps pretending isn't there."
-          data-status="Lexis presses the question."
-        >
-
-          <span class="beat-number">
-            03
-          </span>
-
-          <p class="dialogue-lead">
-            Lexis looked toward the window.
-          </p>
-
-          <p>
-            Outside, the garden had gone strangely still.
-          </p>
-
-        </article>
-
-
-
-        <article
-          class="dialogue-beat"
-          data-speaker="father"
-          data-expression="concerned"
-          data-dialogue="Some questions become dangerous when you ask them in the wrong room."
-          data-status="Father warns her."
-        >
-
-          <span class="beat-number">
-            04
-          </span>
-
-          <p class="dialogue-lead">
-            Her father finally turned toward her.
-          </p>
-
-          <p>
-            For the first time that evening,
-            he looked afraid.
-          </p>
-
-        </article>
-
-
-
-        <article
-          class="dialogue-beat"
-          data-speaker="lexis"
-          data-expression="determined"
-          data-dialogue="Then tell me which room is the right one."
-          data-status="Lexis refuses to back down."
-        >
-
-          <span class="beat-number">
-            05
-          </span>
-
-          <p class="dialogue-lead">
-            Lexis did not move.
-          </p>
-
-          <p>
-            She waited.
-          </p>
-
-        </article>
-
-
-
-        <article
-          class="dialogue-beat"
-          data-speaker="father"
-          data-expression="resigned"
-          data-dialogue="The room you have been told never to enter."
-          data-status="The secret is finally named."
-        >
-
-          <span class="beat-number">
-            06
-          </span>
-
-          <p class="dialogue-lead">
-            The answer came softly.
-          </p>
-
-          <p>
-            Almost too softly to hear.
-          </p>
-
-        </article>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ======================================================
-         SCENE 04
-         WARDROBE
-    ======================================================= -->
-
-    <section
-      class="living-scene portrait-scene"
-      data-scene="wardrobe"
-    >
-
-      <div class="scene-stage-shell">
-
-        <div class="scene-stage">
-
-          <div class="stage-kicker">
-            SCENE 04 · PORTRAIT MOMENT
-          </div>
-
-          <div
-            class="stage-status"
-            id="wardrobeStatus"
-          >
-            The wardrobe waits.
-          </div>
-
-
-          <div class="visual-stage">
-
-            <div
-              class="visual-frame"
-              id="wardrobeVisual"
-            >
-
-              <div class="visual-image-wrap">
-
-                <img
-                  class="scene-image"
-                  id="wardrobeImage"
-                  src=""
-                  alt=""
-                >
-
-              </div>
-
-
-              <div
-                class="reading-glass"
-                id="wardrobeGlass"
-              >
-
-                <div
-                  class="glass-inner"
-                  id="wardrobeGlassText"
-                ></div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="reading-column">
-
-        <article
-          class="story-beat"
-          data-visual="wardrobe"
-          data-mode="portrait"
-          data-status="The wardrobe opens."
-        >
-
-          <span class="beat-number">
-            01
-          </span>
-
-          <p>
-            Later, Lexis stood before the wardrobe.
-          </p>
-
-          <p>
-            She had come looking for something ordinary.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat"
-          data-visual="black-dress"
-          data-mode="portrait"
-          data-status="The black dress appears."
-        >
-
-          <span class="beat-number">
-            02
-          </span>
-
-          <p>
-            Instead, she found the black dress.
-          </p>
-
-          <p>
-            It was the sort of garment that made silence feel deliberate.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat"
-          data-visual="red-dress"
-          data-mode="portrait"
-          data-status="Another possibility."
-          data-glass="Not everything beautiful was meant to be worn tonight."
-        >
-
-          <span class="beat-number">
-            03
-          </span>
-
-          <p>
-            Behind it waited something red.
-          </p>
-
-          <p>
-            She touched the fabric and immediately pulled her hand away.
-          </p>
-
-        </article>
-
-
-        <article
-          class="story-beat"
-          data-visual="street"
-          data-mode="portrait"
-          data-status="She chooses herself."
-        >
-
-          <span class="beat-number">
-            04
-          </span>
-
-          <p>
-            In the end, Lexis chose neither.
-          </p>
-
-          <p>
-            She chose the version of herself she could still recognize.
-          </p>
-
-        </article>
-
-      </div>
-
-    </section>
-
-
-
-    <!-- ======================================================
-         CHOICE
-    ======================================================= -->
-
-    <section
-      class="choice-scene"
-      id="choiceScene"
-    >
-
-      <div class="choice-inner">
-
-        <div class="eyebrow">
-          THEATRE CHOICE
-        </div>
-
-        <h2>
-          What does Lexis do?
-        </h2>
-
-        <p class="choice-intro">
-          The theatre will remember the choice you make.
+        <p>
+            The house was quieter than Lexis remembered.
         </p>
 
+        <p>
+            Not empty. Quiet.
+        </p>
 
-        <div class="choice-grid">
+        <p>
+            There was a difference.
+        </p>
 
-
-          <button
-            class="story-choice"
-            data-choice="follow"
-          >
-
-            <span class="choice-letter">
-              A
-            </span>
-
-            <span class="choice-copy">
-
-              <strong>
-                Follow the crest.
-              </strong>
-
-              <small>
-                Lexis decides the mystery is worth pursuing.
-              </small>
-
-            </span>
-
-          </button>
+    </section>
 
 
+    <!-- =========================================================
+         VISUAL THEATRE
+         
+         One stage.
+         Multiple visual beats.
+         No pile of images.
+    ========================================================== -->
 
-          <button
-            class="story-choice"
-            data-choice="question"
-          >
+    <section
+        class="living-scroll"
+        id="livingScroll"
+        aria-label="Cinematic visual sequence"
+    >
 
-            <span class="choice-letter">
-              B
-            </span>
+        <div class="living-stage">
 
-            <span class="choice-copy">
-
-              <strong>
-                Question her father again.
-              </strong>
-
-              <small>
-                She refuses to let the conversation end.
-              </small>
-
-            </span>
-
-          </button>
+            <div class="stage-heading">
+                <span id="visualKicker">THE HOUSE</span>
+                <span id="visualCounter">01 / 04</span>
+            </div>
 
 
+            <div
+                class="visual-stage"
+                id="visualStage"
+            >
 
-          <button
-            class="story-choice"
-            data-choice="leave"
-          >
+                <div class="visual-media">
 
-            <span class="choice-letter">
-              C
-            </span>
+                    <img
+                        id="visualImage"
+                        class="visual-image"
+                        src=""
+                        alt=""
+                    >
 
-            <span class="choice-copy">
+                    <div class="visual-shade"></div>
 
-              <strong>
-                Leave the room.
-              </strong>
 
-              <small>
-                Some answers can wait until morning.
-              </small>
+                    <!-- =================================================
+                         READING GLASS
 
-            </span>
+                         This is intentionally visible.
 
-          </button>
+                         It is NOT a barely-visible transparent layer.
 
+                         JS fades it away before the midpoint.
+                    ================================================== -->
+
+                    <div
+                        class="reading-glass"
+                        id="readingGlass"
+                        aria-live="polite"
+                    >
+                        <div class="glass-kicker" id="glassKicker">
+                            THE MOMENT
+                        </div>
+
+                        <p id="glassText"></p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="visual-dots"
+                id="visualDots"
+                aria-label="Visual sequence progress"
+            ></div>
+
+        </div>
+
+
+        <!-- =========================================================
+             VISUAL SCROLL TRIGGERS
+
+             The reader still scrolls normally.
+
+             These blocks tell the theatre what moment is active.
+        ========================================================== -->
+
+        <div class="visual-scroll-track">
+
+            <article
+                class="visual-trigger"
+                data-visual="entry"
+                data-glass="true"
+            >
+                <div class="trigger-inner">
+                    <span class="trigger-number">01</span>
+
+                    <p>
+                        Lexis stepped into the room and immediately knew
+                        that something had changed.
+                    </p>
+                </div>
+            </article>
+
+
+            <article
+                class="visual-trigger"
+                data-visual="atmosphere"
+                data-glass="true"
+            >
+                <div class="trigger-inner">
+                    <span class="trigger-number">02</span>
+
+                    <p>
+                        The silence seemed to have a shape of its own.
+                        It rested against the walls and waited.
+                    </p>
+                </div>
+            </article>
+
+
+            <article
+                class="visual-trigger"
+                data-visual="fashion"
+                data-glass="true"
+            >
+                <div class="trigger-inner">
+                    <span class="trigger-number">03</span>
+
+                    <p>
+                        Then she noticed what had been left waiting for her.
+                    </p>
+                </div>
+            </article>
+
+
+            <article
+                class="visual-trigger"
+                data-visual="detail"
+                data-glass="false"
+            >
+                <div class="trigger-inner">
+                    <span class="trigger-number">04</span>
+
+                    <p>
+                        She did not touch it.
+                    </p>
+                </div>
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         NORMAL PROSE AGAIN
+    ========================================================== -->
+
+    <section class="prose-section">
+
+        <p>
+            For several seconds, Lexis simply stood there.
+        </p>
+
+        <p>
+            Whatever was happening had already begun without her.
+        </p>
+
+        <p>
+            And then she heard footsteps.
+        </p>
+
+    </section>
+
+
+    <!-- =========================================================
+         DIALOGUE THEATRE
+         
+         The user scrolls INTO this section.
+         
+         Once activated:
+         - dialogue runs itself
+         - two character carousels change
+         - active speaker glows
+         - text types itself
+         - user can interrupt/skip
+    ========================================================== -->
+
+    <section
+        class="dialogue-theatre"
+        id="dialogueTheatre"
+        aria-label="Dialogue scene"
+    >
+
+        <div class="dialogue-stage-wrap">
+
+            <div class="dialogue-stage">
+
+                <!-- =================================================
+                     LEXIS PANEL
+                ================================================== -->
+
+                <article
+                    class="character-panel"
+                    id="lexisPanel"
+                    data-character="lexis"
+                >
+
+                    <div class="character-name">
+                        LEXIS
+                    </div>
+
+                    <div class="character-image-frame">
+
+                        <img
+                            id="lexisImage"
+                            class="character-image"
+                            src=""
+                            alt="Lexis"
+                        >
+
+                    </div>
+
+                    <div
+                        class="expression-dots"
+                        id="lexisDots"
+                        aria-hidden="true"
+                    ></div>
+
+                </article>
+
+
+                <!-- =================================================
+                     CENTER DIALOGUE
+                ================================================== -->
+
+                <div class="dialogue-center">
+
+                    <div
+                        class="dialogue-status"
+                        id="dialogueStatus"
+                    >
+                        THE CONVERSATION
+                    </div>
+
+
+                    <div
+                        class="dialogue-card"
+                        id="dialogueCard"
+                    >
+
+                        <div
+                            class="dialogue-speaker"
+                            id="dialogueSpeaker"
+                        >
+                            LEXIS
+                        </div>
+
+                        <p
+                            class="dialogue-line"
+                            id="dialogueLine"
+                            aria-live="polite"
+                        ></p>
+
+                    </div>
+
+
+                    <div
+                        class="dialogue-progress"
+                        id="dialogueProgress"
+                        aria-label="Dialogue progress"
+                    ></div>
+
+                </div>
+
+
+                <!-- =================================================
+                     FATHER PANEL
+                ================================================== -->
+
+                <article
+                    class="character-panel"
+                    id="fatherPanel"
+                    data-character="father"
+                >
+
+                    <div class="character-name">
+                        FATHER
+                    </div>
+
+                    <div class="character-image-frame">
+
+                        <img
+                            id="fatherImage"
+                            class="character-image"
+                            src=""
+                            alt="Father"
+                        >
+
+                    </div>
+
+                    <div
+                        class="expression-dots"
+                        id="fatherDots"
+                        aria-hidden="true"
+                    ></div>
+
+                </article>
+
+            </div>
+
+
+            <div class="dialogue-hint">
+                <span class="hint-desktop">
+                    Let the scene play. Scroll if you want to interrupt.
+                </span>
+
+                <span class="hint-mobile">
+                    Rest your hand. Let the scene play.
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- =========================================================
+             DIALOGUE SCROLL RAIL
+
+             These are deliberately short.
+             They are not another giant text document.
+
+             They simply give the browser enough scroll space
+             to allow the theatre to remain active.
+        ========================================================== -->
+
+        <div class="dialogue-scroll-rail">
+
+            <div
+                class="dialogue-trigger"
+                data-dialogue="0"
+            ></div>
+
+            <div
+                class="dialogue-trigger"
+                data-dialogue="1"
+            ></div>
+
+            <div
+                class="dialogue-trigger"
+                data-dialogue="2"
+            ></div>
+
+            <div
+                class="dialogue-trigger"
+                data-dialogue="3"
+            ></div>
+
+            <div
+                class="dialogue-trigger"
+                data-dialogue="4"
+            ></div>
+
+            <div
+                class="dialogue-trigger"
+                data-dialogue="5"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         PROSE AFTER DIALOGUE
+    ========================================================== -->
+
+    <section class="prose-section">
+
+        <p>
+            The footsteps stopped outside the room.
+        </p>
+
+        <p>
+            Lexis looked toward the door.
+        </p>
+
+        <p>
+            The conversation had answered one question.
+        </p>
+
+        <p>
+            Unfortunately, it had created three more.
+        </p>
+
+    </section>
+
+
+    <!-- =========================================================
+         SECOND HUGE NORMAL IMAGE
+         
+         No reading glass.
+         Image simply gets to exist.
+    ========================================================== -->
+
+    <section class="standalone-visual">
+
+        <div class="standalone-label">
+            THE WORLD CONTINUES
+        </div>
+
+        <div class="standalone-image-frame">
+
+            <img
+                src=""
+                id="standaloneImage"
+                alt="A cinematic story moment"
+            >
+
+        </div>
+
+        <p class="standalone-caption">
+            Sometimes the story does not need to explain what you are seeing.
+        </p>
+
+    </section>
+
+
+    <!-- =========================================================
+         CHOICE ONE
+    ========================================================== -->
+
+    <section class="choice-section">
+
+        <div class="choice-heading">
+            <span>YOUR TURN</span>
+
+            <h2>
+                What does Lexis do?
+            </h2>
+        </div>
+
+
+        <div class="choice-list">
+
+            <button
+                class="choice-button"
+                data-choice="listen"
+            >
+                <span class="choice-number">01</span>
+                <span>
+                    Stay quiet and listen.
+                </span>
+            </button>
+
+
+            <button
+                class="choice-button"
+                data-choice="question"
+            >
+                <span class="choice-number">02</span>
+                <span>
+                    Ask the question she came to ask.
+                </span>
+            </button>
+
+
+            <button
+                class="choice-button"
+                data-choice="leave"
+            >
+                <span class="choice-number">03</span>
+                <span>
+                    Leave before anyone can stop her.
+                </span>
+            </button>
 
         </div>
 
 
         <div
-          class="choice-result"
-          id="choiceResult"
-          aria-live="polite"
+            class="choice-result"
+            id="choiceResult"
+            aria-live="polite"
         ></div>
 
+    </section>
 
-        <button
-          class="restart-button"
-          id="restartButton"
-          type="button"
-        >
-          Restart Theatre Experiment
-        </button>
 
-      </div>
+    <!-- =========================================================
+         SECOND DIALOGUE / CHOICE TEST
+         
+         Gives us another opportunity to test theatre behavior.
+    ========================================================== -->
+
+    <section class="prose-section small-prose">
+
+        <p>
+            Whatever Lexis decided, the morning was no longer ordinary.
+        </p>
 
     </section>
 
 
+    <section class="mini-choice-section">
 
-    <!-- ======================================================
-         END
-    ======================================================= -->
+        <p class="eyebrow">
+            SECOND TEST
+        </p>
 
-    <section class="final-note">
+        <h2>
+            How should the moment feel?
+        </h2>
 
-      <div class="final-rule"></div>
+        <div class="tone-grid">
 
-      <p>
-        You reached the end of the experiment.
-      </p>
+            <button class="tone-button" data-tone="calm">
+                Calm
+            </button>
 
-      <p class="final-small">
-        The reader moved the story.
-        The theatre moved with them.
-      </p>
+            <button class="tone-button" data-tone="tension">
+                Tension
+            </button>
+
+            <button class="tone-button" data-tone="mystery">
+                Mystery
+            </button>
+
+            <button class="tone-button" data-tone="wonder">
+                Wonder
+            </button>
+
+        </div>
+
+        <p
+            class="tone-result"
+            id="toneResult"
+        ></p>
 
     </section>
 
 
-  </main>
+    <footer class="theatre-footer">
+        <span>CEEQWINN</span>
+        <span>VISUAL STORY THEATRE MVP</span>
+    </footer>
+
+</main>
 
 
-  <script src="TheaterMVP.js"></script>
+<script src="TheaterMVP.js"></script>
 
 </body>
 </html>
