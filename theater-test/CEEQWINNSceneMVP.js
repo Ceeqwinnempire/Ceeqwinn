@@ -1,9 +1,11 @@
+```javascript
 /* =========================================================
    CEEQWINN SCENE MVP
    CEEQWINNSceneMVP.js
 
    Scene Stream
    Phone-first theatrical narrative
+   Low-spec / older-browser defensive version
    ========================================================= */
 
 const IMAGES = {
@@ -143,6 +145,11 @@ const SCENE_END_DELAY =
 const IMAGE_CROSSFADE_TIME =
   650;
 
+
+/* =========================================================
+   IMAGE PRELOADING
+   ========================================================= */
+
 function preloadImages() {
 
   Object.values(IMAGES).forEach(
@@ -161,8 +168,14 @@ function preloadImages() {
 
 preloadImages();
 
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
 const sceneStates =
   new WeakMap();
+
 
 function initialiseScene(
   sceneElement,
@@ -209,10 +222,6 @@ function initialiseScene(
       ".scene-hint"
     );
 
-  /*
-    Create the small completion signal.
-  */
-
   const completionMark =
     document.createElement(
       "div"
@@ -238,6 +247,19 @@ function initialiseScene(
     );
 
   }
+
+
+  /*
+    Start with both image layers completely hidden.
+    The first beat will explicitly load the first image.
+  */
+
+  imageA.style.opacity =
+    "0";
+
+  imageB.style.opacity =
+    "0";
+
 
   const state = {
 
@@ -292,17 +314,19 @@ function initialiseScene(
       null,
 
     currentImage:
-      imageA.src,
+      "",
 
     imageLayer:
       "a"
 
   };
 
+
   sceneStates.set(
     sceneElement,
     state
   );
+
 
   interaction.addEventListener(
     "click",
@@ -316,6 +340,11 @@ function initialiseScene(
   );
 
 }
+
+
+/* =========================================================
+   INITIALISE ALL SCENES
+   ========================================================= */
 
 document
   .querySelectorAll(
@@ -343,6 +372,11 @@ document
     }
   );
 
+
+/* =========================================================
+   IMAGE CROSSFADE
+   ========================================================= */
+
 function crossfadeImage(
   state,
   nextImage
@@ -359,15 +393,25 @@ function crossfadeImage(
     return;
   }
 
+
   const incoming =
+    state.imageLayer === "a"
+      ? state.imageA
+      : state.imageB;
+
+  const outgoing =
     state.imageLayer === "a"
       ? state.imageB
       : state.imageA;
 
-  const outgoing =
-    state.imageLayer === "a"
-      ? state.imageA
-      : state.imageB;
+
+  /*
+    Prepare incoming image before revealing it.
+  */
+
+  incoming.style.opacity =
+    "0";
+
 
   incoming.onload =
     () => {
@@ -382,16 +426,39 @@ function crossfadeImage(
             "0";
 
         },
-        30
+        IMAGE_CROSSFADE_TIME
       );
 
     };
 
+
+  incoming.onerror =
+    () => {
+
+      /*
+        Do not leave the theatre permanently blank
+        if an older browser has trouble loading the
+        image through the normal event path.
+      */
+
+      incoming.style.opacity =
+        "1";
+
+    };
+
+
   incoming.src =
     nextImage;
 
+
+  /*
+    Older / low-spec browsers may already have the
+    image cached before onload is assigned.
+  */
+
   if (
-    incoming.complete
+    incoming.complete &&
+    incoming.naturalWidth > 0
   ) {
 
     incoming.style.opacity =
@@ -404,10 +471,11 @@ function crossfadeImage(
           "0";
 
       },
-      30
+      IMAGE_CROSSFADE_TIME
     );
 
   }
+
 
   state.imageLayer =
     state.imageLayer === "a"
@@ -418,6 +486,7 @@ function crossfadeImage(
     nextImage;
 
 }
+
 
 /* =========================================================
    TEXT POSITIONING
@@ -441,38 +510,35 @@ function updateTextPosition(
   const windowHeight =
     state.windowElement.clientHeight;
 
-  /*
-    The first two narration beats are allowed to sit
-    comfortably without pushing each other upward.
-
-    Movement begins when the third line arrives.
-  */
-
   const preferredTop =
     windowHeight * 0.42;
 
-  /*
-    With one or two lines, keep the stream at its
-    starting position.
 
-    Once a third line exists, allow the stream to
-    travel upward as needed.
+  /*
+    FIRST TWO LINES
+
+    They stay together.
+    The second line NEVER pushes the first line upward.
   */
 
   if (lineCount <= 2) {
 
     state.stream.style.transform =
-      `translateY(${preferredTop}px)`;
+      "translateY(" +
+      preferredTop +
+      "px)";
 
     return;
 
   }
 
-  /*
-    From the third line onward, protect the bottom
-    edge of the newest text.
 
-    The stream moves upward only when it needs to.
+  /*
+    THIRD LINE ONWARD
+
+    Only now is upward movement allowed.
+    The newest complete line remains inside
+    the visible narration window.
   */
 
   const maximumSafeTop =
@@ -485,10 +551,18 @@ function updateTextPosition(
       maximumSafeTop
     );
 
+
   state.stream.style.transform =
-    `translateY(${actualTop}px)`;
+    "translateY(" +
+    actualTop +
+    "px)";
 
 }
+
+
+/* =========================================================
+   CREATE NARRATION LINE
+   ========================================================= */
 
 function createLine(
   state
@@ -502,20 +576,27 @@ function createLine(
   line.className =
     "narration-line";
 
+
+  /*
+    Add the new line first.
+    We DO NOT reposition the stream while the
+    previous text is still being visually established.
+  */
+
   state.stream.appendChild(
     line
   );
+
 
   const allLines =
     state.stream.querySelectorAll(
       ".narration-line"
     );
 
-  /*
-    Keep the newest two lines clear.
 
-    Older lines gradually fade as the stream travels
-    upward.
+  /*
+    Only older lines fade.
+    The newest two remain fully readable.
   */
 
   allLines.forEach(
@@ -535,9 +616,15 @@ function createLine(
     }
   );
 
+
   return line;
 
 }
+
+
+/* =========================================================
+   OPEN NARRATION
+   ========================================================= */
 
 function openNarrationGlass(
   state
@@ -548,6 +635,11 @@ function openNarrationGlass(
   );
 
 }
+
+
+/* =========================================================
+   TYPE BEAT
+   ========================================================= */
 
 function typeBeat(
   state
@@ -561,10 +653,12 @@ function typeBeat(
     state.autoTimer
   );
 
+
   const beat =
     state.beats[
       state.beatIndex
     ];
+
 
   if (!beat) {
 
@@ -573,24 +667,30 @@ function typeBeat(
     );
 
     return;
+
   }
+
 
   state.label.textContent =
     beat.speaker;
+
 
   crossfadeImage(
     state,
     beat.image
   );
 
+
   openNarrationGlass(
     state
   );
+
 
   const line =
     createLine(
       state
     );
+
 
   state.currentLine =
     line;
@@ -604,15 +704,31 @@ function typeBeat(
   state.typing =
     true;
 
+
+  /*
+    IMPORTANT:
+
+    Position the stream ONCE when the new line
+    is created.
+
+    We do NOT call updateTextPosition() for every
+    character anymore.
+
+    This prevents the text from physically moving
+    halfway through a line while it is typing.
+  */
+
   updateTextPosition(
     state
   );
+
 
   function typeNext() {
 
     if (!state.typing) {
       return;
     }
+
 
     if (
       state.currentCharacter >=
@@ -622,16 +738,25 @@ function typeBeat(
       state.typing =
         false;
 
+
+      /*
+        Now that the complete sentence exists,
+        we can safely make one final position check.
+      */
+
       updateTextPosition(
         state
       );
+
 
       scheduleAdvance(
         state
       );
 
       return;
+
     }
+
 
     line.textContent +=
       state.currentText[
@@ -640,9 +765,13 @@ function typeBeat(
 
     state.currentCharacter++;
 
-    updateTextPosition(
-      state
-    );
+
+    /*
+      DELIBERATELY NO updateTextPosition() HERE.
+
+      The stream must not jump or reveal half-lines
+      while the sentence is being typed.
+    */
 
     state.typingTimer =
       window.setTimeout(
@@ -652,9 +781,15 @@ function typeBeat(
 
   }
 
+
   typeNext();
 
 }
+
+
+/* =========================================================
+   FINISH CURRENT LINE
+   ========================================================= */
 
 function finishCurrentLine(
   state
@@ -664,9 +799,11 @@ function finishCurrentLine(
     return;
   }
 
+
   clearTimeout(
     state.typingTimer
   );
+
 
   if (state.currentLine) {
 
@@ -675,21 +812,29 @@ function finishCurrentLine(
 
   }
 
+
   state.currentCharacter =
     state.currentText.length;
 
   state.typing =
     false;
 
+
   updateTextPosition(
     state
   );
+
 
   scheduleAdvance(
     state
   );
 
 }
+
+
+/* =========================================================
+   AUTO ADVANCE
+   ========================================================= */
 
 function scheduleAdvance(
   state
@@ -698,6 +843,7 @@ function scheduleAdvance(
   clearTimeout(
     state.autoTimer
   );
+
 
   state.autoTimer =
     window.setTimeout(
@@ -713,6 +859,11 @@ function scheduleAdvance(
 
 }
 
+
+/* =========================================================
+   NEXT BEAT
+   ========================================================= */
+
 function nextBeat(
   state
 ) {
@@ -721,11 +872,14 @@ function nextBeat(
     return;
   }
 
+
   clearTimeout(
     state.autoTimer
   );
 
+
   state.beatIndex++;
+
 
   if (
     state.beatIndex >=
@@ -737,13 +891,20 @@ function nextBeat(
     );
 
     return;
+
   }
+
 
   typeBeat(
     state
   );
 
 }
+
+
+/* =========================================================
+   TAP
+   ========================================================= */
 
 function handleSceneTap(
   state
@@ -752,6 +913,7 @@ function handleSceneTap(
   if (state.finished) {
     return;
   }
+
 
   if (state.typing) {
 
@@ -763,11 +925,17 @@ function handleSceneTap(
 
   }
 
+
   nextBeat(
     state
   );
 
 }
+
+
+/* =========================================================
+   FINISH SCENE
+   ========================================================= */
 
 function finishScene(
   state
@@ -777,11 +945,13 @@ function finishScene(
     return;
   }
 
+
   state.finished =
     true;
 
   state.typing =
     false;
+
 
   clearTimeout(
     state.typingTimer
@@ -790,6 +960,7 @@ function finishScene(
   clearTimeout(
     state.autoTimer
   );
+
 
   window.setTimeout(
     () => {
@@ -807,6 +978,11 @@ function finishScene(
 
 }
 
+
+/* =========================================================
+   ACTIVATE SCENE
+   ========================================================= */
+
 function activateScene(
   state
 ) {
@@ -819,18 +995,26 @@ function activateScene(
     return;
   }
 
+
   state.active =
     true;
+
 
   state.sceneElement.classList.add(
     "is-active"
   );
+
 
   typeBeat(
     state
   );
 
 }
+
+
+/* =========================================================
+   SCENE OBSERVER
+   ========================================================= */
 
 const observer =
   new IntersectionObserver(
@@ -845,14 +1029,17 @@ const observer =
             return;
           }
 
+
           const state =
             sceneStates.get(
               entry.target
             );
 
+
           if (!state) {
             return;
           }
+
 
           activateScene(
             state
@@ -866,6 +1053,7 @@ const observer =
       threshold: 0.35
     }
   );
+
 
 document
   .querySelectorAll(
@@ -881,6 +1069,11 @@ document
     }
   );
 
+
+/* =========================================================
+   FIRST SCENE FALLBACK
+   ========================================================= */
+
 window.addEventListener(
   "load",
   () => {
@@ -890,14 +1083,17 @@ window.addEventListener(
         ".story-scene"
       );
 
+
     if (!firstScene) {
       return;
     }
+
 
     const firstState =
       sceneStates.get(
         firstScene
       );
+
 
     if (
       firstState &&
@@ -920,6 +1116,11 @@ window.addEventListener(
   }
 );
 
+
+/* =========================================================
+   RESIZE
+   ========================================================= */
+
 window.addEventListener(
   "resize",
   () => {
@@ -936,6 +1137,7 @@ window.addEventListener(
               scene
             );
 
+
           if (state) {
 
             updateTextPosition(
@@ -949,3 +1151,4 @@ window.addEventListener(
 
   }
 );
+```
