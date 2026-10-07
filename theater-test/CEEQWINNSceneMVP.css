@@ -5,11 +5,6 @@
    PHONE-FIRST THEATRE
    ========================================================= */
 
-
-/* =========================================================
-   FOUNDATION
-   ========================================================= */
-
 * {
   box-sizing: border-box;
 }
@@ -17,36 +12,22 @@
 html {
   margin: 0;
   padding: 0;
-
   background: #000;
-
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   padding: 0;
-
   min-width: 320px;
-
   background: #000;
-
   color: #f5f0e8;
-
-  font-family:
-    Georgia,
-    "Times New Roman",
-    serif;
+  font-family: Georgia, "Times New Roman", serif;
 }
 
 button {
   font: inherit;
 }
-
-
-/* =========================================================
-   STORY PAGE
-   ========================================================= */
 
 .story-page {
   width: 100%;
@@ -54,203 +35,105 @@ button {
   padding: 0;
 }
 
-
-/* =========================================================
-   EACH SCENE
-
-   On desktop:
-   black surrounds the phone-sized theatre.
-
-   On a real phone:
-   the phone theatre becomes the whole viewport.
-   ========================================================= */
-
 .story-scene {
   position: relative;
-
   width: 100%;
-
   min-height: 100svh;
-
   background: #000;
 }
 
-
-/* =========================================================
-   PHONE
-
-   This is intentionally narrow on desktop.
-   ========================================================= */
-
 .scene-phone {
   position: relative;
-
   width: min(100vw, 480px);
-
   min-height: 100svh;
-
   margin: 0 auto;
-
   background: #080706;
-
   overflow: hidden;
 }
-
-
-/* =========================================================
-   STAGE
-   ========================================================= */
 
 .scene-stage {
   position: relative;
-
   width: 100%;
-
   height: 100svh;
   min-height: 560px;
-
   overflow: hidden;
-
   background: #080706;
 }
-
-
-/* =========================================================
-   VISUAL SYSTEM
-   ========================================================= */
 
 .scene-visual {
   position: absolute;
-
   inset: 0;
-
   z-index: 1;
-
   display: flex;
-
   align-items: center;
   justify-content: center;
-
   overflow: hidden;
-
   background: #080706;
 }
-
-
-/*
-  Two image layers allow a true crossfade.
-
-  We do NOT swap one image and fade it.
-  Instead:
-
-  image A
-       ↓
-  image B fades in above it
-       ↓
-  image A fades away
-       ↓
-  B becomes the new base
-*/
 
 .scene-image {
   position: absolute;
-
   inset: 0;
-
   width: 100%;
   height: 100%;
-
   display: block;
-
-  /*
-    CONTAIN is intentional.
-
-    We are protecting artwork,
-    characters and fashion silhouettes
-    from being chopped off.
-  */
-
   object-fit: contain;
-
   object-position: center center;
-
   opacity: 0;
-
-  transition:
-    opacity 650ms ease;
-
+  transition: opacity 650ms ease;
   background: #080706;
 }
 
-
-/*
-  The first image is visible when the scene begins.
-*/
-
 .scene-image-a {
   opacity: 1;
-
   z-index: 1;
 }
-
-
-/*
-  The second image sits above it
-  during a crossfade.
-*/
 
 .scene-image-b {
   z-index: 2;
 }
 
-
 /* =========================================================
    ATMOSPHERE
-
-   Very restrained.
-   No dramatic effects.
+   Kept cinematic, but lighter so the artwork can breathe.
    ========================================================= */
 
 .scene-atmosphere {
   position: absolute;
-
   inset: 0;
-
   z-index: 3;
-
   pointer-events: none;
 
   background:
     linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.03) 0%,
-      rgba(0, 0, 0, 0.04) 48%,
-      rgba(0, 0, 0, 0.24) 70%,
-      rgba(0, 0, 0, 0.76) 100%
+      rgba(0, 0, 0, 0.02) 0%,
+      rgba(0, 0, 0, 0.03) 48%,
+      rgba(0, 0, 0, 0.16) 70%,
+      rgba(0, 0, 0, 0.48) 100%
     );
 }
 
-
 /* =========================================================
    NARRATION GLASS
+   Raised slightly so feet/shoes remain visible.
    ========================================================= */
 
 .narration-glass {
   position: absolute;
-
   left: 12px;
   right: 12px;
 
+  /*
+    Raised from the very bottom.
+    This gives the artwork more breathing room beneath
+    the narration without changing the glass size.
+  */
   bottom: calc(
-    30px + env(safe-area-inset-bottom)
+    72px + env(safe-area-inset-bottom)
   );
 
   z-index: 8;
-
-  /*
-    Closed state.
-    JS opens it when the first line is ready.
-  */
 
   opacity: 0;
 
@@ -272,11 +155,6 @@ button {
     );
 }
 
-
-/*
-  Open state.
-*/
-
 .story-scene.is-active .narration-glass {
   opacity: 1;
 
@@ -285,14 +163,8 @@ button {
     scaleY(1);
 }
 
-
-/* =========================================================
-   GLASS INNER
-   ========================================================= */
-
 .narration-inner {
   position: relative;
-
   width: 100%;
 
   padding:
@@ -306,29 +178,27 @@ button {
 
   border-radius: 3px;
 
+  /*
+    More translucent smoked glass.
+    The image remains visible underneath it.
+  */
   background:
     linear-gradient(
       to bottom,
-      rgba(17, 15, 13, 0.79),
-      rgba(9, 8, 7, 0.93)
+      rgba(17, 15, 13, 0.56),
+      rgba(9, 8, 7, 0.72)
     );
 
   box-shadow:
-    0 12px 35px rgba(0, 0, 0, 0.42),
+    0 12px 35px rgba(0, 0, 0, 0.32),
     0 0 0 1px rgba(255, 255, 255, 0.025);
 
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
-
-/* =========================================================
-   NARRATION LABEL
-   ========================================================= */
-
 .narration-label {
   min-height: 12px;
-
   margin-bottom: 8px;
 
   font-family:
@@ -338,11 +208,9 @@ button {
 
   font-size: 8px;
   font-weight: 700;
-
   line-height: 1.2;
 
   letter-spacing: 0.24em;
-
   text-transform: uppercase;
 
   color: #c7a86a;
@@ -350,31 +218,12 @@ button {
   opacity: 0.9;
 }
 
-
-/* =========================================================
-   FINITE TEXT WINDOW
-   ========================================================= */
-
 .narration-window {
   position: relative;
-
   width: 100%;
-
-  /*
-    Approximately three comfortable lines
-    on a phone.
-
-    It is intentionally finite.
-  */
-
   height: 5.85em;
 
   overflow: hidden;
-
-  /*
-    Older words gently disappear
-    into the upper darkness.
-  */
 
   -webkit-mask-image:
     linear-gradient(
@@ -395,22 +244,14 @@ button {
     );
 }
 
-
-/* =========================================================
-   TEXT STREAM
-   ========================================================= */
-
 .narration-stream {
   position: absolute;
-
   left: 0;
   right: 0;
   bottom: 0;
 
   display: flex;
-
   flex-direction: column;
-
   justify-content: flex-end;
 
   gap: 0.35em;
@@ -421,14 +262,8 @@ button {
     transform 220ms ease;
 }
 
-
-/* =========================================================
-   TEXT LINE
-   ========================================================= */
-
 .narration-line {
   flex: 0 0 auto;
-
   margin: 0;
 
   font-size:
@@ -439,7 +274,6 @@ button {
     );
 
   line-height: 1.28;
-
   letter-spacing: -0.008em;
 
   color: #f4efe7;
@@ -453,25 +287,16 @@ button {
     opacity 450ms ease;
 }
 
-
-/*
-  Older lines remain part of the stream,
-  but become quieter before disappearing
-  above the finite window.
-*/
-
 .narration-line.is-old {
   opacity: 0.34;
 }
 
-
 /* =========================================================
-   INTERACTION AREA
+   SCENE INTERACTION
    ========================================================= */
 
 .scene-interaction {
   position: absolute;
-
   inset: 0;
 
   z-index: 20;
@@ -489,11 +314,6 @@ button {
 
   -webkit-tap-highlight-color: transparent;
 }
-
-
-/* =========================================================
-   HINT
-   ========================================================= */
 
 .scene-hint {
   position: absolute;
@@ -517,7 +337,9 @@ button {
 
   white-space: nowrap;
 
-  padding: 5px 9px;
+  padding:
+    5px
+    9px;
 
   border-radius: 999px;
 
@@ -544,16 +366,9 @@ button {
     opacity 350ms ease;
 }
 
-
 .scene-hint .hint-scroll {
   display: none;
 }
-
-
-/*
-  Once the current scene has finished,
-  tell the reader to scroll instead.
-*/
 
 .story-scene.scene-finished .hint-tap {
   display: none;
@@ -562,7 +377,6 @@ button {
 .story-scene.scene-finished .hint-scroll {
   display: inline;
 }
-
 
 /* =========================================================
    SCENE END
@@ -599,12 +413,6 @@ button {
     transform 650ms ease;
 }
 
-
-/*
-  Scene end becomes visible after the theatre
-  has completed its final line.
-*/
-
 .story-scene.scene-finished .scene-end {
   opacity: 1;
 
@@ -612,10 +420,8 @@ button {
     translateY(0);
 }
 
-
 .scene-end-line {
   width: 45px;
-
   height: 1px;
 
   margin:
@@ -625,7 +431,6 @@ button {
     rgba(199, 168, 106, 0.55);
 }
 
-
 .scene-end-label {
   font-family:
     Arial,
@@ -633,13 +438,13 @@ button {
     sans-serif;
 
   font-size: 8px;
+
   font-weight: 700;
 
   letter-spacing: 0.24em;
 
   color: #c7a86a;
 }
-
 
 .scene-end-text {
   margin-top: 12px;
@@ -650,7 +455,6 @@ button {
 
   color: #aaa39a;
 }
-
 
 .scene-end-arrow {
   margin-top: 30px;
@@ -663,25 +467,19 @@ button {
     gentle-bob 1800ms ease-in-out infinite;
 }
 
-
 /* =========================================================
-   NEXT SCENE SPACING
-
-   This gives the reader a real breathing space
-   between theatrical moments.
+   SCENE SPACING
    ========================================================= */
 
 .story-scene + .story-scene {
   padding-top: 12vh;
 }
 
-
 /* =========================================================
    ANIMATION
    ========================================================= */
 
 @keyframes gentle-bob {
-
   0%,
   100% {
     transform: translateY(0);
@@ -690,9 +488,7 @@ button {
   50% {
     transform: translateY(5px);
   }
-
 }
-
 
 /* =========================================================
    LARGER PHONES
@@ -714,11 +510,8 @@ button {
 
 }
 
-
 /* =========================================================
-   VERY SHORT SCREENS
-
-   Protect the text from being pushed off-screen.
+   SHORT SCREENS
    ========================================================= */
 
 @media (max-height: 650px) {
@@ -730,7 +523,7 @@ button {
   .narration-glass {
     bottom:
       calc(
-        24px + env(safe-area-inset-bottom)
+        54px + env(safe-area-inset-bottom)
       );
   }
 
@@ -743,7 +536,6 @@ button {
   }
 
 }
-
 
 /* =========================================================
    REDUCED MOTION
@@ -768,12 +560,8 @@ button {
 
 }
 
-
 /* =========================================================
    DESKTOP SURROUND
-
-   The theatre itself remains phone-sized.
-   The rest of the monitor stays black.
    ========================================================= */
 
 @media (min-width: 481px) {
