@@ -6,11 +6,6 @@
    Phone-first theatrical narrative
    ========================================================= */
 
-
-/* =========================================================
-   IMAGE LIBRARY
-   ========================================================= */
-
 const IMAGES = {
 
   curtain:
@@ -26,21 +21,6 @@ const IMAGES = {
     "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg"
 
 };
-
-
-/* =========================================================
-   STORY DATA
-
-   The script controls the theatre.
-
-   Each beat may contain:
-   - speaker
-   - text
-   - image
-
-   The image only changes when the script
-   explicitly tells it to.
-   ========================================================= */
 
 const STORY = [
 
@@ -76,7 +56,6 @@ const STORY = [
     ]
 
   },
-
 
   {
     scene: "scene-02",
@@ -117,7 +96,6 @@ const STORY = [
 
   },
 
-
   {
     scene: "scene-03",
 
@@ -153,52 +131,38 @@ const STORY = [
 
 ];
 
+const TYPE_SPEED =
+  34;
 
-/* =========================================================
-   SETTINGS
-   ========================================================= */
+const AUTO_ADVANCE_DELAY =
+  1500;
 
-const TYPE_SPEED = 34;
+const SCENE_END_DELAY =
+  900;
 
-const AUTO_ADVANCE_DELAY = 1500;
-
-const SCENE_END_DELAY = 900;
-
-const IMAGE_CROSSFADE_TIME = 650;
-
-
-/* =========================================================
-   PRELOAD
-   ========================================================= */
+const IMAGE_CROSSFADE_TIME =
+  650;
 
 function preloadImages() {
 
-  Object.values(IMAGES).forEach((src) => {
+  Object.values(IMAGES).forEach(
+    (src) => {
 
-    const image =
-      new Image();
+      const image =
+        new Image();
 
-    image.src =
-      src;
+      image.src =
+        src;
 
-  });
+    }
+  );
 
 }
 
 preloadImages();
 
-
-/* =========================================================
-   SCENE STATE
-   ========================================================= */
-
 const sceneStates =
   new WeakMap();
-
-
-/* =========================================================
-   INITIALISE ONE SCENE
-   ========================================================= */
 
 function initialiseScene(
   sceneElement,
@@ -206,29 +170,75 @@ function initialiseScene(
 ) {
 
   const stage =
-    sceneElement.querySelector(".scene-stage");
+    sceneElement.querySelector(
+      ".scene-stage"
+    );
 
   const imageA =
-    sceneElement.querySelector(".scene-image-a");
+    sceneElement.querySelector(
+      ".scene-image-a"
+    );
 
   const imageB =
-    sceneElement.querySelector(".scene-image-b");
+    sceneElement.querySelector(
+      ".scene-image-b"
+    );
 
   const label =
-    sceneElement.querySelector(".narration-label");
+    sceneElement.querySelector(
+      ".narration-label"
+    );
 
   const stream =
-    sceneElement.querySelector(".narration-stream");
+    sceneElement.querySelector(
+      ".narration-stream"
+    );
 
   const windowElement =
-    sceneElement.querySelector(".narration-window");
+    sceneElement.querySelector(
+      ".narration-window"
+    );
 
   const interaction =
-    sceneElement.querySelector(".scene-interaction");
+    sceneElement.querySelector(
+      ".scene-interaction"
+    );
 
   const hint =
-    sceneElement.querySelector(".scene-hint");
+    sceneElement.querySelector(
+      ".scene-hint"
+    );
 
+  /*
+    Create the tiny completion mark inside the narration
+    glass. No HTML change is required.
+  */
+
+  const completionMark =
+    document.createElement(
+      "div"
+    );
+
+  completionMark.className =
+    "scene-complete-mark";
+
+  completionMark.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+
+  const narrationInner =
+    sceneElement.querySelector(
+      ".narration-inner"
+    );
+
+  if (narrationInner) {
+
+    narrationInner.appendChild(
+      completionMark
+    );
+
+  }
 
   const state = {
 
@@ -249,6 +259,8 @@ function initialiseScene(
     interaction,
 
     hint,
+
+    completionMark,
 
     beats:
       storyData.beats,
@@ -288,58 +300,49 @@ function initialiseScene(
 
   };
 
-
   sceneStates.set(
     sceneElement,
     state
   );
 
-
   interaction.addEventListener(
     "click",
     () => {
 
-      handleSceneTap(state);
+      handleSceneTap(
+        state
+      );
 
     }
   );
 
 }
 
-
-/* =========================================================
-   INITIALISE ALL SCENES
-   ========================================================= */
-
 document
-  .querySelectorAll(".story-scene")
-  .forEach((sceneElement) => {
+  .querySelectorAll(
+    ".story-scene"
+  )
+  .forEach(
+    (sceneElement) => {
 
-    const sceneId =
-      sceneElement.dataset.scene;
+      const storyData =
+        STORY.find(
+          item =>
+            item.scene ===
+            sceneElement.id
+        );
 
-    const storyData =
-      STORY.find(
-        item =>
-          item.scene ===
-          sceneElement.id
+      if (!storyData) {
+        return;
+      }
+
+      initialiseScene(
+        sceneElement,
+        storyData
       );
 
-    if (!storyData) {
-      return;
     }
-
-    initialiseScene(
-      sceneElement,
-      storyData
-    );
-
-  });
-
-
-/* =========================================================
-   CROSSFADE VISUAL
-   ========================================================= */
+  );
 
 function crossfadeImage(
   state,
@@ -350,12 +353,6 @@ function crossfadeImage(
     return;
   }
 
-
-  /*
-    If the requested image is already
-    showing, don't animate anything.
-  */
-
   if (
     state.currentImage ===
     nextImage
@@ -363,22 +360,15 @@ function crossfadeImage(
     return;
   }
 
-
   const incoming =
     state.imageLayer === "a"
       ? state.imageB
       : state.imageA;
 
-
   const outgoing =
     state.imageLayer === "a"
       ? state.imageA
       : state.imageB;
-
-
-  /*
-    Prepare incoming artwork.
-  */
 
   incoming.onload =
     () => {
@@ -398,16 +388,8 @@ function crossfadeImage(
 
     };
 
-
   incoming.src =
     nextImage;
-
-
-  /*
-    If the browser already has
-    the image cached, onload can
-    sometimes have already happened.
-  */
 
   if (
     incoming.complete
@@ -428,31 +410,47 @@ function crossfadeImage(
 
   }
 
-
   state.imageLayer =
     state.imageLayer === "a"
       ? "b"
       : "a";
-
 
   state.currentImage =
     nextImage;
 
 }
 
-
 /* =========================================================
-   TEXT STREAM POSITION
+   TEXT POSITIONING
    ========================================================= */
 
 function updateTextPosition(
   state
 ) {
 
-  const overflow =
-    state.stream.scrollHeight -
+  /*
+    The reading window has a middle starting point.
+
+    Before the stream becomes taller than the window,
+    it stays around the middle.
+
+    Once the stream becomes too tall, it begins moving
+    upward so the newest text remains readable.
+  */
+
+  const streamHeight =
+    state.stream.scrollHeight;
+
+  const windowHeight =
     state.windowElement.clientHeight;
 
+  const startOffset =
+    windowHeight * 0.42;
+
+  const overflow =
+    streamHeight +
+    startOffset -
+    windowHeight;
 
   if (overflow > 0) {
 
@@ -462,47 +460,32 @@ function updateTextPosition(
   } else {
 
     state.stream.style.transform =
-      "translateY(0)";
+      `translateY(${startOffset}px)`;
 
   }
 
 }
-
-
-/* =========================================================
-   ADD NEW LINE
-   ========================================================= */
 
 function createLine(
   state
 ) {
 
   const line =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   line.className =
     "narration-line";
-
 
   state.stream.appendChild(
     line
   );
 
-
-  /*
-    Keep only the newest few lines
-    visually strong.
-
-    Older material is allowed to
-    exist in the stream, but the
-    finite window clips it away.
-  */
-
   const allLines =
     state.stream.querySelectorAll(
       ".narration-line"
     );
-
 
   allLines.forEach(
     (item, index) => {
@@ -521,15 +504,9 @@ function createLine(
     }
   );
 
-
   return line;
 
 }
-
-
-/* =========================================================
-   OPEN NARRATION GLASS
-   ========================================================= */
 
 function openNarrationGlass(
   state
@@ -540,11 +517,6 @@ function openNarrationGlass(
   );
 
 }
-
-
-/* =========================================================
-   TYPE A BEAT
-   ========================================================= */
 
 function typeBeat(
   state
@@ -558,12 +530,10 @@ function typeBeat(
     state.autoTimer
   );
 
-
   const beat =
     state.beats[
       state.beatIndex
     ];
-
 
   if (!beat) {
 
@@ -574,31 +544,22 @@ function typeBeat(
     return;
   }
 
-
   state.label.textContent =
     beat.speaker;
-
-
-  /*
-    Visual change is explicit.
-  */
 
   crossfadeImage(
     state,
     beat.image
   );
 
-
   openNarrationGlass(
     state
   );
-
 
   const line =
     createLine(
       state
     );
-
 
   state.currentLine =
     line;
@@ -612,13 +573,11 @@ function typeBeat(
   state.typing =
     true;
 
-
   function typeNext() {
 
     if (!state.typing) {
       return;
     }
-
 
     if (
       state.currentCharacter >=
@@ -628,29 +587,23 @@ function typeBeat(
       state.typing =
         false;
 
-
       scheduleAdvance(
         state
       );
 
-
       return;
     }
-
 
     line.textContent +=
       state.currentText[
         state.currentCharacter
       ];
 
-
     state.currentCharacter++;
-
 
     updateTextPosition(
       state
     );
-
 
     state.typingTimer =
       window.setTimeout(
@@ -660,15 +613,9 @@ function typeBeat(
 
   }
 
-
   typeNext();
 
 }
-
-
-/* =========================================================
-   FINISH CURRENT LINE
-   ========================================================= */
 
 function finishCurrentLine(
   state
@@ -678,11 +625,9 @@ function finishCurrentLine(
     return;
   }
 
-
   clearTimeout(
     state.typingTimer
   );
-
 
   if (state.currentLine) {
 
@@ -691,29 +636,21 @@ function finishCurrentLine(
 
   }
 
-
   state.currentCharacter =
     state.currentText.length;
 
   state.typing =
     false;
 
-
   updateTextPosition(
     state
   );
-
 
   scheduleAdvance(
     state
   );
 
 }
-
-
-/* =========================================================
-   AUTO ADVANCE
-   ========================================================= */
 
 function scheduleAdvance(
   state
@@ -722,7 +659,6 @@ function scheduleAdvance(
   clearTimeout(
     state.autoTimer
   );
-
 
   state.autoTimer =
     window.setTimeout(
@@ -738,11 +674,6 @@ function scheduleAdvance(
 
 }
 
-
-/* =========================================================
-   NEXT BEAT
-   ========================================================= */
-
 function nextBeat(
   state
 ) {
@@ -751,14 +682,11 @@ function nextBeat(
     return;
   }
 
-
   clearTimeout(
     state.autoTimer
   );
 
-
   state.beatIndex++;
-
 
   if (
     state.beatIndex >=
@@ -772,17 +700,11 @@ function nextBeat(
     return;
   }
 
-
   typeBeat(
     state
   );
 
 }
-
-
-/* =========================================================
-   TAP HANDLER
-   ========================================================= */
 
 function handleSceneTap(
   state
@@ -791,12 +713,6 @@ function handleSceneTap(
   if (state.finished) {
     return;
   }
-
-
-  /*
-    If the sentence is still typing,
-    the first tap completes it.
-  */
 
   if (state.typing) {
 
@@ -808,22 +724,11 @@ function handleSceneTap(
 
   }
 
-
-  /*
-    If the sentence has finished,
-    tapping advances immediately.
-  */
-
   nextBeat(
     state
   );
 
 }
-
-
-/* =========================================================
-   FINISH SCENE
-   ========================================================= */
 
 function finishScene(
   state
@@ -833,13 +738,11 @@ function finishScene(
     return;
   }
 
-
   state.finished =
     true;
 
   state.typing =
     false;
-
 
   clearTimeout(
     state.typingTimer
@@ -848,12 +751,6 @@ function finishScene(
   clearTimeout(
     state.autoTimer
   );
-
-
-  /*
-    Give the final line a moment
-    before declaring the scene complete.
-  */
 
   window.setTimeout(
     () => {
@@ -871,11 +768,6 @@ function finishScene(
 
 }
 
-
-/* =========================================================
-   SCENE ACTIVATION
-   ========================================================= */
-
 function activateScene(
   state
 ) {
@@ -884,41 +776,22 @@ function activateScene(
     return;
   }
 
-
   if (state.finished) {
     return;
   }
 
-
   state.active =
     true;
-
 
   state.sceneElement.classList.add(
     "is-active"
   );
-
-
-  /*
-    Start the first beat.
-  */
 
   typeBeat(
     state
   );
 
 }
-
-
-/* =========================================================
-   OBSERVE SCENES
-
-   A scene begins when the reader
-   reaches it.
-
-   We deliberately do not start
-   every scene at page load.
-   ========================================================= */
 
 const observer =
   new IntersectionObserver(
@@ -933,17 +806,14 @@ const observer =
             return;
           }
 
-
           const state =
             sceneStates.get(
               entry.target
             );
 
-
           if (!state) {
             return;
           }
-
 
           activateScene(
             state
@@ -958,9 +828,10 @@ const observer =
     }
   );
 
-
 document
-  .querySelectorAll(".story-scene")
+  .querySelectorAll(
+    ".story-scene"
+  )
   .forEach(
     scene => {
 
@@ -971,15 +842,6 @@ document
     }
   );
 
-
-/* =========================================================
-   SAFETY START
-
-   If a browser behaves strangely with
-   IntersectionObserver, the first scene
-   still starts.
-   ========================================================= */
-
 window.addEventListener(
   "load",
   () => {
@@ -989,17 +851,14 @@ window.addEventListener(
         ".story-scene"
       );
 
-
     if (!firstScene) {
       return;
     }
-
 
     const firstState =
       sceneStates.get(
         firstScene
       );
-
 
     if (
       firstState &&
@@ -1022,21 +881,9 @@ window.addEventListener(
   }
 );
 
-
-/* =========================================================
-   RESIZE
-
-   Recalculate the finite text window
-   whenever the phone changes size/orientation.
-   ========================================================= */
-
 window.addEventListener(
   "resize",
   () => {
-
-    sceneStates.forEach?.(
-      () => {}
-    );
 
     document
       .querySelectorAll(
