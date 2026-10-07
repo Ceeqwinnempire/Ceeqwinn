@@ -210,8 +210,8 @@ function initialiseScene(
     );
 
   /*
-    Create the tiny completion mark inside the narration
-    glass. No HTML change is required.
+    Create the small completion signal.
+    This is inserted into the existing narration glass.
   */
 
   const completionMark =
@@ -421,22 +421,26 @@ function crossfadeImage(
 }
 
 /* =========================================================
-   TEXT POSITIONING
+   CORRECTED TEXT POSITIONING
+
+   First line:
+   - begins around the middle.
+
+   As text grows:
+   - the stream moves upward.
+
+   Critical rule:
+   - the bottom of the newest text may NEVER go below
+     the bottom of the narration window.
+
+   Once the stream is taller than the window:
+   - the oldest text naturally travels toward the top,
+     where the existing mask/fade handles it.
    ========================================================= */
 
 function updateTextPosition(
   state
 ) {
-
-  /*
-    The reading window has a middle starting point.
-
-    Before the stream becomes taller than the window,
-    it stays around the middle.
-
-    Once the stream becomes too tall, it begins moving
-    upward so the newest text remains readable.
-  */
 
   const streamHeight =
     state.stream.scrollHeight;
@@ -444,25 +448,44 @@ function updateTextPosition(
   const windowHeight =
     state.windowElement.clientHeight;
 
-  const startOffset =
+  /*
+    This is where the first line begins.
+
+    42% means the first line starts comfortably around
+    the middle rather than at the bottom.
+  */
+
+  const preferredTop =
     windowHeight * 0.42;
 
-  const overflow =
-    streamHeight +
-    startOffset -
-    windowHeight;
+  /*
+    This is the lowest position the stream is allowed
+    to occupy.
 
-  if (overflow > 0) {
+    It guarantees that the newest text remains inside
+    the narration window.
+  */
 
-    state.stream.style.transform =
-      `translateY(-${overflow}px)`;
+  const maximumSafeTop =
+    windowHeight -
+    streamHeight;
 
-  } else {
+  /*
+    Choose the middle starting position while it is safe.
 
-    state.stream.style.transform =
-      `translateY(${startOffset}px)`;
+    Once the stream becomes too tall, maximumSafeTop
+    becomes smaller and automatically moves the stream
+    upward.
+  */
 
-  }
+  const actualTop =
+    Math.min(
+      preferredTop,
+      maximumSafeTop
+    );
+
+  state.stream.style.transform =
+    `translateY(${actualTop}px)`;
 
 }
 
@@ -573,6 +596,15 @@ function typeBeat(
   state.typing =
     true;
 
+  /*
+    Recalculate immediately so the new line begins
+    from the correct position before typing starts.
+  */
+
+  updateTextPosition(
+    state
+  );
+
   function typeNext() {
 
     if (!state.typing) {
@@ -586,6 +618,15 @@ function typeBeat(
 
       state.typing =
         false;
+
+      /*
+        One final positioning pass after the line
+        has completely finished.
+      */
+
+      updateTextPosition(
+        state
+      );
 
       scheduleAdvance(
         state
