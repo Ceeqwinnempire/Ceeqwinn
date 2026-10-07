@@ -211,7 +211,6 @@ function initialiseScene(
 
   /*
     Create the small completion signal.
-    This is inserted into the existing narration glass.
   */
 
   const completionMark =
@@ -421,26 +420,20 @@ function crossfadeImage(
 }
 
 /* =========================================================
-   CORRECTED TEXT POSITIONING
-
-   First line:
-   - begins around the middle.
-
-   As text grows:
-   - the stream moves upward.
-
-   Critical rule:
-   - the bottom of the newest text may NEVER go below
-     the bottom of the narration window.
-
-   Once the stream is taller than the window:
-   - the oldest text naturally travels toward the top,
-     where the existing mask/fade handles it.
+   TEXT POSITIONING
    ========================================================= */
 
 function updateTextPosition(
   state
 ) {
+
+  const lines =
+    state.stream.querySelectorAll(
+      ".narration-line"
+    );
+
+  const lineCount =
+    lines.length;
 
   const streamHeight =
     state.stream.scrollHeight;
@@ -449,34 +442,42 @@ function updateTextPosition(
     state.windowElement.clientHeight;
 
   /*
-    This is where the first line begins.
+    The first two narration beats are allowed to sit
+    comfortably without pushing each other upward.
 
-    42% means the first line starts comfortably around
-    the middle rather than at the bottom.
+    Movement begins when the third line arrives.
   */
 
   const preferredTop =
     windowHeight * 0.42;
 
   /*
-    This is the lowest position the stream is allowed
-    to occupy.
+    With one or two lines, keep the stream at its
+    starting position.
 
-    It guarantees that the newest text remains inside
-    the narration window.
+    Once a third line exists, allow the stream to
+    travel upward as needed.
+  */
+
+  if (lineCount <= 2) {
+
+    state.stream.style.transform =
+      `translateY(${preferredTop}px)`;
+
+    return;
+
+  }
+
+  /*
+    From the third line onward, protect the bottom
+    edge of the newest text.
+
+    The stream moves upward only when it needs to.
   */
 
   const maximumSafeTop =
     windowHeight -
     streamHeight;
-
-  /*
-    Choose the middle starting position while it is safe.
-
-    Once the stream becomes too tall, maximumSafeTop
-    becomes smaller and automatically moves the stream
-    upward.
-  */
 
   const actualTop =
     Math.min(
@@ -509,6 +510,13 @@ function createLine(
     state.stream.querySelectorAll(
       ".narration-line"
     );
+
+  /*
+    Keep the newest two lines clear.
+
+    Older lines gradually fade as the stream travels
+    upward.
+  */
 
   allLines.forEach(
     (item, index) => {
@@ -596,11 +604,6 @@ function typeBeat(
   state.typing =
     true;
 
-  /*
-    Recalculate immediately so the new line begins
-    from the correct position before typing starts.
-  */
-
   updateTextPosition(
     state
   );
@@ -618,11 +621,6 @@ function typeBeat(
 
       state.typing =
         false;
-
-      /*
-        One final positioning pass after the line
-        has completely finished.
-      */
 
       updateTextPosition(
         state
