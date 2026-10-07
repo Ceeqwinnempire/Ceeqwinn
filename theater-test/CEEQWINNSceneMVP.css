@@ -309,20 +309,22 @@ button {
 
 /* =========================================================
    COMPLETION SIGNAL
+
+   The diamond now lives INSIDE the narration glass.
+   It appears at the lower-right so it remains legible
+   without covering the story text.
    ========================================================= */
 
 .scene-complete-mark {
   position: absolute;
 
-  left: 50%;
-
-  bottom: -23px;
+  right: 13px;
+  bottom: 13px;
 
   width: 7px;
   height: 7px;
 
   transform:
-    translateX(-50%)
     rotate(45deg);
 
   border:
