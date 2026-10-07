@@ -95,7 +95,6 @@ button {
 
 /* =========================================================
    ATMOSPHERE
-   Kept cinematic, but lighter so the artwork can breathe.
    ========================================================= */
 
 .scene-atmosphere {
@@ -116,7 +115,6 @@ button {
 
 /* =========================================================
    NARRATION GLASS
-   Raised slightly so feet/shoes remain visible.
    ========================================================= */
 
 .narration-glass {
@@ -124,11 +122,6 @@ button {
   left: 12px;
   right: 12px;
 
-  /*
-    Raised from the very bottom.
-    This gives the artwork more breathing room beneath
-    the narration without changing the glass size.
-  */
   bottom: calc(
     72px + env(safe-area-inset-bottom)
   );
@@ -178,10 +171,6 @@ button {
 
   border-radius: 3px;
 
-  /*
-    More translucent smoked glass.
-    The image remains visible underneath it.
-  */
   background:
     linear-gradient(
       to bottom,
@@ -218,6 +207,15 @@ button {
   opacity: 0.9;
 }
 
+/* =========================================================
+   NARRATION WINDOW
+
+   The window itself remains the same size.
+
+   The stream now begins around the middle rather than
+   sitting against the bottom edge.
+   ========================================================= */
+
 .narration-window {
   position: relative;
   width: 100%;
@@ -248,11 +246,18 @@ button {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+
+  /*
+    The stream is no longer locked to the bottom.
+    JavaScript controls its vertical position so the first
+    line begins around the middle of the reading window.
+  */
+
+  top: 50%;
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: flex-start;
 
   gap: 0.35em;
 
@@ -274,6 +279,7 @@ button {
     );
 
   line-height: 1.28;
+
   letter-spacing: -0.008em;
 
   color: #f4efe7;
@@ -289,6 +295,74 @@ button {
 
 .narration-line.is-old {
   opacity: 0.34;
+}
+
+/* =========================================================
+   COMPLETION SIGNAL
+
+   A quiet little theatre mark appears when the scene is
+   completely finished.
+
+   It is deliberately subtle rather than button-like.
+   ========================================================= */
+
+.scene-complete-mark {
+  position: absolute;
+
+  left: 50%;
+
+  bottom: -23px;
+
+  width: 7px;
+  height: 7px;
+
+  transform:
+    translateX(-50%)
+    rotate(45deg);
+
+  border:
+    1px solid
+    rgba(199, 168, 106, 0.78);
+
+  background:
+    rgba(199, 168, 106, 0.12);
+
+  opacity: 0;
+
+  box-shadow:
+    0 0 0 rgba(199, 168, 106, 0);
+
+  transition:
+    opacity 500ms ease,
+    box-shadow 700ms ease;
+
+  pointer-events: none;
+}
+
+.story-scene.scene-finished .scene-complete-mark {
+  opacity: 1;
+
+  animation:
+    theatre-pulse 1800ms ease-in-out infinite;
+}
+
+@keyframes theatre-pulse {
+
+  0%,
+  100% {
+    opacity: 0.42;
+
+    box-shadow:
+      0 0 0 rgba(199, 168, 106, 0);
+  }
+
+  50% {
+    opacity: 1;
+
+    box-shadow:
+      0 0 12px rgba(199, 168, 106, 0.42);
+  }
+
 }
 
 /* =========================================================
@@ -480,14 +554,18 @@ button {
    ========================================================= */
 
 @keyframes gentle-bob {
+
   0%,
   100% {
-    transform: translateY(0);
+    transform:
+      translateY(0);
   }
 
   50% {
-    transform: translateY(5px);
+    transform:
+      translateY(5px);
   }
+
 }
 
 /* =========================================================
@@ -554,7 +632,8 @@ button {
     transition: none;
   }
 
-  .scene-end-arrow {
+  .scene-end-arrow,
+  .scene-complete-mark {
     animation: none;
   }
 
