@@ -1,12 +1,12 @@
 /* =========================================================
-   CEEQWINN SCENE STREAM
-   MOBILE THEATRE MVP
+   CEEQWINN SCENE STREAM MVP
+   SceneStreamMVP.js
    ========================================================= */
 
 
-/* =========================================================
+/* ---------------------------------------------------------
    IMAGE LIBRARY
-   ========================================================= */
+   --------------------------------------------------------- */
 
 const IMAGES = {
 
@@ -28,359 +28,227 @@ const IMAGES = {
 };
 
 
-/* =========================================================
-   THE STORY
-   ========================================================= */
-
-/*
-  This is intentionally small.
-
-  Every beat says:
-
-  WHO is speaking
-  WHAT they say
-  WHICH visual owns the moment
-
-  The engine does the rest.
-*/
+/* ---------------------------------------------------------
+   THE TEST STORY
+   --------------------------------------------------------- */
 
 const SCENE = [
 
   {
-    speaker: "NARRATOR",
-
-    text:
-      "The curtain was already open when she arrived.",
-
-    visual:
-      "curtain"
+    speaker: "THEATRE",
+    text: "The curtain was already open when she arrived.",
+    image: IMAGES.curtain
   },
-
 
   {
-    speaker: "NARRATOR",
-
-    text:
-      "That was strange. The theatre was never supposed to be open this late.",
-
-    visual:
-      "curtain"
+    speaker: "THEATRE",
+    text: "That was strange. The theatre was never supposed to be open this late.",
+    image: IMAGES.curtain
   },
-
 
   {
-    speaker: "NARRATOR",
-
-    text:
-      "Rain whispered against the glass doors behind her.",
-
-    visual:
-      "rain"
+    speaker: "THEATRE",
+    text: "Rain whispered against the glass doors behind her.",
+    image: IMAGES.rain
   },
-
 
   {
     speaker: "LEXIS",
-
-    text:
-      "Hello?",
-
-    visual:
-      "lexis"
+    text: "Hello?",
+    image: IMAGES.lexis
   },
-
 
   {
     speaker: "LEXIS",
-
-    text:
-      "Is anyone here?",
-
-    visual:
-      "lexis"
+    text: "Is anyone here?",
+    image: IMAGES.lexis
   },
-
 
   {
-    speaker: "NARRATOR",
-
-    text:
-      "She took one step forward. The red fabric at her sleeve caught the faint light.",
-
-    visual:
-      "lexisRed"
+    speaker: "THEATRE",
+    text: "She took one step forward.",
+    image: IMAGES.lexisRed
   },
 
+  {
+    speaker: "THEATRE",
+    text: "The red fabric at her sleeve caught the faint light.",
+    image: IMAGES.lexisRed
+  },
 
   {
     speaker: "LEXIS",
-
-    text:
-      "I know somebody is here.",
-
-    visual:
-      "lexisRed"
+    text: "I know somebody is here.",
+    image: IMAGES.lexisRed
   },
-
 
   {
     speaker: "FATHER",
-
-    text:
-      "You always were very good at finding what people wanted hidden.",
-
-    visual:
-      "father"
+    text: "You always were very good at finding what people wanted hidden.",
+    image: IMAGES.father
   },
-
 
   {
     speaker: "LEXIS",
-
-    text:
-      "Then don't hide it from me.",
-
-    visual:
-      "lexis"
+    text: "Then don't hide it from me.",
+    image: IMAGES.lexis
   },
 
-
   {
-    speaker: "NARRATOR",
-
-    text:
-      "For a moment, neither of them moved.",
-
-    visual:
-      "rain"
+    speaker: "THEATRE",
+    text: "For a moment, neither of them moved.",
+    image: IMAGES.rain
   },
 
-
   {
-    speaker: "NARRATOR",
-
-    text:
-      "And somewhere beyond the curtain, something shifted.",
-
-    visual:
-      "curtain"
+    speaker: "THEATRE",
+    text: "And somewhere beyond the curtain, something shifted.",
+    image: IMAGES.curtain
   }
 
 ];
 
 
-/* =========================================================
+/* ---------------------------------------------------------
    ELEMENTS
-   ========================================================= */
+   --------------------------------------------------------- */
+
+const sceneStage =
+  document.getElementById("sceneStage");
 
 const sceneImage =
-  document.getElementById(
-    "sceneImage"
-  );
+  document.getElementById("sceneImage");
 
 const sceneSpeaker =
-  document.getElementById(
-    "sceneSpeaker"
-  );
+  document.getElementById("sceneSpeaker");
+
+const sceneTextWindow =
+  document.getElementById("sceneTextWindow");
 
 const sceneTextStream =
-  document.getElementById(
-    "sceneTextStream"
-  );
+  document.getElementById("sceneTextStream");
 
-const sceneTimeline =
-  document.getElementById(
-    "sceneTimeline"
-  );
+const sceneTapArea =
+  document.getElementById("sceneTapArea");
 
 const sceneTapHint =
-  document.getElementById(
-    "sceneTapHint"
-  );
+  document.getElementById("sceneTapHint");
+
+const sceneEnding =
+  document.getElementById("sceneEnding");
 
 
-/* =========================================================
+/* ---------------------------------------------------------
    STATE
-   ========================================================= */
+   --------------------------------------------------------- */
 
-let currentBeat =
-  -1;
+let currentBeat = 0;
 
-let typingTimer =
-  null;
+let typingTimer = null;
 
-let isTyping =
-  false;
+let currentText = "";
 
-let currentText =
-  "";
+let currentCharacter = 0;
 
-let sceneFinished =
-  false;
+let isTyping = false;
+
+let sceneStarted = false;
+
+let sceneFinished = false;
+
+let advanceTimer = null;
 
 
-/* =========================================================
-   PRELOAD
-   ========================================================= */
+/* ---------------------------------------------------------
+   IMAGE PRELOAD
+   --------------------------------------------------------- */
 
 function preloadImages() {
 
-  Object.values(IMAGES).forEach(
-    src => {
+  Object.values(IMAGES).forEach((src) => {
 
-      const image =
-        new Image();
+    const image = new Image();
 
-      image.src =
-        src;
+    image.src = src;
 
-    }
-  );
+  });
 
 }
 
 preloadImages();
 
 
-/* =========================================================
-   CREATE INVISIBLE SCROLL BEATS
-   ========================================================= */
-
-function buildTimeline() {
-
-  SCENE.forEach(
-    () => {
-
-      const beat =
-        document.createElement(
-          "div"
-        );
-
-      beat.className =
-        "scene-beat";
-
-      sceneTimeline.appendChild(
-        beat
-      );
-
-    }
-  );
-
-}
-
-buildTimeline();
-
-
-const sceneBeats =
-  [
-    ...document.querySelectorAll(
-      ".scene-beat"
-    )
-  ];
-
-
-/* =========================================================
+/* ---------------------------------------------------------
    IMAGE CHANGE
-   ========================================================= */
+   --------------------------------------------------------- */
 
-function changeVisual(
-  imageKey
-) {
+function changeImage(src) {
 
-  const nextImage =
-    IMAGES[imageKey];
-
-  if (
-    !nextImage ||
-    sceneImage.src === nextImage
-  ) {
-
+  if (!src) {
     return;
-
   }
 
+  if (sceneImage.src === src) {
+    return;
+  }
 
-  sceneImage.classList.add(
-    "is-changing"
-  );
+  sceneImage.style.opacity = "0";
 
+  window.setTimeout(() => {
 
-  setTimeout(
-    () => {
+    sceneImage.src = src;
 
-      sceneImage.onload =
-        () => {
+    sceneImage.onload = () => {
 
-          sceneImage.classList.remove(
-            "is-changing"
-          );
+      sceneImage.style.opacity = "1";
 
-        };
+    };
 
-
-      sceneImage.src =
-        nextImage;
-
-    },
-    260
-  );
+  }, 300);
 
 }
 
 
-/* =========================================================
-   SPEAKER
-   ========================================================= */
+/* ---------------------------------------------------------
+   TEXT WINDOW POSITION
+   --------------------------------------------------------- */
 
-function setSpeaker(
-  speaker
-) {
+function keepTextAtBottom() {
 
-  sceneSpeaker.textContent =
-    speaker;
+  /*
+    We deliberately keep the newest text at the bottom.
 
+    Anything older than the visible window is clipped away.
+    This is the core "finite theatre text" behavior.
+  */
 
-  if (
-    speaker === "NARRATOR"
-  ) {
+  const overflow =
+    sceneTextStream.scrollHeight -
+    sceneTextWindow.clientHeight;
 
-    sceneSpeaker.style.color =
-      "#d7b66a";
+  if (overflow > 0) {
+
+    sceneTextStream.style.transform =
+      `translateY(-${overflow}px)`;
 
   } else {
 
-    sceneSpeaker.style.color =
-      "#f2d39a";
+    sceneTextStream.style.transform =
+      "translateY(0)";
 
   }
 
 }
 
 
-/* =========================================================
-   ROLLING TEXT WINDOW
-   ========================================================= */
+/* ---------------------------------------------------------
+   ADD TEXT LINE
+   --------------------------------------------------------- */
 
-/*
-  THIS is the experiment.
-
-  We never make the box taller.
-
-  New lines are appended.
-
-  Once there are too many lines,
-  the oldest line is pushed upward
-  and fades away.
-*/
-
-function addTextLine(
-  text
-) {
+function addTextLine(text) {
 
   const line =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   line.className =
     "scene-line";
@@ -388,195 +256,194 @@ function addTextLine(
   line.textContent =
     text;
 
-  sceneTextStream.appendChild(
-    line
-  );
+  sceneTextStream.appendChild(line);
 
 
-  requestAnimationFrame(
-    () => {
+  /*
+    Older lines remain physically inside the stream,
+    but the finite window clips them away.
+  */
 
-      const lines =
-        [
-          ...sceneTextStream.children
-        ];
+  const lines =
+    sceneTextStream.querySelectorAll(".scene-line");
 
+  lines.forEach((item, index) => {
 
-      lines.forEach(
-        (item, index) => {
+    if (index < lines.length - 2) {
 
-          if (
-            index <
-            lines.length - 3
-          ) {
-
-            item.classList.add(
-              "is-old"
-            );
-
-          }
-
-        }
-      );
-
-
-      const windowHeight =
-        document
-          .getElementById(
-            "sceneTextWindow"
-          )
-          .clientHeight;
-
-
-      const streamHeight =
-        sceneTextStream.scrollHeight;
-
-
-      const overflow =
-        Math.max(
-          0,
-          streamHeight -
-          windowHeight
-        );
-
-
-      sceneTextStream.style.transform =
-        `translateY(-${overflow}px)`;
+      item.classList.add("is-old");
 
     }
-  );
+
+  });
+
+
+  keepTextAtBottom();
+
+  return line;
 
 }
 
 
-/* =========================================================
-   TYPEWRITER
-   ========================================================= */
+/* ---------------------------------------------------------
+   TYPE CURRENT LINE
+   --------------------------------------------------------- */
 
-function typeText(
-  text
-) {
+function typeCurrentBeat() {
 
-  return new Promise(
-    resolve => {
+  clearTimeout(typingTimer);
 
-      clearInterval(
-        typingTimer
-      );
+  const beat =
+    SCENE[currentBeat];
 
-      currentText =
-        text;
+  if (!beat) {
+    finishScene();
+    return;
+  }
+
+
+  sceneSpeaker.textContent =
+    beat.speaker;
+
+  changeImage(beat.image);
+
+
+  const line =
+    addTextLine("");
+
+
+  currentText =
+    beat.text;
+
+  currentCharacter =
+    0;
+
+  isTyping =
+    true;
+
+
+  function typeNextCharacter() {
+
+    if (!isTyping) {
+      return;
+    }
+
+
+    if (currentCharacter >= currentText.length) {
 
       isTyping =
-        true;
-
+        false;
 
       /*
-        We temporarily create the line
-        and fill it character by character.
+        Give the reader a moment to actually see
+        the completed sentence.
       */
 
-      const line =
-        document.createElement(
-          "div"
-        );
+      scheduleAutomaticAdvance();
 
-      line.className =
-        "scene-line";
-
-      sceneTextStream.appendChild(
-        line
-      );
-
-
-      let index =
-        0;
-
-
-      typingTimer =
-        setInterval(
-          () => {
-
-            if (
-              index >=
-              text.length
-            ) {
-
-              clearInterval(
-                typingTimer
-              );
-
-              isTyping =
-                false;
-
-              currentText =
-                "";
-
-              resolve();
-
-              return;
-            }
-
-
-            line.textContent +=
-              text[index];
-
-            index++;
-
-
-            /*
-              Keep the newest text visible
-              while it is being written.
-            */
-
-            const windowElement =
-              document.getElementById(
-                "sceneTextWindow"
-              );
-
-            const overflow =
-              Math.max(
-                0,
-                sceneTextStream.scrollHeight -
-                windowElement.clientHeight
-              );
-
-
-            sceneTextStream.style.transform =
-              `translateY(-${overflow}px)`;
-
-
-          },
-          38
-        );
+      return;
 
     }
-  );
-
-}
 
 
-/* =========================================================
-   PLAY ONE BEAT
-   ========================================================= */
+    line.textContent +=
+      currentText[currentCharacter];
 
-async function playBeat(
-  index
-) {
+    currentCharacter++;
 
-  if (
-    sceneFinished
-  ) {
+    keepTextAtBottom();
 
-    return;
+
+    typingTimer =
+      window.setTimeout(
+        typeNextCharacter,
+        38
+      );
 
   }
 
 
-  if (
-    index >=
-    SCENE.length
-  ) {
+  typeNextCharacter();
+
+}
+
+
+/* ---------------------------------------------------------
+   FINISH CURRENT LINE
+   --------------------------------------------------------- */
+
+function finishCurrentLine() {
+
+  if (!isTyping) {
+    return;
+  }
+
+  clearTimeout(typingTimer);
+
+  const beat =
+    SCENE[currentBeat];
+
+  const lines =
+    sceneTextStream.querySelectorAll(".scene-line");
+
+  const currentLine =
+    lines[lines.length - 1];
+
+
+  if (currentLine && beat) {
+
+    currentLine.textContent =
+      beat.text;
+
+  }
+
+
+  currentCharacter =
+    currentText.length;
+
+  isTyping =
+    false;
+
+  keepTextAtBottom();
+
+  scheduleAutomaticAdvance();
+
+}
+
+
+/* ---------------------------------------------------------
+   AUTOMATIC ADVANCE
+   --------------------------------------------------------- */
+
+function scheduleAutomaticAdvance() {
+
+  clearTimeout(advanceTimer);
+
+  advanceTimer =
+    window.setTimeout(() => {
+
+      advanceScene();
+
+    }, 1500);
+
+}
+
+
+/* ---------------------------------------------------------
+   ADVANCE
+   --------------------------------------------------------- */
+
+function advanceScene() {
+
+  if (sceneFinished) {
+    return;
+  }
+
+  clearTimeout(advanceTimer);
+
+  currentBeat++;
+
+  if (currentBeat >= SCENE.length) {
 
     finishScene();
 
@@ -584,215 +451,170 @@ async function playBeat(
 
   }
 
-
-  currentBeat =
-    index;
-
-
-  const beat =
-    SCENE[index];
-
-
-  setSpeaker(
-    beat.speaker
-  );
-
-
-  /*
-    Visual and text belong
-    to the same story beat.
-  */
-
-  changeVisual(
-    beat.visual
-  );
-
-
-  await new Promise(
-    resolve =>
-      setTimeout(
-        resolve,
-        350
-      )
-  );
-
-
-  await typeText(
-    beat.text
-  );
-
-
-  /*
-    Small breathing space
-    before the next thought.
-  */
-
-  await new Promise(
-    resolve =>
-      setTimeout(
-        resolve,
-        1000
-      )
-  );
-
-
-  await playBeat(
-    index + 1
-  );
+  typeCurrentBeat();
 
 }
 
 
-/* =========================================================
-   START
-   ========================================================= */
+/* ---------------------------------------------------------
+   TAP
+   --------------------------------------------------------- */
 
-function startScene() {
+sceneTapArea.addEventListener(
+  "click",
+  () => {
 
-  if (
-    currentBeat !== -1
-  ) {
-
-    return;
-
-  }
-
-
-  playBeat(0);
-
-}
-
-
-/* =========================================================
-   FINISH
-   ========================================================= */
-
-function finishScene() {
-
-  sceneFinished =
-    true;
-
-
-  sceneTapHint.classList.remove(
-    "is-visible"
-  );
-
-
-  sceneSpeaker.textContent =
-    "SCENE COMPLETE";
-
-}
-
-
-/* =========================================================
-   TAP TO FINISH CURRENT LINE
-   ========================================================= */
-
-function handleTap() {
-
-  if (
-    !isTyping
-  ) {
-
-    return;
-
-  }
-
-
-  clearInterval(
-    typingTimer
-  );
-
-
-  /*
-    Find the newest line.
-  */
-
-  const lines =
-    sceneTextStream.children;
-
-
-  const newestLine =
-    lines[
-      lines.length - 1
-    ];
-
-
-  if (
-    newestLine
-  ) {
-
-    newestLine.textContent =
-      currentText;
-
-  }
-
-
-  isTyping =
-    false;
-
-  currentText =
-    "";
-
-}
-
-
-/* =========================================================
-   START WHEN THE THEATRE ENTERS VIEW
-   ========================================================= */
-
-const sceneObserver =
-  new IntersectionObserver(
-
-    entries => {
-
-      entries.forEach(
-        entry => {
-
-          if (
-            entry.isIntersecting &&
-            currentBeat === -1
-          ) {
-
-            startScene();
-
-          }
-
-        }
-      );
-
-    },
-
-    {
-      threshold: 0.35
+    if (sceneFinished) {
+      return;
     }
 
-  );
+
+    /*
+      First tap:
+      finish a line that is still typing.
+    */
+
+    if (isTyping) {
+
+      finishCurrentLine();
+
+      return;
+
+    }
 
 
-sceneObserver.observe(
-  document.getElementById(
-    "sceneStream"
-  )
+    /*
+      Second tap:
+      move immediately to the next beat.
+    */
+
+    advanceScene();
+
+  }
 );
 
 
-/* =========================================================
-   TAP
-   ========================================================= */
+/* ---------------------------------------------------------
+   START SCENE
+   --------------------------------------------------------- */
 
-document
-  .getElementById("sceneStream")
-  .addEventListener(
-    "pointerdown",
-    handleTap
+function startScene() {
+
+  if (sceneStarted) {
+    return;
+  }
+
+  sceneStarted = true;
+
+  sceneEnding.style.display =
+    "none";
+
+  currentBeat =
+    0;
+
+  typeCurrentBeat();
+
+}
+
+
+/* ---------------------------------------------------------
+   END SCENE
+   --------------------------------------------------------- */
+
+function finishScene() {
+
+  sceneFinished = true;
+
+  isTyping = false;
+
+  clearTimeout(typingTimer);
+
+  clearTimeout(advanceTimer);
+
+  sceneTapHint.style.opacity =
+    "0";
+
+  sceneStage.style.transition =
+    "opacity 900ms ease";
+
+  window.setTimeout(() => {
+
+    sceneStage.style.opacity =
+      "0";
+
+  }, 200);
+
+
+  window.setTimeout(() => {
+
+    sceneStage.style.display =
+      "none";
+
+    sceneEnding.style.display =
+      "block";
+
+    sceneEnding.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  }, 1100);
+
+}
+
+
+/* ---------------------------------------------------------
+   START WHEN THE THEATRE ENTERS VIEW
+   --------------------------------------------------------- */
+
+const sceneObserver =
+  new IntersectionObserver(
+    (entries) => {
+
+      entries.forEach((entry) => {
+
+        if (
+          entry.isIntersecting &&
+          !sceneStarted
+        ) {
+
+          startScene();
+
+        }
+
+      });
+
+    },
+    {
+      threshold: 0.25
+    }
   );
 
 
-/* =========================================================
-   READY
-   ========================================================= */
+sceneObserver.observe(sceneStage);
 
-console.log(
-  "CEEQWINN Scene Stream Mobile MVP loaded."
+
+/* ---------------------------------------------------------
+   SAFETY START
+   --------------------------------------------------------- */
+
+window.addEventListener(
+  "load",
+  () => {
+
+    /*
+      If the browser opens directly on the theatre
+      and IntersectionObserver doesn't fire immediately,
+      this guarantees the experiment still starts.
+    */
+
+    window.setTimeout(() => {
+
+      if (!sceneStarted) {
+        startScene();
+      }
+
+    }, 500);
+
+  }
 );
