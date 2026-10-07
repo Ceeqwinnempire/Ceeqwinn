@@ -1,151 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <title>CEEQWINN Scene Stream — Mobile MVP</title>
+  <title>CEEQWINN Scene Stream</title>
 
-  <link
-    rel="stylesheet"
-    href="LivingScrollMVP.css"
-  >
-
+  <link rel="stylesheet" href="SceneStreamMVP.css">
 </head>
 
 <body>
 
-<main>
-
-  <!-- =========================================
-       STORY INTRO
-       ========================================= -->
-
-  <header class="story-intro">
-
-    <div class="eyebrow">
-      CEEQWINN SCENE STREAM
-    </div>
-
+  <header class="site-header">
+    <div class="eyebrow">CEEQWINN THEATRE</div>
     <h1>The Curtain Was Already Open</h1>
-
-    <p>
-      A mobile-first experiment in narration,
-      dialogue, visual rhythm, and living text.
-    </p>
-
+    <p>A small Scene Stream experiment.</p>
   </header>
 
 
-  <!-- =========================================
-       SCENE STREAM
-       ========================================= -->
+  <main>
 
-  <section
-    class="scene-stream"
-    id="sceneStream"
-  >
+    <section class="scene-stream" id="sceneStream">
 
-    <div class="scene-stage">
+      <div class="scene-stage" id="sceneStage">
 
-      <!-- The single visual owns the phone. -->
-
-      <div class="scene-visual">
-
-        <img
-          id="sceneImage"
-          src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/Luxurious_royal_theatre_curtai%20(1).jpeg"
-          alt="A luxurious theatre curtain"
-        >
-
-      </div>
-
-
-      <!-- =====================================
-           THE LIVING TEXT WINDOW
-           ===================================== -->
-
-      <div
-        class="scene-reading-glass"
-        id="sceneReadingGlass"
-      >
-
-        <div
-          class="scene-speaker"
-          id="sceneSpeaker"
-        >
-          NARRATOR
+        <!-- THE VISUAL -->
+        <div class="scene-visual" id="sceneVisual">
+          <img
+            id="sceneImage"
+            src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/Luxurious_royal_theatre_curtai%20(1).jpeg"
+            alt="A luxurious theatre curtain"
+          >
         </div>
 
-        <div
-          class="scene-text-window"
-          id="sceneTextWindow"
-        >
+
+        <!-- THE READING GLASS -->
+        <div class="scene-reading-glass">
 
           <div
-            class="scene-text-stream"
-            id="sceneTextStream"
-          ></div>
+            class="scene-speaker"
+            id="sceneSpeaker"
+          >
+            THEATRE
+          </div>
 
+          <div
+            class="scene-text-window"
+            id="sceneTextWindow"
+          >
+            <div
+              class="scene-text-stream"
+              id="sceneTextStream"
+            ></div>
+          </div>
+
+        </div>
+
+
+        <!-- TAP AREA -->
+        <button
+          class="scene-tap-area"
+          id="sceneTapArea"
+          type="button"
+          aria-label="Continue scene"
+        ></button>
+
+
+        <div
+          class="scene-tap-hint"
+          id="sceneTapHint"
+        >
+          Tap to continue
         </div>
 
       </div>
 
-
-      <div
-        class="scene-tap-hint"
-        id="sceneTapHint"
-      >
-        Tap to continue
-      </div>
-
-    </div>
+    </section>
 
 
-    <!-- =========================================
-         INVISIBLE STORY TIMELINE
+    <section class="scene-ending" id="sceneEnding">
 
-         The theatre reads these beats.
-         The reader does not see them.
-         ========================================= -->
+      <div class="eyebrow">SCENE COMPLETE</div>
 
-    <div
-      class="scene-timeline"
-      id="sceneTimeline"
-    ></div>
+      <h2>The theatre gives the page back.</h2>
 
-  </section>
+      <p>
+        This is where the next part of the story could begin.
+      </p>
 
+    </section>
 
-  <!-- =========================================
-       END
-       ========================================= -->
-
-  <section class="story-ending">
-
-    <div class="eyebrow">
-      SCENE COMPLETE
-    </div>
-
-    <h2>The theatre gives the page back.</h2>
-
-    <p>
-      This is the point of the experiment:
-      words, character, image, and attention
-      moving as one scene.
-    </p>
-
-  </section>
-
-</main>
+  </main>
 
 
-<script src="LivingScrollMVP.js"></script>
+  <script src="SceneStreamMVP.js"></script>
 
 </body>
 </html>
