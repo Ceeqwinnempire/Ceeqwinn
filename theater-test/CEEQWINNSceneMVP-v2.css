@@ -1,0 +1,851 @@
+/* =========================================================
+   CEEQWINN SCENE MVP v2
+   PHONE-FIRST THEATRE
+   PROGRESSIVE ENHANCEMENT
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  background: #000;
+
+  /*
+    Older browsers understand this.
+    Modern browsers can receive smooth scrolling below.
+  */
+  scroll-behavior: auto;
+}
+
+@supports (scroll-behavior: smooth) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+
+  min-width: 320px;
+
+  background: #000;
+  color: #f5f0e8;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+}
+
+button {
+  font: inherit;
+}
+
+.story-page {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.story-scene {
+  position: relative;
+
+  width: 100%;
+
+  /*
+    Safe baseline for old browsers.
+  */
+  min-height: 100vh;
+
+  background: #000;
+}
+
+/*
+  Modern viewport units are an enhancement.
+*/
+@supports (min-height: 100svh) {
+  .story-scene {
+    min-height: 100svh;
+  }
+}
+
+.scene-phone {
+  position: relative;
+
+  width: 100%;
+  max-width: 480px;
+
+  min-height: 100vh;
+
+  margin: 0 auto;
+
+  background: #080706;
+
+  overflow: hidden;
+}
+
+@supports (min-height: 100svh) {
+  .scene-phone {
+    min-height: 100svh;
+  }
+}
+
+.scene-stage {
+  position: relative;
+
+  width: 100%;
+
+  height: 100vh;
+  min-height: 560px;
+
+  overflow: hidden;
+
+  background: #080706;
+}
+
+@supports (height: 100svh) {
+  .scene-stage {
+    height: 100svh;
+  }
+}
+
+/* =========================================================
+   VISUAL LAYER
+   ========================================================= */
+
+.scene-visual {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  z-index: 1;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  background: #080706;
+}
+
+.scene-image {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: contain;
+  object-position: center center;
+
+  background: #080706;
+
+  opacity: 0;
+
+  /*
+    Crossfade remains part of the theatre.
+  */
+  transition:
+    opacity 650ms ease;
+}
+
+.scene-image-a {
+  opacity: 1;
+  z-index: 1;
+}
+
+.scene-image-b {
+  z-index: 2;
+}
+
+/* =========================================================
+   ATMOSPHERE
+   ========================================================= */
+
+.scene-atmosphere {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  z-index: 3;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.02) 0%,
+      rgba(0, 0, 0, 0.03) 48%,
+      rgba(0, 0, 0, 0.16) 70%,
+      rgba(0, 0, 0, 0.48) 100%
+    );
+}
+
+/* =========================================================
+   NARRATION GLASS
+   ========================================================= */
+
+.narration-glass {
+  position: absolute;
+
+  left: 12px;
+  right: 12px;
+
+  bottom: 72px;
+
+  z-index: 8;
+
+  opacity: 0;
+
+  transform:
+    translateY(28px)
+    scaleY(0.08);
+
+  transform-origin: bottom center;
+
+  pointer-events: none;
+
+  transition:
+    opacity 450ms ease,
+    transform 650ms cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+@supports (bottom: env(safe-area-inset-bottom)) {
+  .narration-glass {
+    bottom:
+      calc(
+        72px + env(safe-area-inset-bottom)
+      );
+  }
+}
+
+.story-scene.is-active .narration-glass {
+  opacity: 1;
+
+  transform:
+    translateY(0)
+    scaleY(1);
+}
+
+.narration-inner {
+  position: relative;
+
+  width: 100%;
+
+  padding:
+    15px
+    16px
+    17px;
+
+  border:
+    1px solid
+    rgba(199, 168, 106, 0.38);
+
+  border-radius: 3px;
+
+  /*
+    This is the permanent glass fallback.
+    It does NOT depend on blur.
+  */
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(17, 15, 13, 0.72),
+      rgba(9, 8, 7, 0.82)
+    );
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.30),
+    0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+
+/*
+  If the browser supports backdrop-filter,
+  give it the richer glass treatment.
+
+  If it doesn't, the glass above remains intact.
+*/
+@supports (
+  backdrop-filter: blur(8px)
+) {
+
+  .narration-inner {
+    background:
+      linear-gradient(
+        to bottom,
+        rgba(17, 15, 13, 0.52),
+        rgba(9, 8, 7, 0.68)
+      );
+
+    backdrop-filter:
+      blur(8px);
+  }
+
+}
+
+/*
+  WebKit enhancement.
+*/
+@supports (
+  -webkit-backdrop-filter: blur(8px)
+) {
+
+  .narration-inner {
+    -webkit-backdrop-filter:
+      blur(8px);
+  }
+
+}
+
+.narration-label {
+  min-height: 12px;
+
+  margin-bottom: 8px;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  letter-spacing: 0.24em;
+
+  text-transform: uppercase;
+
+  color: #c7a86a;
+
+  opacity: 0.9;
+}
+
+/* =========================================================
+   NARRATION WINDOW
+   ========================================================= */
+
+.narration-window {
+  position: relative;
+
+  width: 100%;
+
+  height: 5.85em;
+
+  overflow: hidden;
+}
+
+/*
+  Mask is an enhancement only.
+  The actual narration remains visible without it.
+*/
+@supports (
+  -webkit-mask-image:
+  linear-gradient(
+    to bottom,
+    transparent,
+    black
+  )
+) {
+
+  .narration-window {
+    -webkit-mask-image:
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 0.35) 10%,
+        black 23%,
+        black 100%
+      );
+  }
+
+}
+
+@supports (
+  mask-image:
+  linear-gradient(
+    to bottom,
+    transparent,
+    black
+  )
+) {
+
+  .narration-window {
+    mask-image:
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 0, 0, 0.35) 10%,
+        black 23%,
+        black 100%
+      );
+  }
+
+}
+
+.narration-stream {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  top: 0;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: flex-start;
+
+  gap: 0.35em;
+
+  /*
+    Keep the same visual movement,
+    but don't force the browser to optimize
+    the element continuously.
+  */
+  transition:
+    transform 220ms ease;
+}
+
+.narration-line {
+  flex: 0 0 auto;
+
+  margin: 0;
+
+  font-size:
+    clamp(
+      18px,
+      5vw,
+      23px
+    );
+
+  line-height: 1.28;
+
+  letter-spacing: -0.008em;
+
+  color: #f4efe7;
+
+  text-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.8);
+
+  opacity: 1;
+
+  transition:
+    opacity 450ms ease;
+}
+
+.narration-line.is-old {
+  opacity: 0.34;
+}
+
+/* =========================================================
+   COMPLETION SIGNAL
+   ========================================================= */
+
+.scene-complete-mark {
+  position: absolute;
+
+  right: 13px;
+  bottom: 13px;
+
+  width: 7px;
+  height: 7px;
+
+  transform:
+    rotate(45deg);
+
+  border:
+    1px solid
+    rgba(199, 168, 106, 0.78);
+
+  background:
+    rgba(199, 168, 106, 0.12);
+
+  opacity: 0;
+
+  box-shadow:
+    0 0 0 rgba(199, 168, 106, 0);
+
+  transition:
+    opacity 500ms ease,
+    box-shadow 700ms ease;
+
+  pointer-events: none;
+}
+
+.story-scene.scene-finished
+.scene-complete-mark {
+
+  opacity: 1;
+
+  animation:
+    theatre-pulse
+    1800ms
+    ease-in-out
+    infinite;
+}
+
+@keyframes theatre-pulse {
+
+  0%,
+  100% {
+    opacity: 0.42;
+
+    box-shadow:
+      0 0 0
+      rgba(199, 168, 106, 0);
+  }
+
+  50% {
+    opacity: 1;
+
+    box-shadow:
+      0 0 12px
+      rgba(199, 168, 106, 0.42);
+  }
+
+}
+
+/* =========================================================
+   SCENE INTERACTION
+   ========================================================= */
+
+.scene-interaction {
+  position: absolute;
+
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  z-index: 20;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+.scene-hint {
+  position: absolute;
+
+  left: 50%;
+
+  bottom: 8px;
+
+  z-index: 25;
+
+  transform:
+    translateX(-50%);
+
+  display: flex;
+
+  gap: 4px;
+
+  align-items: center;
+
+  white-space: nowrap;
+
+  padding:
+    5px
+    9px;
+
+  border-radius: 999px;
+
+  background:
+    rgba(0, 0, 0, 0.38);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 8px;
+
+  letter-spacing: 0.14em;
+
+  text-transform: uppercase;
+
+  color:
+    rgba(255, 255, 255, 0.62);
+
+  pointer-events: none;
+
+  transition:
+    opacity 350ms ease;
+}
+
+@supports (bottom: env(safe-area-inset-bottom)) {
+  .scene-hint {
+    bottom:
+      calc(
+        8px + env(safe-area-inset-bottom)
+      );
+  }
+}
+
+.scene-hint .hint-scroll {
+  display: none;
+}
+
+.story-scene.scene-finished
+.hint-tap {
+  display: none;
+}
+
+.story-scene.scene-finished
+.hint-scroll {
+  display: inline;
+}
+
+/* =========================================================
+   SCENE END
+   ========================================================= */
+
+.scene-end {
+  position: relative;
+
+  width: 100%;
+
+  min-height: 30vh;
+
+  padding:
+    48px
+    28px
+    100px;
+
+  text-align: center;
+
+  background:
+    linear-gradient(
+      to bottom,
+      #080706,
+      #000
+    );
+
+  opacity: 0;
+
+  transform:
+    translateY(15px);
+
+  transition:
+    opacity 650ms ease,
+    transform 650ms ease;
+}
+
+.story-scene.scene-finished
+.scene-end {
+
+  opacity: 1;
+
+  transform:
+    translateY(0);
+}
+
+.scene-end-line {
+  width: 45px;
+  height: 1px;
+
+  margin:
+    0 auto 20px;
+
+  background:
+    rgba(199, 168, 106, 0.55);
+}
+
+.scene-end-label {
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  font-size: 8px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.24em;
+
+  color: #c7a86a;
+}
+
+.scene-end-text {
+  margin-top: 12px;
+
+  font-size: 15px;
+
+  line-height: 1.6;
+
+  color: #aaa39a;
+}
+
+.scene-end-arrow {
+  margin-top: 30px;
+
+  font-size: 20px;
+
+  color: #c7a86a;
+
+  animation:
+    gentle-bob
+    1800ms
+    ease-in-out
+    infinite;
+}
+
+/* =========================================================
+   SCENE SPACING
+   ========================================================= */
+
+.story-scene + .story-scene {
+  padding-top: 12vh;
+}
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
+
+@keyframes gentle-bob {
+
+  0%,
+  100% {
+    transform:
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateY(5px);
+  }
+
+}
+
+/* =========================================================
+   LARGER PHONES
+   ========================================================= */
+
+@media (min-width: 390px) {
+
+  .narration-glass {
+    left: 14px;
+    right: 14px;
+  }
+
+  .narration-inner {
+    padding:
+      16px
+      18px
+      18px;
+  }
+
+}
+
+/* =========================================================
+   SHORT SCREENS
+   ========================================================= */
+
+@media (max-height: 650px) {
+
+  .scene-stage {
+    min-height: 520px;
+  }
+
+  .narration-glass {
+    bottom: 54px;
+  }
+
+  @supports (bottom: env(safe-area-inset-bottom)) {
+
+    .narration-glass {
+      bottom:
+        calc(
+          54px + env(safe-area-inset-bottom)
+        );
+    }
+
+  }
+
+  .narration-window {
+    height: 5.2em;
+  }
+
+  .narration-line {
+    font-size: 17px;
+  }
+
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .scene-image,
+  .narration-glass,
+  .narration-stream,
+  .scene-end {
+    transition: none;
+  }
+
+  .scene-end-arrow,
+  .scene-complete-mark {
+    animation: none;
+  }
+
+}
+
+/* =========================================================
+   DESKTOP SURROUND
+   ========================================================= */
+
+@media (min-width: 481px) {
+
+  body {
+    background: #000;
+  }
+
+  .scene-phone {
+    box-shadow:
+      0 0 70px
+      rgba(0, 0, 0, 0.8);
+  }
+
+}
