@@ -700,3 +700,171 @@ button:focus-visible {
     transition: none;
   }
 }
+```css
+/* ==================================================
+   CEEQWINN THEATRE 2 — REACTION + PRESENT PORTRAITS
+   These rules belong ONLY to Autoplay v1.
+   ================================================== */
+
+.dialogue-autoplay-v1 .autoplay-stage {
+  isolation: isolate;
+}
+
+/* Temporary silent reaction portrait */
+.dialogue-autoplay-v1 .autoplay-reaction {
+  position: absolute;
+  z-index: 2;
+  top: 20%;
+  left: 12px;
+  width: 82px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(7px);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease,
+    visibility 220ms ease;
+  pointer-events: none;
+}
+
+.dialogue-autoplay-v1 .autoplay-reaction.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dialogue-autoplay-v1 .autoplay-reaction-frame {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid var(--auto-gold);
+  background: #21151a;
+  box-shadow: 0 7px 22px rgba(0, 0, 0, 0.35);
+}
+
+.dialogue-autoplay-v1 .autoplay-reaction-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 24%;
+}
+
+.dialogue-autoplay-v1 .autoplay-reaction-name {
+  display: block;
+  margin-top: 6px;
+  color: #f1dca6;
+  font: 9px/1.4 Arial, sans-serif;
+  letter-spacing: 0.1em;
+  text-shadow: 0 1px 7px #000;
+}
+
+/* PRESENT row underneath Theatre 2 */
+.dialogue-autoplay-v1 .autoplay-present {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 13px 3px 3px;
+}
+
+.dialogue-autoplay-v1 .autoplay-present-label {
+  flex: 0 0 auto;
+  color: rgba(255, 239, 216, 0.55);
+  font: 8px/1.5 Arial, sans-serif;
+  letter-spacing: 0.17em;
+}
+
+.dialogue-autoplay-v1 .autoplay-portrait-list {
+  display: flex;
+  flex: 1 1 150px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.dialogue-autoplay-v1 .autoplay-portrait {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  color: #c4b7b7;
+  background: transparent;
+  font: inherit;
+}
+
+.dialogue-autoplay-v1 .autoplay-portrait img {
+  display: block;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  border: 1px solid rgba(201, 164, 94, 0.35);
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 25%;
+  background: #26171e;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.dialogue-autoplay-v1 .autoplay-portrait.is-speaking img {
+  border-color: #f1dca6;
+  box-shadow: 0 0 0 2px rgba(201, 164, 94, 0.17);
+}
+
+.dialogue-autoplay-v1 .autoplay-portrait span {
+  font: 10px/1.4 Arial, sans-serif;
+  white-space: nowrap;
+}
+
+.dialogue-autoplay-v1 .autoplay-portrait.is-speaking span {
+  color: #f1dca6;
+}
+
+/* Restart remains separate from the original theatre controls */
+.dialogue-autoplay-v1 .autoplay-restart {
+  display: block;
+  margin: 7px 0 0 auto;
+  padding: 6px 0;
+  border: 0;
+  color: rgba(255, 238, 214, 0.76);
+  background: transparent;
+  font: 11px Arial, sans-serif;
+  cursor: pointer;
+}
+
+.dialogue-autoplay-v1 .autoplay-restart:hover {
+  color: #f1dca6;
+}
+
+@media (max-width: 360px) {
+  .dialogue-autoplay-v1 .autoplay-reaction {
+    left: 9px;
+    width: 68px;
+  }
+
+  .dialogue-autoplay-v1 .autoplay-present {
+    gap: 9px;
+  }
+
+  .dialogue-autoplay-v1 .autoplay-portrait-list {
+    gap: 9px;
+  }
+
+  .dialogue-autoplay-v1 .autoplay-portrait img {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialogue-autoplay-v1 .autoplay-reaction,
+  .dialogue-autoplay-v1 .autoplay-portrait img {
+    transition: none;
+  }
+}
+```
