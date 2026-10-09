@@ -1,34 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#100b0d">
-  <title>CEEQWINN — Dialogue Theatre Combined v1</title>
+  <title>CEEQWINN — Dialogue Theatre MVP v1</title>
   <link rel="stylesheet" href="CEEQWINNDialogueMVP-v1.css">
-  <link rel="stylesheet" href="CEEQWINNDialogueMVP-Autoplay-v1.css">
-  <style>
-    .combined-heading {
-      max-width: 480px;
-      margin: 28px auto 12px;
-      padding: 0 12px;
-      color: #f1dca6;
-      font: 10px/1.6 Arial, sans-serif;
-      letter-spacing: .15em;
-    }
-    .autoplay-section {
-      margin-top: 52px;
-      padding-top: 26px;
-      border-top: 1px solid rgba(201,164,94,.25);
-    }
-  </style>
 </head>
 <body>
-
-  <!-- THEATRE 1: ORIGINAL DIALOGUE MVP v1 -->
   <main class="dialogue-theatre" id="dialogueTheatre">
-    <section class="dialogue-scene" aria-label="Original dialogue theatre">
+    <section class="dialogue-scene" aria-label="Dialogue theatre scene">
       <div class="scene-stage">
         <div class="stage-image stage-image-a" id="stageImageA"></div>
         <div class="stage-image stage-image-b" id="stageImageB"></div>
@@ -74,8 +55,8 @@
           </div>
         </div>
 
-        <button class="stage-advance" id="stageAdvance" type="button"
-          aria-label="Continue dialogue">
+        <button class="stage-advance" id="stageAdvance"
+          type="button" aria-label="Continue dialogue">
           <span class="advance-chevron">›</span>
         </button>
       </div>
@@ -95,59 +76,44 @@
     </section>
   </main>
 
-  <!-- THEATRE 2: AUTOPLAY WITH PROGRESSIVE TYPING -->
-  <section class="autoplay-section" id="autoplaySection">
-    <div class="combined-heading">
-      CEEQWINN · THEATRE 02 · AUTOPLAY EXPERIMENT
+<!-- CEEQWINN DIALOGUE MVP — AUTOPLAY v1 -->
+<section class="dialogue-autoplay-v1" id="dialogueAutoplayV1">
+  <div class="autoplay-heading">
+    <span>CEEQWINN</span>
+    <span>DIALOGUE THEATRE · AUTOPLAY v1</span>
+  </div>
+
+  <div class="autoplay-stage" id="autoplayStage">
+    <div class="autoplay-image" id="autoplayImage"></div>
+    <div class="autoplay-shade"></div>
+
+    <div class="autoplay-caption">
+      A conversation after the rain.
     </div>
 
-    <main class="dialogue-autoplay-v1" id="dialogueAutoplayV1">
-      <div class="autoplay-heading">
-        <span>CEEQWINN</span>
-        <span>AUTOMATIC DIALOGUE</span>
+    <div class="autoplay-glass" id="autoplayGlass">
+      <div class="autoplay-speaker" id="autoplaySpeaker">LEXIS</div>
+      <p class="autoplay-text" id="autoplayText"></p>
+
+      <div class="autoplay-footer">
+        <span id="autoplayCounter">01 / 08</span>
+        <span id="autoplayHint">TAP TO REVEAL</span>
       </div>
+    </div>
 
-      <div class="autoplay-stage" id="autoplayStage">
-        <div class="autoplay-image" id="autoplayImage"></div>
-        <div class="autoplay-shade"></div>
+    <button
+      class="autoplay-advance"
+      id="autoplayAdvance"
+      type="button"
+      aria-label="Reveal text or continue dialogue"
+    >›</button>
+  </div>
 
-        <div class="autoplay-caption">
-          A conversation after the rain.
-        </div>
+  <div class="autoplay-status" id="autoplayStatus">
+    Automatic dialogue · Progressive typing
+  </div>
+</section>
 
-        <div class="autoplay-reaction" id="autoplayReaction">
-          <img id="autoplayReactionImage" alt="">
-          <span id="autoplayReactionName"></span>
-        </div>
-
-        <div class="autoplay-glass">
-          <div class="autoplay-speaker" id="autoplaySpeaker">LEXIS</div>
-          <p class="autoplay-text" id="autoplayText" aria-live="polite"></p>
-
-          <div class="autoplay-footer">
-            <span id="autoplayCounter">01 / 08</span>
-            <span id="autoplayHint">TYPING…</span>
-          </div>
-        </div>
-
-        <button class="autoplay-advance" id="autoplayAdvance"
-          type="button" aria-label="Reveal text or continue">
-          ›
-        </button>
-      </div>
-
-      <div class="autoplay-portraits" id="autoplayPortraits"></div>
-
-      <div class="autoplay-bottom">
-        <span id="autoplayStatus">Automatic dialogue · Progressive typing</span>
-        <button id="autoplayRestart" type="button">↺ Restart</button>
-      </div>
-    </main>
-  </section>
-
-  <!-- Keep the original controller. Do not merge the two controllers. -->
   <script src="CEEQWINNDialogueMVP-v1.js"></script>
-  <script src="CEEQWINNDialogueMVP-Autoplay-v1.js"></script>
 </body>
 </html>
-
