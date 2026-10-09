@@ -1,8 +1,17 @@
 
-/* ==================================================
-   CEEQWINN DIALOGUE MVP — AUTOPLAY v1
-   Independent Theatre 2 controller
-   ================================================== */
+/* =========================================================
+   CEEQWINN DIALOGUE THEATRE — AUTOPLAY v1
+   Complete replacement script
+
+   BEHAVIOUR
+   1. Dialogue starts typing automatically.
+   2. Tap during typing: reveal the complete line.
+   3. Tap again: advance immediately.
+   4. No taps: advance automatically after the reading pause.
+   5. Reaction shots receive extra display time.
+   6. PRESENT portraits show who is in the scene.
+   7. Restart returns to the first line.
+   ========================================================= */
 
 (function () {
   "use strict";
@@ -10,18 +19,34 @@
   const root = document.getElementById("dialogueAutoplayV1");
   if (!root) return;
 
+  const IMAGE_BASE =
+    "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/";
+
   const characters = {
     lexis: {
       name: "LEXIS",
-      main: "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_militarily.jpg.jpeg",
-      portrait: "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/lexis_default.png",
-      reaction: "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_street.jpg.jpeg"
+      main:
+        IMAGE_BASE +
+        "characters/lexis/outfits/Lexis_Azunna_militarily.jpg.jpeg",
+      portrait:
+        IMAGE_BASE +
+        "characters/lexis/outfits/lexis_default.png",
+      reaction:
+        IMAGE_BASE +
+        "characters/lexis/outfits/Lexis_Azunna_street.jpg.jpeg"
     },
+
     mara: {
       name: "MARA",
-      main: "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/young_woman_rainy_atmosphere_c%20(2).jpeg",
-      portrait: "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/young_woman_rainy_atmosphere_c.jpeg",
-      reaction: "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/young_woman_rainy_atmosphere_c.jpeg"
+      main:
+        IMAGE_BASE +
+        "young_woman_rainy_atmosphere_c%20(2).jpeg",
+      portrait:
+        IMAGE_BASE +
+        "young_woman_rainy_atmosphere_c.jpeg",
+      reaction:
+        IMAGE_BASE +
+        "young_woman_rainy_atmosphere_c.jpeg"
     }
   };
 
@@ -36,7 +61,8 @@
     },
     {
       speaker: "mara",
-      text: "I may have told somebody something I was supposed to keep secret.",
+      text:
+        "I may have told somebody something I was supposed to keep secret.",
       reaction: "lexis",
       reactionLabel: "LEXIS · REACTION",
       reactionDuration: 1700
@@ -47,7 +73,8 @@
     },
     {
       speaker: "mara",
-      text: "When you repeat it like that, it sounds much worse.",
+      text:
+        "When you repeat it like that, it sounds much worse.",
       reaction: "lexis",
       reactionLabel: "LEXIS · UNIMPRESSED",
       reactionDuration: 1800
@@ -65,7 +92,8 @@
     },
     {
       speaker: "lexis",
-      text: "Sit down. We are going to discuss your definition of a secret."
+      text:
+        "Sit down. We are going to discuss your definition of a secret."
     }
   ];
 
@@ -78,9 +106,9 @@
     reactionExtraPause: 500
   };
 
-  function $(id) {
+  const $ = function (id) {
     return root.querySelector("#" + id);
-  }
+  };
 
   const el = {
     stage: $("autoplayStage"),
@@ -98,7 +126,6 @@
     portraits: $("autoplayPortraitList")
   };
 
-  /* Fail safely if the required Theatre 2 markup is incomplete. */
   if (
     !el.stage ||
     !el.image ||
@@ -114,57 +141,107 @@
     !el.reactionName ||
     !el.portraits
   ) {
+    console.error(
+      "CEEQWINN Autoplay: one or more required HTML elements are missing."
+    );
     return;
   }
 
   let index = 0;
-  let lastSpeaker = null;
   let typing = false;
+  let lineComplete = false;
   let finished = false;
   let paused = false;
+  let revealedByTap = false;
 
-  let typingTimer = null;
-  let advanceTimer = null;
+  let typeTimer = null;
+  let nextTimer = null;
   let reactionTimer = null;
+  let reactionEndTimer = null;
 
   let typeToken = 0;
   let sceneToken = 0;
   let lastTap = 0;
+  let currentText = "";
 
-  function clearTimers() {
-    clearTimeout(typingTimer);
-    clearTimeout(advanceTimer);
-    clearTimeout(reactionTimer);
+  const imageCache = Object.create(null);
 
-    typingTimer = null;
-    advanceTimer = null;
-    reactionTimer = null;
+  function preloadImage(url) {
+    if (!url) return Promise.resolve(false);
+
+    if (imageCache[url]) {
+      return imageCache[url];
+    }
+
+    imageCache[url] = new Promise(function (resolve) {
+      const img = new Image();
+
+      img.onload = function () {
+        resolve(true);
+      };
+
+      img.onerror = function () {
+        resolve(false);
+      };
+
+      img.src = url;
+    });
+
+    return imageCache[url];
   }
 
-  function readingPause(line) {
-    const words = line.trim().split(/\s+/).length;
-
-    return Math.min(
-      TYPE.maximumReadingPause,
-      Math.max(TYPE.minimumReadingPause, words * 190)
-    );
+  function clearTypeTimer() {
+    if (typeTimer !== null) {
+      clearTimeout(typeTimer);
+      typeTimer = null;
+    }
   }
 
-  /* ------------------------------------------
-     Main speaking character
-     ------------------------------------------ */
+  function clearNextTimer() {
+    if (nextTimer !== null) {
+      clearTimeout(nextTimer);
+      nextTimer = null;
+    }
+  }
 
-  function showCharacter(key) {
-    const character = characters[key];
+  function clearReactionTimers() {
+    if (reactionTimer !== null) {
+      clearTimeout(reactionTimer);
+      reactionTimer = null;
+    }
+
+    if (reactionEndTimer !== null) {
+      clearTimeout(reactionEndTimer);
+      reactionEndTimer = null;
+    }
+  }
+
+  function clearAllTimers() {
+    clearTypeTimer();
+    clearNextTimer();
+    clearReactionTimers();
+  }
+
+  function hideReaction() {
+    clearReactionTimers();
+
+    el.reaction.classList.remove("is-visible");
+    el.reaction.setAttribute("aria-hidden", "true");
+  }
+
+  function showMainImage(characterKey, token) {
+    const character = characters[characterKey];
     if (!character) return;
-
-    const token = sceneToken;
-    const preloader = new Image();
 
     el.image.classList.add("is-changing");
 
-    preloader.onload = function () {
-      if (token !== sceneToken) return;
+    preloadImage(character.main).then(function (loaded) {
+      if (token !== sceneToken || !loaded) {
+        if (token === sceneToken) {
+          el.image.classList.remove("is-changing");
+        }
+        return;
+      }
 
       el.image.style.backgroundImage =
         'url("' + character.main + '")';
@@ -174,238 +251,299 @@
           el.image.classList.remove("is-changing");
         }
       });
-    };
-
-    preloader.onerror = function () {
-      if (token !== sceneToken) return;
-
-      el.image.classList.remove("is-changing");
-      el.status.textContent =
-        "Image unavailable · Dialogue continues";
-    };
-
-    preloader.src = character.main;
-
-    if (preloader.complete && preloader.naturalWidth > 0) {
-      el.image.style.backgroundImage =
-        'url("' + character.main + '")';
-
-      el.image.classList.remove("is-changing");
-    }
+    });
   }
-
-  /* ------------------------------------------
-     PRESENT portraits
-     ------------------------------------------ */
 
   function buildPortraits() {
     el.portraits.replaceChildren();
 
     Object.keys(characters).forEach(function (key) {
       const character = characters[key];
-      const item = document.createElement("div");
+
+      const portrait = document.createElement("div");
+      portrait.className = "autoplay-portrait";
+      portrait.dataset.character = key;
+
       const img = document.createElement("img");
-      const name = document.createElement("span");
-
-      item.className = "autoplay-portrait";
-      item.dataset.character = key;
-
-      img.src = character.portrait;
-      img.alt = "";
+      img.alt = character.name;
       img.loading = "eager";
+      img.decoding = "async";
+      img.src = character.portrait;
 
-      name.textContent = character.name;
+      const label = document.createElement("span");
+      label.textContent = character.name;
 
-      item.appendChild(img);
-      item.appendChild(name);
-      el.portraits.appendChild(item);
+      portrait.appendChild(img);
+      portrait.appendChild(label);
+      el.portraits.appendChild(portrait);
     });
   }
 
-  function updatePortraits() {
-    el.portraits
-      .querySelectorAll(".autoplay-portrait")
-      .forEach(function (item) {
-        item.classList.toggle(
-          "is-speaking",
-          item.dataset.character === lastSpeaker
-        );
-      });
+  function updatePortraits(speakerKey) {
+    const portraits =
+      el.portraits.querySelectorAll(".autoplay-portrait");
+
+    portraits.forEach(function (portrait) {
+      const speaking =
+        portrait.dataset.character === speakerKey;
+
+      portrait.classList.toggle("is-speaking", speaking);
+
+      if (speaking) {
+        portrait.setAttribute("aria-current", "true");
+      } else {
+        portrait.removeAttribute("aria-current");
+      }
+    });
   }
 
-  /* ------------------------------------------
-     Silent reaction portrait
-     ------------------------------------------ */
-
-  function hideReaction() {
-    clearTimeout(reactionTimer);
-    reactionTimer = null;
-
-    el.reaction.classList.remove("is-visible");
-    el.reaction.setAttribute("aria-hidden", "true");
-  }
-
-  function showReaction(beat, token) {
+  function showReaction(line, token) {
     hideReaction();
 
-    if (!beat.reaction || !characters[beat.reaction]) {
+    if (!line.reaction || !characters[line.reaction]) {
       return;
     }
 
-    const character = characters[beat.reaction];
-
-    el.reactionImage.onload = function () {
-      if (token !== sceneToken) return;
-
-      el.reaction.classList.add("is-visible");
-      el.reaction.setAttribute("aria-hidden", "false");
-    };
-
-    el.reactionImage.onerror = function () {
-      if (token !== sceneToken) return;
-      hideReaction();
-    };
-
-    el.reactionName.textContent =
-      beat.reactionLabel || character.name + " · REACTION";
+    const character = characters[line.reaction];
 
     el.reactionImage.alt = character.name + " reaction";
-    el.reactionImage.src = character.reaction;
+    el.reactionName.textContent =
+      line.reactionLabel || character.name + " · REACTION";
 
-    /* Cached images can already be ready. */
-    if (
-      el.reactionImage.complete &&
-      el.reactionImage.naturalWidth > 0
-    ) {
+    preloadImage(character.reaction).then(function (loaded) {
+      if (token !== sceneToken || !loaded || paused) return;
+
+      el.reactionImage.src = character.reaction;
+
       el.reaction.classList.add("is-visible");
       el.reaction.setAttribute("aria-hidden", "false");
-    }
 
-    reactionTimer = setTimeout(function () {
-      if (token === sceneToken) {
-        hideReaction();
-      }
-    }, beat.reactionDuration || 1800);
+      reactionEndTimer = setTimeout(function () {
+        if (token !== sceneToken) return;
+
+        el.reaction.classList.remove("is-visible");
+        el.reaction.setAttribute("aria-hidden", "true");
+        reactionEndTimer = null;
+      }, line.reactionDuration || 1700);
+    });
   }
 
-  /* ------------------------------------------
-     Automatic progressive typing
-     ------------------------------------------ */
+  function getReadingPause(line) {
+    const textLength = line.text.length;
 
-  function scheduleNext(line) {
-    clearTimeout(advanceTimer);
+    const pause = Math.max(
+      TYPE.minimumReadingPause,
+      Math.min(
+        TYPE.maximumReadingPause,
+        textLength * 42
+      )
+    );
 
-    const token = sceneToken;
-    const beat = story[index];
+    return pause +
+      (line.reaction ? TYPE.reactionExtraPause : 0);
+  }
 
-    advanceTimer = setTimeout(function () {
-      if (token !== sceneToken || paused || finished) {
-        return;
-      }
+  function updateHint() {
+    if (finished) {
+      el.hint.textContent = "TAP TO REPLAY";
+    } else if (typing) {
+      el.hint.textContent = "TAP TO REVEAL";
+    } else {
+      el.hint.textContent = "TAP TO CONTINUE";
+    }
+  }
+
+  function scheduleNext(line, token) {
+    clearNextTimer();
+
+    if (paused || finished || token !== sceneToken) return;
+
+    nextTimer = setTimeout(function () {
+      nextTimer = null;
+
+      if (paused || finished || token !== sceneToken) return;
 
       render(index + 1);
-    }, readingPause(line) +
-       (beat.reaction ? TYPE.reactionExtraPause : 0));
+    }, getReadingPause(line));
+  }
+
+  function revealWholeLine() {
+    clearTypeTimer();
+
+    typeToken++;
+
+    typing = false;
+    lineComplete = true;
+    revealedByTap = true;
+
+    el.text.textContent = currentText;
+
+    updateHint();
+
+    el.status.textContent =
+      "Line revealed · Tap again to continue";
+
+    const line = story[index];
+
+    if (line) {
+      scheduleNext(line, sceneToken);
+    }
   }
 
   function typeLine(line, token) {
-    let position = 0;
+    clearTypeTimer();
+
+    typeToken++;
+
+    const thisTypeToken = typeToken;
+    currentText = line.text;
 
     typing = true;
+    lineComplete = false;
+    revealedByTap = false;
+
     el.text.textContent = "";
-    el.hint.textContent = "TYPING…";
+    updateHint();
+
+    let characterIndex = 0;
 
     function typeNextCharacter() {
-      if (token !== typeToken || paused || finished) {
+      if (
+        paused ||
+        token !== sceneToken ||
+        thisTypeToken !== typeToken
+      ) {
         return;
       }
 
-      if (position >= line.length) {
+      if (characterIndex >= currentText.length) {
         typing = false;
-        el.hint.textContent = "PLAYING AUTOMATICALLY";
-        scheduleNext(line);
+        lineComplete = true;
+
+        el.text.textContent = currentText;
+        updateHint();
+
+        el.status.textContent =
+          "Reading dialogue · Continuing automatically";
+
+        scheduleNext(line, token);
         return;
       }
 
-      const character = line.charAt(position);
+      const character = currentText.charAt(characterIndex);
 
       el.text.textContent += character;
-      position += 1;
+      characterIndex++;
 
       let delay = TYPE.characterDelay;
 
-      if (".!?".includes(character)) {
-        delay = TYPE.sentencePause;
-      } else if (",;:".includes(character)) {
-        delay = TYPE.punctuationPause;
+      if (/[,.!?;:]/.test(character)) {
+        delay += TYPE.punctuationPause;
       }
 
-      typingTimer = setTimeout(typeNextCharacter, delay);
+      if (/[.!?]/.test(character)) {
+        delay += TYPE.sentencePause;
+      }
+
+      typeTimer = setTimeout(typeNextCharacter, delay);
     }
 
+    /* Typing begins automatically; no tap is required. */
     typeNextCharacter();
   }
 
-  /* ------------------------------------------
-     Render one dialogue beat
-     ------------------------------------------ */
-
-  function render(nextIndex) {
-    clearTimers();
+  function finish() {
+    clearAllTimers();
     hideReaction();
 
-    sceneToken += 1;
-    typeToken += 1;
+    typing = false;
+    lineComplete = true;
+    finished = true;
+    revealedByTap = false;
+
+    el.hint.textContent = "TAP TO REPLAY";
+    el.status.textContent =
+      "Scene complete · Tap to watch again";
+
+    el.advance.setAttribute("aria-label", "Replay dialogue");
+  }
+
+  function render(nextIndex) {
+    clearAllTimers();
+    hideReaction();
+
+    sceneToken++;
+
+    const token = sceneToken;
 
     if (nextIndex >= story.length) {
+      index = story.length - 1;
       finish();
       return;
+    }
+
+    if (nextIndex < 0) {
+      nextIndex = 0;
     }
 
     index = nextIndex;
+
+    typing = false;
+    lineComplete = false;
     finished = false;
+    revealedByTap = false;
 
-    const beat = story[index];
-    const character = characters[beat.speaker];
-
-    if (!character) {
-      finish();
-      return;
-    }
-
-    const speakerChanged = lastSpeaker !== beat.speaker;
-    lastSpeaker = beat.speaker;
-
-    if (speakerChanged || index === 0) {
-      showCharacter(beat.speaker);
-    }
+    const line = story[index];
+    const character = characters[line.speaker];
 
     el.speaker.textContent = character.name;
-
     el.counter.textContent =
       String(index + 1).padStart(2, "0") +
       " / " +
       String(story.length).padStart(2, "0");
 
-    el.status.textContent =
-      "Automatic dialogue · Progressive typing";
+    el.status.textContent = "Automatic dialogue · Progressive typing";
+    el.advance.setAttribute(
+      "aria-label",
+      "Reveal text or continue dialogue"
+    );
 
-    updatePortraits();
+    updatePortraits(line.speaker);
+    showMainImage(line.speaker, token);
 
-    const token = typeToken;
-
-    typeLine(beat.text, token);
-    showReaction(beat, sceneToken);
+    /* The reaction and typing begin together for this line. */
+    showReaction(line, token);
+    typeLine(line, token);
   }
 
-  /* ------------------------------------------
-     Tap: reveal line, then continue
-     ------------------------------------------ */
+  function restart() {
+    clearAllTimers();
+    hideReaction();
+
+    sceneToken++;
+    typeToken++;
+
+    index = 0;
+    typing = false;
+    lineComplete = false;
+    finished = false;
+    paused = false;
+    revealedByTap = false;
+    currentText = "";
+
+    el.text.textContent = "";
+    el.image.style.backgroundImage = "none";
+    el.image.classList.remove("is-changing");
+
+    render(0);
+  }
 
   function revealOrContinue() {
+    if (paused) return;
+
     const now = Date.now();
 
-    /* Prevent a double tap from skipping two beats. */
+    /* Prevent a stage tap and button tap from counting twice. */
     if (now - lastTap < 250) return;
     lastTap = now;
 
@@ -414,115 +552,75 @@
       return;
     }
 
-    if (paused) return;
-
     if (typing) {
-      typeToken += 1;
-
-      clearTimeout(typingTimer);
-      typingTimer = null;
-
-      typing = false;
-
-      el.text.textContent = story[index].text;
-      el.hint.textContent = "TAP TO CONTINUE";
-
-      scheduleNext(story[index].text);
+      /* First tap during typing reveals the complete line. */
+      revealWholeLine();
       return;
     }
 
-    clearTimeout(advanceTimer);
-    advanceTimer = null;
-
+    /* Once the line is complete, a tap advances immediately. */
+    clearNextTimer();
     render(index + 1);
   }
 
-  /* ------------------------------------------
-     End and restart
-     ------------------------------------------ */
-
-  function finish() {
-    clearTimers();
-    hideReaction();
-
-    sceneToken += 1;
-    typeToken += 1;
-
-    typing = false;
-    finished = true;
-
-    el.speaker.textContent = "THE END";
-
-    el.text.textContent =
-      "And that was only the beginning. Tap to watch the conversation again.";
-
-    el.counter.textContent = "COMPLETE";
-    el.hint.textContent = "TAP TO REPLAY";
-
-    el.status.textContent =
-      "CEEQWINN Dialogue Theatre · Scene complete";
-
-    updatePortraits();
-  }
-
-  function restart() {
-    clearTimers();
-    hideReaction();
-
-    index = 0;
-    lastSpeaker = null;
-    finished = false;
-    paused = false;
-
-    sceneToken += 1;
-    typeToken += 1;
-
-    el.image.style.backgroundImage = "";
-    el.image.classList.remove("is-changing");
-
-    render(0);
-  }
-
-  /* ------------------------------------------
-     Controls
-     ------------------------------------------ */
-
-  el.advance.addEventListener("click", revealOrContinue);
+  el.advance.addEventListener("click", function (event) {
+    event.stopPropagation();
+    revealOrContinue();
+  });
 
   el.stage.addEventListener("click", function (event) {
     if (event.target.closest("button")) return;
     revealOrContinue();
   });
 
-  el.restart.addEventListener("click", restart);
+  el.restart.addEventListener("click", function (event) {
+    event.stopPropagation();
+    lastTap = Date.now();
+    restart();
+  });
 
-  /* Pause while the page is hidden.
-     Resume with the complete current line visible. */
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) {
-      if (paused || finished) return;
+      if (paused) return;
 
       paused = true;
-      clearTimers();
 
-      typeToken += 1;
+      clearAllTimers();
       hideReaction();
+
       return;
     }
 
-    if (!paused || finished) return;
+    if (!paused) return;
 
     paused = false;
 
-    el.text.textContent = story[index].text;
-    typing = false;
-    el.hint.textContent = "PLAYING AUTOMATICALLY";
+    if (finished) return;
 
-    scheduleNext(story[index].text);
+    /*
+     * When the player returns to the tab, reveal the current line
+     * rather than making them wait through typing again.
+     */
+    if (typing) {
+      clearTypeTimer();
+
+      typeToken++;
+
+      typing = false;
+      lineComplete = true;
+      revealedByTap = false;
+
+      el.text.textContent = currentText;
+      updateHint();
+    }
+
+    const line = story[index];
+
+    if (line) {
+      scheduleNext(line, sceneToken);
+    }
   });
 
-  /* Start Theatre 2 independently. */
   buildPortraits();
   render(0);
-
 })();
