@@ -1,0 +1,947 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#380b20">
+<meta name="description" content="CEEQWINN Story Voice Writer — speak, write, preserve your imagination.">
+<title>CEEQWINN Story Voice Writer</title>
+
+<style>
+:root {
+  --wine: #380b20;
+  --ruby: #8b0000;
+  --magenta: #a92a60;
+  --purple: #5a2a83;
+  --gold: #c6a75e;
+  --pearl: #f7f3f5;
+  --ink: #261821;
+  --muted: #786b75;
+  --line: #e8dfe5;
+  --green: #28664b;
+  --radius: 18px;
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse at top left, #f0dce6 0, transparent 48%),
+    linear-gradient(145deg, #fbf8fa, #f2edf2);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+button, input, textarea { font: inherit; }
+button {
+  min-height: 44px;
+  padding: 10px 15px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  color: var(--ink);
+  background: #fff;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+button:focus-visible, input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #c6a75e;
+  outline-offset: 2px;
+}
+button:disabled { opacity: .5; cursor: not-allowed; }
+button.primary {
+  color: #fff;
+  background: linear-gradient(120deg, var(--ruby), var(--magenta));
+  border-color: transparent;
+}
+button.dark {
+  color: #fff;
+  background: var(--wine);
+  border-color: transparent;
+}
+button.subtle { background: transparent; }
+button.danger { color: #8b2020; }
+button.small {
+  min-height: 38px;
+  padding: 7px 11px;
+  font-size: .9rem;
+}
+button.active {
+  color: #fff;
+  background: var(--wine);
+  border-color: var(--wine);
+}
+button:active { transform: translateY(1px); }
+
+header {
+  padding: 23px 16px 19px;
+  color: #fff;
+  background: linear-gradient(125deg, #300819, #641b42 72%, #48205c);
+  border-bottom: 3px solid var(--gold);
+}
+.header-inner, main {
+  width: min(920px, 100%);
+  margin-inline: auto;
+}
+.brand {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.55rem, 5vw, 2.15rem);
+  font-weight: 500;
+  letter-spacing: .025em;
+}
+.tagline {
+  margin: 5px 0 0;
+  color: #f0dfe8;
+  font-size: .94rem;
+}
+main { padding: 17px 13px 35px; }
+.panel {
+  margin-bottom: 15px;
+  padding: 17px;
+  border: 1px solid rgba(224, 207, 219, .9);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, .88);
+  box-shadow: 0 7px 25px rgba(57, 17, 41, .055);
+}
+.section-heading {
+  margin: 0 0 12px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+label { display: block; margin-bottom: 6px; font-weight: 600; }
+input[type="text"], textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid #ded2dc;
+  border-radius: 12px;
+}
+input[type="text"] { min-height: 46px; }
+textarea {
+  resize: vertical;
+  line-height: 1.7;
+}
+#story {
+  min-height: 300px;
+  font-size: 1.04rem;
+  white-space: pre-wrap;
+}
+#ideaDraft { min-height: 115px; }
+.hint { color: var(--muted); font-size: .88rem; }
+.status {
+  min-height: 25px;
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: .9rem;
+  overflow-wrap: anywhere;
+}
+.status.good { color: var(--green); }
+.status.warn { color: #8b3e13; }
+.status.error { color: #a32222; }
+.mode-row, .toolbar, .button-row, .stats, .idea-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.mode-row { margin-bottom: 14px; }
+.mode-row button { flex: 1 1 120px; }
+.toolbar { margin: 11px 0; }
+.stats {
+  justify-content: space-between;
+  gap: 5px 15px;
+  color: var(--muted);
+  font-size: .88rem;
+}
+#micButton {
+  width: 100%;
+  min-height: 57px;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+#micButton.listening {
+  background: linear-gradient(120deg, #28664b, #40866a);
+}
+.interim {
+  margin-top: 10px;
+  padding: 10px 12px;
+  color: #6c4c62;
+  background: #f8f0f6;
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+.hidden { display: none !important; }
+.idea-card {
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  border-radius: 12px;
+  background: #fff;
+}
+.idea-text {
+  margin: 7px 0 12px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.idea-meta { color: var(--muted); font-size: .8rem; }
+.idea-actions { margin-top: 9px; }
+.idea-actions button { flex: 1 1 auto; }
+footer {
+  padding: 10px 5px 0;
+  color: var(--muted);
+  text-align: center;
+  font-size: .82rem;
+}
+@media (min-width: 650px) {
+  main { padding: 24px 20px 45px; }
+  .panel { padding: 22px; }
+  #story { min-height: 390px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="header-inner">
+    <h1 class="brand">CEEQWINN</h1>
+    <p class="tagline">Story Voice Writer · Listen. Preserve. Create.</p>
+  </div>
+</header>
+
+<main>
+  <section class="panel" aria-labelledby="workspaceHeading">
+    <h2 class="section-heading" id="workspaceHeading">Your writing room</h2>
+
+    <label for="storyTitle">Story or chapter name</label>
+    <input id="storyTitle" type="text"
+      placeholder="Give this story a name…" maxlength="180">
+
+    <div class="toolbar">
+      <button class="small" id="restoreButton" type="button">
+        Restore last draft
+      </button>
+      <span class="hint" id="saveStatus" role="status" aria-live="polite">
+        Your writing stays in this browser.
+      </span>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="voiceHeading">
+    <h2 class="section-heading" id="voiceHeading">Voice and writing</h2>
+
+    <div class="mode-row" aria-label="Choose what to record">
+      <button type="button" id="storyMode" class="active"
+        aria-pressed="true">✍ Story mode</button>
+      <button type="button" id="ideaMode"
+        aria-pressed="false">◇ Idea mode</button>
+    </div>
+
+    <div id="storyArea">
+      <label for="story">Your story</label>
+      <textarea id="story" spellcheck="true"
+        placeholder="Start speaking, or write your story here…"
+        autocapitalize="sentences"></textarea>
+      <p class="hint">
+        Your words remain editable. The app will not rewrite your story.
+      </p>
+    </div>
+
+    <div id="ideaArea" class="hidden">
+      <label for="ideaDraft">Capture a creative idea</label>
+      <textarea id="ideaDraft" spellcheck="true"
+        placeholder="Speak or write an idea you want to remember…"></textarea>
+      <div class="button-row" style="margin-top:9px">
+        <button type="button" class="primary" id="saveIdeaButton">
+          Save idea to Idea Bank
+        </button>
+        <button type="button" id="backToStoryButton">Back to story</button>
+      </div>
+      <p class="hint">
+        Ideas are stored separately. Saving one never inserts it into your story.
+      </p>
+    </div>
+
+    <button type="button" id="micButton" class="primary"
+      style="margin-top:12px">
+      🎙 Start listening
+    </button>
+    <p id="speechStatus" class="status" role="status" aria-live="polite">
+      Checking browser speech-recognition support…
+    </p>
+    <div id="interimBox" class="interim hidden" aria-live="polite">
+      <strong>Hearing:</strong> <span id="interimText"></span>
+    </div>
+    <div class="stats" style="margin-top:12px">
+      <span id="wordCount">0 words</span>
+      <span id="charCount">0 characters</span>
+    </div>
+
+    <div id="storyTools">
+      <div class="toolbar">
+        <button type="button" class="small" id="undoButton">↶ Undo</button>
+        <button type="button" class="small" id="redoButton">↷ Redo</button>
+        <button type="button" class="small" id="selectionIdeaButton">
+          Save selection as idea
+        </button>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="small" id="exportTxtButton">
+          Export TXT
+        </button>
+        <button type="button" class="small" id="exportMdButton">
+          Export Markdown
+        </button>
+        <button type="button" class="small" id="copyStoryButton">
+          Copy story
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="ideasHeading">
+    <h2 class="section-heading" id="ideasHeading">Idea Bank</h2>
+    <p class="hint">
+      Keep future scenes, character thoughts, questions and plot possibilities
+      here until you decide what to do with them.
+    </p>
+    <div class="stats">
+      <span id="ideaCount">0 ideas</span>
+      <span>Newest first</span>
+    </div>
+    <div id="ideasList" aria-live="polite"></div>
+    <p id="emptyIdeas" class="hint">
+      Your Idea Bank is empty. Capture an idea whenever inspiration comes.
+    </p>
+  </section>
+
+  <footer>
+    CEEQWINN · Your imagination belongs to you.
+    <br>Keep a separate backup of important work.
+  </footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const STORAGE_KEY = "ceeqwinn_voice_writer_mvp_v1";
+
+  const titleInput = $("storyTitle");
+  const story = $("story");
+  const ideaDraft = $("ideaDraft");
+  const storyMode = $("storyMode");
+  const ideaMode = $("ideaMode");
+  const storyArea = $("storyArea");
+  const ideaArea = $("ideaArea");
+  const storyTools = $("storyTools");
+  const micButton = $("micButton");
+  const speechStatus = $("speechStatus");
+  const saveStatus = $("saveStatus");
+  const interimBox = $("interimBox");
+  const interimText = $("interimText");
+
+  let ideas = [];
+  let mode = "story";
+  let recognition = null;
+  let listening = false;
+  let intentionalStop = false;
+  let speechUnavailable = false;
+  let saveTimer = null;
+  let historyTimer = null;
+  let history = [];
+  let historyIndex = -1;
+  let restoring = false;
+  let sessionFinal = "";
+  let currentInterim = "";
+
+  function setStatus(element, message, kind) {
+    element.textContent = message;
+    element.className = "status" + (kind ? " " + kind : "");
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, function (character) {
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[character];
+    });
+  }
+
+  function activeEditor() {
+    return mode === "idea" ? ideaDraft : story;
+  }
+
+  function updateStats() {
+    const text = story.value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    $("wordCount").textContent = words + (words === 1 ? " word" : " words");
+    $("charCount").textContent =
+      story.value.length + (story.value.length === 1 ? " character" : " characters");
+  }
+
+  function snapshot() {
+    return {
+      title: titleInput.value,
+      story: story.value,
+      ideas: ideas,
+      savedAt: new Date().toISOString()
+    };
+  }
+
+  function saveNow() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot()));
+      setStatus(saveStatus, "Saved on this device · " +
+        new Date().toLocaleTimeString(), "good");
+    } catch (error) {
+      setStatus(saveStatus,
+        "Could not save locally. Storage may be full or unavailable.",
+        "error");
+    }
+  }
+
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    setStatus(saveStatus, "Saving…");
+    saveTimer = setTimeout(saveNow, 350);
+  }
+
+  function loadSavedDraft(announce) {
+    let data;
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        if (announce) {
+          setStatus(saveStatus, "No saved draft was found.", "warn");
+        }
+        return false;
+      }
+      data = JSON.parse(raw);
+    } catch (error) {
+      setStatus(saveStatus, "The saved draft could not be read.", "error");
+      return false;
+    }
+
+    if (!data || typeof data !== "object") return false;
+
+    restoring = true;
+    titleInput.value = typeof data.title === "string" ? data.title : "";
+    story.value = typeof data.story === "string" ? data.story : "";
+    ideas = Array.isArray(data.ideas) ? data.ideas : [];
+    restoring = false;
+
+    updateStats();
+    resetHistory();
+    renderIdeas();
+    setStatus(saveStatus,
+      "Draft restored" + (data.savedAt ? " · last saved " +
+        new Date(data.savedAt).toLocaleString() : "") + ".", "good");
+    return true;
+  }
+
+  function resetHistory() {
+    history = [story.value];
+    historyIndex = 0;
+    updateHistoryButtons();
+  }
+
+  function recordHistory() {
+    if (restoring) return;
+    if (history[historyIndex] === story.value) return;
+
+    history = history.slice(0, historyIndex + 1);
+    history.push(story.value);
+
+    // Keep memory use modest on older phones.
+    if (history.length > 60) history.shift();
+    historyIndex = history.length - 1;
+    updateHistoryButtons();
+  }
+
+  function queueHistory() {
+    clearTimeout(historyTimer);
+    historyTimer = setTimeout(recordHistory, 450);
+  }
+
+  function updateHistoryButtons() {
+    $("undoButton").disabled = historyIndex <= 0;
+    $("redoButton").disabled =
+      historyIndex < 0 || historyIndex >= history.length - 1;
+  }
+
+  function applyHistory(index) {
+    if (index < 0 || index >= history.length) return;
+    historyIndex = index;
+    story.value = history[historyIndex];
+    updateStats();
+    updateHistoryButtons();
+    scheduleSave();
+  }
+
+  function switchMode(nextMode) {
+    if (listening) stopListening();
+    mode = nextMode;
+
+    const inStory = mode === "story";
+    storyMode.classList.toggle("active", inStory);
+    ideaMode.classList.toggle("active", !inStory);
+    storyMode.setAttribute("aria-pressed", String(inStory));
+    ideaMode.setAttribute("aria-pressed", String(!inStory));
+
+    storyArea.classList.toggle("hidden", !inStory);
+    ideaArea.classList.toggle("hidden", inStory);
+    storyTools.classList.toggle("hidden", !inStory);
+
+    if (inStory) {
+      setStatus(speechStatus, "Story mode selected.");
+    } else {
+      setStatus(speechStatus, "Idea mode selected. Save ideas separately.");
+    }
+    updateMicLabel();
+  }
+
+  function renderIdeas() {
+    const list = $("ideasList");
+    list.innerHTML = "";
+    $("ideaCount").textContent =
+      ideas.length + (ideas.length === 1 ? " idea" : " ideas");
+    $("emptyIdeas").classList.toggle("hidden", ideas.length > 0);
+
+    // Ideas are held in creation order and displayed newest first.
+    for (let i = ideas.length - 1; i >= 0; i--) {
+      const idea = ideas[i];
+      const card = document.createElement("article");
+      card.className = "idea-card";
+
+      const date = idea.createdAt
+        ? new Date(idea.createdAt).toLocaleString()
+        : "Saved idea";
+
+      card.innerHTML =
+        '<div class="idea-meta">' + escapeHtml(date) +
+        ' · ' + escapeHtml(idea.status || "NEW") + '</div>' +
+        '<div class="idea-text">' + escapeHtml(idea.text || "") + '</div>' +
+        '<div class="idea-actions">' +
+        '<button type="button" class="small" data-action="edit" data-id="' +
+        escapeHtml(idea.id) + '">Edit</button>' +
+        '<button type="button" class="small" data-action="insert" data-id="' +
+        escapeHtml(idea.id) + '">Insert at cursor</button>' +
+        '<button type="button" class="small" data-action="copy" data-id="' +
+        escapeHtml(idea.id) + '">Copy to story end</button>' +
+        '<button type="button" class="small" data-action="used" data-id="' +
+        escapeHtml(idea.id) + '">' +
+        (idea.status === "USED" ? "Mark NEW" : "Mark USED") + '</button>' +
+        '<button type="button" class="small danger" data-action="delete" data-id="' +
+        escapeHtml(idea.id) + '">Delete</button>' +
+        '</div>';
+      list.appendChild(card);
+    }
+  }
+
+  function makeId() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+
+  function saveIdea(text) {
+    const cleaned = String(text || "").trim();
+    if (!cleaned) {
+      setStatus(speechStatus, "Write or speak an idea before saving.", "warn");
+      return;
+    }
+
+    ideas.push({
+      id: makeId(),
+      text: cleaned,
+      status: "NEW",
+      createdAt: new Date().toISOString()
+    });
+
+    ideaDraft.value = "";
+    renderIdeas();
+    scheduleSave();
+    setStatus(speechStatus, "Idea saved separately in your Idea Bank.", "good");
+  }
+
+  function insertAtCursor(text) {
+    const start = story.selectionStart == null
+      ? story.value.length : story.selectionStart;
+    const end = story.selectionEnd == null
+      ? story.value.length : story.selectionEnd;
+    const before = story.value.slice(0, start);
+    const after = story.value.slice(end);
+    const prefix = before && !/\s$/.test(before) ? "\n\n" : "";
+    const suffix = after && !/^\s/.test(after) ? "\n\n" : "";
+
+    story.value = before + prefix + text + suffix + after;
+    const cursor = (before + prefix + text).length;
+    story.focus();
+    story.setSelectionRange(cursor, cursor);
+    updateStats();
+    recordHistory();
+    scheduleSave();
+  }
+
+  $("ideasList").addEventListener("click", function (event) {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
+
+    const idea = ideas.find(function (item) {
+      return item.id === button.dataset.id;
+    });
+    if (!idea) return;
+
+    switch (button.dataset.action) {
+      case "edit": {
+        const updated = prompt("Edit this idea. Your story will not change:", idea.text);
+        if (updated !== null) {
+          idea.text = updated.trim();
+          renderIdeas();
+          scheduleSave();
+        }
+        break;
+      }
+      case "insert":
+        switchMode("story");
+        insertAtCursor(idea.text);
+        setStatus(speechStatus, "Idea inserted at the story cursor.", "good");
+        break;
+      case "copy":
+        switchMode("story");
+        story.value += (story.value.trim() ? "\n\n" : "") + idea.text;
+        story.focus();
+        story.setSelectionRange(story.value.length, story.value.length);
+        updateStats();
+        recordHistory();
+        scheduleSave();
+        setStatus(speechStatus, "Idea copied to the end of the story.", "good");
+        break;
+      case "used":
+        idea.status = idea.status === "USED" ? "NEW" : "USED";
+        renderIdeas();
+        scheduleSave();
+        break;
+      case "delete":
+        if (confirm("Delete this idea? Your story will not change.")) {
+          ideas = ideas.filter(function (item) {
+            return item.id !== idea.id;
+          });
+          renderIdeas();
+          scheduleSave();
+        }
+        break;
+    }
+  });
+
+  function updateMicLabel() {
+    if (speechUnavailable) {
+      micButton.textContent = "🎙 Speech recognition unavailable";
+      micButton.disabled = true;
+    } else if (listening) {
+      micButton.textContent = "■ Stop listening";
+      micButton.classList.add("listening");
+      micButton.disabled = false;
+    } else {
+      micButton.textContent = "🎙 Start listening";
+      micButton.classList.remove("listening");
+      micButton.disabled = false;
+    }
+  }
+
+  function appendTranscript(text) {
+    if (!text) return;
+    const target = activeEditor();
+    const separator = target.value && !/\s$/.test(target.value) ? " " : "";
+    target.value += separator + text;
+    target.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
+  function initSpeech() {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      speechUnavailable = true;
+      updateMicLabel();
+      setStatus(speechStatus,
+        "This browser does not expose speech recognition. You can still type, " +
+        "edit, save ideas and export your writing. Try a compatible browser " +
+        "on your target Android to test voice input.", "warn");
+      return;
+    }
+
+    try {
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = navigator.language || "en-NG";
+
+      recognition.onstart = function () {
+        listening = true;
+        updateMicLabel();
+        setStatus(speechStatus,
+          mode === "story"
+            ? "Listening for your story… Speak naturally."
+            : "Listening for your idea… Your story remains separate.",
+          "good");
+      };
+
+      recognition.onresult = function (event) {
+        currentInterim = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const result = event.results[i];
+          const transcript = result[0] ? result[0].transcript : "";
+          if (result.isFinal) {
+            sessionFinal += transcript;
+            appendTranscript(transcript);
+          } else {
+            currentInterim += transcript;
+          }
+        }
+
+        interimText.textContent = currentInterim;
+        interimBox.classList.toggle("hidden", !currentInterim);
+      };
+
+      recognition.onerror = function (event) {
+        const messages = {
+          "not-allowed": "Microphone permission was denied. Check browser permissions.",
+          "service-not-allowed": "The browser's speech service is not allowed.",
+          "no-speech": "No speech was detected. You can try again.",
+          "audio-capture": "No working microphone was found.",
+          "network": "Speech recognition needs a network connection in this browser.",
+          "language-not-supported": "This speech-recognition language is unavailable."
+        };
+
+        const message = messages[event.error] ||
+          ("Speech recognition reported: " + event.error + ".");
+
+        setStatus(speechStatus, message, "warn");
+
+        if (event.error === "not-allowed" ||
+            event.error === "service-not-allowed") {
+          intentionalStop = true;
+          listening = false;
+          updateMicLabel();
+        }
+      };
+
+      recognition.onend = function () {
+        listening = false;
+        updateMicLabel();
+        interimBox.classList.add("hidden");
+        interimText.textContent = "";
+        currentInterim = "";
+
+        if (sessionFinal) {
+          setStatus(speechStatus, "Listening session ended. Your final words were added.", "good");
+          sessionFinal = "";
+        } else if (!intentionalStop) {
+          setStatus(speechStatus,
+            "Speech recognition ended. Press Start listening to continue.", "warn");
+        }
+      };
+
+      setStatus(speechStatus,
+        "Speech-recognition interface detected. Microphone access and actual recognition still need testing on this device.",
+        "good");
+      updateMicLabel();
+    } catch (error) {
+      speechUnavailable = true;
+      updateMicLabel();
+      setStatus(speechStatus,
+        "Speech recognition could not be initialized. Writing and saving remain available.",
+        "warn");
+    }
+  }
+
+  function startListening() {
+    if (!recognition || speechUnavailable) return;
+    if (listening) {
+      stopListening();
+      return;
+    }
+
+    intentionalStop = false;
+    sessionFinal = "";
+    currentInterim = "";
+
+    try {
+      recognition.start();
+      setStatus(speechStatus, "Requesting microphone access…");
+    } catch (error) {
+      setStatus(speechStatus,
+        "Could not start listening. If it is already starting, wait for it to finish, then try again.",
+        "warn");
+    }
+  }
+
+  function stopListening() {
+    intentionalStop = true;
+    if (recognition && listening) {
+      try { recognition.stop(); } catch (error) {}
+    }
+    listening = false;
+    updateMicLabel();
+  }
+
+  // Workspace controls
+  storyMode.addEventListener("click", function () {
+    switchMode("story");
+  });
+  ideaMode.addEventListener("click", function () {
+    switchMode("idea");
+    ideaDraft.focus();
+  });
+  $("backToStoryButton").addEventListener("click", function () {
+    switchMode("story");
+    story.focus();
+  });
+  $("saveIdeaButton").addEventListener("click", function () {
+    saveIdea(ideaDraft.value);
+  });
+  micButton.addEventListener("click", function () {
+    if (listening) stopListening();
+    else startListening();
+  });
+
+  story.addEventListener("input", function () {
+    updateStats();
+    queueHistory();
+    scheduleSave();
+  });
+  titleInput.addEventListener("input", scheduleSave);
+  ideaDraft.addEventListener("input", scheduleSave);
+
+  $("undoButton").addEventListener("click", function () {
+    clearTimeout(historyTimer);
+    recordHistory();
+    if (historyIndex > 0) applyHistory(historyIndex - 1);
+  });
+  $("redoButton").addEventListener("click", function () {
+    if (historyIndex < history.length - 1) applyHistory(historyIndex + 1);
+  });
+
+  $("selectionIdeaButton").addEventListener("click", function () {
+    const start = story.selectionStart;
+    const end = story.selectionEnd;
+    if (start === end) {
+      setStatus(speechStatus, "Select some story text first, then save it as an idea.", "warn");
+      return;
+    }
+    saveIdea(story.value.slice(start, end));
+  });
+
+  $("restoreButton").addEventListener("click", function () {
+    if (confirm("Restore the last saved draft? This replaces the current editor contents.")) {
+      loadSavedDraft(true);
+    }
+  });
+
+  function safeFilename(extension) {
+    const base = titleInput.value.trim()
+      .replace(/[\\/:*?"<>|]/g, "")
+      .replace(/\s+/g, "-")
+      .slice(0, 70);
+    return (base || "ceeqwinn-story") + "." + extension;
+  }
+
+  function downloadText(text, filename, type) {
+    try {
+      const blob = new Blob(["\uFEFF", text], { type: type + ";charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    } catch (error) {
+      setStatus(saveStatus, "Export failed. Please try copying your story instead.", "error");
+    }
+  }
+
+  $("exportTxtButton").addEventListener("click", function () {
+    downloadText(
+      (titleInput.value.trim() ? titleInput.value.trim() + "\n\n" : "") + story.value,
+      safeFilename("txt"),
+      "text/plain"
+    );
+  });
+
+  $("exportMdButton").addEventListener("click", function () {
+    const title = titleInput.value.trim() || "Untitled Story";
+    downloadText("# " + title + "\n\n" + story.value,
+      safeFilename("md"), "text/markdown");
+  });
+
+  $("copyStoryButton").addEventListener("click", function () {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(story.value).then(function () {
+        setStatus(speechStatus, "Story copied to clipboard.", "good");
+      }).catch(function () {
+        fallbackCopy();
+      });
+    } else {
+      fallbackCopy();
+    }
+  });
+
+  function fallbackCopy() {
+    story.focus();
+    story.select();
+    try {
+      const successful = document.execCommand("copy");
+      setStatus(speechStatus,
+        successful ? "Story copied to clipboard." :
+          "Copy was unavailable. Select the text and copy it manually.",
+        successful ? "good" : "warn");
+    } catch (error) {
+      setStatus(speechStatus, "Copy is unavailable in this browser.", "warn");
+    }
+  }
+
+  window.addEventListener("pagehide", function () {
+    clearTimeout(saveTimer);
+    saveNow();
+    if (recognition && listening) {
+      try { recognition.stop(); } catch (error) {}
+    }
+  });
+
+  // Start with a restored local draft, if one exists.
+  const restored = loadSavedDraft(false);
+  if (!restored) {
+    resetHistory();
+    updateStats();
+    setStatus(saveStatus, "Ready. Your new draft will save on this device.");
+  }
+
+  initSpeech();
+})();
+</script>
+</body>
+</html>
