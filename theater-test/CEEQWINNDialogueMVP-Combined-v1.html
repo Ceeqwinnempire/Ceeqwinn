@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#100b0d">
+  <title>CEEQWINN — Dialogue Theatre</title>
+
+  <!-- Original Theatre 1 styling: preserved -->
+  <link rel="stylesheet" href="CEEQWINNDialogueMVP-v1.css">
+
+  <!-- Separate Theatre 2 styling -->
+  <link rel="stylesheet" href="CEEQWINNDialogueMVP-Autoplay-v1.css">
+</head>
+
+<body>
+
+  <!-- ==========================================
+       THEATRE 1 — ORIGINAL DIALOGUE MVP
+       ========================================== -->
+  <main class="dialogue-theatre" id="dialogueTheatre">
+    <section class="dialogue-scene" aria-label="Original dialogue theatre">
+
+      <div class="scene-stage">
+        <div class="stage-image stage-image-a" id="stageImageA"></div>
+        <div class="stage-image stage-image-b" id="stageImageB"></div>
+        <div class="stage-shade"></div>
+        <div class="stage-vignette"></div>
+
+        <div class="scene-topline">
+          <span class="brand-mark">CEEQWINN</span>
+          <span class="scene-indicator" id="sceneIndicator">THEATRE · 01</span>
+        </div>
+
+        <div class="stage-caption" id="stageCaption">
+          A conversation after the rain.
+        </div>
+
+        <div class="reaction-shot" id="reactionShot" aria-hidden="true">
+          <div class="reaction-frame">
+            <img id="reactionImage" alt="">
+          </div>
+          <span class="reaction-name" id="reactionName"></span>
+        </div>
+
+        <div class="dialogue-glass" id="dialogueGlass">
+          <div class="dialogue-inner">
+            <div class="dialogue-heading">
+              <div class="speaker-identity">
+                <span class="speaker-indicator"></span>
+                <span class="speaker-name" id="speakerName">LEXIS</span>
+              </div>
+              <span class="dialogue-mode" id="dialogueMode">DIALOGUE</span>
+            </div>
+
+            <p class="dialogue-text" id="dialogueText" aria-live="polite"></p>
+
+            <div class="reading-track" aria-hidden="true">
+              <div class="reading-sweep" id="readingSweep"></div>
+            </div>
+
+            <div class="dialogue-footer">
+              <span class="beat-counter" id="beatCounter">01 / 08</span>
+              <span class="tap-hint" id="tapHint">
+                TAP TO CONTINUE <span>›</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <button class="stage-advance" id="stageAdvance"
+          type="button" aria-label="Continue dialogue">
+          <span class="advance-chevron">›</span>
+        </button>
+      </div>
+
+      <div class="supporting-portraits" id="supportingPortraits"
+        aria-label="Other characters present">
+        <div class="supporting-label">PRESENT</div>
+        <div class="portrait-list" id="portraitList"></div>
+      </div>
+
+      <div class="theatre-controls">
+        <button class="control-button" id="restartButton" type="button">
+          ↺ Restart scene
+        </button>
+        <span class="control-note">A CEEQWINN STORY EXPERIMENT</span>
+      </div>
+
+    </section>
+  </main>
+
+
+  <!-- ==========================================
+       THEATRE 2 — AUTOPLAY DIALOGUE
+       Independent from Theatre 1
+       ========================================== -->
+  <section class="dialogue-autoplay-v1" id="dialogueAutoplayV1"
+    aria-label="Automatic dialogue theatre">
+
+    <div class="autoplay-heading">
+      <span>CEEQWINN</span>
+      <span>DIALOGUE THEATRE · AUTOPLAY v1</span>
+    </div>
+
+    <div class="autoplay-stage" id="autoplayStage">
+      <div class="autoplay-image" id="autoplayImage"></div>
+      <div class="autoplay-shade"></div>
+
+      <div class="autoplay-caption">
+        A conversation after the rain.
+      </div>
+
+      <!-- Temporary silent reaction portrait -->
+      <div class="autoplay-reaction"
+        id="autoplayReaction"
+        aria-hidden="true">
+
+        <div class="autoplay-reaction-frame">
+          <img id="autoplayReactionImage" alt="">
+        </div>
+
+        <span class="autoplay-reaction-name"
+          id="autoplayReactionName"></span>
+      </div>
+
+      <div class="autoplay-glass" id="autoplayGlass">
+        <div class="autoplay-speaker" id="autoplaySpeaker">LEXIS</div>
+
+        <p class="autoplay-text"
+          id="autoplayText"
+          aria-live="polite"></p>
+
+        <div class="autoplay-footer">
+          <span id="autoplayCounter">01 / 08</span>
+          <span id="autoplayHint">TYPING…</span>
+        </div>
+      </div>
+
+      <button class="autoplay-advance"
+        id="autoplayAdvance"
+        type="button"
+        aria-label="Reveal text or continue dialogue">›</button>
+    </div>
+
+    <!-- Circular character portraits -->
+    <div class="autoplay-present"
+      id="autoplayPresent"
+      aria-label="Characters present">
+
+      <span class="autoplay-present-label">PRESENT</span>
+
+      <div class="autoplay-portrait-list"
+        id="autoplayPortraitList"></div>
+    </div>
+
+    <div class="autoplay-status" id="autoplayStatus">
+      Automatic dialogue · Progressive typing
+    </div>
+
+    <button class="autoplay-restart"
+      id="autoplayRestart"
+      type="button">↺ Restart scene</button>
+
+  </section>
+
+
+  <!-- Keep the original Theatre 1 controller -->
+  <script src="CEEQWINNDialogueMVP-v1.js"></script>
+
+  <!-- Theatre 2 has its own independent controller -->
+  <script src="CEEQWINNDialogueMVP-Autoplay-v1.js"></script>
+
+</body>
+</html>
