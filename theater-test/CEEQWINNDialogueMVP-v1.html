@@ -76,6 +76,7 @@
     </section>
   </main>
 
+```html
 <!-- CEEQWINN DIALOGUE MVP — AUTOPLAY v1 -->
 <section class="dialogue-autoplay-v1" id="dialogueAutoplayV1">
   <div class="autoplay-heading">
@@ -91,9 +92,22 @@
       A conversation after the rain.
     </div>
 
+    <!-- Temporary silent reaction portrait -->
+    <div class="autoplay-reaction"
+         id="autoplayReaction"
+         aria-hidden="true">
+      <div class="autoplay-reaction-frame">
+        <img id="autoplayReactionImage" alt="">
+      </div>
+      <span class="autoplay-reaction-name"
+            id="autoplayReactionName"></span>
+    </div>
+
     <div class="autoplay-glass" id="autoplayGlass">
       <div class="autoplay-speaker" id="autoplaySpeaker">LEXIS</div>
-      <p class="autoplay-text" id="autoplayText"></p>
+      <p class="autoplay-text"
+         id="autoplayText"
+         aria-live="polite"></p>
 
       <div class="autoplay-footer">
         <span id="autoplayCounter">01 / 08</span>
@@ -109,11 +123,20 @@
     >›</button>
   </div>
 
+  <!-- Characters currently present in the scene -->
+  <div class="autoplay-present" id="autoplayPresent"
+       aria-label="Characters present">
+    <span class="autoplay-present-label">PRESENT</span>
+    <div class="autoplay-portrait-list"
+         id="autoplayPortraitList"></div>
+  </div>
+
   <div class="autoplay-status" id="autoplayStatus">
     Automatic dialogue · Progressive typing
   </div>
-</section>
 
-  <script src="CEEQWINNDialogueMVP-v1.js"></script>
-</body>
-</html>
+  <button class="autoplay-restart"
+          id="autoplayRestart"
+          type="button">↺ Restart scene</button>
+</section>
+```
