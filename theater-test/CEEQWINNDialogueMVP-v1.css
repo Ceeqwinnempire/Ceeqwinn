@@ -1,528 +1,269 @@
-:root {
-  color-scheme: dark;
-  --wine: #421923;
-  --wine-deep: #160d11;
-  --gold: #c9a45e;
-  --gold-light: #f1dca6;
-  --pearl: #f7f0e6;
-  --muted: #c4b7b7;
-  --glass-border: rgba(210, 174, 105, 0.44);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-}
 
-* {
-  box-sizing: border-box;
-}
+/* CEEQWINN AUTOPLAY THEATRE — independent styles */
 
-html {
-  min-height: 100%;
-  background: #100b0d;
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-body {
-  min-width: 280px;
-  min-height: 100vh;
-  margin: 0;
-  color: var(--pearl);
-  background:
-    radial-gradient(ellipse at 50% 0%, #39202a 0%, transparent 50%),
-    #100b0d;
-  font-family: Georgia, "Times New Roman", serif;
-}
-
-button {
-  font: inherit;
-}
-
-button:focus-visible {
-  outline: 2px solid var(--gold-light);
-  outline-offset: 4px;
-}
-
-.dialogue-theatre {
-  min-height: 100vh;
-  min-height: 100svh;
-  padding: 12px;
-}
-
-.dialogue-scene {
+.dialogue-autoplay-v1 {
+  --auto-gold: #c9a45e;
+  --auto-light: #f1dca6;
+  --auto-pearl: #fff8ed;
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
+  padding: 0 12px 24px;
+  color: var(--auto-pearl);
+  font-family: Georgia, "Times New Roman", serif;
 }
 
-.scene-stage {
+.autoplay-heading {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: var(--auto-light);
+  font: 9px/1.5 Arial, sans-serif;
+  letter-spacing: .15em;
+}
+
+.autoplay-stage {
   position: relative;
-  width: 100%;
-  height: calc(100vh - 24px);
-  min-height: 570px;
+  height: min(780px, 86vh);
+  height: min(780px, 86svh);
+  min-height: 520px;
   overflow: hidden;
   isolation: isolate;
+  border: 1px solid rgba(201,164,94,.4);
   background: #1b1217;
-  border: 1px solid rgba(201, 164, 94, 0.22);
-  border-radius: 4px;
 }
 
-@supports (height: 100svh) {
-  .scene-stage {
-    height: calc(100svh - 24px);
-  }
-}
-
-.stage-image {
+.autoplay-image {
   position: absolute;
-  z-index: -4;
+  z-index: -3;
   inset: 0;
   background-position: center 25%;
   background-repeat: no-repeat;
   background-size: contain;
-  opacity: 0;
-  transition: opacity 650ms ease;
-}
-
-.stage-image.is-visible {
   opacity: 1;
+  transition: opacity 500ms ease;
 }
 
-.stage-shade {
-  position: absolute;
-  z-index: -3;
-  inset: 0;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(13, 8, 11, 0.48) 0%,
-      transparent 17%,
-      transparent 45%,
-      rgba(13, 8, 11, 0.10) 60%,
-      rgba(13, 8, 11, 0.64) 100%
-    );
-  pointer-events: none;
+.autoplay-image.is-changing {
+  opacity: 0;
 }
 
-.stage-vignette {
+.autoplay-shade {
   position: absolute;
   z-index: -2;
   inset: 0;
-  box-shadow: inset 0 0 65px rgba(0, 0, 0, 0.23);
   pointer-events: none;
-}
-
-.scene-topline {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 18px 17px;
   background: linear-gradient(
     180deg,
-    rgba(12, 7, 10, 0.58),
-    transparent
+    rgba(13,8,11,.42),
+    transparent 24%,
+    transparent 48%,
+    rgba(13,8,11,.76) 100%
   );
 }
 
-.brand-mark {
-  color: var(--gold-light);
-  font-family: Arial, sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.25em;
-}
-
-.scene-indicator {
-  color: rgba(255, 246, 229, 0.8);
-  font-family: Arial, sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.13em;
-}
-
-.stage-caption {
+.autoplay-caption {
   position: absolute;
-  top: 57px;
-  left: 18px;
-  right: 18px;
-  color: rgba(255, 245, 231, 0.83);
+  top: 20px;
+  left: 16px;
+  right: 16px;
+  color: rgba(255,245,231,.86);
   font-size: 13px;
   font-style: italic;
   line-height: 1.5;
-  text-shadow: 0 2px 12px #000;
+  text-shadow: 0 2px 10px #000;
   pointer-events: none;
 }
 
-/* Dialogue glass: the same restrained cinematic treatment as narration. */
-.dialogue-glass {
+.autoplay-glass {
   position: absolute;
   z-index: 3;
-  left: 13px;
-  right: 13px;
-  bottom: 69px;
-  padding: 1px;
-  border: 1px solid var(--glass-border);
-  border-radius: 3px;
-  background: rgba(36, 20, 27, 0.66);
-  box-shadow:
-    0 14px 38px rgba(0, 0, 0, 0.24),
-    inset 0 0 0 1px rgba(255, 237, 200, 0.035);
-}
-
-.dialogue-inner {
-  min-width: 0;
-  padding: 15px 16px 12px;
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.055),
-      transparent 45%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(39, 21, 29, 0.80),
-      rgba(17, 12, 16, 0.88)
-    );
+  right: 12px;
+  bottom: 65px;
+  left: 12px;
+  padding: 16px;
+  border: 1px solid rgba(201,164,94,.48);
+  background: rgba(30,17,23,.86);
+  box-shadow: 0 12px 34px rgba(0,0,0,.25);
 }
 
 @supports (backdrop-filter: blur(8px)) {
-  .dialogue-glass {
-    background: rgba(36, 20, 27, 0.46);
+  .autoplay-glass {
+    background: rgba(30,17,23,.66);
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
   }
-
-  .dialogue-inner {
-    background: linear-gradient(
-      145deg,
-      rgba(62, 35, 45, 0.69),
-      rgba(17, 12, 16, 0.75)
-    );
-  }
 }
 
-.dialogue-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+.autoplay-speaker {
   margin-bottom: 10px;
+  color: var(--auto-light);
+  font: 700 10px/1.5 Arial, sans-serif;
+  letter-spacing: .2em;
 }
 
-.speaker-identity {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 8px;
-}
-
-.speaker-indicator {
-  width: 6px;
-  height: 6px;
-  flex: 0 0 6px;
-  border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 10px rgba(201, 164, 94, 0.65);
-}
-
-.speaker-name {
-  overflow: hidden;
-  color: var(--gold-light);
-  font-family: Arial, sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.19em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.dialogue-mode {
-  color: rgba(246, 233, 213, 0.48);
-  font-family: Arial, sans-serif;
-  font-size: 8px;
-  letter-spacing: 0.17em;
-}
-
-.dialogue-text {
+.autoplay-text {
   min-height: 3.15em;
   margin: 0;
-  color: #fff8ed;
+  color: var(--auto-pearl);
   font-size: 19px;
   line-height: 1.57;
   overflow-wrap: anywhere;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.15);
+  white-space: pre-wrap;
 }
 
-.reading-track {
-  position: relative;
-  height: 2px;
-  margin-top: 15px;
-  overflow: hidden;
-  background: rgba(255, 235, 195, 0.13);
-}
-
-.reading-sweep {
-  width: 0;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(201, 164, 94, 0.45),
-    var(--gold-light)
-  );
-  box-shadow: 0 0 8px rgba(241, 220, 166, 0.4);
-  transform-origin: left center;
-}
-
-.dialogue-footer {
+.autoplay-footer {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-top: 11px;
+  gap: 12px;
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,235,195,.12);
+  color: rgba(255,245,229,.62);
+  font: 9px/1.5 Arial, sans-serif;
+  letter-spacing: .1em;
 }
 
-.beat-counter,
-.tap-hint {
-  color: rgba(255, 245, 229, 0.56);
-  font-family: Arial, sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.1em;
-}
-
-.tap-hint {
-  text-align: right;
-}
-
-.tap-hint span {
-  padding-left: 4px;
-  color: var(--gold-light);
-  font-size: 17px;
-  vertical-align: -1px;
-}
-
-.stage-advance {
+.autoplay-advance {
   position: absolute;
   z-index: 5;
-  right: 17px;
-  bottom: 18px;
+  right: 15px;
+  bottom: 14px;
   display: grid;
-  width: 37px;
-  height: 37px;
+  width: 38px;
+  height: 38px;
   place-items: center;
   padding: 0;
-  border: 1px solid rgba(217, 184, 121, 0.62);
+  border: 1px solid rgba(217,184,121,.65);
   border-radius: 50%;
-  color: var(--gold-light);
-  background: rgba(25, 15, 20, 0.66);
+  color: var(--auto-light);
+  background: rgba(25,15,20,.8);
+  font-size: 29px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
 
-.advance-chevron {
-  display: block;
-  margin-top: -4px;
-  margin-left: 2px;
-  font-size: 30px;
-  line-height: 1;
+.autoplay-advance:active {
+  transform: scale(.96);
 }
 
-.stage-advance:active {
-  background: rgba(104, 61, 69, 0.8);
-  transform: scale(0.96);
-}
-
-/* A reaction is temporary; it does not compete with the speaker. */
-.reaction-shot {
+.autoplay-reaction {
   position: absolute;
   z-index: 2;
   top: 21%;
   left: 14px;
-  width: 92px;
+  width: 90px;
   opacity: 0;
   transform: translateY(7px);
   transition: opacity 220ms ease, transform 220ms ease;
   pointer-events: none;
 }
 
-.reaction-shot.is-visible {
+.autoplay-reaction.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-.reaction-frame {
-  overflow: hidden;
-  aspect-ratio: 3 / 4;
-  border: 1px solid var(--gold);
-  background: #21151a;
-  box-shadow: 0 7px 22px rgba(0, 0, 0, 0.35);
-}
-
-.reaction-frame img {
+.autoplay-reaction img {
   display: block;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
   object-position: center 24%;
+  border: 1px solid var(--auto-gold);
+  background: #21151a;
+  box-shadow: 0 7px 22px rgba(0,0,0,.35);
 }
 
-.reaction-name {
+.autoplay-reaction span {
   display: block;
   margin-top: 6px;
-  color: var(--gold-light);
-  font-family: Arial, sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.15em;
+  color: var(--auto-light);
+  font: 9px/1.4 Arial, sans-serif;
+  letter-spacing: .1em;
   text-shadow: 0 1px 7px #000;
 }
 
-/* Supporting portraits are kept below the stage, not scattered over it. */
-.supporting-portraits {
-  display: none;
-  align-items: center;
-  gap: 14px;
-  padding: 13px 4px 2px;
-}
-
-.supporting-portraits.has-portraits {
+.autoplay-portraits {
   display: flex;
-}
-
-.supporting-label {
-  flex: 0 0 auto;
-  color: rgba(255, 239, 216, 0.47);
-  font-family: Arial, sans-serif;
-  font-size: 8px;
-  letter-spacing: 0.17em;
-}
-
-.portrait-list {
-  display: flex;
-  flex: 1;
   flex-wrap: wrap;
-  align-items: center;
   gap: 12px;
+  padding: 14px 2px 4px;
 }
 
-.character-portrait {
+.autoplay-portrait {
   display: flex;
   align-items: center;
   gap: 7px;
-  max-width: 100%;
-  padding: 0;
-  border: 0;
-  color: var(--muted);
-  background: transparent;
-  text-align: left;
+  color: #c4b7b7;
+  font: 10px Arial, sans-serif;
 }
 
-.character-portrait img {
-  display: block;
+.autoplay-portrait img {
   width: 34px;
   height: 34px;
-  flex: 0 0 34px;
-  border: 1px solid rgba(201, 164, 94, 0.35);
+  border: 1px solid rgba(201,164,94,.35);
   border-radius: 50%;
   object-fit: cover;
   object-position: center 25%;
   background: #26171e;
 }
 
-.character-portrait.is-speaking img {
-  border-color: var(--gold-light);
-  box-shadow: 0 0 0 2px rgba(201, 164, 94, 0.12);
+.autoplay-portrait.is-speaking img {
+  border-color: var(--auto-light);
+  box-shadow: 0 0 0 2px rgba(201,164,94,.12);
 }
 
-.character-portrait span {
-  overflow: hidden;
-  font-family: Arial, sans-serif;
-  font-size: 10px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.theatre-controls {
+.autoplay-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 13px 2px 3px;
+  padding-top: 10px;
+  color: rgba(255,238,214,.48);
+  font: 9px/1.5 Arial, sans-serif;
 }
 
-.control-button {
-  padding: 5px 0;
+.autoplay-bottom button {
+  padding: 7px 0 7px 8px;
   border: 0;
-  color: rgba(255, 238, 214, 0.76);
+  color: var(--auto-light);
   background: transparent;
-  font-family: Arial, sans-serif;
-  font-size: 11px;
+  font: 11px Arial, sans-serif;
   cursor: pointer;
 }
 
-.control-button:hover {
-  color: var(--gold-light);
-}
-
-.control-note {
-  color: rgba(255, 238, 214, 0.32);
-  font-family: Arial, sans-serif;
-  font-size: 8px;
-  letter-spacing: 0.1em;
-  text-align: right;
-}
-
-.scene-stage.is-finished .tap-hint {
-  color: var(--gold-light);
-}
-
 @media (max-width: 360px) {
-  .dialogue-theatre {
-    padding: 7px;
+  .dialogue-autoplay-v1 {
+    padding-right: 6px;
+    padding-left: 6px;
   }
 
-  .scene-stage {
-    height: calc(100vh - 14px);
-    min-height: 520px;
+  .autoplay-stage {
+    min-height: 500px;
   }
 
-  @supports (height: 100svh) {
-    .scene-stage {
-      height: calc(100svh - 14px);
-    }
+  .autoplay-glass {
+    right: 8px;
+    left: 8px;
+    padding: 13px;
   }
 
-  .dialogue-glass {
-    left: 9px;
-    right: 9px;
-    bottom: 63px;
-  }
-
-  .dialogue-inner {
-    padding: 13px 12px 10px;
-  }
-
-  .dialogue-text {
+  .autoplay-text {
     font-size: 17px;
   }
 
-  .reaction-shot {
+  .autoplay-reaction {
     left: 10px;
-    width: 76px;
-  }
-
-  .stage-advance {
-    right: 13px;
-    bottom: 14px;
+    width: 74px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
+  .autoplay-image,
+  .autoplay-reaction {
+    transition: none;
   }
 }
