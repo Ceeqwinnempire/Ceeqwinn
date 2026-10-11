@@ -98,7 +98,7 @@ textarea{resize:vertical;line-height:1.7}
   background:#f8f0f6;border-radius:10px;overflow-wrap:anywhere;
 }
 .hidden{display:none!important}
-.idea-card{
+.idea-card,.vocab-card{
   margin-top:12px;padding:13px;border:1px solid var(--line);
   border-left:3px solid var(--gold);border-radius:12px;background:#fff;
 }
@@ -106,6 +106,11 @@ textarea{resize:vertical;line-height:1.7}
 .idea-meta{color:var(--muted);font-size:.8rem}
 .idea-actions{margin-top:9px}
 .idea-actions button{flex:1 1 auto}
+.vocab-card{overflow-wrap:anywhere}
+.vocab-name{font-weight:700;color:var(--wine);font-size:1.02rem}
+.vocab-meta{font-size:.83rem;color:var(--muted);margin-top:5px}
+.vocab-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.vocab-actions button{flex:0 1 auto}
 footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
 @media(min-width:650px){
   main{padding:24px 20px 45px}
@@ -201,6 +206,7 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
         <button type="button" class="small" id="undoButton">↶ Undo</button>
         <button type="button" class="small" id="redoButton">↷ Redo</button>
         <button type="button" class="small" id="selectionIdeaButton">Save selection as idea</button>
+        <button type="button" class="small" id="selectionVocabButton">Save selection as vocabulary</button>
       </div>
       <div class="toolbar">
         <button type="button" class="small" id="exportTxtButton">Export TXT</button>
@@ -208,6 +214,51 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
         <button type="button" class="small" id="copyStoryButton">Copy story</button>
       </div>
     </div>
+  </section>
+
+  <!-- Vocabulary addition: matches the existing CEEQWINN design. -->
+  <section class="panel" aria-labelledby="vocabularyHeading">
+    <h2 class="section-heading" id="vocabularyHeading">Story Vocabulary Bank</h2>
+    <p class="hint">
+      Save the spellings of character names, places and invented words.
+      Add the alternative forms the speech recognizer actually writes.
+      Only the alternatives you enter will be corrected.
+    </p>
+
+    <label for="vocabPreferred">Preferred spelling</label>
+    <input id="vocabPreferred" type="text" maxlength="180" placeholder="Example: Uche">
+
+    <label for="vocabAliases" style="margin-top:12px">Recognized spelling variants</label>
+    <input id="vocabAliases" type="text" maxlength="500" placeholder="Example: You Che | Oochay">
+
+    <p class="hint">
+      Separate alternatives with a vertical bar: <strong>|</strong>.
+      Example: <em>Preferred spelling: Emerald High</em> ·
+      <em>Variants: Emerald Hie | Emerald High School</em>.
+    </p>
+
+    <label for="vocabCategory">Word category</label>
+    <select id="vocabCategory">
+      <option value="Character name">Character name</option>
+      <option value="Place">Place</option>
+      <option value="Special word">Special word / invented term</option>
+      <option value="Other">Other</option>
+    </select>
+
+    <div class="button-row" style="margin-top:10px">
+      <button type="button" class="primary" id="saveVocabButton">Save vocabulary</button>
+      <button type="button" id="clearVocabButton">Clear fields</button>
+    </div>
+
+    <p class="hint">
+      Corrections apply to complete words or phrases, not fragments inside unrelated words.
+      For example, you can teach a particular recognized spelling to become “Taylor”
+      without automatically changing every occurrence of “tailor”.
+    </p>
+
+    <div id="vocabStatus" class="status" role="status" aria-live="polite"></div>
+    <div id="vocabularyList"></div>
+    <p id="emptyVocabulary" class="hint">Your vocabulary is empty. Add your first preferred name or special word above.</p>
   </section>
 
   <section class="panel" aria-labelledby="ideasHeading">
@@ -235,7 +286,6 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
   const STORAGE_KEY = "ceeqwinn_voice_writer_mvp_v1";
   const SETTINGS_VERSION = 2;
 
-  // Recovery timing is deliberately modest for older phones.
   const RESTART_BASE_MS = 500;
   const RESTART_MAX_MS = 1800;
   const PENDING_COMMAND_MS = 2800;
@@ -259,6 +309,8 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
   const punctuationCommands = $("punctuationCommands");
 
   let ideas = [];
+  let vocabulary = [];
+  let editingVocabularyId = null;
   let mode = "story";
   let recognition = null;
   let listening = false;
@@ -316,6 +368,7 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
       title:titleInput.value,
       story:story.value,
       ideas:ideas,
+      vocabulary:vocabulary,
       speechLanguage:speechLanguage.value,
       punctuationCommands:punctuationCommands.checked,
       settingsVersion:SETTINGS_VERSION,
@@ -357,8 +410,19 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
     restoring = true;
     titleInput.value = typeof data.title === "string" ? data.title : "";
     story.value = typeof data.story === "string" ? data.story : "";
+
     ideas = Array.isArray(data.ideas)
       ? data.ideas.filter(idea => idea && typeof idea === "object" && typeof idea.id === "string")
+      : [];
+
+    // Older saved drafts will not have vocabulary yet. That is normal.
+    vocabulary = Array.isArray(data.vocabulary)
+      ? data.vocabulary.filter(entry =>
+          entry &&
+          typeof entry.id === "string" &&
+          typeof entry.preferred === "string" &&
+          Array.isArray(entry.aliases)
+        )
       : [];
 
     if (typeof data.speechLanguage === "string" &&
@@ -377,6 +441,7 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
     updateStats();
     resetHistory();
     renderIdeas();
+    renderVocabulary();
 
     let savedDate = "";
     if (data.savedAt) {
@@ -561,6 +626,251 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
     }
   });
 
+  // ---------- Story Vocabulary Bank ----------
+
+  function escapeRegExp(text) {
+    return String(text).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function applyVocabularyCorrections(text) {
+    let corrected = String(text || "");
+
+    // Longest phrases first, so a multiword name is handled before a shorter
+    // alias contained within it. Only user-entered aliases are corrected.
+    const entries = vocabulary.slice().sort((a, b) => {
+      const aLength = Math.max(
+        String(a.preferred || "").length,
+        ...(Array.isArray(a.aliases) ? a.aliases.map(x => String(x).length) : [0])
+      );
+      const bLength = Math.max(
+        String(b.preferred || "").length,
+        ...(Array.isArray(b.aliases) ? b.aliases.map(x => String(x).length) : [0])
+      );
+      return bLength - aLength;
+    });
+
+    for (const entry of entries) {
+      const preferred = String(entry.preferred || "").trim();
+      if (!preferred || !Array.isArray(entry.aliases)) continue;
+
+      for (const rawAlias of entry.aliases) {
+        const alias = String(rawAlias || "").trim();
+        if (!alias || alias.toLocaleLowerCase() === preferred.toLocaleLowerCase()) continue;
+
+        // ASCII letter/digit boundaries are intentional for compatibility
+        // with older mobile browsers. The match must be a complete phrase.
+        const pattern = new RegExp(
+          "(^|[^A-Za-z0-9_])" + escapeRegExp(alias) + "(?=$|[^A-Za-z0-9_])",
+          "gi"
+        );
+
+        corrected = corrected.replace(pattern, function (wholeMatch, prefix) {
+          return prefix + preferred;
+        });
+      }
+    }
+
+    return corrected;
+  }
+
+  function renderVocabulary() {
+    const list = $("vocabularyList");
+    list.textContent = "";
+    $("emptyVocabulary").classList.toggle("hidden", vocabulary.length > 0);
+
+    vocabulary.forEach(entry => {
+      const card = document.createElement("article");
+      card.className = "vocab-card";
+
+      const name = document.createElement("div");
+      name.className = "vocab-name";
+      name.textContent = entry.preferred;
+      card.appendChild(name);
+
+      const category = document.createElement("div");
+      category.className = "vocab-meta";
+      category.textContent = entry.category || "Other";
+      card.appendChild(category);
+
+      const aliases = document.createElement("div");
+      aliases.className = "vocab-meta";
+      aliases.textContent = "Recognized variants: " +
+        (entry.aliases.length ? entry.aliases.join(" | ") : "None saved");
+      card.appendChild(aliases);
+
+      const actions = document.createElement("div");
+      actions.className = "vocab-actions";
+
+      const editButton = document.createElement("button");
+      editButton.type = "button";
+      editButton.className = "small";
+      editButton.textContent = "Edit";
+      editButton.addEventListener("click", function () {
+        editingVocabularyId = entry.id;
+        $("vocabPreferred").value = entry.preferred;
+        $("vocabAliases").value = entry.aliases.join(" | ");
+        $("vocabCategory").value = entry.category || "Other";
+        $("saveVocabButton").textContent = "Update vocabulary";
+        $("vocabPreferred").focus();
+        setStatus($("vocabStatus"), "Editing " + entry.preferred + ".");
+      });
+      actions.appendChild(editButton);
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "small danger";
+      deleteButton.textContent = "Delete";
+      deleteButton.addEventListener("click", function () {
+        if (!confirm("Delete the vocabulary entry for " + entry.preferred + "?")) return;
+        vocabulary = vocabulary.filter(item => item.id !== entry.id);
+        if (editingVocabularyId === entry.id) clearVocabularyForm();
+        renderVocabulary();
+        scheduleSave();
+        setStatus($("vocabStatus"), "Vocabulary entry deleted.", "good");
+      });
+      actions.appendChild(deleteButton);
+
+      card.appendChild(actions);
+      list.appendChild(card);
+    });
+  }
+
+  function clearVocabularyForm() {
+    editingVocabularyId = null;
+    $("vocabPreferred").value = "";
+    $("vocabAliases").value = "";
+    $("vocabCategory").value = "Character name";
+    $("saveVocabButton").textContent = "Save vocabulary";
+  }
+
+  function saveVocabulary(preferredValue, aliasesValue, category, existingId) {
+    const preferred = String(preferredValue || "").trim();
+
+    if (!preferred) {
+      setStatus($("vocabStatus"), "Enter the preferred spelling first.", "warn");
+      $("vocabPreferred").focus();
+      return false;
+    }
+
+    const aliases = String(aliasesValue || "")
+      .split("|")
+      .map(value => value.trim())
+      .filter(Boolean)
+      .filter(value => value.toLocaleLowerCase() !== preferred.toLocaleLowerCase())
+      .filter((value, index, all) =>
+        all.findIndex(other => other.toLocaleLowerCase() === value.toLocaleLowerCase()) === index
+      );
+
+    // Update an existing entry when the preferred spelling already exists.
+    const duplicate = vocabulary.find(item =>
+      item.id !== existingId &&
+      item.preferred.toLocaleLowerCase() === preferred.toLocaleLowerCase()
+    );
+
+    if (duplicate) {
+      const merged = duplicate.aliases.concat(aliases);
+      duplicate.aliases = merged.filter((value, index, all) =>
+        all.findIndex(other => other.toLocaleLowerCase() === value.toLocaleLowerCase()) === index
+      );
+      duplicate.category = category;
+    } else if (existingId) {
+      const index = vocabulary.findIndex(item => item.id === existingId);
+      if (index >= 0) {
+        vocabulary[index] = {
+          id:existingId,
+          preferred:preferred,
+          aliases:aliases,
+          category:category
+        };
+      } else {
+        vocabulary.push({
+          id:makeId(),
+          preferred:preferred,
+          aliases:aliases,
+          category:category
+        });
+      }
+    } else {
+      vocabulary.push({
+        id:makeId(),
+        preferred:preferred,
+        aliases:aliases,
+        category:category
+      });
+    }
+
+    renderVocabulary();
+    scheduleSave();
+    setStatus($("vocabStatus"),
+      "Saved “" + preferred + "”. Future matching speech results will use this spelling.",
+      "good");
+    return true;
+  }
+
+  $("saveVocabButton").addEventListener("click", function () {
+    const ok = saveVocabulary(
+      $("vocabPreferred").value,
+      $("vocabAliases").value,
+      $("vocabCategory").value,
+      editingVocabularyId
+    );
+    if (ok) clearVocabularyForm();
+  });
+
+  $("clearVocabButton").addEventListener("click", function () {
+    clearVocabularyForm();
+    setStatus($("vocabStatus"), "Vocabulary form cleared.");
+  });
+
+  $("selectionVocabButton").addEventListener("click", function () {
+    const start = story.selectionStart;
+    const end = story.selectionEnd;
+    const selected = story.value.slice(start, end).trim();
+
+    if (!selected) {
+      setStatus($("vocabStatus"),
+        "Select the incorrect word or phrase in your story first, then tap this button.",
+        "warn");
+      return;
+    }
+
+    const preferred = prompt(
+      "What is the correct spelling you want to save?",
+      selected
+    );
+    if (preferred === null || !preferred.trim()) return;
+
+    const category = prompt(
+      "Choose a category by typing one of these: Character name, Place, Special word, Other",
+      "Character name"
+    );
+    if (category === null) return;
+
+    const allowed = ["Character name", "Place", "Special word", "Other"];
+    const normalizedCategory = allowed.find(item =>
+      item.toLocaleLowerCase() === category.trim().toLocaleLowerCase()
+    ) || "Other";
+
+    $("vocabPreferred").value = preferred.trim();
+    $("vocabAliases").value = selected;
+    $("vocabCategory").value = normalizedCategory;
+
+    const ok = saveVocabulary(
+      preferred.trim(),
+      selected,
+      normalizedCategory,
+      null
+    );
+
+    if (ok) {
+      setStatus($("vocabStatus"),
+        "Saved the selected text as a recognized variant for “" + preferred.trim() + "”.",
+        "good");
+    }
+  });
+
+  // ---------- Speech recognition ----------
+
   function updateMicLabel() {
     if (speechUnavailable) {
       micButton.textContent = "🎙 Speech recognition unavailable";
@@ -586,7 +896,10 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
   }
 
   function formatSpeech(text) {
-    let output = String(text || "");
+    // Vocabulary correction runs first, so special names are not lost
+    // while punctuation commands are converted.
+    let output = applyVocabularyCorrections(String(text || ""));
+
     if (!punctuationCommands.checked) return output;
 
     const replacements = [
@@ -614,19 +927,29 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
     return output;
   }
 
-  // Keep a possible command prefix briefly so split results such as
-  // "new" followed by "line" can still become a line-break command.
+  function schedulePendingCommandFlush() {
+    clearTimeout(pendingCommandTimer);
+    if (!pendingSpeechTail) return;
+
+    pendingCommandTimer = setTimeout(function () {
+      flushPendingCommandTail();
+    }, PENDING_COMMAND_MS);
+  }
+
   function joinSplitCommand(text) {
     clearTimeout(pendingCommandTimer);
 
     let combined = (pendingSpeechTail ? pendingSpeechTail + " " : "") + String(text || "");
     pendingSpeechTail = "";
 
+    // Keep only a possible unfinished command word. Ordinary words are not held.
     const match = combined.match(/(?:^|\s)(new|full|question|exclamation|open|close)\s*$/i);
 
     if (match) {
       const tail = match[1];
-      const cutAt = match.index + (combined.slice(match.index).startsWith(" ") ? 1 : 0);
+      let cutAt = match.index;
+      if (combined.charAt(cutAt) === " ") cutAt++;
+
       const safePart = combined.slice(0, cutAt).trimEnd();
       pendingSpeechTail = tail;
       schedulePendingCommandFlush();
@@ -634,21 +957,6 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
     }
 
     return combined;
-  }
-
-  function schedulePendingCommandFlush() {
-    clearTimeout(pendingCommandTimer);
-    if (!pendingSpeechTail) return;
-
-    const thisSession = sessionNumber;
-    pendingCommandTimer = setTimeout(function () {
-      if (!pendingSpeechTail) return;
-      if (thisSession !== sessionNumber && shouldKeepListening) {
-        schedulePendingCommandFlush();
-        return;
-      }
-      flushPendingCommandTail();
-    }, PENDING_COMMAND_MS);
   }
 
   function flushPendingCommandTail() {
@@ -665,20 +973,20 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
     const incomingText = String(incoming || "");
     const incomingTrimmed = incomingText.trim();
 
-    // A line break or punctuation command can intentionally contain no words.
-    // Never discard it just because there are no ordinary words to compare.
     if (!incomingTrimmed) return incomingText;
 
     const target = currentSpeechEditor();
     const existingWords = target.value.trim().split(/\s+/).filter(Boolean);
     const incomingWords = incomingTrimmed.split(/\s+/).filter(Boolean);
 
-    if (existingWords.length < 2 || incomingWords.length < 2) return incomingText;
+    // Be conservative: short repetitions may be intentional in natural speech.
+    // Only remove a clearly matching overlap of at least three words.
+    if (existingWords.length < 3 || incomingWords.length < 3) return incomingText;
 
     const maxOverlap = Math.min(12, existingWords.length, incomingWords.length);
     let overlap = 0;
 
-    for (let size = maxOverlap; size >= 2; size--) {
+    for (let size = maxOverlap; size >= 3; size--) {
       const left = existingWords.slice(-size).map(normaliseForCompare);
       const right = incomingWords.slice(0, size).map(normaliseForCompare);
 
@@ -695,8 +1003,7 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
   function appendCleanTranscript(text) {
     const cleaned = formatSpeech(text);
 
-    // Preserve intentional line breaks and standalone punctuation.
-    // Only discard genuinely empty/whitespace-only recognition results.
+    // Keep intentional line breaks and punctuation commands.
     if (!cleaned || (!cleaned.trim() && !/[\r\n]/.test(cleaned))) return;
 
     const deduped = removeRepeatedOverlap(cleaned);
@@ -804,6 +1111,7 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
           const transcript = result[0] ? result[0].transcript : "";
 
           if (result.isFinal) {
+            // A browser may report the same result index again. Do not append it twice.
             if (processedFinalIndexes.has(i)) continue;
             processedFinalIndexes.add(i);
 
@@ -857,7 +1165,6 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
         }
 
         if (event.error === "no-speech") {
-          // Silence is normal during dictation. Do not treat it as a fatal error.
           setStatus(speechStatus, message, "warn");
           return;
         }
@@ -872,8 +1179,6 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
         clearInterim();
         updateMicLabel();
 
-        // When the user deliberately stops, wait for onend before flushing
-        // a split command. This allows the final recognition result to arrive.
         if (intentionalStop || !shouldKeepListening || fatalSpeechError) {
           clearTimeout(restartTimer);
           flushPendingCommandTail();
@@ -881,8 +1186,6 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
           return;
         }
 
-        // Do not flush a possible command prefix on a temporary end.
-        // It may be followed by the second half of the command after restart.
         schedulePendingCommandFlush();
 
         if (!sessionHadFinal) {
@@ -928,7 +1231,6 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
             recognition.lang = speechLanguage.value;
             recognition.start();
           } catch (error) {
-            // A few browsers need more time after onend before start() works.
             clearTimeout(restartTimer);
             restartTimer = setTimeout(function () {
               if (!shouldKeepListening || intentionalStop || !recognition) return;
@@ -1173,6 +1475,8 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
   if (!restored) {
     resetHistory();
     updateStats();
+    renderIdeas();
+    renderVocabulary();
     setStatus(saveStatus, "Ready. Your new draft will save on this device.");
   }
 
