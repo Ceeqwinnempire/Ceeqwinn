@@ -15,7 +15,7 @@
   --line:#e8dfe5;--green:#28664b;--radius:18px;
 }
 *{box-sizing:border-box}
-html{min-height:100%}
+html{min-height:100%;scroll-behavior:smooth}
 body{
   margin:0;min-height:100vh;color:var(--ink);
   background:radial-gradient(ellipse at top left,#f0dce6 0,transparent 48%),
@@ -235,6 +235,13 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
   const STORAGE_KEY = "ceeqwinn_voice_writer_mvp_v1";
   const SETTINGS_VERSION = 2;
 
+  // Recovery timing is deliberately modest for older phones.
+  const RESTART_BASE_MS = 500;
+  const RESTART_MAX_MS = 1800;
+  const PENDING_COMMAND_MS = 2800;
+  const MAX_QUIET_RESTARTS = 24;
+  const MAX_NETWORK_RETRIES = 3;
+
   const titleInput = $("storyTitle");
   const story = $("story");
   const ideaDraft = $("ideaDraft");
@@ -261,19 +268,21 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
   let saveTimer = null;
   let historyTimer = null;
   let restartTimer = null;
+  let pendingCommandTimer = null;
   let history = [];
   let historyIndex = -1;
   let restoring = false;
   let sessionHadFinal = false;
   let currentInterim = "";
-  let lastSpeechError = "";
   let applyingSpeechResult = false;
   let pendingSpeechTail = "";
-  let lastChunkFingerprint = "";
-  let lastChunkTime = 0;
-
-  // Indexes are valid only within a single recognition session.
   let processedFinalIndexes = new Set();
+  let speechTarget = null;
+  let consecutiveQuietEnds = 0;
+  let consecutiveNetworkErrors = 0;
+  let fatalSpeechError = "";
+  let lastSpeechError = "";
+  let sessionNumber = 0;
 
   function setStatus(element, message, kind) {
     element.textContent = message;
@@ -288,6 +297,10 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
 
   function activeEditor() {
     return mode === "idea" ? ideaDraft : story;
+  }
+
+  function currentSpeechEditor() {
+    return speechTarget || activeEditor();
   }
 
   function updateStats() {
@@ -353,8 +366,6 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
       speechLanguage.value = data.speechLanguage;
     }
 
-    // Older saved drafts came from a version where commands were off by default.
-    // Upgrade those settings once, while respecting the user's choice afterwards.
     if (data.settingsVersion >= SETTINGS_VERSION &&
         typeof data.punctuationCommands === "boolean") {
       punctuationCommands.checked = data.punctuationCommands;
@@ -414,7 +425,7 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
   }
 
   function switchMode(nextMode) {
-    if (listening) stopListening();
+    if (listening || shouldKeepListening) stopListening();
     mode = nextMode;
     const inStory = mode === "story";
 
@@ -554,8 +565,9 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
     if (speechUnavailable) {
       micButton.textContent = "🎙 Speech recognition unavailable";
       micButton.disabled = true;
-    } else if (listening) {
-      micButton.textContent = "■ Stop listening";
+      micButton.classList.remove("listening");
+    } else if (listening || (shouldKeepListening && !intentionalStop)) {
+      micButton.textContent = listening ? "■ Stop listening" : "■ Stop listening · reconnecting…";
       micButton.classList.add("listening");
       micButton.disabled = false;
     } else {
@@ -571,10 +583,6 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
       .replace(/[“”"'.,!?;:()[\]{}]/g, "")
       .replace(/\s+/g, " ")
       .trim();
-  }
-
-  function isPunctuationOnly(text) {
-    return /^[\s,.;:!?…—-]*$/.test(text);
   }
 
   function formatSpeech(text) {
@@ -600,98 +608,160 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
       output = output.replace(entry[0], entry[1]);
     });
 
-    // Remove spaces before punctuation and before a requested line break.
     output = output.replace(/[ \t]+([,.;:!?])/g, "$1");
     output = output.replace(/[ \t]+\n/g, "\n");
-    // A line-break command should not leave spaces at the start of the next line.
     output = output.replace(/\n[ \t]+/g, "\n");
     return output;
   }
 
-  // Hold the last word briefly when it could be the beginning of a command.
-  // This lets "new" + "paragraph", for example, work across two final results.
+  // Keep a possible command prefix briefly so split results such as
+  // "new" followed by "line" can still become a line-break command.
   function joinSplitCommand(text) {
+    clearTimeout(pendingCommandTimer);
+
     let combined = (pendingSpeechTail ? pendingSpeechTail + " " : "") + String(text || "");
     pendingSpeechTail = "";
 
     const match = combined.match(/(?:^|\s)(new|full|question|exclamation|open|close)\s*$/i);
+
     if (match) {
       const tail = match[1];
       const cutAt = match.index + (combined.slice(match.index).startsWith(" ") ? 1 : 0);
       const safePart = combined.slice(0, cutAt).trimEnd();
       pendingSpeechTail = tail;
+      schedulePendingCommandFlush();
       combined = safePart;
     }
 
     return combined;
   }
 
-  function flushPendingCommandTail() {
+  function schedulePendingCommandFlush() {
+    clearTimeout(pendingCommandTimer);
     if (!pendingSpeechTail) return;
+
+    const thisSession = sessionNumber;
+    pendingCommandTimer = setTimeout(function () {
+      if (!pendingSpeechTail) return;
+      if (thisSession !== sessionNumber && shouldKeepListening) {
+        schedulePendingCommandFlush();
+        return;
+      }
+      flushPendingCommandTail();
+    }, PENDING_COMMAND_MS);
+  }
+
+  function flushPendingCommandTail() {
+    clearTimeout(pendingCommandTimer);
+    pendingCommandTimer = null;
+    if (!pendingSpeechTail) return;
+
     const tail = pendingSpeechTail;
     pendingSpeechTail = "";
     appendCleanTranscript(tail);
   }
 
   function removeRepeatedOverlap(incoming) {
-    const target = activeEditor();
-    const existingWords = target.value.trim().split(/\s+/).filter(Boolean);
-    const incomingWords = String(incoming).trim().split(/\s+/).filter(Boolean);
+    const incomingText = String(incoming || "");
+    const incomingTrimmed = incomingText.trim();
 
-    if (existingWords.length < 2 || incomingWords.length < 2) return incoming;
+    // A line break or punctuation command can intentionally contain no words.
+    // Never discard it just because there are no ordinary words to compare.
+    if (!incomingTrimmed) return incomingText;
+
+    const target = currentSpeechEditor();
+    const existingWords = target.value.trim().split(/\s+/).filter(Boolean);
+    const incomingWords = incomingTrimmed.split(/\s+/).filter(Boolean);
+
+    if (existingWords.length < 2 || incomingWords.length < 2) return incomingText;
 
     const maxOverlap = Math.min(12, existingWords.length, incomingWords.length);
     let overlap = 0;
 
-    // Only remove overlaps of two or more words. A single repeated word may
-    // be intentional ("no, no" or "very, very") and is therefore preserved.
     for (let size = maxOverlap; size >= 2; size--) {
       const left = existingWords.slice(-size).map(normaliseForCompare);
       const right = incomingWords.slice(0, size).map(normaliseForCompare);
+
       if (left.every((word, index) => word && word === right[index])) {
         overlap = size;
         break;
       }
     }
 
-    if (!overlap) return incoming;
+    if (!overlap) return incomingText;
     return incomingWords.slice(overlap).join(" ");
   }
 
   function appendCleanTranscript(text) {
     const cleaned = formatSpeech(text);
-    if (!cleaned || !cleaned.trim() || isPunctuationOnly(cleaned)) return;
 
-    const target = activeEditor();
+    // Preserve intentional line breaks and standalone punctuation.
+    // Only discard genuinely empty/whitespace-only recognition results.
+    if (!cleaned || (!cleaned.trim() && !/[\r\n]/.test(cleaned))) return;
+
     const deduped = removeRepeatedOverlap(cleaned);
-    if (!deduped || !deduped.trim()) return;
+    if (!deduped || (!deduped.trim() && !/[\r\n]/.test(deduped))) return;
 
+    const target = currentSpeechEditor();
     const startsWithPunctuationOrBreak = /^[\s,.;:!?)}\]]/.test(deduped);
     const alreadyAtBreak = /[\s\n]$/.test(target.value);
-    const needsSpace = target.value.length > 0 && !alreadyAtBreak && !startsWithPunctuationOrBreak;
+    const needsSpace = target.value.length > 0 &&
+      !alreadyAtBreak &&
+      !startsWithPunctuationOrBreak;
 
     applyingSpeechResult = true;
-    target.value += (needsSpace ? " " : "") + deduped;
-    target.dispatchEvent(new Event("input", { bubbles:true }));
-    applyingSpeechResult = false;
+    try {
+      target.value += (needsSpace ? " " : "") + deduped;
+      target.dispatchEvent(new Event("input", { bubbles:true }));
+    } finally {
+      applyingSpeechResult = false;
+    }
   }
 
   function appendTranscript(text) {
     const ready = joinSplitCommand(text);
-    if (ready.trim()) appendCleanTranscript(ready);
+    if (ready.length > 0) appendCleanTranscript(ready);
   }
 
   function showSpeechError(errorCode) {
     const messages = {
       "not-allowed":"Microphone permission was denied. Check this site's browser permissions.",
       "service-not-allowed":"The browser's speech service is not allowed on this device.",
-      "no-speech":"No speech was detected. Check your microphone and try again.",
+      "no-speech":"No speech was detected. Waiting to resume listening…",
       "audio-capture":"No working microphone was found.",
       "network":"The speech service needs a network connection in this browser.",
       "language-not-supported":"This language is not supported by the speech service. Stop listening and try another language.",
       "aborted":"Speech recognition was interrupted."
     };
     return messages[errorCode] || ("Speech recognition reported: " + errorCode + ".");
+  }
+
+  function clearInterim() {
+    currentInterim = "";
+    interimText.textContent = "";
+    interimBox.classList.add("hidden");
+  }
+
+  function finishSessionMessage() {
+    if (fatalSpeechError) {
+      setStatus(speechStatus, fatalSpeechError, "error");
+      fatalSpeechError = "";
+    } else if (lastSpeechError) {
+      setStatus(speechStatus, lastSpeechError, "warn");
+      lastSpeechError = "";
+    } else if (sessionHadFinal) {
+      setStatus(speechStatus,
+        "Listening stopped. Recognised words have been added and autosaved.",
+        "good");
+    } else {
+      setStatus(speechStatus, "Listening stopped.");
+    }
+
+    sessionHadFinal = false;
+    speechTarget = null;
+    consecutiveQuietEnds = 0;
+    consecutiveNetworkErrors = 0;
+    updateMicLabel();
   }
 
   function initSpeech() {
@@ -714,10 +784,14 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
 
       recognition.onstart = function () {
         listening = true;
+        sessionNumber++;
+        processedFinalIndexes = new Set();
+        clearInterim();
         updateMicLabel();
+
         setStatus(speechStatus,
           mode === "story"
-            ? "Listening for your story… Speak naturally."
+            ? "Listening for your story… Speak naturally. Pause whenever you need."
             : "Listening for your idea… Your story remains separate.",
           "good");
       };
@@ -736,24 +810,11 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
             const trimmed = transcript.trim();
             if (!trimmed) continue;
 
-            const fingerprint = normaliseForCompare(trimmed);
-            const now = Date.now();
-            const wordCount = fingerprint ? fingerprint.split(" ").length : 0;
-
-            // Some speech services resend the same complete final chunk under
-            // a different result index. Ignore an immediate duplicate chunk
-            // only when it is long enough to distinguish from a repeated word.
-            const looksLikeDuplicateChunk =
-              fingerprint.length >= 10 &&
-              wordCount >= 2 &&
-              fingerprint === lastChunkFingerprint &&
-              now - lastChunkTime < 2500;
-
-            if (looksLikeDuplicateChunk) continue;
-
-            lastChunkFingerprint = fingerprint;
-            lastChunkTime = now;
             sessionHadFinal = true;
+            consecutiveQuietEnds = 0;
+            consecutiveNetworkErrors = 0;
+            lastSpeechError = "";
+
             appendTranscript(trimmed);
           } else {
             currentInterim += transcript;
@@ -765,70 +826,130 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
       };
 
       recognition.onerror = function (event) {
-        lastSpeechError = showSpeechError(event.error);
-        setStatus(speechStatus, lastSpeechError, "warn");
+        const message = showSpeechError(event.error);
+        lastSpeechError = message;
 
         if (event.error === "not-allowed" ||
             event.error === "service-not-allowed" ||
-            event.error === "language-not-supported") {
+            event.error === "language-not-supported" ||
+            event.error === "audio-capture") {
+          fatalSpeechError = message;
           shouldKeepListening = false;
           intentionalStop = true;
-          listening = false;
           clearTimeout(restartTimer);
           updateMicLabel();
+          return;
+        }
+
+        if (event.error === "network") {
+          consecutiveNetworkErrors++;
+          setStatus(speechStatus, message + " Checking whether the connection recovers…", "warn");
+
+          if (consecutiveNetworkErrors >= MAX_NETWORK_RETRIES) {
+            fatalSpeechError = message +
+              " Automatic retries have stopped. Check your connection, then press Start listening.";
+            shouldKeepListening = false;
+            intentionalStop = true;
+            clearTimeout(restartTimer);
+            updateMicLabel();
+          }
+          return;
+        }
+
+        if (event.error === "no-speech") {
+          // Silence is normal during dictation. Do not treat it as a fatal error.
+          setStatus(speechStatus, message, "warn");
+          return;
+        }
+
+        if (event.error !== "aborted") {
+          setStatus(speechStatus, message, "warn");
         }
       };
 
       recognition.onend = function () {
         listening = false;
+        clearInterim();
         updateMicLabel();
-        interimBox.classList.add("hidden");
-        interimText.textContent = "";
-        currentInterim = "";
 
-        flushPendingCommandTail();
-
-        // Some browsers stop a continuous session on their own. Try one
-        // careful restart if the user has not pressed Stop and no fatal error
-        // occurred. Network and permission failures are not endlessly retried.
-        if (shouldKeepListening && !intentionalStop && !lastSpeechError) {
+        // When the user deliberately stops, wait for onend before flushing
+        // a split command. This allows the final recognition result to arrive.
+        if (intentionalStop || !shouldKeepListening || fatalSpeechError) {
           clearTimeout(restartTimer);
-          restartTimer = setTimeout(function () {
-            if (!shouldKeepListening || !recognition) return;
-            try {
-              recognition.start();
-            } catch (error) {
-              shouldKeepListening = false;
-              listening = false;
-              updateMicLabel();
-              setStatus(speechStatus,
-                "The browser could not restart listening. Press Start listening to try again.",
-                "warn");
-            }
-          }, 300);
+          flushPendingCommandTail();
+          finishSessionMessage();
           return;
         }
 
-        if (lastSpeechError) {
-          setStatus(speechStatus, lastSpeechError, "warn");
-          lastSpeechError = "";
-        } else if (sessionHadFinal) {
-          setStatus(speechStatus,
-            "Listening session ended. Recognised words were added and autosaved.",
-            "good");
-        } else if (intentionalStop) {
-          setStatus(speechStatus, "Listening stopped.");
+        // Do not flush a possible command prefix on a temporary end.
+        // It may be followed by the second half of the command after restart.
+        schedulePendingCommandFlush();
+
+        if (!sessionHadFinal) {
+          consecutiveQuietEnds++;
         } else {
-          setStatus(speechStatus,
-            "Speech recognition ended. Press Start listening to continue.",
-            "warn");
+          consecutiveQuietEnds = 0;
         }
 
-        sessionHadFinal = false;
+        if (consecutiveQuietEnds >= MAX_QUIET_RESTARTS) {
+          shouldKeepListening = false;
+          intentionalStop = true;
+          flushPendingCommandTail();
+          setStatus(speechStatus,
+            "The browser repeatedly stopped listening. Your captured words are preserved. Press Start listening to begin a fresh session.",
+            "warn");
+          finishSessionMessage();
+          return;
+        }
+
+        if (lastSpeechError && lastSpeechError.indexOf("network") !== -1 &&
+            consecutiveNetworkErrors >= MAX_NETWORK_RETRIES) {
+          shouldKeepListening = false;
+          intentionalStop = true;
+          flushPendingCommandTail();
+          finishSessionMessage();
+          return;
+        }
+
+        const delay = Math.min(
+          RESTART_MAX_MS,
+          RESTART_BASE_MS + consecutiveQuietEnds * 80
+        );
+
+        setStatus(speechStatus,
+          "Brief pause detected. Saving your words and preparing to listen again…",
+          "good");
+
+        clearTimeout(restartTimer);
+        restartTimer = setTimeout(function () {
+          if (!shouldKeepListening || intentionalStop || !recognition) return;
+
+          try {
+            recognition.lang = speechLanguage.value;
+            recognition.start();
+          } catch (error) {
+            // A few browsers need more time after onend before start() works.
+            clearTimeout(restartTimer);
+            restartTimer = setTimeout(function () {
+              if (!shouldKeepListening || intentionalStop || !recognition) return;
+              try {
+                recognition.start();
+              } catch (retryError) {
+                shouldKeepListening = false;
+                intentionalStop = true;
+                flushPendingCommandTail();
+                setStatus(speechStatus,
+                  "The browser could not restart listening. Your captured words remain in the editor. Press Start listening to try again.",
+                  "warn");
+                finishSessionMessage();
+              }
+            }, RESTART_MAX_MS);
+          }
+        }, delay);
       };
 
       setStatus(speechStatus,
-        "Speech recognition is available in this browser. Microphone access and recognition still need testing on this device.",
+        "Speech recognition is available in this browser. Microphone access and actual recognition still need testing on this device.",
         "good");
       updateMicLabel();
     } catch (error) {
@@ -842,28 +963,36 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
 
   function startListening() {
     if (!recognition || speechUnavailable) return;
-    if (listening) {
+    if (listening || shouldKeepListening) {
       stopListening();
       return;
     }
 
     clearTimeout(restartTimer);
+    clearTimeout(pendingCommandTimer);
+
     intentionalStop = false;
     shouldKeepListening = true;
+    listening = false;
     sessionHadFinal = false;
     currentInterim = "";
     pendingSpeechTail = "";
     lastSpeechError = "";
+    fatalSpeechError = "";
+    consecutiveQuietEnds = 0;
+    consecutiveNetworkErrors = 0;
     processedFinalIndexes = new Set();
-    lastChunkFingerprint = "";
-    lastChunkTime = 0;
-    recognition.lang = speechLanguage.value;
+    speechTarget = activeEditor();
 
     try {
+      recognition.lang = speechLanguage.value;
       recognition.start();
       setStatus(speechStatus, "Requesting microphone access…");
+      updateMicLabel();
     } catch (error) {
       shouldKeepListening = false;
+      speechTarget = null;
+      updateMicLabel();
       setStatus(speechStatus,
         "Could not start listening. Wait a moment, then try again.",
         "warn");
@@ -876,16 +1005,19 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
     clearTimeout(restartTimer);
 
     if (recognition && listening) {
+      setStatus(speechStatus, "Finishing speech recognition and saving the last words…", "good");
       try {
         recognition.stop();
       } catch (error) {
-        // The browser may already have stopped recognition.
+        flushPendingCommandTail();
+        finishSessionMessage();
       }
     } else {
+      clearTimeout(pendingCommandTimer);
       flushPendingCommandTail();
+      finishSessionMessage();
     }
 
-    listening = false;
     updateMicLabel();
   }
 
@@ -1027,9 +1159,11 @@ footer{padding:10px 5px 0;color:var(--muted);text-align:center;font-size:.82rem}
     clearTimeout(saveTimer);
     clearTimeout(historyTimer);
     clearTimeout(restartTimer);
+    clearTimeout(pendingCommandTimer);
     saveNow();
 
     shouldKeepListening = false;
+    intentionalStop = true;
     if (recognition && listening) {
       try { recognition.stop(); } catch (error) {}
     }
