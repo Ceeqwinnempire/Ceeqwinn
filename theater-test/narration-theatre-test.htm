@@ -1,0 +1,751 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#160e19">
+<title>CEEQWINN | Narration Theatre</title>
+
+<style>
+:root {
+  --bg: #160e19;
+  --panel: #211522;
+  --gold: #e2c48b;
+  --text: #fff7ec;
+  --muted: #c5b8c7;
+  --line: #ffffff20;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  min-height: 100%;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background:
+    radial-gradient(ellipse at top, #45263e 0%, transparent 55%),
+    var(--bg);
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button {
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.app {
+  width: 100%;
+  max-width: 1050px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: auto;
+  padding:
+    max(12px, env(safe-area-inset-top))
+    max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom))
+    max(12px, env(safe-area-inset-left));
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 2px 12px;
+  font-family: Arial, sans-serif;
+}
+
+.logo {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.edition {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-align: right;
+}
+
+.progress {
+  height: 3px;
+  background: #ffffff17;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  flex: 0 0 auto;
+}
+
+.progress > div {
+  height: 100%;
+  width: 0;
+  background: var(--gold);
+  transition: width .4s ease;
+}
+
+.theatre {
+  position: relative;
+  isolation: isolate;
+  flex: 1 0 auto;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid #e2c48b35;
+  border-radius: 13px;
+  background: #211522;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 15px 45px #0004;
+}
+
+.art {
+  position: relative;
+  height: clamp(245px, 48dvh, 570px);
+  min-height: 220px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 35%, #745064, #281927 72%);
+}
+
+.art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  opacity: 1;
+  transition: opacity .35s ease, transform 1s ease;
+}
+
+.art img.scene-shift {
+  transform: scale(1.045);
+}
+
+.art-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, #160e190b 40%, #160e196b 100%);
+}
+
+.art-border {
+  position: absolute;
+  inset: 10px;
+  border: 1px solid #e2c48b35;
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+.art-label {
+  position: absolute;
+  left: 18px;
+  bottom: 15px;
+  z-index: 2;
+  color: #fff1d6;
+  font: 10px Arial, sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px #000;
+}
+
+.image-error {
+  display: none;
+  position: absolute;
+  inset: 0;
+  padding: 24px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--muted);
+  font: 14px/1.7 Arial, sans-serif;
+}
+
+.story {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(20px, 5vw, 36px);
+  background: linear-gradient(180deg, #211522, #1b121e);
+}
+
+.scene-type {
+  color: var(--gold);
+  font: 10px Arial, sans-serif;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.heading {
+  font-size: clamp(27px, 6vw, 43px);
+  line-height: 1.13;
+  font-weight: normal;
+  margin: 0 0 15px;
+  text-wrap: balance;
+}
+
+.copy {
+  font-size: clamp(17px, 4.3vw, 20px);
+  line-height: 1.75;
+  color: #eee3ed;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.dialogue {
+  display: none;
+  margin-top: 18px;
+  padding: 15px 17px;
+  border-left: 2px solid var(--gold);
+  background: #ffffff07;
+  animation: appear .5s ease both;
+}
+
+.dialogue.visible { display: block; }
+
+.speaker {
+  color: var(--gold);
+  font: 10px Arial, sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 9px;
+}
+
+.words {
+  font-size: clamp(19px, 4.5vw, 24px);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 22px;
+  font: 10px Arial, sans-serif;
+  color: var(--muted);
+}
+
+.counter {
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 0 8px;
+}
+
+.btn {
+  min-height: 43px;
+  padding: 10px 15px;
+  border-radius: 999px;
+  border: 1px solid #e2c48b60;
+  background: #ffffff08;
+  color: var(--text);
+  font: 12px Arial, sans-serif;
+  cursor: pointer;
+}
+
+.btn.primary {
+  min-width: 135px;
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #241522;
+  font-weight: bold;
+}
+
+.btn:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+.status {
+  min-height: 20px;
+  text-align: center;
+  padding: 4px 0;
+  color: var(--gold);
+  font: 11px/1.5 Arial, sans-serif;
+}
+
+.hint {
+  text-align: center;
+  color: #a99aac;
+  font: 10px/1.6 Arial, sans-serif;
+  padding: 0 4px 3px;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Wider screens gain breathing room, not smaller text. */
+@media (min-width: 760px) {
+  .app {
+    padding: 22px;
+  }
+
+  .theatre {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, .85fr);
+    align-items: stretch;
+  }
+
+  .art {
+    height: auto;
+    min-height: 460px;
+  }
+
+  .story {
+    justify-content: center;
+    padding: clamp(26px, 4vw, 48px);
+  }
+
+  .footer {
+    margin-top: 25px;
+  }
+}
+
+/* Short screens keep controls usable without forcing landscape. */
+@media (max-height: 650px) and (max-width: 759px) {
+  .art {
+    height: 39dvh;
+    min-height: 185px;
+  }
+
+  .story {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .heading {
+    margin-bottom: 10px;
+  }
+
+  .copy {
+    line-height: 1.6;
+  }
+
+  .footer {
+    padding-top: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<main class="app">
+  <header class="header">
+    <div class="logo">CEEQWINN</div>
+    <div class="edition">NARRATION THEATRE · TEST 02</div>
+  </header>
+
+  <div class="progress"
+       role="progressbar"
+       aria-label="Story progress"
+       aria-valuemin="0"
+       aria-valuemax="100"
+       aria-valuenow="0"
+       id="progressTrack">
+    <div id="progressFill"></div>
+  </div>
+
+  <section class="theatre" id="theatre">
+    <div class="art">
+      <img
+        id="character"
+        src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg"
+        alt="Lexis Azunna wearing a red dress"
+        fetchpriority="high"
+      >
+      <div class="art-shade"></div>
+      <div class="art-border"></div>
+      <div class="art-label" id="artLabel">Emerald High · Evening</div>
+      <div class="image-error" id="imageError">
+        Lexis's image could not be loaded.<br>
+        Check your internet connection and reload this page.
+      </div>
+    </div>
+
+    <div class="story">
+      <div class="scene-type" id="sceneType">Narration</div>
+      <h1 class="heading" id="heading">The sound behind the door</h1>
+
+      <div class="copy" id="copy" aria-live="polite" aria-atomic="true">
+        A story is waiting.
+      </div>
+
+      <div class="dialogue" id="dialogue">
+        <div class="speaker" id="speaker">A voice</div>
+        <div class="words" id="words"></div>
+      </div>
+
+      <div class="footer">
+        <span id="mood">A sample story experience</span>
+        <span class="counter" id="counter">READY</span>
+      </div>
+    </div>
+  </section>
+
+  <nav class="controls" aria-label="Story controls">
+    <button class="btn" id="restart">↺ Restart</button>
+    <button class="btn" id="pause" disabled>Ⅱ Pause</button>
+    <button class="btn primary" id="next">Begin story →</button>
+    <button class="btn" id="skip" disabled>Skip »</button>
+  </nav>
+
+  <div class="status" id="status" aria-live="polite">
+    Ready when you are.
+  </div>
+
+  <div class="hint">
+    Automatic narration · Tap Next to advance · Pause whenever you need
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var RED_IMAGE =
+    "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg";
+
+  var FALLBACK_IMAGE =
+    "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg";
+
+  /*
+   * Original placeholder scene.
+   * This is a presentation demo, not new story canon.
+   */
+  var scenes = [
+    {
+      type: "Narration",
+      heading: "The sound behind the door",
+      text: "The school corridor had gone quiet.\n\nLexis was about to leave when she heard someone moving inside the room.",
+      label: "Emerald High · Evening",
+      mood: "A quiet moment",
+      duration: 8500
+    },
+    {
+      type: "Action",
+      heading: "Then the handle moved.",
+      text: "Lexis stopped.\n\nThe door opened just enough for a thin line of light to cross the floor. Whoever was inside knew she was there.",
+      label: "Someone is inside",
+      mood: "Something has changed",
+      duration: 9000
+    },
+    {
+      type: "Dialogue",
+      heading: "A voice spoke.",
+      text: "She could not see who was speaking.\n\nBut the words that followed made her stay.",
+      speaker: "A voice beyond the door",
+      dialogue: "\"You need to hear the truth about that letter.\"",
+      label: "An unexpected visitor",
+      mood: "Listen carefully",
+      duration: 9500
+    },
+    {
+      type: "Narration",
+      heading: "Lexis had a decision to make.",
+      text: "She could walk away and leave the mystery untouched.\n\nOr she could step forward and ask the one question that mattered.\n\nWho had written the letter — and why had it been hidden?",
+      label: "The mystery begins",
+      mood: "The story continues",
+      duration: 11000
+    }
+  ];
+
+  var current = -1;
+  var playing = false;
+  var ended = false;
+  var timer = null;
+  var deadline = 0;
+  var remaining = 0;
+  var token = 0;
+
+  var $ = function (id) {
+    return document.getElementById(id);
+  };
+
+  var character = $("character");
+  var imageError = $("imageError");
+  var heading = $("heading");
+  var copy = $("copy");
+  var sceneType = $("sceneType");
+  var dialogue = $("dialogue");
+  var speaker = $("speaker");
+  var words = $("words");
+  var artLabel = $("artLabel");
+  var mood = $("mood");
+  var counter = $("counter");
+  var progressFill = $("progressFill");
+  var progressTrack = $("progressTrack");
+  var nextButton = $("next");
+  var pauseButton = $("pause");
+  var skipButton = $("skip");
+  var restartButton = $("restart");
+  var status = $("status");
+
+  /* If the first image fails, try the second supplied image. */
+  character.addEventListener("error", function () {
+    if (character.dataset.triedFallback !== "yes") {
+      character.dataset.triedFallback = "yes";
+      character.src = FALLBACK_IMAGE;
+      character.alt = "Lexis Azunna";
+    } else {
+      character.style.display = "none";
+      imageError.style.display = "flex";
+    }
+  });
+
+  function clearTimer() {
+    if (timer !== null) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+
+  function updateProgress() {
+    var value = current < 0
+      ? 0
+      : Math.round((current + 1) / scenes.length * 100);
+
+    progressFill.style.width = value + "%";
+    progressTrack.setAttribute("aria-valuenow", String(value));
+  }
+
+  function updateButtons() {
+    pauseButton.disabled = current < 0 || ended;
+
+    skipButton.disabled = current < 0 || ended;
+
+    pauseButton.textContent = playing ? "Ⅱ Pause" : "▶ Resume";
+
+    if (ended) {
+      nextButton.textContent = "Play again ↺";
+    } else if (current < 0) {
+      nextButton.textContent = "Begin story →";
+    } else {
+      nextButton.textContent = "Next →";
+    }
+  }
+
+  function renderScene(index) {
+    var scene = scenes[index];
+
+    sceneType.textContent = scene.type;
+    heading.textContent = scene.heading;
+    copy.textContent = scene.text;
+    artLabel.textContent = scene.label;
+    mood.textContent = scene.mood;
+
+    counter.textContent =
+      String(index + 1).padStart(2, "0") +
+      " / " +
+      String(scenes.length).padStart(2, "0");
+
+    if (scene.dialogue) {
+      dialogue.classList.add("visible");
+      speaker.textContent = scene.speaker;
+      words.textContent = scene.dialogue;
+    } else {
+      dialogue.classList.remove("visible");
+      speaker.textContent = "";
+      words.textContent = "";
+    }
+
+    character.classList.toggle("scene-shift", index === 1 || index === 3);
+
+    updateProgress();
+  }
+
+  function schedule(delay) {
+    clearTimer();
+
+    if (!playing || ended) return;
+
+    remaining = delay;
+    deadline = Date.now() + delay;
+
+    var myToken = token;
+
+    timer = setTimeout(function () {
+      if (myToken !== token || !playing) return;
+      goTo(current + 1);
+    }, delay);
+  }
+
+  function goTo(index) {
+    token++;
+    clearTimer();
+
+    if (index >= scenes.length) {
+      finish();
+      return;
+    }
+
+    current = Math.max(0, index);
+    ended = false;
+    playing = true;
+
+    renderScene(current);
+    updateButtons();
+
+    status.textContent = "Story playing…";
+    schedule(scenes[current].duration);
+  }
+
+  function finish() {
+    token++;
+    clearTimer();
+
+    ended = true;
+    playing = false;
+    current = scenes.length - 1;
+
+    renderScene(current);
+    status.textContent = "End of demo. The mystery is ready for its next scene.";
+    updateButtons();
+  }
+
+  function start() {
+    if (ended) {
+      restart();
+      goTo(0);
+      return;
+    }
+
+    if (current < 0) {
+      goTo(0);
+      return;
+    }
+
+    if (!playing) {
+      playing = true;
+      updateButtons();
+      status.textContent = "Story resumed.";
+      schedule(remaining > 0 ? remaining : scenes[current].duration);
+    }
+  }
+
+  function togglePause() {
+    if (current < 0 || ended) return;
+
+    if (playing) {
+      remaining = Math.max(0, deadline - Date.now());
+      token++;
+      clearTimer();
+      playing = false;
+      status.textContent = "Paused. Continue when you're ready.";
+    } else {
+      playing = true;
+      status.textContent = "Story resumed.";
+      schedule(remaining > 0 ? remaining : scenes[current].duration);
+    }
+
+    updateButtons();
+  }
+
+  function next() {
+    if (ended) {
+      restart();
+      goTo(0);
+    } else if (current < 0) {
+      goTo(0);
+    } else {
+      goTo(current + 1);
+    }
+  }
+
+  function skip() {
+    if (current >= 0 && !ended) finish();
+  }
+
+  function restart() {
+    token++;
+    clearTimer();
+
+    current = -1;
+    playing = false;
+    ended = false;
+    remaining = 0;
+
+    sceneType.textContent = "Narration";
+    heading.textContent = "The sound behind the door";
+    copy.textContent = "Press Begin story when you're ready.";
+    artLabel.textContent = "Emerald High · Evening";
+    mood.textContent = "A sample story experience";
+    counter.textContent = "READY";
+
+    dialogue.classList.remove("visible");
+    character.classList.remove("scene-shift");
+
+    progressFill.style.width = "0%";
+    progressTrack.setAttribute("aria-valuenow", "0");
+
+    status.textContent = "Ready when you are.";
+    updateButtons();
+  }
+
+  nextButton.addEventListener("click", next);
+  pauseButton.addEventListener("click", togglePause);
+  skipButton.addEventListener("click", skip);
+  restartButton.addEventListener("click", restart);
+
+  /* Space advances; Escape pauses. */
+  document.addEventListener("keydown", function (event) {
+    var tag = event.target && event.target.tagName;
+
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+    if (event.code === "Space") {
+      event.preventDefault();
+
+      if (current < 0 || ended || playing) next();
+      else start();
+    }
+
+    if (event.key === "Escape") togglePause();
+  });
+
+  /* Pause when the reader leaves the tab. */
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden && playing) togglePause();
+  });
+
+  updateButtons();
+})();
+</script>
+</body>
+</html>
