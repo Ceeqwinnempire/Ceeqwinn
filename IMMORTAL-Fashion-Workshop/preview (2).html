@@ -1,0 +1,775 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IMMORTAL Fashion Workshop</title>
+<style>
+:root {
+  --ink:#28232a; --muted:#716a74; --line:#ded8df;
+  --paper:#faf8f7; --panel:#fff; --accent:#784054;
+  --soft:#f2e7ec; --warning:#fff5db; --good:#23674d;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--paper); color:var(--ink);
+  font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;
+}
+button,input,select,textarea { font:inherit; }
+button {
+  border:1px solid var(--line); background:#fff; color:var(--ink);
+  padding:.65rem .85rem; border-radius:9px; cursor:pointer;
+}
+button.primary { background:var(--accent); color:#fff; }
+button:disabled { opacity:.45; cursor:not-allowed; }
+header {
+  padding:1rem; background:white; border-bottom:1px solid var(--line);
+}
+h1 { margin:0; font-size:1.25rem; }
+h2 { font-size:1rem; margin:0; }
+header p,.muted,.help { color:var(--muted); font-size:.85rem; }
+header p { margin:.3rem 0 0; }
+main { max-width:1300px; margin:auto; padding:1rem; }
+.notice {
+  background:var(--warning); padding:.8rem; border-radius:10px;
+  margin-bottom:1rem; font-size:.88rem;
+}
+.layout {
+  display:grid; grid-template-columns:minmax(0,1.2fr) minmax(290px,.8fr);
+  gap:1rem; align-items:start;
+}
+.panel {
+  background:var(--panel); border:1px solid var(--line);
+  border-radius:13px; overflow:hidden; margin-bottom:1rem;
+}
+.panelhead {
+  padding:.85rem 1rem; border-bottom:1px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between; gap:.5rem;
+}
+.pad { padding:1rem; }
+.toolbar,.actions { display:flex; flex-wrap:wrap; gap:.45rem; margin-bottom:.7rem; }
+.toolbar .active { background:var(--soft); border-color:var(--accent); }
+label { display:grid; gap:.3rem; font-size:.87rem; font-weight:600; }
+input[type=text],select,textarea {
+  width:100%; border:1px solid var(--line); border-radius:8px;
+  padding:.65rem; background:white; color:var(--ink); font-weight:400;
+}
+input[type=file] { width:100%; font-size:.85rem; }
+textarea { min-height:90px; resize:vertical; }
+.fields { display:grid; gap:.8rem; }
+.stage { background:#f1eeeb; padding:.5rem; }
+#stage {
+  width:100%; height:65vh; min-height:330px; max-height:700px;
+  display:block; background:white; border:1px dashed #ccc3cb;
+  border-radius:8px; touch-action:manipulation;
+}
+.help { margin:.4rem 0; font-weight:400; }
+.status { min-height:1.5rem; font-size:.85rem; color:var(--muted); }
+.status.good { color:var(--good); }
+.diff {
+  white-space:pre-wrap; overflow-wrap:anywhere; padding:.85rem;
+  border-radius:9px; background:#f6f3f5;
+  font: .83rem/1.55 ui-monospace,Consolas,monospace;
+}
+.actions button { flex:1; }
+.history { border-top:1px solid var(--line); padding:.65rem 0; }
+.history button { float:right; }
+.tag { border:1px solid var(--line); padding:.2rem .5rem; border-radius:99px; font-size:.75rem; }
+@media(max-width:800px) {
+  .layout { grid-template-columns:1fr; }
+  #stage { height:52vh; min-height:300px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>IMMORTAL · Fashion Workshop</h1>
+  <p>Sketch → select a region → propose a change → review → approve</p>
+</header>
+
+<main>
+  <div class="notice">
+    <strong>Prototype 0.1:</strong>
+    This version provides manual region selection and controlled semantic
+    changes. It does not yet automatically interpret sketches or redraw
+    garments with AI. Unknown construction details remain unknown.
+  </div>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="panelhead">
+        <h2>1. Sketch workshop</h2>
+        <span class="tag">Original preserved</span>
+      </div>
+      <div class="pad">
+        <label>Upload a sketch, drawing, or reference image
+          <input id="imageInput" type="file" accept="image/*">
+        </label>
+        <p class="help">Uncolored drawings are welcome. You can work with a garment alone or a character wearing it.</p>
+
+        <div class="toolbar">
+          <button id="selectMode" class="active">Select region</button>
+          <button id="drawMode">Mark region</button>
+          <button id="finishRegion" disabled>Finish region</button>
+          <button id="cancelRegion">Cancel</button>
+        </div>
+
+        <div class="stage">
+          <svg id="stage" viewBox="0 0 800 900"
+               xmlns="http://www.w3.org/2000/svg"
+               aria-label="Fashion sketch and selection area">
+            <rect width="800" height="900" fill="white"/>
+            <g id="imageLayer"></g>
+            <g id="regionLayer"></g>
+            <g id="draftLayer"></g>
+          </svg>
+        </div>
+        <p class="help">
+          Choose Mark region, then click or tap around the component.
+          Mark at least three points and press Finish region.
+        </p>
+        <div class="actions">
+          <button id="sampleRegion">Try sample region</button>
+          <button id="clearRegions">Clear marked regions</button>
+        </div>
+        <div id="stageStatus" class="status">
+          Upload a sketch or try a sample selection.
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panelhead">
+        <h2>2. Fashion semantics</h2>
+        <span class="tag">Editable</span>
+      </div>
+      <div class="pad fields">
+        <label>Project name
+          <input id="projectName" type="text" value="Untitled Fashion Study">
+        </label>
+
+        <label>Component type
+          <select id="component">
+            <option>Skirt tier</option>
+            <option>Bodice</option>
+            <option>Sleeve</option>
+            <option>Neckline</option>
+            <option>Waistband</option>
+            <option>Panel</option>
+            <option>Train / tail</option>
+            <option>Closure</option>
+            <option>Accessory</option>
+            <option>Other / uncertain</option>
+          </select>
+        </label>
+
+        <label>Component label
+          <input id="componentLabel" type="text"
+                 placeholder="e.g. lower skirt tier">
+        </label>
+
+        <label>Current construction
+          <select id="currentConstruction">
+            <option>UNKNOWN</option>
+            <option>Tier joined at seam</option>
+            <option>Gathered tier</option>
+            <option>Pleated tier</option>
+            <option>Circular / flared tier</option>
+            <option>Draped / cowl construction</option>
+            <option>Other — designer specified</option>
+          </select>
+        </label>
+
+        <label>Proposed construction
+          <select id="proposedConstruction">
+            <option value="">Not specified</option>
+            <option>Tier joined at seam</option>
+            <option>Gathered tier</option>
+            <option>Pleated tier</option>
+            <option>Circular / flared tier</option>
+            <option>Draped / cowl construction</option>
+            <option>Other — designer specified</option>
+          </select>
+        </label>
+
+        <label>Your instruction
+          <textarea id="instruction"
+            placeholder="Describe what you want to change in your own words."></textarea>
+        </label>
+
+        <label>Evidence status
+          <select id="evidence">
+            <option>UNKNOWN</option>
+            <option>OBSERVED</option>
+            <option>INFERRED</option>
+            <option>USER_CONFIRMED</option>
+          </select>
+        </label>
+
+        <label>Lock scope
+          <select id="lockScope">
+            <option>Construction only</option>
+            <option>Selected component</option>
+            <option>Entire garment</option>
+          </select>
+        </label>
+
+        <div class="actions">
+          <button id="saveBaseline">Save baseline</button>
+          <button id="draftMutation" class="primary">Draft mutation</button>
+        </div>
+        <div id="mutationStatus" class="status">
+          No mutation drafted.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panelhead">
+      <h2>3. Mutation review</h2>
+      <span class="tag">Approval required</span>
+    </div>
+    <div class="pad">
+      <div id="reviewEmpty" class="muted">
+        Draft a mutation to inspect the proposed change.
+      </div>
+      <div id="review" hidden>
+        <div id="diff" class="diff"></div>
+        <p class="help">
+          The preservation contract protects tier identity and order,
+          silhouette, length, fabric, color, decoration, unrelated garment
+          parts, character styling, the original sketch, and prior versions.
+        </p>
+        <div class="actions">
+          <button id="approve" class="primary">Approve semantic change</button>
+          <button id="reject">Reject proposal</button>
+          <button id="exportProject">Export project JSON</button>
+          <button id="exportSpec">Export fashion specification</button>
+        </div>
+        <p class="help">
+          Approval changes the structured record only. It does not redraw
+          the uploaded image.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="panelhead">
+      <h2>4. Version history</h2>
+      <button id="restore">Restore baseline</button>
+    </div>
+    <div class="pad">
+      <div id="history" class="muted">No versions saved yet.</div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  const $ = id => document.getElementById(id);
+  const svg = $("stage");
+  const NS = "http://www.w3.org/2000/svg";
+  const imageLayer = $("imageLayer");
+  const regionLayer = $("regionLayer");
+  const draftLayer = $("draftLayer");
+
+  let imageData = null;
+  let mode = "select";
+  let points = [];
+  let regions = [];
+  let selectedId = null;
+  let baseline = null;
+  let appliedState = null;
+  let proposal = null;
+  let versions = [];
+  let regionCounter = 1;
+
+  const preserve = [
+    "Selected component identity",
+    "Tier count and order",
+    "Approved silhouette and length",
+    "Fabric identity, color and finish",
+    "Decorative details",
+    "Unrelated garment components",
+    "Character identity and styling",
+    "Original sketch and previous versions"
+  ];
+
+  const copy = value => JSON.parse(JSON.stringify(value));
+
+  function status(message, good = false) {
+    $("stageStatus").textContent = message;
+    $("stageStatus").className = "status" + (good ? " good" : "");
+  }
+
+  function stateNow() {
+    return {
+      projectName: $("projectName").value.trim() ||
+        "Untitled Fashion Study",
+      component: $("component").value,
+      componentLabel: $("componentLabel").value.trim() ||
+        $("component").value,
+      currentConstruction: $("currentConstruction").value,
+      proposedConstruction: $("proposedConstruction").value,
+      instruction: $("instruction").value.trim(),
+      evidence: $("evidence").value,
+      lockScope: $("lockScope").value,
+      selectedId,
+      regions: copy(regions),
+      hasImage: Boolean(imageData),
+      updatedAt: new Date().toISOString()
+    };
+  }
+
+  function element(tag, attrs = {}) {
+    const node = document.createElementNS(NS, tag);
+    for (const [key, value] of Object.entries(attrs)) {
+      node.setAttribute(key, String(value));
+    }
+    return node;
+  }
+
+  function clear(node) {
+    while (node.firstChild) node.removeChild(node.firstChild);
+  }
+
+  function renderImage() {
+    clear(imageLayer);
+    if (!imageData) return;
+
+    const img = element("image", {
+      href: imageData,
+      x: 0, y: 0, width: 800, height: 900,
+      preserveAspectRatio: "xMidYMid meet"
+    });
+    imageLayer.appendChild(img);
+  }
+
+  function renderRegions() {
+    clear(regionLayer);
+    clear(draftLayer);
+
+    for (const region of regions) {
+      const polygon = element("polygon", {
+        points: region.points.map(p => p.join(",")).join(" "),
+        fill: region.id === selectedId
+          ? "rgba(120,64,84,.23)" : "rgba(65,105,145,.12)",
+        stroke: region.id === selectedId ? "#784054" : "#416991",
+        "stroke-width": region.id === selectedId ? 5 : 3,
+        "stroke-dasharray": "9 5"
+      });
+
+      polygon.style.cursor = "pointer";
+      polygon.addEventListener("click", event => {
+        event.stopPropagation();
+        selectedId = region.id;
+        $("component").value = region.type;
+        $("componentLabel").value = region.label;
+        renderRegions();
+      });
+      regionLayer.appendChild(polygon);
+
+      const center = region.points.reduce((sum, point) => [
+        sum[0] + point[0] / region.points.length,
+        sum[1] + point[1] / region.points.length
+      ], [0, 0]);
+
+      const text = element("text", {
+        x: center[0], y: center[1],
+        "text-anchor": "middle", "font-size": 20,
+        fill: "#3d2430", stroke: "white", "stroke-width": 4,
+        "paint-order": "stroke"
+      });
+      text.textContent = region.label;
+      regionLayer.appendChild(text);
+    }
+
+    if (points.length) {
+      draftLayer.appendChild(element("polyline", {
+        points: points.map(p => p.join(",")).join(" "),
+        fill: "none", stroke: "#b36b19", "stroke-width": 4,
+        "stroke-dasharray": "7 5"
+      }));
+
+      points.forEach(p => draftLayer.appendChild(
+        element("circle", {
+          cx: p[0], cy: p[1], r: 6, fill: "#b36b19"
+        })
+      ));
+    }
+
+    $("finishRegion").disabled = points.length < 3;
+  }
+
+  function pointFromEvent(event) {
+    const point = svg.createSVGPoint();
+    point.x = event.clientX;
+    point.y = event.clientY;
+    const matrix = svg.getScreenCTM();
+    if (!matrix) return [400, 450];
+    const p = point.matrixTransform(matrix.inverse());
+    return [
+      Math.max(0, Math.min(800, p.x)),
+      Math.max(0, Math.min(900, p.y))
+    ];
+  }
+
+  svg.addEventListener("click", event => {
+    if (mode !== "draw") return;
+    if (event.target.tagName === "polygon") return;
+    points.push(pointFromEvent(event));
+    renderRegions();
+    status("Region drawing: add points around the component.");
+  });
+
+  $("imageInput").addEventListener("change", event => {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      status("Please select an image file.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      imageData = reader.result;
+      renderImage();
+      status("Sketch loaded. Your original image remains unchanged.", true);
+    };
+    reader.onerror = () => status("Could not read this image.");
+    reader.readAsDataURL(file);
+  });
+
+  $("selectMode").onclick = () => {
+    mode = "select";
+    $("selectMode").classList.add("active");
+    $("drawMode").classList.remove("active");
+    status("Select mode: click a marked region.");
+  };
+
+  $("drawMode").onclick = () => {
+    mode = "draw";
+    points = [];
+    $("drawMode").classList.add("active");
+    $("selectMode").classList.remove("active");
+    renderRegions();
+    status("Mark mode: click at least three points around a region.");
+  };
+
+  $("cancelRegion").onclick = () => {
+    points = [];
+    mode = "select";
+    $("selectMode").classList.add("active");
+    $("drawMode").classList.remove("active");
+    renderRegions();
+    status("Region drawing cancelled.");
+  };
+
+  $("finishRegion").onclick = () => {
+    if (points.length < 3) return;
+
+    const type = $("component").value;
+    const label = $("componentLabel").value.trim() || type;
+    const region = {
+      id: "region-" + regionCounter++,
+      type, label, points: copy(points),
+      evidence: $("evidence").value
+    };
+
+    regions.push(region);
+    selectedId = region.id;
+    $("componentLabel").value = label;
+    points = [];
+    mode = "select";
+    $("selectMode").classList.add("active");
+    $("drawMode").classList.remove("active");
+    renderRegions();
+    status("Region marked. Selection is designer-assisted.", true);
+  };
+
+  $("component").onchange = () => {
+    const region = regions.find(r => r.id === selectedId);
+    if (region) region.type = $("component").value;
+  };
+
+  $("componentLabel").onchange = () => {
+    const region = regions.find(r => r.id === selectedId);
+    if (region) {
+      region.label = $("componentLabel").value.trim() || region.type;
+      renderRegions();
+    }
+  };
+
+  $("sampleRegion").onclick = () => {
+    if (regions.length) {
+      status("A region already exists. Select it or clear regions first.");
+      return;
+    }
+    const region = {
+      id: "region-" + regionCounter++,
+      type: "Skirt tier",
+      label: "Sample skirt tier",
+      points: [[235,510],[565,510],[665,800],[135,800]],
+      evidence: "UNKNOWN"
+    };
+    regions.push(region);
+    selectedId = region.id;
+    $("component").value = region.type;
+    $("componentLabel").value = region.label;
+    renderRegions();
+    status("Sample region created for practice; it is not image analysis.", true);
+  };
+
+  $("clearRegions").onclick = () => {
+    regions = [];
+    points = [];
+    selectedId = null;
+    renderRegions();
+    status("Marked regions cleared. Uploaded image is untouched.");
+  };
+
+  function saveVersion(label, state) {
+    versions.unshift({
+      id: "v" + (versions.length + 1),
+      label,
+      createdAt: new Date().toISOString(),
+      state: copy(state)
+    });
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const host = $("history");
+    host.replaceChildren();
+
+    if (!versions.length) {
+      host.textContent = "No versions saved yet.";
+      return;
+    }
+
+    versions.forEach(version => {
+      const row = document.createElement("div");
+      row.className = "history";
+
+      const label = document.createElement("span");
+      label.textContent =
+        `${version.id} · ${version.label} · ` +
+        new Date(version.createdAt).toLocaleString();
+
+      const button = document.createElement("button");
+      button.textContent = "Load";
+      button.onclick = () => {
+        appliedState = copy(version.state);
+        fillForm(appliedState);
+        status("Version loaded into the working state.", true);
+      };
+
+      row.append(label, button);
+      host.appendChild(row);
+    });
+  }
+
+  function fillForm(state) {
+    $("projectName").value = state.projectName;
+    $("component").value = state.component;
+    $("componentLabel").value = state.componentLabel;
+    $("currentConstruction").value = state.currentConstruction;
+    $("proposedConstruction").value = state.proposedConstruction || "";
+    $("instruction").value = state.instruction;
+    $("evidence").value = state.evidence;
+    $("lockScope").value = state.lockScope;
+    regions = copy(state.regions || []);
+    selectedId = state.selectedId || null;
+    renderRegions();
+  }
+
+  $("saveBaseline").onclick = () => {
+    baseline = stateNow();
+    appliedState = copy(baseline);
+    saveVersion("Baseline", baseline);
+    $("mutationStatus").textContent = "Baseline saved. No change applied.";
+  };
+
+  $("draftMutation").onclick = () => {
+    const state = stateNow();
+    const problems = [];
+
+    if (!selectedId) problems.push("mark and select the target region");
+    if (!state.proposedConstruction) problems.push("specify a proposed construction");
+    if (!state.instruction) problems.push("describe the intended change");
+    if (state.lockScope === "Entire garment") {
+      problems.push("the entire-garment lock blocks this operation");
+    }
+
+    proposal = {
+      operation: "CHANGE_CONSTRUCTION",
+      status: "PROPOSAL_ONLY",
+      target: selectedId,
+      before: copy(appliedState || baseline || state),
+      current: state.currentConstruction,
+      proposed: state.proposedConstruction,
+      instruction: state.instruction,
+      evidence: state.evidence,
+      lockScope: state.lockScope,
+      preserve: copy(preserve),
+      createdAt: new Date().toISOString()
+    };
+
+    $("reviewEmpty").hidden = true;
+    $("review").hidden = false;
+    $("approve").disabled = problems.length > 0;
+
+    $("diff").textContent = [
+      "OPERATION: CHANGE_CONSTRUCTION",
+      "STATUS: PROPOSAL ONLY — NOT APPLIED",
+      "TARGET: " + (selectedId || "UNRESOLVED"),
+      "COMPONENT: " + state.componentLabel,
+      "CURRENT: " + (state.currentConstruction || "UNKNOWN"),
+      "PROPOSED: " + (state.proposedConstruction || "UNSPECIFIED"),
+      "INSTRUCTION: " + (state.instruction || "UNSPECIFIED"),
+      "EVIDENCE: " + state.evidence,
+      "LOCK SCOPE: " + state.lockScope,
+      "",
+      "PRESERVE:",
+      ...preserve.map(item => "• " + item),
+      "",
+      "VALIDATION:",
+      ...(problems.length
+        ? ["BLOCKED:", ...problems.map(p => "• " + p)]
+        : ["Ready for designer review. Approval is still required."]),
+      ...(state.currentConstruction === "UNKNOWN"
+        ? ["Current construction is unknown; do not invent it."]
+        : []),
+      ...(state.evidence === "INFERRED"
+        ? ["Inference is not a confirmed construction fact."]
+        : [])
+    ].join("\n");
+
+    $("mutationStatus").textContent = problems.length
+      ? "Proposal incomplete: " + problems.join("; ") + "."
+      : "Proposal ready for review. Nothing has changed.";
+  };
+
+  $("approve").onclick = () => {
+    if (!proposal || $("approve").disabled) return;
+
+    if (proposal.current === proposal.proposed) {
+      $("mutationStatus").textContent =
+        "No change needed: proposed construction matches current construction.";
+      return;
+    }
+
+    if (proposal.current === "UNKNOWN") {
+      const confirmed = confirm(
+        "The previous construction is UNKNOWN. Record the proposed " +
+        "construction as the new semantic state? The old value will remain " +
+        "in the baseline/history."
+      );
+      if (!confirmed) return;
+    }
+
+    const state = stateNow();
+    state.currentConstruction = proposal.proposed;
+    state.proposedConstruction = "";
+    appliedState = copy(state);
+
+    $("currentConstruction").value = proposal.proposed;
+    $("proposedConstruction").value = "";
+
+    proposal.status = "APPLIED_TO_SEMANTIC_STATE";
+    saveVersion("Approved semantic change", appliedState);
+
+    $("diff").textContent +=
+      "\n\nRESULT: Semantic state updated. The sketch image was NOT redrawn.";
+    $("approve").disabled = true;
+    $("mutationStatus").textContent =
+      "Semantic change recorded. No image reconstruction was performed.";
+  };
+
+  $("reject").onclick = () => {
+    proposal = null;
+    $("review").hidden = true;
+    $("reviewEmpty").hidden = false;
+    $("mutationStatus").textContent =
+      "Proposal rejected. No proposed change was applied.";
+  };
+
+  $("restore").onclick = () => {
+    if (!baseline) {
+      status("Save a baseline first.");
+      return;
+    }
+    appliedState = copy(baseline);
+    fillForm(baseline);
+    saveVersion("Baseline restored", baseline);
+    status("Baseline restored.", true);
+  };
+
+  function download(filename, content, type) {
+    const blob = new Blob([content], {type});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  $("exportProject").onclick = () => {
+    const project = {
+      app: "IMMORTAL Fashion Workshop",
+      version: "0.1",
+      exportedAt: new Date().toISOString(),
+      baseline,
+      workingState: stateNow(),
+      appliedState,
+      proposal,
+      versions,
+      imageData
+    };
+    download(
+      "immortal-fashion-project.json",
+      JSON.stringify(project, null, 2),
+      "application/json"
+    );
+  };
+
+  $("exportSpec").onclick = () => {
+    const state = stateNow();
+    const specification = [
+      "IMMORTAL FASHION SEMANTIC SPECIFICATION",
+      "Project: " + state.projectName,
+      "Component: " + state.componentLabel,
+      "Region ID: " + (state.selectedId || "not marked"),
+      "Current construction: " + state.currentConstruction,
+      "Proposed construction: " + (state.proposedConstruction || "unspecified"),
+      "Evidence: " + state.evidence,
+      "Designer instruction: " + (state.instruction || "not supplied"),
+      "",
+      "PRESERVATION REQUIREMENTS:",
+      ...preserve.map(item => "- Preserve " + item + "."),
+      "",
+      "UNCERTAINTY RULE: Do not invent construction facts unsupported by",
+      "the sketch or designer. Ask when the intended construction is unclear.",
+      "This is a specification, not a claim that an image has been edited."
+    ].join("\n");
+
+    download(
+      "immortal-fashion-spec.txt",
+      specification,
+      "text/plain;charset=utf-8"
+    );
+  };
+
+  renderImage();
+  renderRegions();
+  renderHistory();
+})();
+</script>
+</body>
+</html>
