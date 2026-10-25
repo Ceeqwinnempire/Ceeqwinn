@@ -9,358 +9,168 @@
 
 <style>
 :root {
-  --bg: #160e19;
-  --panel: #211522;
-  --gold: #e2c48b;
-  --text: #fff7ec;
-  --muted: #c5b8c7;
-  --line: #ffffff20;
+  --bg:#160e19;
+  --panel:#211522;
+  --gold:#e2c48b;
+  --text:#fff7ec;
+  --muted:#c5b8c7;
+  --line:#ffffff20;
 }
-
-* { box-sizing: border-box; }
-
-html {
-  min-height: 100%;
-  background: var(--bg);
-}
-
+* { box-sizing:border-box; }
+html { min-height:100%; background:var(--bg); }
 body {
-  margin: 0;
-  min-height: 100vh;
-  min-height: 100dvh;
-  background:
-    radial-gradient(ellipse at top, #45263e 0%, transparent 55%),
-    var(--bg);
-  color: var(--text);
-  font-family: Georgia, "Times New Roman", serif;
+  margin:0;
+  min-height:100vh;
+  min-height:100dvh;
+  background:radial-gradient(ellipse at top,#45263e 0%,transparent 55%),var(--bg);
+  color:var(--text);
+  font-family:Georgia,"Times New Roman",serif;
 }
-
-button {
-  font: inherit;
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 3px;
-}
-
+button { font:inherit; -webkit-tap-highlight-color:transparent; }
+button:focus-visible { outline:2px solid var(--gold); outline-offset:3px; }
 .app {
-  width: 100%;
-  max-width: 1050px;
-  min-height: 100vh;
-  min-height: 100dvh;
-  margin: auto;
-  padding:
-    max(12px, env(safe-area-inset-top))
-    max(12px, env(safe-area-inset-right))
-    max(12px, env(safe-area-inset-bottom))
-    max(12px, env(safe-area-inset-left));
-  display: flex;
-  flex-direction: column;
+  width:100%;
+  max-width:1050px;
+  min-height:100vh;
+  min-height:100dvh;
+  margin:auto;
+  padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));
+  display:flex;
+  flex-direction:column;
 }
-
 .header {
-  flex: 0 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  padding: 5px 2px 12px;
-  font-family: Arial, sans-serif;
+  flex:0 0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  padding:5px 2px 12px;
+  font-family:Arial,sans-serif;
 }
-
-.logo {
-  color: var(--gold);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 3px;
-}
-
-.edition {
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 1px;
-  text-align: right;
-}
-
-.progress {
-  height: 3px;
-  background: #ffffff17;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-bottom: 12px;
-  flex: 0 0 auto;
-}
-
-.progress > div {
-  height: 100%;
-  width: 0;
-  background: var(--gold);
-  transition: width .4s ease;
-}
-
+.logo { color:var(--gold); font-size:12px; font-weight:700; letter-spacing:3px; }
+.edition { font-size:10px; color:var(--muted); letter-spacing:1px; text-align:right; }
+.progress { height:3px; background:#ffffff17; border-radius:5px; overflow:hidden; margin-bottom:12px; flex:0 0 auto; }
+.progress>div { height:100%; width:0; background:var(--gold); transition:width .4s ease; }
 .theatre {
-  position: relative;
-  isolation: isolate;
-  flex: 1 0 auto;
-  min-height: 0;
-  overflow: hidden;
-  border: 1px solid #e2c48b35;
-  border-radius: 13px;
-  background: #211522;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 15px 45px #0004;
+  position:relative;
+  isolation:isolate;
+  flex:1 0 auto;
+  min-height:0;
+  overflow:hidden;
+  border:1px solid #e2c48b35;
+  border-radius:13px;
+  background:var(--panel);
+  display:flex;
+  flex-direction:column;
+  box-shadow:0 15px 45px #0004;
 }
-
 .art {
-  position: relative;
-  height: clamp(245px, 48dvh, 570px);
-  min-height: 220px;
-  flex: 0 0 auto;
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse at 50% 35%, #745064, #281927 72%);
+  position:relative;
+  height:clamp(245px,48dvh,570px);
+  min-height:220px;
+  flex:0 0 auto;
+  overflow:hidden;
+  background:radial-gradient(ellipse at 50% 35%,#745064,#281927 72%);
 }
-
 .art img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center bottom;
-  opacity: 1;
-  transition: opacity .35s ease, transform 1s ease;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center bottom;
+  transition:opacity .35s ease,transform 1s ease;
 }
-
-.art img.scene-shift {
-  transform: scale(1.045);
-}
-
+.art img.scene-shift { transform:scale(1.045); }
 .art-shade {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, #160e190b 40%, #160e196b 100%);
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(180deg,#160e190b 40%,#160e196b 100%);
 }
-
-.art-border {
-  position: absolute;
-  inset: 10px;
-  border: 1px solid #e2c48b35;
-  border-radius: 5px;
-  pointer-events: none;
-}
-
+.art-border { position:absolute; inset:10px; border:1px solid #e2c48b35; border-radius:5px; pointer-events:none; }
 .art-label {
-  position: absolute;
-  left: 18px;
-  bottom: 15px;
-  z-index: 2;
-  color: #fff1d6;
-  font: 10px Arial, sans-serif;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  text-shadow: 0 2px 8px #000;
+  position:absolute;
+  left:18px;
+  bottom:15px;
+  z-index:2;
+  color:#fff1d6;
+  font:10px Arial,sans-serif;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  text-shadow:0 2px 8px #000;
 }
-
 .image-error {
-  display: none;
-  position: absolute;
-  inset: 0;
-  padding: 24px;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: var(--muted);
-  font: 14px/1.7 Arial, sans-serif;
+  display:none;
+  position:absolute;
+  inset:0;
+  padding:24px;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:var(--muted);
+  font:14px/1.7 Arial,sans-serif;
 }
-
 .story {
-  flex: 1 0 auto;
-  display: flex;
-  flex-direction: column;
-  padding: clamp(20px, 5vw, 36px);
-  background: linear-gradient(180deg, #211522, #1b121e);
+  flex:1 0 auto;
+  display:flex;
+  flex-direction:column;
+  padding:clamp(20px,5vw,36px);
+  background:linear-gradient(180deg,#211522,#1b121e);
 }
-
-.scene-type {
-  color: var(--gold);
-  font: 10px Arial, sans-serif;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
-
-.heading {
-  font-size: clamp(27px, 6vw, 43px);
-  line-height: 1.13;
-  font-weight: normal;
-  margin: 0 0 15px;
-  text-wrap: balance;
-}
-
+.scene-type { color:var(--gold); font:10px Arial,sans-serif; letter-spacing:2.5px; text-transform:uppercase; margin-bottom:12px; }
+.heading { font-size:clamp(27px,6vw,43px); line-height:1.13; font-weight:normal; margin:0 0 15px; }
 .copy {
-  font-size: clamp(17px, 4.3vw, 20px);
-  line-height: 1.75;
-  color: #eee3ed;
-  white-space: pre-line;
-  overflow-wrap: anywhere;
+  font-size:clamp(17px,4.3vw,20px);
+  line-height:1.75;
+  color:#eee3ed;
+  white-space:pre-line;
+  overflow-wrap:anywhere;
 }
-
-.dialogue {
-  display: none;
-  margin-top: 18px;
-  padding: 15px 17px;
-  border-left: 2px solid var(--gold);
-  background: #ffffff07;
-  animation: appear .5s ease both;
-}
-
-.dialogue.visible { display: block; }
-
-.speaker {
-  color: var(--gold);
-  font: 10px Arial, sans-serif;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 9px;
-}
-
-.words {
-  font-size: clamp(19px, 4.5vw, 24px);
-  line-height: 1.5;
-  font-style: italic;
-}
-
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: auto;
-  padding-top: 22px;
-  font: 10px Arial, sans-serif;
-  color: var(--muted);
-}
-
-.counter {
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 15px 0 8px;
-}
-
+.dialogue { display:none; margin-top:18px; padding:15px 17px; border-left:2px solid var(--gold); background:#ffffff07; animation:appear .5s ease both; }
+.dialogue.visible { display:block; }
+.speaker { color:var(--gold); font:10px Arial,sans-serif; letter-spacing:2px; text-transform:uppercase; margin-bottom:9px; }
+.words { font-size:clamp(19px,4.5vw,24px); line-height:1.5; font-style:italic; }
+.footer { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:auto; padding-top:22px; font:10px Arial,sans-serif; color:var(--muted); }
+.counter { letter-spacing:1px; white-space:nowrap; }
+.controls { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:8px; padding:15px 0 8px; }
 .btn {
-  min-height: 43px;
-  padding: 10px 15px;
-  border-radius: 999px;
-  border: 1px solid #e2c48b60;
-  background: #ffffff08;
-  color: var(--text);
-  font: 12px Arial, sans-serif;
-  cursor: pointer;
+  min-height:43px;
+  padding:10px 15px;
+  border-radius:999px;
+  border:1px solid #e2c48b60;
+  background:#ffffff08;
+  color:var(--text);
+  font:12px Arial,sans-serif;
+  cursor:pointer;
 }
+.btn.primary { min-width:135px; background:var(--gold); border-color:var(--gold); color:#241522; font-weight:bold; }
+.btn:disabled { opacity:.4; cursor:default; }
+.status { min-height:20px; text-align:center; padding:4px 0; color:var(--gold); font:11px/1.5 Arial,sans-serif; }
+.hint { text-align:center; color:#a99aac; font:10px/1.6 Arial,sans-serif; padding:0 4px 3px; }
+.choice-area { display:none; width:100%; max-width:760px; margin:12px auto; padding:16px; border:1px solid #e2c48b55; border-radius:12px; background:#211522; }
+.choice-area.visible { display:block; }
+.choice-title { margin:0 0 12px; color:var(--gold); font-size:21px; font-weight:normal; }
+.choice-buttons { display:grid; gap:10px; }
+.choice-buttons .btn { width:100%; min-height:48px; text-align:left; white-space:normal; line-height:1.5; }
+.choice-buttons .btn.primary { text-align:left; }
+@keyframes appear { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
 
-.btn.primary {
-  min-width: 135px;
-  background: var(--gold);
-  border-color: var(--gold);
-  color: #241522;
-  font-weight: bold;
+@media (min-width:760px) {
+  .app { padding:22px; }
+  .theatre { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.85fr); align-items:stretch; }
+  .art { height:auto; min-height:460px; }
+  .story { justify-content:center; padding:clamp(26px,4vw,48px); }
+  .footer { margin-top:25px; }
 }
-
-.btn:disabled {
-  opacity: .4;
-  cursor: default;
+@media (max-height:650px) and (max-width:759px) {
+  .art { height:39dvh; min-height:185px; }
+  .story { padding-top:18px; padding-bottom:18px; }
+  .heading { margin-bottom:10px; }
+  .copy { line-height:1.6; }
+  .footer { padding-top:15px; }
 }
-
-.status {
-  min-height: 20px;
-  text-align: center;
-  padding: 4px 0;
-  color: var(--gold);
-  font: 11px/1.5 Arial, sans-serif;
-}
-
-.hint {
-  text-align: center;
-  color: #a99aac;
-  font: 10px/1.6 Arial, sans-serif;
-  padding: 0 4px 3px;
-}
-
-@keyframes appear {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Wider screens gain breathing room, not smaller text. */
-@media (min-width: 760px) {
-  .app {
-    padding: 22px;
-  }
-
-  .theatre {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, .85fr);
-    align-items: stretch;
-  }
-
-  .art {
-    height: auto;
-    min-height: 460px;
-  }
-
-  .story {
-    justify-content: center;
-    padding: clamp(26px, 4vw, 48px);
-  }
-
-  .footer {
-    margin-top: 25px;
-  }
-}
-
-/* Short screens keep controls usable without forcing landscape. */
-@media (max-height: 650px) and (max-width: 759px) {
-  .art {
-    height: 39dvh;
-    min-height: 185px;
-  }
-
-  .story {
-    padding-top: 18px;
-    padding-bottom: 18px;
-  }
-
-  .heading {
-    margin-bottom: 10px;
-  }
-
-  .copy {
-    line-height: 1.6;
-  }
-
-  .footer {
-    padding-top: 15px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation: none !important;
-    transition: none !important;
-  }
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation:none!important; transition:none!important; }
 }
 </style>
 </head>
@@ -369,54 +179,43 @@ button:focus-visible {
 <main class="app">
   <header class="header">
     <div class="logo">CEEQWINN</div>
-    <div class="edition">NARRATION THEATRE · TEST 02</div>
+    <div class="edition">NARRATION THEATRE · CMS CONNECTED</div>
   </header>
 
-  <div class="progress"
-       role="progressbar"
-       aria-label="Story progress"
-       aria-valuemin="0"
-       aria-valuemax="100"
-       aria-valuenow="0"
-       id="progressTrack">
+  <div class="progress" id="progressTrack" role="progressbar" aria-label="Story progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
     <div id="progressFill"></div>
   </div>
 
   <section class="theatre" id="theatre">
     <div class="art">
-      <img
-        id="character"
+      <img id="character"
         src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/lexis_red_dress.png.jpeg"
         alt="Lexis Azunna wearing a red dress"
-        fetchpriority="high"
-      >
+        fetchpriority="high">
       <div class="art-shade"></div>
       <div class="art-border"></div>
-      <div class="art-label" id="artLabel">Emerald High · Evening</div>
-      <div class="image-error" id="imageError">
-        Lexis's image could not be loaded.<br>
-        Check your internet connection and reload this page.
-      </div>
+      <div class="art-label" id="artLabel">The Gathering · Evening</div>
+      <div class="image-error" id="imageError">Lexis's image could not be loaded. Check the image URL and reload.</div>
     </div>
 
     <div class="story">
       <div class="scene-type" id="sceneType">Narration</div>
-      <h1 class="heading" id="heading">The sound behind the door</h1>
-
-      <div class="copy" id="copy" aria-live="polite" aria-atomic="true">
-        A story is waiting.
-      </div>
-
+      <h1 class="heading" id="heading">Loading your story…</h1>
+      <div class="copy" id="copy" aria-live="polite" aria-atomic="true">Connecting to the published Markdown article.</div>
       <div class="dialogue" id="dialogue">
-        <div class="speaker" id="speaker">A voice</div>
+        <div class="speaker" id="speaker"></div>
         <div class="words" id="words"></div>
       </div>
-
       <div class="footer">
-        <span id="mood">A sample story experience</span>
-        <span class="counter" id="counter">READY</span>
+        <span id="mood">CMS connection</span>
+        <span class="counter" id="counter">LOADING</span>
       </div>
     </div>
+  </section>
+
+  <section class="choice-area" id="choiceArea" aria-label="Story choices">
+    <h2 class="choice-title" id="choiceTitle">What should Lexis do?</h2>
+    <div class="choice-buttons" id="choiceButtons"></div>
   </section>
 
   <nav class="controls" aria-label="Story controls">
@@ -426,13 +225,8 @@ button:focus-visible {
     <button class="btn" id="skip" disabled>Skip »</button>
   </nav>
 
-  <div class="status" id="status" aria-live="polite">
-    Ready when you are.
-  </div>
-
-  <div class="hint">
-    Automatic narration · Tap Next to advance · Pause whenever you need
-  </div>
+  <div class="status" id="status" aria-live="polite">Connecting to the CMS article…</div>
+  <div class="hint">Tap Next to advance · Choose a path when prompted · Pause whenever you need</div>
 </main>
 
 <script>
@@ -445,58 +239,24 @@ button:focus-visible {
   var FALLBACK_IMAGE =
     "https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/Lexis_Azunna_soft.jpg.jpeg";
 
-  /*
-   * Original placeholder scene.
-   * This is a presentation demo, not new story canon.
-   */
-  var scenes = [
-    {
-      type: "Narration",
-      heading: "The sound behind the door",
-      text: "The school corridor had gone quiet.\n\nLexis was about to leave when she heard someone moving inside the room.",
-      label: "Emerald High · Evening",
-      mood: "A quiet moment",
-      duration: 8500
-    },
-    {
-      type: "Action",
-      heading: "Then the handle moved.",
-      text: "Lexis stopped.\n\nThe door opened just enough for a thin line of light to cross the floor. Whoever was inside knew she was there.",
-      label: "Someone is inside",
-      mood: "Something has changed",
-      duration: 9000
-    },
-    {
-      type: "Dialogue",
-      heading: "A voice spoke.",
-      text: "She could not see who was speaking.\n\nBut the words that followed made her stay.",
-      speaker: "A voice beyond the door",
-      dialogue: "\"You need to hear the truth about that letter.\"",
-      label: "An unexpected visitor",
-      mood: "Listen carefully",
-      duration: 9500
-    },
-    {
-      type: "Narration",
-      heading: "Lexis had a decision to make.",
-      text: "She could walk away and leave the mystery untouched.\n\nOr she could step forward and ask the one question that mattered.\n\nWho had written the letter — and why had it been hidden?",
-      label: "The mystery begins",
-      mood: "The story continues",
-      duration: 11000
-    }
-  ];
+  var params = new URLSearchParams(window.location.search);
+  var articleFile = params.get("file");
 
+  var scenes = [];
+  var choices = [];
   var current = -1;
   var playing = false;
   var ended = false;
+  var waitingForChoice = false;
   var timer = null;
   var deadline = 0;
   var remaining = 0;
   var token = 0;
+  var storyTitle = "The Gathering";
+  var selectedBranch = null;
+  var demoMode = !articleFile;
 
-  var $ = function (id) {
-    return document.getElementById(id);
-  };
+  var $ = function (id) { return document.getElementById(id); };
 
   var character = $("character");
   var imageError = $("imageError");
@@ -516,8 +276,10 @@ button:focus-visible {
   var skipButton = $("skip");
   var restartButton = $("restart");
   var status = $("status");
+  var choiceArea = $("choiceArea");
+  var choiceTitle = $("choiceTitle");
+  var choiceButtons = $("choiceButtons");
 
-  /* If the first image fails, try the second supplied image. */
   character.addEventListener("error", function () {
     if (character.dataset.triedFallback !== "yes") {
       character.dataset.triedFallback = "yes";
@@ -529,6 +291,224 @@ button:focus-visible {
     }
   });
 
+  function cleanText(value) {
+    return String(value || "")
+      .replace(/\r/g, "")
+      .replace(/<!--[\s\S]*?-->/g, "")
+      .trim();
+  }
+
+  function stripMarkdown(value) {
+    return String(value || "")
+      .replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1")
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+      .replace(/(\*\*|__)(.*?)\1/g, "$2")
+      .replace(/(\*|_)(.*?)\1/g, "$2")
+      .replace(/~~(.*?)~~/g, "$1")
+      .replace(/`([^`]+)`/g, "$1")
+      .replace(/^#{1,6}\s+/gm, "")
+      .trim();
+  }
+
+  function normalizeMarkdown(raw) {
+    return cleanText(raw)
+      .replace(/^\uFEFF/, "")
+      .replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
+  }
+
+  function extractTheatre(markdown) {
+    var match = markdown.match(/\[THEATRE\]([\s\S]*?)\[\/THEATRE\]/i);
+    if (!match) {
+      throw new Error("No [THEATRE] ... [/THEATRE] block was found in this Markdown file.");
+    }
+    return match[1].trim();
+  }
+
+  function makeScenes(block) {
+    /*
+     * A scene heading becomes the theatre heading.
+     * Each paragraph under it becomes a readable narration step.
+     */
+    var source = cleanText(block);
+    var sections = source.split(/(?=^#{2,6}\s+)/m);
+    var result = [];
+
+    sections.forEach(function (section, sectionIndex) {
+      section = section.trim();
+      if (!section) return;
+
+      var lines = section.split("\n");
+      var sectionHeading = "The Gathering";
+      var firstHeading = lines.findIndex(function (line) {
+        return /^#{2,6}\s+/.test(line.trim());
+      });
+
+      if (firstHeading >= 0) {
+        sectionHeading = stripMarkdown(lines[firstHeading].trim());
+        sectionHeading = sectionHeading.replace(/^#+\s*/, "");
+        lines.splice(firstHeading, 1);
+      }
+
+      var body = lines.join("\n")
+        .replace(/\n(?!\s*\n)/g, " ")
+        .trim();
+
+      var paragraphs = body.split(/\n\s*\n+/).map(function (p) {
+        return stripMarkdown(p.replace(/\s+/g, " "));
+      }).filter(Boolean);
+
+      paragraphs.forEach(function (paragraph, paragraphIndex) {
+        result.push({
+          type: "Narration",
+          heading: sectionHeading,
+          text: paragraph,
+          label: "The Gathering · Evening",
+          mood: "Chapter 1",
+          duration: Math.max(5000, Math.min(12000, paragraph.length * 65)),
+          sectionIndex: sectionIndex,
+          paragraphIndex: paragraphIndex
+        });
+      });
+    });
+
+    return result;
+  }
+
+  function extractChoices(markdown) {
+    var marker = markdown.indexOf("[CHOICE]");
+    if (marker < 0) return [];
+
+    var before = markdown.slice(0, marker);
+    var headings = before.match(/^##\s+.+$/gm);
+    var prompt = headings && headings.length
+      ? stripMarkdown(headings[headings.length - 1]).replace(/^##\s*/, "")
+      : "What should Lexis do?";
+
+    var after = markdown.slice(marker + "[CHOICE]".length);
+    var firstConsequence = after.indexOf("[CONSEQUENCE]");
+    if (firstConsequence < 0) return [];
+
+    var optionsText = after.slice(0, firstConsequence);
+    var options = [];
+    var optionRegex = /\[([A-Z])\]\s*([\s\S]*?)(?=\[[A-Z]\]|$)/g;
+    var match;
+
+    while ((match = optionRegex.exec(optionsText)) !== null) {
+      var label = match[1];
+      var text = stripMarkdown(match[2]).trim();
+      if (text) options.push({ label: label, text: text });
+    }
+
+    var branchesText = after.slice(firstConsequence);
+    var branchRegex = /\[CONSEQUENCE\]([\s\S]*?)\[ENDCHOICE\]/g;
+    var branches = [];
+
+    while ((match = branchRegex.exec(branchesText)) !== null) {
+      var branchScenes = makeScenes(match[1]);
+      if (branchScenes.length) branches.push(branchScenes);
+    }
+
+    return options.map(function (option, index) {
+      return {
+        label: option.label,
+        text: option.text,
+        scenes: branches[index] || [{
+          type: "Narration",
+          heading: "The story continues",
+          text: "This choice does not yet have a matching consequence block.",
+          label: "Chapter 1",
+          mood: "Branch needs content",
+          duration: 6000
+        }]
+      };
+    }).map(function (option, index, all) {
+      option.prompt = prompt;
+      return option;
+    });
+  }
+
+  function showError(message) {
+    token++;
+    clearTimer();
+    playing = false;
+    ended = true;
+    heading.textContent = "Theatre connection needs attention";
+    copy.textContent = message;
+    counter.textContent = "ERROR";
+    status.textContent = "Could not load the CMS story.";
+    updateButtons();
+  }
+
+  function loadArticle() {
+    if (!articleFile) {
+      loadDemo();
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_-]+$/.test(articleFile)) {
+      showError("The article filename contains unsupported characters.");
+      return;
+    }
+
+    status.textContent = "Fetching content/articles/" + articleFile + ".md …";
+
+    fetch("/content/articles/" + encodeURIComponent(articleFile) + ".md", {
+      cache: "no-store"
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error(
+            "The Markdown request returned HTTP " + response.status +
+            ". Check the filename and confirm the CMS has published the file."
+          );
+        }
+        return response.text();
+      })
+      .then(function (raw) {
+        var markdown = normalizeMarkdown(raw);
+        var theatreBlock = extractTheatre(markdown);
+
+        scenes = makeScenes(theatreBlock);
+        choices = extractChoices(markdown);
+
+        if (!scenes.length) {
+          throw new Error("The narration block was found, but it contains no readable paragraphs.");
+        }
+
+        var titleMatch = markdown.match(/^#\s+(.+)$/m);
+        if (titleMatch) storyTitle = stripMarkdown(titleMatch[1]);
+
+        artLabel.textContent = storyTitle + " · Chapter 1";
+        $("mood").textContent = "Loaded from published Markdown";
+        $("heading").textContent = storyTitle;
+        copy.textContent = "The CMS narration was loaded successfully. Press Begin story to start.";
+        counter.textContent = "READY";
+        status.textContent =
+          "Connected to CMS Markdown · " + scenes.length +
+          " narration steps · " + choices.length + " choices";
+        demoMode = false;
+        restart();
+      })
+      .catch(function (error) {
+        console.error("CEEQWINN narration theatre:", error);
+        showError(error.message || "An unknown error occurred while loading the article.");
+      });
+  }
+
+  function loadDemo() {
+    storyTitle = "The sound behind the door";
+    scenes = [
+      {type:"Narration",heading:"The sound behind the door",text:"The school corridor had gone quiet. Lexis was about to leave when she heard someone moving inside the room.",label:"Emerald High · Evening",mood:"A quiet moment",duration:8500},
+      {type:"Action",heading:"Then the handle moved.",text:"Lexis stopped. The door opened just enough for a thin line of light to cross the floor. Whoever was inside knew she was there.",label:"Someone is inside",mood:"Something has changed",duration:9000},
+      {type:"Dialogue",heading:"A voice spoke.",text:"She could not see who was speaking. But the words that followed made her stay.",speaker:"A voice beyond the door",dialogue:"You need to hear the truth about that letter.",label:"An unexpected visitor",mood:"Listen carefully",duration:9500},
+      {type:"Narration",heading:"Lexis had a decision to make.",text:"She could walk away and leave the mystery untouched. Or she could step forward and ask the one question that mattered. Who had written the letter — and why had it been hidden?",label:"The mystery begins",mood:"The story continues",duration:11000}
+    ];
+    choices = [];
+    $("mood").textContent = "Standalone demonstration";
+    status.textContent = "Standalone demo mode. Add ?file=your-markdown-filename to load CMS content.";
+    restart();
+  }
+
   function clearTimer() {
     if (timer !== null) {
       clearTimeout(timer);
@@ -537,47 +517,37 @@ button:focus-visible {
   }
 
   function updateProgress() {
-    var value = current < 0
-      ? 0
-      : Math.round((current + 1) / scenes.length * 100);
-
+    var total = scenes.length || 1;
+    var value = current < 0 ? 0 : Math.round((current + 1) / total * 100);
     progressFill.style.width = value + "%";
     progressTrack.setAttribute("aria-valuenow", String(value));
   }
 
   function updateButtons() {
-    pauseButton.disabled = current < 0 || ended;
-
-    skipButton.disabled = current < 0 || ended;
-
+    pauseButton.disabled = current < 0 || ended || waitingForChoice;
+    skipButton.disabled = current < 0 || ended || waitingForChoice;
     pauseButton.textContent = playing ? "Ⅱ Pause" : "▶ Resume";
-
-    if (ended) {
-      nextButton.textContent = "Play again ↺";
-    } else if (current < 0) {
-      nextButton.textContent = "Begin story →";
-    } else {
-      nextButton.textContent = "Next →";
-    }
+    nextButton.textContent = ended ? "Play again ↺" : current < 0 ? "Begin story →" : "Next →";
+    nextButton.disabled = waitingForChoice;
   }
 
   function renderScene(index) {
     var scene = scenes[index];
+    if (!scene) return;
 
-    sceneType.textContent = scene.type;
-    heading.textContent = scene.heading;
-    copy.textContent = scene.text;
-    artLabel.textContent = scene.label;
-    mood.textContent = scene.mood;
+    sceneType.textContent = scene.type || "Narration";
+    heading.textContent = scene.heading || storyTitle;
+    copy.textContent = scene.text || "";
+    artLabel.textContent = scene.label || storyTitle;
+    mood.textContent = scene.mood || "Chapter 1";
 
     counter.textContent =
-      String(index + 1).padStart(2, "0") +
-      " / " +
+      String(index + 1).padStart(2, "0") + " / " +
       String(scenes.length).padStart(2, "0");
 
     if (scene.dialogue) {
       dialogue.classList.add("visible");
-      speaker.textContent = scene.speaker;
+      speaker.textContent = scene.speaker || "A voice";
       words.textContent = scene.dialogue;
     } else {
       dialogue.classList.remove("visible");
@@ -585,19 +555,16 @@ button:focus-visible {
       words.textContent = "";
     }
 
-    character.classList.toggle("scene-shift", index === 1 || index === 3);
-
+    character.classList.toggle("scene-shift", index % 3 === 1);
     updateProgress();
   }
 
   function schedule(delay) {
     clearTimer();
-
-    if (!playing || ended) return;
+    if (!playing || ended || waitingForChoice) return;
 
     remaining = delay;
     deadline = Date.now() + delay;
-
     var myToken = token;
 
     timer = setTimeout(function () {
@@ -611,6 +578,10 @@ button:focus-visible {
     clearTimer();
 
     if (index >= scenes.length) {
+      if (choices.length && selectedBranch === null) {
+        showChoices();
+        return;
+      }
       finish();
       return;
     }
@@ -618,66 +589,78 @@ button:focus-visible {
     current = Math.max(0, index);
     ended = false;
     playing = true;
+    waitingForChoice = false;
+    choiceArea.classList.remove("visible");
 
     renderScene(current);
     updateButtons();
+    status.textContent = "Narration playing…";
+    schedule(scenes[current].duration || 8000);
+  }
 
-    status.textContent = "Story playing…";
-    schedule(scenes[current].duration);
+  function showChoices() {
+    token++;
+    clearTimer();
+    playing = false;
+    ended = false;
+    waitingForChoice = true;
+
+    choiceTitle.textContent = choices[0].prompt || "What should Lexis do?";
+    choiceButtons.replaceChildren();
+
+    choices.forEach(function (choice, index) {
+      var button = document.createElement("button");
+      button.className = index === 0 ? "btn primary" : "btn";
+      button.type = "button";
+      button.textContent = choice.label + ". " + choice.text;
+      button.addEventListener("click", function () {
+        chooseBranch(index);
+      });
+      choiceButtons.appendChild(button);
+    });
+
+    choiceArea.classList.add("visible");
+    heading.textContent = "What should Lexis do?";
+    copy.textContent = "Choose a path to continue the story.";
+    sceneType.textContent = "Your choice";
+    counter.textContent = "CHOICE";
+    mood.textContent = "Your decision changes what happens next";
+    status.textContent = "Choose A or B to see its consequence.";
+    updateButtons();
+  }
+
+  function chooseBranch(index) {
+    var choice = choices[index];
+    if (!choice) return;
+
+    selectedBranch = index;
+    scenes = choice.scenes.slice();
+    choices = [];
+    current = -1;
+    ended = false;
+    waitingForChoice = false;
+    remaining = 0;
+    choiceArea.classList.remove("visible");
+
+    status.textContent = "Choice " + choice.label + " selected. Showing its consequence.";
+    goTo(0);
   }
 
   function finish() {
     token++;
     clearTimer();
-
     ended = true;
     playing = false;
-    current = scenes.length - 1;
-
+    waitingForChoice = false;
+    if (scenes.length) current = scenes.length - 1;
     renderScene(current);
-    status.textContent = "End of demo. The mystery is ready for its next scene.";
-    updateButtons();
-  }
-
-  function start() {
-    if (ended) {
-      restart();
-      goTo(0);
-      return;
-    }
-
-    if (current < 0) {
-      goTo(0);
-      return;
-    }
-
-    if (!playing) {
-      playing = true;
-      updateButtons();
-      status.textContent = "Story resumed.";
-      schedule(remaining > 0 ? remaining : scenes[current].duration);
-    }
-  }
-
-  function togglePause() {
-    if (current < 0 || ended) return;
-
-    if (playing) {
-      remaining = Math.max(0, deadline - Date.now());
-      token++;
-      clearTimer();
-      playing = false;
-      status.textContent = "Paused. Continue when you're ready.";
-    } else {
-      playing = true;
-      status.textContent = "Story resumed.";
-      schedule(remaining > 0 ? remaining : scenes[current].duration);
-    }
-
+    status.textContent = "End of this story section.";
     updateButtons();
   }
 
   function next() {
+    if (waitingForChoice) return;
+
     if (ended) {
       restart();
       goTo(0);
@@ -688,33 +671,58 @@ button:focus-visible {
     }
   }
 
+  function togglePause() {
+    if (current < 0 || ended || waitingForChoice) return;
+
+    if (playing) {
+      remaining = Math.max(0, deadline - Date.now());
+      token++;
+      clearTimer();
+      playing = false;
+      status.textContent = "Paused. Continue when you're ready.";
+    } else {
+      playing = true;
+      status.textContent = "Narration resumed.";
+      schedule(remaining > 0 ? remaining : (scenes[current].duration || 8000));
+    }
+    updateButtons();
+  }
+
   function skip() {
-    if (current >= 0 && !ended) finish();
+    if (current >= 0 && !ended && !waitingForChoice) {
+      goTo(current + 1);
+    }
   }
 
   function restart() {
     token++;
     clearTimer();
-
     current = -1;
     playing = false;
     ended = false;
+    waitingForChoice = false;
     remaining = 0;
-
-    sceneType.textContent = "Narration";
-    heading.textContent = "The sound behind the door";
-    copy.textContent = "Press Begin story when you're ready.";
-    artLabel.textContent = "Emerald High · Evening";
-    mood.textContent = "A sample story experience";
-    counter.textContent = "READY";
-
-    dialogue.classList.remove("visible");
-    character.classList.remove("scene-shift");
+    selectedBranch = null;
+    choiceArea.classList.remove("visible");
 
     progressFill.style.width = "0%";
     progressTrack.setAttribute("aria-valuenow", "0");
+    sceneType.textContent = "Narration";
+    heading.textContent = storyTitle;
+    copy.textContent = "Press Begin story when you're ready.";
+    artLabel.textContent = storyTitle + " · Chapter 1";
+    counter.textContent = "READY";
+    dialogue.classList.remove("visible");
+    character.classList.remove("scene-shift");
 
-    status.textContent = "Ready when you are.";
+    if (demoMode) {
+      mood.textContent = "Standalone demonstration";
+      status.textContent = "Ready when you are.";
+    } else {
+      mood.textContent = "Loaded from published Markdown";
+      status.textContent = "CMS story ready. Press Begin story.";
+    }
+
     updateButtons();
   }
 
@@ -723,29 +731,32 @@ button:focus-visible {
   skipButton.addEventListener("click", skip);
   restartButton.addEventListener("click", restart);
 
-  /* Space advances; Escape pauses. */
   document.addEventListener("keydown", function (event) {
     var tag = event.target && event.target.tagName;
-
-    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || tag === "BUTTON") return;
 
     if (event.code === "Space") {
       event.preventDefault();
-
+      if (waitingForChoice) return;
       if (current < 0 || ended || playing) next();
-      else start();
+      else {
+        playing = true;
+        schedule(remaining > 0 ? remaining : (scenes[current].duration || 8000));
+        updateButtons();
+      }
     }
 
     if (event.key === "Escape") togglePause();
   });
 
-  /* Pause when the reader leaves the tab. */
   document.addEventListener("visibilitychange", function () {
     if (document.hidden && playing) togglePause();
   });
 
   updateButtons();
+  loadArticle();
 })();
 </script>
 </body>
 </html>
+
