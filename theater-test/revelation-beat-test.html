@@ -1,0 +1,757 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100b16">
+<title>CEEQWINN — Revelation Beat Test</title>
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #100b16;
+  --panel: #1a1221;
+  --gold: #d7b875;
+  --cream: #f7efdf;
+  --muted: #b9adbd;
+  --wine: #6e253e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 50% 0%, #382039 0%, transparent 58%),
+    var(--bg);
+  color: var(--cream);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button {
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+.app {
+  width: min(100%, 1050px);
+  min-height: 100vh;
+  margin: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0 16px;
+}
+
+.brand {
+  color: var(--gold);
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 3px;
+}
+
+.episode {
+  color: var(--muted);
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-align: right;
+}
+
+.progress-track {
+  height: 3px;
+  background: #ffffff16;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 18px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--gold);
+  transition: width .5s ease;
+}
+
+.stage {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 390px;
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, .85fr);
+  border: 1px solid #d7b87538;
+  border-radius: 14px;
+  background: #160f1c;
+  box-shadow: 0 20px 65px #0005;
+}
+
+.art {
+  position: relative;
+  min-height: 390px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 35%, #68465b 0%, #241725 65%);
+}
+
+.art img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  transition: opacity .8s ease, transform 6s ease;
+}
+
+.art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    0deg,
+    #100b16 0%,
+    transparent 35%,
+    #100b1620 100%
+  );
+  pointer-events: none;
+}
+
+.art-frame {
+  position: absolute;
+  z-index: 2;
+  inset: 14px;
+  border: 1px solid #d7b87530;
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+.art-label {
+  position: absolute;
+  z-index: 3;
+  bottom: 25px;
+  left: 25px;
+  right: 25px;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #f4dfb8;
+}
+
+.story {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(24px, 5vw, 48px);
+  position: relative;
+}
+
+.chapter {
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+}
+
+h1 {
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: normal;
+  line-height: 1.12;
+  margin: 0 0 22px;
+}
+
+.narration {
+  min-height: 116px;
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.8;
+  color: #e8deea;
+  white-space: pre-line;
+}
+
+.narration em {
+  color: var(--gold);
+}
+
+.reveal-card {
+  display: none;
+  margin-top: 22px;
+  padding: 20px;
+  border: 1px solid #d7b87570;
+  background: linear-gradient(135deg, #492039, #1b1222);
+  border-radius: 6px;
+  animation: revealIn 1.2s ease both;
+}
+
+.reveal-card.visible {
+  display: block;
+}
+
+.reveal-kicker {
+  font: bold 10px Arial, sans-serif;
+  letter-spacing: 3px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.reveal-words {
+  font-size: clamp(23px, 3vw, 32px);
+  line-height: 1.35;
+}
+
+@keyframes revealIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.story-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.scene-count {
+  letter-spacing: 1px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 0 12px;
+}
+
+.btn {
+  border: 1px solid #d7b87560;
+  background: #ffffff08;
+  color: var(--cream);
+  border-radius: 999px;
+  padding: 12px 19px;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+}
+
+.btn:hover {
+  background: #ffffff13;
+  border-color: var(--gold);
+}
+
+.btn.primary {
+  background: var(--gold);
+  color: #21141a;
+  border-color: var(--gold);
+  font-weight: bold;
+  min-width: 145px;
+}
+
+.btn.primary:hover {
+  background: #ead29b;
+}
+
+.btn:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.hint {
+  text-align: center;
+  color: #95879a;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.6;
+  padding: 0 0 10px;
+}
+
+.status {
+  min-height: 18px;
+  text-align: center;
+  color: var(--gold);
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+}
+
+.stage.is-reveal .art {
+  animation: hush 1.2s ease both;
+}
+
+@keyframes hush {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(.72) saturate(.8); }
+}
+
+@media (max-width: 680px) {
+  .app { padding: 12px; }
+
+  .stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(240px, 39vh) auto;
+  }
+
+  .art { min-height: 240px; }
+
+  .story { padding: 27px 23px; }
+
+  .chapter { margin-bottom: 14px; }
+
+  h1 { margin-bottom: 14px; }
+
+  .narration { min-height: 100px; }
+
+  .story-foot { margin-top: 18px; }
+
+  .controls { gap: 8px; }
+
+  .btn { padding: 11px 14px; }
+
+  .btn.primary { min-width: 125px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<main class="app">
+  <header class="topbar">
+    <div class="brand">CEEQWINN</div>
+    <div class="episode">STORY THEATRE · TEST 01</div>
+  </header>
+
+  <div
+    class="progress-track"
+    role="progressbar"
+    aria-label="Story progress"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="0"
+    id="progressTrack"
+  >
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+
+  <section class="stage" id="stage" aria-label="Revelation scene">
+    <div class="art">
+      <img
+        id="lexisImage"
+        src="https://raw.githubusercontent.com/Ceeqwinnempire/Ceeqwinn/main/content/images/characters/lexis/outfits/lexis_default.png"
+        alt="Lexis Azunna"
+      >
+      <div class="art-frame"></div>
+      <div class="art-label" id="artLabel">A quiet evening · Emerald High</div>
+    </div>
+
+    <div class="story">
+      <div class="chapter" id="chapter">The Unopened Envelope</div>
+      <h1 id="heading">Something was wrong.</h1>
+
+      <div
+        class="narration"
+        id="narration"
+        aria-live="polite"
+        aria-atomic="true"
+      >The story is about to begin.</div>
+
+      <div class="reveal-card" id="revealCard">
+        <div class="reveal-kicker">THE SECOND NAME</div>
+        <div class="reveal-words" id="revealWords">
+          Someone else was part of the secret.
+        </div>
+      </div>
+
+      <div class="story-foot">
+        <span id="sceneMood">A feeling she couldn't explain</span>
+        <span class="scene-count" id="sceneCount">READY</span>
+      </div>
+    </div>
+  </section>
+
+  <nav class="controls" aria-label="Story controls">
+    <button class="btn" id="restartBtn" type="button">↺ Restart</button>
+    <button class="btn" id="pauseBtn" type="button">Ⅱ Pause</button>
+    <button class="btn primary" id="nextBtn" type="button">Begin story →</button>
+    <button class="btn" id="skipBtn" type="button">Skip to end »</button>
+  </nav>
+
+  <div class="status" id="status" aria-live="polite">
+    Ready when you are.
+  </div>
+
+  <footer class="hint">
+    The scene plays automatically. You can pause, continue, or skip any time.<br>
+    Prototype story text is editable in the JavaScript scenes below.
+  </footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  /*
+   * CEEQWINN REVELATION BEAT — PROTOTYPE 01
+   *
+   * This file is standalone.
+   * It does not read or change article.html.
+   * Change the scene text and timings in this array.
+   */
+
+  var scenes = [
+    {
+      chapter: "The Unopened Envelope",
+      heading: "Something was wrong.",
+      text: "Lexis had seen the envelope before.\n\nIt had been tucked between the pages of a book she knew she had already checked.",
+      mood: "A familiar room. An unfamiliar feeling.",
+      label: "The beginning",
+      duration: 7800
+    },
+    {
+      chapter: "A Detail Out of Place",
+      heading: "Her name was written on it.",
+      text: "Not a nickname. Not a mistake.\n\n<em>Lexis Azunna.</em>\n\nThe handwriting was careful, as though whoever wrote it had all the time in the world.",
+      mood: "Someone had expected her to find it.",
+      label: "The envelope",
+      duration: 9000
+    },
+    {
+      chapter: "The First Discovery",
+      heading: "There was a letter inside.",
+      text: "The first page contained only one sentence.\n\n\"If you are reading this, then the truth has finally reached you.\"\n\nLexis read it again.",
+      mood: "The room seemed suddenly quieter.",
+      label: "The first page",
+      duration: 9500
+    },
+    {
+      chapter: "The Revelation",
+      heading: "Then she turned the page.",
+      text: "A second name appeared beneath hers.\n\nShe stopped reading.\n\nThe letter had not been written for her alone.",
+      mood: "One name changed everything.",
+      label: "The second page",
+      reveal: true,
+      duration: 10500
+    },
+    {
+      chapter: "The Aftermath",
+      heading: "Now she had a choice.",
+      text: "She could put the letter back and pretend she had never seen it.\n\nOr she could find out why two names had been written where only one should have been.\n\nFor the first time, doing nothing felt like a decision too.",
+      mood: "The mystery continues.",
+      label: "What happens next?",
+      duration: 10000
+    }
+  ];
+
+  var current = -1;
+  var playing = false;
+  var finished = false;
+  var timer = null;
+  var startedAt = 0;
+  var remaining = 0;
+  var generation = 0;
+
+  var stage = document.getElementById("stage");
+  var chapter = document.getElementById("chapter");
+  var heading = document.getElementById("heading");
+  var narration = document.getElementById("narration");
+  var revealCard = document.getElementById("revealCard");
+  var revealWords = document.getElementById("revealWords");
+  var sceneMood = document.getElementById("sceneMood");
+  var sceneCount = document.getElementById("sceneCount");
+  var artLabel = document.getElementById("artLabel");
+  var progressFill = document.getElementById("progressFill");
+  var progressTrack = document.getElementById("progressTrack");
+  var nextBtn = document.getElementById("nextBtn");
+  var pauseBtn = document.getElementById("pauseBtn");
+  var skipBtn = document.getElementById("skipBtn");
+  var restartBtn = document.getElementById("restartBtn");
+  var status = document.getElementById("status");
+
+  function safeText(el, value) {
+    el.textContent = value;
+  }
+
+  /*
+   * Only the <em> tag is supported in scene text.
+   * All other content is escaped before rendering.
+   */
+  function renderNarration(value) {
+    var escaped = value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/&lt;em&gt;/g, "<em>")
+      .replace(/&lt;\/em&gt;/g, "</em>");
+
+    narration.innerHTML = escaped;
+  }
+
+  function updateProgress() {
+    var percent = current < 0
+      ? 0
+      : Math.round(((current + 1) / scenes.length) * 100);
+
+    progressFill.style.width = percent + "%";
+    progressTrack.setAttribute("aria-valuenow", String(percent));
+  }
+
+  function updateButtons() {
+    if (finished) {
+      nextBtn.textContent = "Play again ↺";
+      pauseBtn.disabled = true;
+      skipBtn.disabled = true;
+      return;
+    }
+
+    pauseBtn.disabled = current < 0;
+    skipBtn.disabled = current < 0;
+
+    if (current < 0) {
+      nextBtn.textContent = "Begin story →";
+    } else if (current === scenes.length - 1) {
+      nextBtn.textContent = "Finish scene →";
+    } else {
+      nextBtn.textContent = playing ? "Next scene →" : "Continue →";
+    }
+
+    pauseBtn.textContent = playing ? "Ⅱ Pause" : "▶ Resume";
+  }
+
+  function clearTimer() {
+    if (timer !== null) {
+      clearTimeout(timer);
+      timer = null;
+    }
+  }
+
+  function scheduleAdvance(delay) {
+    clearTimer();
+    if (!playing || finished) return;
+
+    remaining = delay;
+    startedAt = Date.now();
+
+    var myGeneration = generation;
+    timer = setTimeout(function () {
+      if (myGeneration !== generation || !playing) return;
+      goTo(current + 1);
+    }, delay);
+  }
+
+  function showScene(index) {
+    var scene = scenes[index];
+
+    chapter.textContent = scene.chapter;
+    heading.textContent = scene.heading;
+    renderNarration(scene.text);
+
+    sceneMood.textContent = scene.mood;
+    artLabel.textContent = scene.label;
+    sceneCount.textContent =
+      String(index + 1).padStart(2, "0") + " / " +
+      String(scenes.length).padStart(2, "0");
+
+    revealCard.classList.toggle("visible", !!scene.reveal);
+    stage.classList.toggle("is-reveal", !!scene.reveal);
+
+    if (scene.reveal) {
+      revealWords.textContent =
+        "The truth had never belonged to one name alone.";
+    }
+
+    updateProgress();
+  }
+
+  function goTo(index) {
+    generation++;
+    clearTimer();
+
+    if (index >= scenes.length) {
+      finish();
+      return;
+    }
+
+    if (index < 0) index = 0;
+
+    current = index;
+    finished = false;
+    playing = true;
+
+    showScene(current);
+    updateButtons();
+
+    status.textContent = current === 3
+      ? "The revelation is unfolding…"
+      : "Story playing automatically…";
+
+    scheduleAdvance(scenes[current].duration);
+  }
+
+  function finish() {
+    generation++;
+    clearTimer();
+
+    current = scenes.length - 1;
+    finished = true;
+    playing = false;
+
+    showScene(current);
+    safeText(status, "End of prototype. The mystery is not resolved yet.");
+    updateButtons();
+  }
+
+  function start() {
+    if (finished) {
+      restart();
+      return;
+    }
+
+    if (current < 0) {
+      goTo(0);
+      return;
+    }
+
+    if (!playing) {
+      playing = true;
+      updateButtons();
+      status.textContent = "Story resumed.";
+      scheduleAdvance(remaining > 0 ? remaining : scenes[current].duration);
+    }
+  }
+
+  function pause() {
+    if (current < 0 || finished) return;
+
+    if (playing) {
+      if (timer !== null) {
+        remaining = Math.max(0, remaining - (Date.now() - startedAt));
+      }
+
+      generation++;
+      clearTimer();
+      playing = false;
+      status.textContent = "Paused. Take your time.";
+    } else {
+      playing = true;
+      status.textContent = "Story resumed.";
+      scheduleAdvance(remaining > 0 ? remaining : scenes[current].duration);
+    }
+
+    updateButtons();
+  }
+
+  function next() {
+    if (finished) {
+      restart();
+      return;
+    }
+
+    if (current < 0) {
+      goTo(0);
+      return;
+    }
+
+    goTo(current + 1);
+  }
+
+  function skip() {
+    if (current < 0 || finished) return;
+    finish();
+  }
+
+  function restart() {
+    generation++;
+    clearTimer();
+
+    current = -1;
+    playing = false;
+    finished = false;
+    remaining = 0;
+
+    chapter.textContent = "The Unopened Envelope";
+    heading.textContent = "Something was wrong.";
+    narration.textContent = "Ready to experience the scene again?";
+    sceneMood.textContent = "A feeling she couldn't explain";
+    sceneCount.textContent = "READY";
+    artLabel.textContent = "A quiet evening · Emerald High";
+    revealCard.classList.remove("visible");
+    stage.classList.remove("is-reveal");
+    progressFill.style.width = "0%";
+    progressTrack.setAttribute("aria-valuenow", "0");
+
+    status.textContent = "Ready when you are.";
+    updateButtons();
+  }
+
+  nextBtn.addEventListener("click", next);
+  pauseBtn.addEventListener("click", pause);
+  skipBtn.addEventListener("click", skip);
+  restartBtn.addEventListener("click", restart);
+
+  /*
+   * Clicking the story panel advances it.
+   * The buttons remain available for touch users.
+   */
+  stage.addEventListener("click", function () {
+    if (current >= 0 && !finished) next();
+  });
+
+  /*
+   * Space advances; Escape pauses.
+   * Typing into future input fields will not trigger these shortcuts.
+   */
+  document.addEventListener("keydown", function (event) {
+    var tag = event.target && event.target.tagName;
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+
+    if (event.code === "Space") {
+      event.preventDefault();
+      if (current < 0 || finished) next();
+      else if (playing) next();
+      else start();
+    }
+
+    if (event.key === "Escape") pause();
+  });
+
+  /*
+   * If the browser tab becomes hidden, pause automatically
+   * so the reader does not miss the story.
+   */
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden && playing) pause();
+  });
+
+  updateButtons();
+})();
+</script>
+</body>
+</html>
