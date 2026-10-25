@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -83,6 +84,64 @@ h2{
 #content td{
     padding:8px;
     border:1px solid #ccc;
+}
+
+
+/* =========================================================
+   NARRATION THEATRE
+   ========================================================= */
+
+.story-theatre{
+    margin:35px 0;
+    padding:24px;
+    background:#f0ece5;
+    border:1px solid #d8cbb8;
+    border-radius:14px;
+    box-shadow:0 5px 18px rgba(0,0,0,.06);
+}
+
+.story-theatre-label{
+    margin-bottom:18px;
+    padding-bottom:12px;
+    border-bottom:1px solid #d8cbb8;
+    color:#77634c;
+    font-size:.78rem;
+    font-weight:bold;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+}
+
+.story-theatre-content{
+    color:#29251f;
+    line-height:1.9;
+}
+
+.story-theatre-content > :first-child{
+    margin-top:0;
+}
+
+.story-theatre-content > :last-child{
+    margin-bottom:0;
+}
+
+.story-theatre-content img{
+    display:block;
+    max-width:100%;
+    height:auto;
+    margin:22px auto;
+    border-radius:10px;
+}
+
+.story-theatre-content blockquote{
+    margin:22px 0;
+    padding:12px 18px;
+    border-left:3px solid #9b8061;
+    background:rgba(255,255,255,.55);
+}
+
+.story-theatre-content h2,
+.story-theatre-content h3{
+    color:#5b4632;
 }
 
 
@@ -287,6 +346,11 @@ h2{
         box-sizing:border-box;
     }
 
+    .story-theatre{
+        padding:17px;
+        margin:28px 0;
+    }
+
 }
 
 </style>
@@ -368,20 +432,6 @@ returnGame =
 
 /* =========================================================
    STORY ID
-   =========================================================
-   
-   ALL CHAPTERS OF THE SAME STORY MUST USE
-   THE SAME STORAGE KEY.
-   
-   Examples:
-   
-   discordant-descendants
-   discordant-descendants-chapter-1
-   discordant-descendants-chapter-2
-   
-   ALL become:
-   
-   discordant-descendants
    ========================================================= */
 
 var storyId =
@@ -542,24 +592,11 @@ function buildStory(text){
     }
 
 
-    /*
-     * Convert Markdown into the internal story-node
-     * structure.
-     *
-     * This is what allows ordinary Markdown,
-     * choices, conditions, games and NEXT markers
-     * to coexist.
-     */
-
     storyNodes =
         parseStoryNodes(
             data.body.split(/\r?\n/)
         );
 
-
-    /*
-     * Game return support.
-     */
 
     if(returnGame){
 
@@ -632,34 +669,19 @@ function parseFrontmatter(text){
 
 
     data.title =
-        frontValue(
-            front,
-            "title"
-        );
+        frontValue(front, "title");
 
     data.cover =
-        frontValue(
-            front,
-            "cover"
-        );
+        frontValue(front, "cover");
 
     data.credits =
-        frontValue(
-            front,
-            "credits"
-        );
+        frontValue(front, "credits");
 
     data.video =
-        frontValue(
-            front,
-            "video"
-        );
+        frontValue(front, "video");
 
     data.audio =
-        frontValue(
-            front,
-            "audio"
-        );
+        frontValue(front, "audio");
 
 
     data.body =
@@ -687,10 +709,7 @@ function cleanLeadingArticleMetadata(text){
 
 
     body =
-        body.replace(
-            /^\s*\n/,
-            ""
-        );
+        body.replace(/^\s*\n/, "");
 
 
     var changed = true;
@@ -726,10 +745,7 @@ function cleanLeadingArticleMetadata(text){
 
 
                 body =
-                    body.replace(
-                        /^\s*\n/,
-                        ""
-                    );
+                    body.replace(/^\s*\n/, "");
 
 
                 changed = true;
@@ -749,10 +765,7 @@ function cleanLeadingArticleMetadata(text){
 
 
     body =
-        body.replace(
-            /^\s*\n/,
-            ""
-        );
+        body.replace(/^\s*\n/, "");
 
 
     return body;
@@ -764,10 +777,7 @@ function cleanLeadingArticleMetadata(text){
    FRONTMATTER VALUE
    ========================================================= */
 
-function frontValue(
-    text,
-    key
-){
+function frontValue(text, key){
 
     var re =
         new RegExp(
@@ -835,16 +845,6 @@ function isShowOutfitMarker(line){
 }
 
 
-/*
- * NEXT is deliberately tolerant:
- *
- * [NEXT:file]
- * [NEXT:file|Label]
- * [NEXT: file | Label]
- *
- * all work.
- */
-
 function isNextMarker(line){
 
     return /^\[NEXT:\s*[^|\]]+(?:\|[^\]]+)?\s*\]$/i.test(
@@ -884,6 +884,28 @@ function isEndIfMarker(line){
 function isEndChoiceMarker(line){
 
     return /^\[ENDCHOICE\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+/* =========================================================
+   NARRATION THEATRE MARKER TESTS
+   ========================================================= */
+
+function isTheatreStart(line){
+
+    return /^\[THEATRE:\s*NARRATION\s*\]$/i.test(
+        cleanControlLine(line)
+    );
+
+}
+
+
+function isTheatreEnd(line){
+
+    return /^\[\/THEATRE\]$/i.test(
         cleanControlLine(line)
     );
 
@@ -942,6 +964,68 @@ function parseStoryNodes(lines){
 
         var line =
             lines[i];
+
+
+        /* NARRATION THEATRE */
+
+        if(isTheatreStart(line)){
+
+            flushNormal();
+
+
+            var theatreLines = [];
+
+            i++;
+
+
+            while(
+                i < lines.length &&
+                !isTheatreEnd(lines[i])
+            ){
+
+                /*
+                 * Keep all content inside the theatre,
+                 * including ordinary Markdown and images.
+                 *
+                 * Do not parse choices or other story
+                 * controls inside this first test panel.
+                 */
+
+                theatreLines.push(lines[i]);
+
+                i++;
+
+            }
+
+
+            /*
+             * Consume the closing marker if it exists.
+             */
+
+            if(
+                i < lines.length &&
+                isTheatreEnd(lines[i])
+            ){
+
+                i++;
+
+            }
+
+
+            result.push({
+
+                type:"theatre",
+
+                mode:"narration",
+
+                text:theatreLines.join("\n")
+
+            });
+
+
+            continue;
+
+        }
 
 
         /* CONDITIONAL */
@@ -1065,7 +1149,8 @@ function parseStoryNodes(lines){
         if(
             isElseMarker(line) ||
             isEndIfMarker(line) ||
-            isEndChoiceMarker(line)
+            isEndChoiceMarker(line) ||
+            isTheatreEnd(line)
         ){
 
             i++;
@@ -1094,10 +1179,7 @@ function parseStoryNodes(lines){
    PARSE CHOICE NODE
    ========================================================= */
 
-function parseChoiceNode(
-    lines,
-    start
-){
+function parseChoiceNode(lines, start){
 
     var match =
         cleanControlLine(
@@ -1128,33 +1210,23 @@ function parseChoiceNode(
 
     var branches = {};
 
-    var currentLetter =
-        null;
+    var currentLetter = null;
 
     var currentLines = [];
 
-    var i =
-        start + 1;
+    var i = start + 1;
 
-    var choiceStarted =
-        false;
+    var choiceStarted = false;
 
 
     function saveBranch(){
 
-        if(
-            currentLetter !== null
-        ){
+        if(currentLetter !== null){
 
-            branches[
-                currentLetter
-            ] =
-                parseStoryNodes(
-                    currentLines
-                );
+            branches[currentLetter] =
+                parseStoryNodes(currentLines);
 
-            choiceStarted =
-                true;
+            choiceStarted = true;
 
         }
 
@@ -1166,16 +1238,10 @@ function parseChoiceNode(
 
     while(i < lines.length){
 
-        var line =
-            lines[i];
+        var line = lines[i];
 
-        var cleaned =
-            cleanControlLine(line);
+        var cleaned = cleanControlLine(line);
 
-
-        /*
-         * CONSEQUENCE
-         */
 
         var consequence =
             cleaned.match(
@@ -1187,10 +1253,8 @@ function parseChoiceNode(
 
             saveBranch();
 
-
             currentLetter =
                 consequence[1].toUpperCase();
-
 
             currentLines = [];
 
@@ -1200,21 +1264,12 @@ function parseChoiceNode(
 
         }
 
-
-        /*
-         * ENDCHOICE
-         *
-         * It closes the current branch, NOT the
-         * entire A/B/C collection.
-         */
 
         if(isEndChoiceMarker(line)){
 
             saveBranch();
 
-
-            currentLetter =
-                null;
+            currentLetter = null;
 
             currentLines = [];
 
@@ -1225,13 +1280,9 @@ function parseChoiceNode(
         }
 
 
-        /*
-         * OPTIONS
-         */
-
         var option =
             cleaned.match(
-                /^\[([A-Z])\]\s*(.+?)\s*$/i
+                /^\[([A-Z])\]\s*(.+?)\s*$/
             );
 
 
@@ -1242,11 +1293,11 @@ function parseChoiceNode(
         ){
 
             options.push({
-                letter:
-                    option[1].toUpperCase(),
 
-                label:
-                    option[2]
+                letter:option[1].toUpperCase(),
+
+                label:option[2]
+
             });
 
 
@@ -1256,10 +1307,6 @@ function parseChoiceNode(
 
         }
 
-
-        /*
-         * AFTER A CLOSED BRANCH
-         */
 
         if(
             currentLetter === null &&
@@ -1275,16 +1322,13 @@ function parseChoiceNode(
             }
 
 
-            /*
-             * These belong to the outer story parser.
-             */
-
             if(
                 isChoiceStart(line) ||
                 isGameMarker(line) ||
                 isShowOutfitMarker(line) ||
                 isNextMarker(line) ||
-                isIfMarker(line)
+                isIfMarker(line) ||
+                isTheatreStart(line)
             ){
 
                 break;
@@ -1292,23 +1336,12 @@ function parseChoiceNode(
             }
 
 
-            /*
-             * Normal Markdown also means the choice
-             * block has ended.
-             */
-
             break;
 
         }
 
 
-        /*
-         * CURRENT BRANCH CONTENT
-         */
-
-        if(
-            currentLetter !== null
-        ){
+        if(currentLetter !== null){
 
             currentLines.push(line);
 
@@ -1320,21 +1353,21 @@ function parseChoiceNode(
     }
 
 
-    /*
-     * Save a final branch if the author omitted
-     * [ENDCHOICE].
-     */
-
     saveBranch();
 
 
     return {
 
         node:{
+
             type:"choice",
+
             id:id,
+
             options:options,
+
             branches:branches
+
         },
 
         next:i
@@ -1348,10 +1381,7 @@ function parseChoiceNode(
    PARSE CONDITIONAL NODE
    ========================================================= */
 
-function parseConditionalNode(
-    lines,
-    start
-){
+function parseConditionalNode(lines, start){
 
     var first =
         cleanControlLine(
@@ -1364,40 +1394,37 @@ function parseConditionalNode(
     if(!first){
 
         return {
+
             node:{
                 type:"markdown",
                 text:""
             },
+
             next:start + 1
+
         };
 
     }
 
 
-    var id =
-        first[1];
+    var id = first[1];
 
-    var letter =
-        first[2].toUpperCase();
-
+    var letter = first[2].toUpperCase();
 
     var thenLines = [];
 
     var elseLines = [];
 
-    var current =
-        thenLines;
+    var current = thenLines;
 
     var depth = 1;
 
-    var i =
-        start + 1;
+    var i = start + 1;
 
 
     while(i < lines.length){
 
-        var line =
-            lines[i];
+        var line = lines[i];
 
 
         if(isIfMarker(line)){
@@ -1441,8 +1468,7 @@ function parseConditionalNode(
             isElseMarker(line)
         ){
 
-            current =
-                elseLines;
+            current = elseLines;
 
             i++;
 
@@ -1461,19 +1487,17 @@ function parseConditionalNode(
     return {
 
         node:{
+
             type:"conditional",
+
             id:id,
+
             letter:letter,
 
-            thenNodes:
-                parseStoryNodes(
-                    thenLines
-                ),
+            thenNodes:parseStoryNodes(thenLines),
 
-            elseNodes:
-                parseStoryNodes(
-                    elseLines
-                )
+            elseNodes:parseStoryNodes(elseLines)
+
         },
 
         next:i
@@ -1501,13 +1525,11 @@ function renderProgress(){
 
     if(result.hasProgress){
 
-        reset.style.display =
-            "block";
+        reset.style.display = "block";
 
     }else{
 
-        reset.style.display =
-            "none";
+        reset.style.display = "none";
 
     }
 
@@ -1515,18 +1537,12 @@ function renderProgress(){
     fixMedia();
 
 
-    /*
-     * GAME RETURN
-     */
-
     if(resumeAfterGameId){
 
         var gameAnchor =
             content.querySelector(
                 '[data-resume-game="' +
-                cssEscape(
-                    resumeAfterGameId
-                ) +
+                cssEscape(resumeAfterGameId) +
                 '"]'
             );
 
@@ -1536,9 +1552,7 @@ function renderProgress(){
 
         if(gameAnchor){
 
-            scrollToElement(
-                gameAnchor
-            );
+            scrollToElement(gameAnchor);
 
         }
 
@@ -1551,35 +1565,25 @@ function renderProgress(){
    EXECUTE STORY NODES
    ========================================================= */
 
-function executeNodes(
-    nodes,
-    target
-){
+function executeNodes(nodes, target){
 
     var result = {
+
         stopped:false,
+
         hasProgress:false
+
     };
 
 
-    for(
-        var i = 0;
-        i < nodes.length;
-        i++
-    ){
+    for(var i = 0; i < nodes.length; i++){
 
-        var node =
-            nodes[i];
+        var node = nodes[i];
 
 
-        /* =================================================
-           MARKDOWN
-           ================================================= */
+        /* MARKDOWN */
 
-        if(
-            node.type ===
-            "markdown"
-        ){
+        if(node.type === "markdown"){
 
             if(node.text.trim()){
 
@@ -1589,9 +1593,7 @@ function executeNodes(
                         "beforeend",
                         '<span class="story-resume-anchor" ' +
                         'data-resume-game="' +
-                        escapeAttr(
-                            resumeAfterGameId
-                        ) +
+                        escapeAttr(resumeAfterGameId) +
                         '"></span>'
                     );
 
@@ -1621,14 +1623,29 @@ function executeNodes(
         }
 
 
-        /* =================================================
-           SHOW OUTFIT
-           ================================================= */
+        /* NARRATION THEATRE */
 
-        if(
-            node.type ===
-            "outfit"
-        ){
+        if(node.type === "theatre"){
+
+            target.insertAdjacentHTML(
+                "beforeend",
+                renderNarrationTheatre(node)
+            );
+
+
+            /*
+             * Images and media inside the theatre are
+             * handled by the existing fixMedia function.
+             */
+
+            continue;
+
+        }
+
+
+        /* SHOW OUTFIT */
+
+        if(node.type === "outfit"){
 
             target.insertAdjacentHTML(
                 "beforeend",
@@ -1640,17 +1657,11 @@ function executeNodes(
         }
 
 
-        /* =================================================
-           CONDITIONAL
-           ================================================= */
+        /* CONDITIONAL */
 
-        if(
-            node.type ===
-            "conditional"
-        ){
+        if(node.type === "conditional"){
 
-            var choices =
-                getChoices();
+            var choices = getChoices();
 
 
             var selected =
@@ -1659,22 +1670,7 @@ function executeNodes(
                 );
 
 
-            /*
-             * IMPORTANT:
-             *
-             * If the requested choice matches,
-             * render THEN.
-             *
-             * Otherwise render ELSE.
-             *
-             * This allows Chapter 2 to react to
-             * Chapter 1's saved choice.
-             */
-
-            if(
-                selected ===
-                node.letter
-            ){
+            if(selected === node.letter){
 
                 var branchResult =
                     executeNodes(
@@ -1685,11 +1681,9 @@ function executeNodes(
 
                 if(branchResult.stopped){
 
-                    result.stopped =
-                        true;
+                    result.stopped = true;
 
-                    result.hasProgress =
-                        true;
+                    result.hasProgress = true;
 
                     return result;
 
@@ -1706,11 +1700,9 @@ function executeNodes(
 
                 if(elseResult.stopped){
 
-                    result.stopped =
-                        true;
+                    result.stopped = true;
 
-                    result.hasProgress =
-                        true;
+                    result.hasProgress = true;
 
                     return result;
 
@@ -1724,21 +1716,14 @@ function executeNodes(
         }
 
 
-        /* =================================================
-           CHOICE
-           ================================================= */
+        /* CHOICE */
 
-        if(
-            node.type ===
-            "choice"
-        ){
+        if(node.type === "choice"){
 
-            result.hasProgress =
-                true;
+            result.hasProgress = true;
 
 
-            var savedChoices =
-                getChoices();
+            var savedChoices = getChoices();
 
 
             var savedLetter =
@@ -1747,22 +1732,14 @@ function executeNodes(
                 );
 
 
-            /*
-             * CHOICE ALREADY MADE
-             */
-
             if(savedLetter){
 
                 var savedBranch =
-                    node.branches[
-                        savedLetter
-                    ] || [];
+                    node.branches[savedLetter] || [];
 
 
                 var branchTarget =
-                    document.createElement(
-                        "div"
-                    );
+                    document.createElement("div");
 
 
                 branchTarget.className =
@@ -1775,9 +1752,7 @@ function executeNodes(
                 );
 
 
-                target.appendChild(
-                    branchTarget
-                );
+                target.appendChild(branchTarget);
 
 
                 var branchResult =
@@ -1789,8 +1764,7 @@ function executeNodes(
 
                 if(branchResult.stopped){
 
-                    result.stopped =
-                        true;
+                    result.stopped = true;
 
                     return result;
 
@@ -1802,47 +1776,30 @@ function executeNodes(
             }
 
 
-            /*
-             * CHOICE NOT YET MADE
-             */
-
             target.insertAdjacentHTML(
                 "beforeend",
                 renderChoice(node)
             );
 
 
-            result.stopped =
-                true;
-
+            result.stopped = true;
 
             return result;
 
         }
 
 
-        /* =================================================
-           GAME
-           ================================================= */
+        /* GAME */
 
-        if(
-            node.type ===
-            "game"
-        ){
+        if(node.type === "game"){
 
-            result.hasProgress =
-                true;
+            result.hasProgress = true;
 
 
-            var completedGames =
-                getCompletedGames();
+            var completedGames = getCompletedGames();
 
 
-            if(
-                completedGames[
-                    node.id
-                ]
-            ){
+            if(completedGames[node.id]){
 
                 continue;
 
@@ -1851,54 +1808,31 @@ function executeNodes(
 
             target.insertAdjacentHTML(
                 "beforeend",
-                renderGame(
-                    node.id
-                )
+                renderGame(node.id)
             );
 
 
-            result.stopped =
-                true;
-
+            result.stopped = true;
 
             return result;
 
         }
 
 
-        /* =================================================
-           NEXT CHAPTER
-           ================================================= */
+        /* NEXT CHAPTER */
 
-        if(
-            node.type ===
-            "next"
-        ){
+        if(node.type === "next"){
 
-            result.hasProgress =
-                true;
+            result.hasProgress = true;
 
-
-            /*
-             * At this exact point ALL choices already
-             * encountered in the chapter have been
-             * stored in localStorage.
-             *
-             * Therefore clicking NEXT can safely
-             * move to the next chapter.
-             */
 
             target.insertAdjacentHTML(
                 "beforeend",
-                renderNext(
-                    node.line
-                )
+                renderNext(node.line)
             );
 
 
-            result.stopped =
-                true;
-
+            result.stopped = true;
 
             return result;
 
@@ -1908,6 +1842,44 @@ function executeNodes(
 
 
     return result;
+
+}
+
+
+/* =========================================================
+   RENDER NARRATION THEATRE
+   ========================================================= */
+
+function renderNarrationTheatre(node){
+
+    /*
+     * The narration text is Markdown, not plain text.
+     * marked() preserves headings, dialogue formatting,
+     * emphasis, blockquotes and images.
+     */
+
+    var narrationHtml =
+        marked(node.text || "");
+
+
+    return (
+
+        '<section class="story-theatre" ' +
+        'aria-label="Narration Theatre">' +
+
+            '<div class="story-theatre-label">' +
+                'Narration Theatre' +
+            '</div>' +
+
+            '<div class="story-theatre-content">' +
+
+                narrationHtml +
+
+            '</div>' +
+
+        '</section>'
+
+    );
 
 }
 
@@ -1929,14 +1901,9 @@ function renderChoice(node){
         '</div>';
 
 
-    for(
-        var i = 0;
-        i < node.options.length;
-        i++
-    ){
+    for(var i = 0; i < node.options.length; i++){
 
-        var option =
-            node.options[i];
+        var option = node.options[i];
 
 
         html +=
@@ -1951,9 +1918,7 @@ function renderChoice(node){
             '">' +
 
             escapeHtml(
-                option.letter +
-                " — " +
-                option.label
+                option.letter + " — " + option.label
             ) +
 
             '</button>';
@@ -1961,8 +1926,7 @@ function renderChoice(node){
     }
 
 
-    html +=
-        '</div>';
+    html += '</div>';
 
 
     return html;
@@ -1978,8 +1942,7 @@ document.addEventListener(
     "click",
     function(event){
 
-        var target =
-            event.target;
+        var target = event.target;
 
 
         if(
@@ -1994,23 +1957,16 @@ document.addEventListener(
 
 
         var id =
-            target.getAttribute(
-                "data-choice"
-            );
+            target.getAttribute("data-choice");
 
 
         var letter =
             normalizeChoiceLetter(
-                target.getAttribute(
-                    "data-letter"
-                )
+                target.getAttribute("data-letter")
             );
 
 
-        if(
-            !id ||
-            !letter
-        ){
+        if(!id || !letter){
 
             return;
 
@@ -2024,30 +1980,10 @@ document.addEventListener(
             0;
 
 
-        /*
-         * SAVE FIRST.
-         *
-         * This is critical because the next render,
-         * conditional branches and NEXT chapter all
-         * depend on this state.
-         */
-
-        saveChoice(
-            id,
-            letter
-        );
-
-
-        /*
-         * Rebuild the reachable story.
-         */
+        saveChoice(id, letter);
 
         renderProgress();
 
-
-        /*
-         * Scroll to the selected branch.
-         */
 
         setTimeout(
             function(){
@@ -2062,9 +1998,7 @@ document.addEventListener(
 
                 if(branchResult){
 
-                    scrollToElement(
-                        branchResult
-                    );
+                    scrollToElement(branchResult);
 
                     return;
 
@@ -2073,10 +2007,7 @@ document.addEventListener(
 
                 try{
 
-                    window.scrollTo(
-                        0,
-                        previousTop
-                    );
+                    window.scrollTo(0, previousTop);
 
                 }catch(e){}
 
@@ -2092,28 +2023,20 @@ document.addEventListener(
    SAVE CHOICE
    ========================================================= */
 
-function saveChoice(
-    id,
-    letter
-){
+function saveChoice(id, letter){
 
-    var choices =
-        getChoices();
+    var choices = getChoices();
 
 
     choices[id] =
-        normalizeChoiceLetter(
-            letter
-        );
+        normalizeChoiceLetter(letter);
 
 
     try{
 
         localStorage.setItem(
             storageKey,
-            JSON.stringify(
-                choices
-            )
+            JSON.stringify(choices)
         );
 
     }catch(e){}
@@ -2127,10 +2050,7 @@ function saveChoice(
 
 function normalizeChoiceLetter(value){
 
-    if(
-        value === null ||
-        value === undefined
-    ){
+    if(value === null || value === undefined){
 
         return "";
 
@@ -2153,9 +2073,7 @@ function getChoices(){
     try{
 
         var saved =
-            localStorage.getItem(
-                storageKey
-            );
+            localStorage.getItem(storageKey);
 
 
         if(!saved){
@@ -2165,10 +2083,7 @@ function getChoices(){
         }
 
 
-        var parsed =
-            JSON.parse(
-                saved
-            );
+        var parsed = JSON.parse(saved);
 
 
         if(
@@ -2214,10 +2129,7 @@ function getCompletedGames(){
         }
 
 
-        var parsed =
-            JSON.parse(
-                saved
-            );
+        var parsed = JSON.parse(saved);
 
 
         return parsed &&
@@ -2240,10 +2152,7 @@ function getCompletedGames(){
 
 function renderGame(gameId){
 
-    if(
-        gameId ===
-        "FASHION-01"
-    ){
+    if(gameId === "FASHION-01"){
 
         return (
 
@@ -2284,8 +2193,7 @@ document.addEventListener(
     "click",
     function(event){
 
-        var target =
-            event.target;
+        var target = event.target;
 
 
         if(
@@ -2300,15 +2208,10 @@ document.addEventListener(
 
 
         var gameId =
-            target.getAttribute(
-                "data-game"
-            );
+            target.getAttribute("data-game");
 
 
-        if(
-            gameId ===
-            "FASHION-01"
-        ){
+        if(gameId === "FASHION-01"){
 
             window.location.href =
                 "/games/fashion-01.html";
@@ -2327,8 +2230,7 @@ window.addEventListener(
     "pageshow",
     function(){
 
-        var returnedGame =
-            "";
+        var returnedGame = "";
 
 
         try{
@@ -2340,24 +2242,18 @@ window.addEventListener(
 
         }catch(e){
 
-            returnedGame =
-                "";
+            returnedGame = "";
 
         }
 
 
         returnedGame =
-            String(
-                returnedGame
-            )
+            String(returnedGame)
             .trim()
             .toUpperCase();
 
 
-        if(
-            returnedGame !==
-            "FASHION-01"
-        ){
+        if(returnedGame !== "FASHION-01"){
 
             return;
 
@@ -2373,13 +2269,9 @@ window.addEventListener(
         }catch(e){}
 
 
-        if(
-            storyNodes &&
-            storyNodes.length
-        ){
+        if(storyNodes && storyNodes.length){
 
-            resumeAfterGameId =
-                returnedGame;
+            resumeAfterGameId = returnedGame;
 
             renderProgress();
 
@@ -2448,8 +2340,7 @@ function scrollToElement(element){
 
 function renderShowOutfit(){
 
-    var outfit =
-        "lexis_default";
+    var outfit = "lexis_default";
 
 
     try{
@@ -2462,10 +2353,7 @@ function renderShowOutfit(){
 
         if(saved){
 
-            var state =
-                JSON.parse(
-                    saved
-                );
+            var state = JSON.parse(saved);
 
 
             if(
@@ -2528,18 +2416,7 @@ function renderShowOutfit(){
 
 function renderNext(line){
 
-    /*
-     * Accept:
-     *
-     * [NEXT:discordant-descendants-chapter-2]
-     *
-     * [NEXT:discordant-descendants-chapter-2|Step into the gathering.]
-     *
-     * [NEXT: discordant-descendants-chapter-2 | Step into the gathering. ]
-     */
-
-    var cleaned =
-        cleanControlLine(line);
+    var cleaned = cleanControlLine(line);
 
 
     var match =
@@ -2556,16 +2433,11 @@ function renderNext(line){
 
 
     var nextFile =
-        cleanPath(
-            match[1]
-        );
+        cleanPath(match[1]);
 
 
     nextFile =
-        nextFile.replace(
-            /\.md$/i,
-            ""
-        );
+        nextFile.replace(/\.md$/i, "");
 
 
     var label =
@@ -2615,8 +2487,7 @@ document.addEventListener(
     "click",
     function(event){
 
-        var target =
-            event.target;
+        var target = event.target;
 
 
         if(
@@ -2638,9 +2509,7 @@ document.addEventListener(
 
 
         var nextFile =
-            target.getAttribute(
-                "data-next"
-            );
+            target.getAttribute("data-next");
 
 
         if(!nextFile){
@@ -2650,33 +2519,15 @@ document.addEventListener(
         }
 
 
-        nextFile =
-            cleanPath(
-                nextFile
-            );
-
+        nextFile = cleanPath(nextFile);
 
         nextFile =
-            nextFile.replace(
-                /\.md$/i,
-                ""
-            );
+            nextFile.replace(/\.md$/i, "");
 
-
-        /*
-         * The story history is NOT cleared here.
-         *
-         * That is the important part.
-         *
-         * Chapter 2 will use the exact same
-         * ceeqwinn_story_history_<base-story> key.
-         */
 
         window.location.href =
             "article.html?file=" +
-            encodeURIComponent(
-                nextFile
-            );
+            encodeURIComponent(nextFile);
 
     }
 );
@@ -2686,77 +2537,39 @@ document.addEventListener(
    RESET STORY
    ========================================================= */
 
-reset.onclick =
-    function(){
+reset.onclick = function(){
 
-        try{
+    try{
 
-            localStorage.removeItem(
-                storageKey
-            );
+        localStorage.removeItem(storageKey);
 
-            localStorage.removeItem(
-                "ceeqwinn_completed_games"
-            );
+        localStorage.removeItem(
+            "ceeqwinn_completed_games"
+        );
 
-        }catch(e){}
+    }catch(e){}
 
 
-        window.location.reload();
+    window.location.reload();
 
-    };
+};
 
 
 /* =========================================================
    STORY ID
-   =========================================================
-   
-   This is the bridge between chapters.
-   
-   Example:
-   
-   discordant-descendants
-   discordant-descendants-chapter-1
-   discordant-descendants-chapter-2
-   
-   all become:
-   
-   discordant-descendants
    ========================================================= */
 
 function getStoryId(path){
 
-    path =
-        String(path || "");
+    path = String(path || "");
 
 
     path =
-        path.replace(
-            /\.md$/i,
-            ""
-        );
+        path.replace(/\.md$/i, "");
 
-
-    /*
-     * Remove chapter numbering from the END only.
-     *
-     * This means:
-     *
-     * discordant-descendants-chapter-2
-     *
-     * becomes:
-     *
-     * discordant-descendants
-     *
-     * while unrelated names containing the word
-     * "chapter" elsewhere remain untouched.
-     */
 
     path =
-        path.replace(
-            /-chapter-\d+$/i,
-            ""
-        );
+        path.replace(/-chapter-\d+$/i, "");
 
 
     return path;
@@ -2777,8 +2590,7 @@ function mediaPath(src){
     }
 
 
-    src =
-        src.trim();
+    src = src.trim();
 
 
     if(
@@ -2792,29 +2604,21 @@ function mediaPath(src){
     }
 
 
-    while(
-        src.indexOf("../") === 0
-    ){
+    while(src.indexOf("../") === 0){
 
-        src =
-            src.substring(3);
+        src = src.substring(3);
 
     }
 
 
-    while(
-        src.indexOf("./") === 0
-    ){
+    while(src.indexOf("./") === 0){
 
-        src =
-            src.substring(2);
+        src = src.substring(2);
 
     }
 
 
-    if(
-        src.indexOf("content/") === 0
-    ){
+    if(src.indexOf("content/") === 0){
 
         return "/" + src;
 
@@ -2833,42 +2637,28 @@ function mediaPath(src){
 function fixMedia(){
 
     var images =
-        content.getElementsByTagName(
-            "img"
-        );
+        content.getElementsByTagName("img");
 
     var videos =
-        content.getElementsByTagName(
-            "video"
-        );
+        content.getElementsByTagName("video");
 
     var audios =
-        content.getElementsByTagName(
-            "audio"
-        );
+        content.getElementsByTagName("audio");
 
 
     var i;
 
 
-    for(
-        i = 0;
-        i < images.length;
-        i++
-    ){
+    for(i = 0; i < images.length; i++){
 
         var imageSrc =
-            images[i].getAttribute(
-                "src"
-            );
+            images[i].getAttribute("src");
 
 
         if(imageSrc){
 
             images[i].src =
-                mediaPath(
-                    imageSrc
-                );
+                mediaPath(imageSrc);
 
         }
 
@@ -2881,58 +2671,40 @@ function fixMedia(){
     }
 
 
-    for(
-        i = 0;
-        i < videos.length;
-        i++
-    ){
+    for(i = 0; i < videos.length; i++){
 
         var videoSrc =
-            videos[i].getAttribute(
-                "src"
-            );
+            videos[i].getAttribute("src");
 
 
         if(videoSrc){
 
             videos[i].src =
-                mediaPath(
-                    videoSrc
-                );
+                mediaPath(videoSrc);
 
         }
 
 
-        videos[i].controls =
-            true;
+        videos[i].controls = true;
 
     }
 
 
-    for(
-        i = 0;
-        i < audios.length;
-        i++
-    ){
+    for(i = 0; i < audios.length; i++){
 
         var audioSrc =
-            audios[i].getAttribute(
-                "src"
-            );
+            audios[i].getAttribute("src");
 
 
         if(audioSrc){
 
             audios[i].src =
-                mediaPath(
-                    audioSrc
-                );
+                mediaPath(audioSrc);
 
         }
 
 
-        audios[i].controls =
-            true;
+        audios[i].controls = true;
 
     }
 
@@ -2954,16 +2726,10 @@ function renderExtraMedia(data){
 
             '<h2>Video</h2>' +
 
-            '<video ' +
-                'controls ' +
-                'preload="metadata">' +
+            '<video controls preload="metadata">' +
 
                 '<source src="' +
-                    escapeAttr(
-                        mediaPath(
-                            data.video
-                        )
-                    ) +
+                    escapeAttr(mediaPath(data.video)) +
                 '">' +
 
             '</video>';
@@ -2977,16 +2743,10 @@ function renderExtraMedia(data){
 
             '<h2>Audio</h2>' +
 
-            '<audio ' +
-                'controls ' +
-                'preload="metadata">' +
+            '<audio controls preload="metadata">' +
 
                 '<source src="' +
-                    escapeAttr(
-                        mediaPath(
-                            data.audio
-                        )
-                    ) +
+                    escapeAttr(mediaPath(data.audio)) +
                 '">' +
 
             '</audio>';
@@ -2994,8 +2754,7 @@ function renderExtraMedia(data){
     }
 
 
-    media.innerHTML =
-        html;
+    media.innerHTML = html;
 
 }
 
@@ -3008,28 +2767,16 @@ function cleanPath(path){
 
     path =
         String(path || "")
-        .replace(
-            /\\/g,
-            "/"
-        )
-        .replace(
-            /^\/+/,
-            ""
-        );
+        .replace(/\\/g, "/")
+        .replace(/^\/+/, "");
 
 
-    var parts =
-        path.split("/");
-
+    var parts = path.split("/");
 
     var clean = [];
 
 
-    for(
-        var i = 0;
-        i < parts.length;
-        i++
-    ){
+    for(var i = 0; i < parts.length; i++){
 
         if(
             parts[i] &&
@@ -3037,9 +2784,7 @@ function cleanPath(path){
             parts[i] !== ".."
         ){
 
-            clean.push(
-                parts[i]
-            );
+            clean.push(parts[i]);
 
         }
 
@@ -3059,39 +2804,22 @@ function escapeHtml(value){
 
     return String(value)
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+        .replace(/&/g, "&amp;")
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
+        .replace(/</g, "&lt;")
 
-        .replace(
-            />/g,
-            "&gt;"
-        )
+        .replace(/>/g, "&gt;")
 
-        .replace(
-            /"/g,
-            "&quot;"
-        )
+        .replace(/"/g, "&quot;")
 
-        .replace(
-            /'/g,
-            "&#39;"
-        );
+        .replace(/'/g, "&#39;");
 
 }
 
 
 function escapeAttr(value){
 
-    return escapeHtml(
-        value
-    );
+    return escapeHtml(value);
 
 }
 
@@ -3104,15 +2832,9 @@ function cssEscape(value){
 
     return String(value)
 
-        .replace(
-            /\\/g,
-            "\\\\"
-        )
+        .replace(/\\/g, "\\\\")
 
-        .replace(
-            /"/g,
-            '\\"'
-        );
+        .replace(/"/g, '\\"');
 
 }
 
@@ -3121,3 +2843,4 @@ function cssEscape(value){
 </body>
 
 </html>
+```
