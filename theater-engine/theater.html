@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#171511"
+  >
+
+  <meta
+    name="description"
+    content="CEEQWINN interactive story theatre."
+  >
+
+  <title>CEEQWINN Theatre — The Emerald Envelope</title>
+
+  <link rel="stylesheet" href="theater.css">
+
+  <script src="theater-engine.js" defer></script>
+  <script src="demo-scene.js" defer></script>
+  <script src="theater-app.js" defer></script>
+</head>
+
+<body>
+  <div class="theater-page">
+
+    <header class="theater-page-header">
+      <a class="theater-brand" href="./theater.html">
+        <span class="theater-brand-mark" aria-hidden="true">C</span>
+
+        <span class="theater-brand-copy">
+          <span class="theater-brand-name">CEEQWINN</span>
+          <span class="theater-brand-subtitle">STORY THEATRE</span>
+        </span>
+      </a>
+
+      <p class="theater-page-note">
+        Every choice opens a different possibility.
+      </p>
+    </header>
+
+    <main id="theater-main" class="theater-main">
+      <section class="theater-intro" aria-labelledby="page-title">
+        <p class="theater-eyebrow">AN INTERACTIVE STORY</p>
+
+        <h1 id="page-title">The Emerald Envelope</h1>
+
+        <p>
+          A mysterious envelope. An unexpected warning.
+          One decision could change everything.
+        </p>
+      </section>
+
+      <section
+        id="theater-root"
+        class="theater-root"
+        aria-label="Interactive story"
+        aria-busy="true"
+      >
+        <p class="theater-loading" role="status">
+          Preparing your story…
+        </p>
+      </section>
+
+      <noscript>
+        <p class="theater-noscript">
+          This interactive story requires JavaScript to be enabled.
+        </p>
+      </noscript>
+    </main>
+
+    <footer class="theater-page-footer">
+      <p>CEEQWINN — Confidence via Effortless Thrill</p>
+      <p>Take your time. Your choices matter.</p>
+    </footer>
+
+  </div>
+</body>
+</html>
