@@ -1,11 +1,6 @@
-
 /*
- * CEEQWINN THEATRE ENGINE
- * File: theater-app.js
- * Version: 1.0.0
- *
- * Connects the scene to the engine and starts playback.
- * Uses vanilla JavaScript only.
+ * CEEQWINN Theatre
+ * Starts either the existing demo or a CMS Markdown article.
  */
 
 (function () {
@@ -35,13 +30,12 @@
 
     error.appendChild(heading);
     error.appendChild(paragraph);
-
     root.replaceChildren(error);
 
     console.error("CEEQWINN Theatre:", message);
   }
 
-  function startTheatre() {
+  async function startTheatre() {
     const root = document.getElementById("theater-root");
 
     if (!root) {
@@ -53,36 +47,61 @@
 
     if (typeof window.createTheaterEngine !== "function") {
       showStartupError(
-        "The theatre engine could not be loaded. " +
-        "Check that theater-engine.js exists in the same folder."
-      );
-      return;
-    }
-
-    if (!window.CEEQWINN_DEMO_SCENE) {
-      showStartupError(
-        "The demo scene could not be loaded. " +
-        "Check that demo-scene.js exists in the same folder."
+        "The theatre engine could not be loaded."
       );
       return;
     }
 
     try {
+      const params = new URLSearchParams(window.location.search);
+      const articleSlug = params.get("file");
+
+      let scene;
+
+      if (articleSlug) {
+        if (
+          !window.CEEQWINN_MARKDOWN ||
+          typeof window.CEEQWINN_MARKDOWN.loadArticle !== "function"
+        ) {
+          throw new Error("The Markdown adapter did not load.");
+        }
+
+        scene = await window.CEEQWINN_MARKDOWN.loadArticle(
+          articleSlug
+        );
+
+        const pageTitle = document.getElementById("page-title");
+
+        if (pageTitle) {
+          pageTitle.textContent = scene.title;
+        }
+
+        document.title = "CEEQWINN Theatre — " + scene.title;
+      } else {
+        scene = window.CEEQWINN_DEMO_SCENE;
+      }
+
+      if (!scene) {
+        throw new Error(
+          "No story was loaded. Check the article filename."
+        );
+      }
+
       const theatre = window.createTheaterEngine({
         root: root,
-        scene: window.CEEQWINN_DEMO_SCENE,
+        scene: scene,
 
         onError: function (message) {
           console.warn("CEEQWINN Theatre:", message);
         },
 
         onStateChange: function (state, details) {
-          // State is available for future approved integrations.
-          // This demo does not save it permanently or modify the CMS.
-          root.dataset.currentBeat = details.currentBeatId || "";
+          root.dataset.currentBeat =
+            details.currentBeatId || "";
+
           root.dataset.sceneEnded = String(details.ended);
 
-          // Deliberately do not log story state or reader choices.
+          // Story state remains temporary in this test.
           void state;
         }
       });
@@ -90,18 +109,15 @@
       theatre.start();
 
       root.setAttribute("aria-busy", "false");
-
-      // Expose a small debugging handle for local development.
-      // This does not communicate with the existing article reader.
       window.CEEQWINN_THEATRE = theatre;
     } catch (error) {
       showStartupError(
-        "The theatre encountered a startup problem. " +
-        "Check the JavaScript files and scene definition, " +
-        "then try again."
+        error && error.message
+          ? error.message
+          : "The story could not be loaded."
       );
 
-      console.error(error);
+      console.error("CEEQWINN Theatre:", error);
     }
   }
 
