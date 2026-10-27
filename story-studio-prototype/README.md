@@ -1,62 +1,71 @@
-# CEEQWINN Story & Theatre Studio — Prototype 0.1
+# CEEQWINN Story & Theatre Studio
 
-This is an isolated, browser-based prototype. It does not replace or modify the existing CEEQWINN website, `studio.html`, `studio.css`, `admin/article.html`, or any theatre folder.
+A visual story-writing and theatre-authoring prototype built with vanilla
+HTML, CSS and JavaScript.
 
 ## Files
 
-- `index.html` — Studio layout and preview window.
-- `css/studio.css` — responsive styling.
-- `js/studio.js` — story/chapter/scene editing, local save, import/export.
-- `js/theatre-engine.js` — reusable scene preview engine.
-- `data/sample-project.json` — editable sample project you can import.
+- `index.html` — the Studio interface
+- `studio.css` — styling and responsive layout
+- `studio.js` — writing, chapters, editing, saving and project export
+- `theatre-engine.js` — story preview and experience rendering
+- `sample-project.json` — sample story to import and edit
 
-## Test it on Windows
+## How to open it
 
-1. Download and extract the ZIP file.
-2. Open the `ceeqwinn-story-studio` folder.
-3. Double-click `index.html` to open it in Chrome or Edge.
-4. The sample story should load automatically.
-5. Click a chapter, then click a scene to edit it.
-6. Change the text, then click **Apply scene changes**.
-7. Click **Preview theatre** and step through the scenes. At the choice scene, test both options.
-8. Click **Save**. Close and reopen the page; the draft should remain in that browser.
-9. Click **Export project** to download a JSON backup.
-10. To test importing the included sample, click **Import project JSON** and choose `data/sample-project.json`.
+The Studio is available through the website at:
 
-If opening as a local file causes a browser-specific issue, use a simple local static server. If Python is already installed, open Command Prompt in the extracted folder and run:
+https://ceeqwinn.netlify.app/story-studio-prototype/index.html
+
+You can also test it locally:
+
+1. Download or clone the project.
+2. Keep all files in the same folder.
+3. Open `index.html` in a modern browser.
+
+If the browser restricts local file access, open a terminal in this
+folder and run:
 
     python -m http.server 8000
 
-Then visit:
+Then open:
 
     http://localhost:8000
 
-Stop the server with `Ctrl+C`.
+## Basic workflow
 
-## What works in this prototype
+1. Open Story overview and enter your story details.
+2. Open the writing room.
+3. Edit paragraphs directly in the manuscript.
+4. Select a block and choose "Insert experience" to add theatre, dialogue,
+   narration, a reveal, a choice, a game link, audio, an image or a transition.
+5. Select an inserted experience to edit its settings.
+6. Use Preview story to see the current chapter.
+7. Use Save to save the draft in this browser.
+8. Use Export to download a JSON backup.
+9. Use Import to restore a project JSON file.
 
-- Edit story title, description, genre, and draft status.
-- Add chapters and scenes.
-- Edit scene type, title, text, speaker, portrait URL, background URL, fallback background colour, and direct audio URL.
-- Reorder scenes.
-- Add choice options in the format `Button label | Target scene title`.
-- Preview narration, dialogue, revelation, choice branches, game placeholders, and chapter endings.
-- Save the active project to browser localStorage.
-- Export and import project JSON.
-- Set release metadata for planning.
-- Responsive layout for smaller screens and reduced-motion preferences.
+## Important limitations
 
-## Important prototype limits
+- Drafts are saved in this browser's local storage, not in a server database.
+- Export a backup before clearing browser data or moving to another device.
+- Game experiences link to existing game URLs; this prototype does not
+  embed or control the game engine.
+- Choice targets are stored but do not yet drive complete branching playback.
+- Chapter transitions are represented in the project but do not yet
+  automatically navigate between chapters.
+- Audio and images use URLs; there is no file-upload manager yet.
+- Release settings are saved as metadata only.
+- This prototype does not publish stories to the live Reader.
+- The existing Reader has not been modified by this prototype.
 
-- **No live website publishing:** release status and date are saved as metadata only.
-- **No cloud sync:** browser localStorage is local to this browser/profile. Export backups regularly.
-- **No live analytics:** this prototype does not collect audience data.
-- **No real game launch yet:** game scenes are placeholders. We will connect the appropriate existing game engine after testing this foundation.
-- **Branch preview is basic:** choices jump to a matching scene in the current chapter. This is a first test, not a replacement for the existing Reader's complete branching logic.
-- **Media uses URLs:** use direct URLs to images/audio for now. Files are not uploaded to the website by this prototype.
-- **Choice targets:** target scene titles must match exactly, and the target must be in the same chapter. Use unique scene titles for reliable routing.
-- **Do not enter secrets or access tokens:** the prototype has no secure server component.
+## Compatibility
 
-## Before integrating with CEEQWINN
+Use a modern browser for the best experience. The interface adapts to
+narrow screens, but older devices and browsers still need testing.
 
-Test the prototype locally first. Then compare it against the existing theatre experiments and decide which visuals or behaviours should be reused. Do not overwrite production files until a separate integration plan is tested.
+## Next integration stage
+
+After the writing workflow has been tested, connect the Studio project
+format to the existing CEEQWINN Reader without replacing its working
+story progression, saved choices, or game integrations.
