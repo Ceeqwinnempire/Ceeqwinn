@@ -1,457 +1,1006 @@
 (function () {
   "use strict";
 
-  var STORAGE_KEY = "ceeqwinn_story_studio_prototype_v1";
-  var activeStoryId = null;
-  var activeChapterId = null;
-  var activeSceneId = null;
-  var toastTimer = null;
-  var project = null;
-  var theatre = null;
+  const STORAGE_KEY = "ceeqwinn_story_studio_v2";
+  const $ = (id) => document.getElementById(id);
 
-  var $ = function (id) { return document.getElementById(id); };
-  var makeId = function (prefix) {
-    return prefix + "_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
+  const experienceNames = {
+    narration: "Cinematic narration",
+    dialogue: "Character dialogue",
+    reveal: "Visual reveal",
+    choice: "Reader choice",
+    game: "Game launch",
+    audio: "Audio moment",
+    image: "Story image",
+    chapterEnd: "Chapter transition"
   };
-  var clone = function (value) { return JSON.parse(JSON.stringify(value)); };
 
-  function starterProject() {
+  const experienceDefaults = {
+    narration: {
+      title: "A moment unfolds",
+      text: "Write the narration for this moment."
+    },
+    dialogue: {
+      title: "Character dialogue",
+      character: "Character name",
+      text: "Write what the character says."
+    },
+    reveal: {
+      title: "A revelation",
+      text: "Describe what the reader discovers.",
+      imageUrl: ""
+    },
+    choice: {
+      title: "What will happen next?",
+      text: "Choose how the story continues.",
+      options: [
+        { label: "Choice A", target: "" },
+        { label: "Choice B", target: "" }
+      ]
+    },
+    game: {
+      title: "Play a game",
+      text: "Add a short introduction to this game.",
+      gameUrl: ""
+    },
+    audio: {
+      title: "Sound and atmosphere",
+      text: "Add a description for this audio.",
+      audioUrl: ""
+    },
+    image: {
+      title: "Story illustration",
+      text: "Describe this image.",
+      imageUrl: ""
+    },
+    chapterEnd: {
+      title: "Continue the story",
+      text: "The next chapter awaits.",
+      nextChapterId: ""
+    }
+  };
+
+  let project;
+  let activeChapterId = "";
+  let selectedBlockId = "";
+  let saveTimer = null;
+  let lastFocusedParagraphId = "";
+  let previewState = null;
+
+  function uid(prefix) {
+    return prefix + "_" + Date.now().toString(36) +
+      "_" + Math.random().toString(36).slice(2, 8);
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function safeUrl(value) {
+    const raw = String(value || "").trim();
+
+    if (!raw) return "";
+
+    try {
+      const parsed = new URL(raw, window.location.href);
+
+      if (["http:", "https:"].includes(parsed.protocol)) {
+        return parsed.href;
+      }
+
+      return "";
+    } catch (error) {
+      return "";
+    }
+  }
+
+  function makeParagraph(text) {
     return {
-      schemaVersion: 1,
-      id: "emerald-inheritance-demo",
-      title: "The Emerald Inheritance",
-      description: "A family legacy, a new arrival, and secrets that refuse to stay quiet.",
-      genre: "Fashion drama · Mystery",
-      status: "draft",
-      release: { status: "draft", date: "" },
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      chapters: [
+      id: uid("block"),
+      type: "paragraph",
+      text: text || ""
+    };
+  }
+
+  function makeChapter(title) {
+    return {
+      id: uid("chapter"),
+      title: title || "Untitled chapter",
+      blocks: [makeParagraph("")]
+    };
+  }
+
+  function makeExperience(type) {
+    const defaults = experienceDefaults[type];
+
+    if (!defaults) return null;
+
+    return {
+      id: uid("experience"),
+      type: type,
+      ...JSON.parse(JSON.stringify(defaults))
+    };
+  }
+
+  function getActiveChapter() {
+    return project.chapters.find(
+      (chapter) => chapter.id === activeChapterId
+    ) || null;
+  }
+
+  function getSelectedBlock() {
+    const chapter = getActiveChapter();
+
+    if (!chapter) return null;
+
+    return chapter.blocks.find(
+      (block) => block.id === selectedBlockId
+    ) || null;
+  }
+
+  function getBlockLabel(block) {
+    if (block.type === "paragraph") {
+      const text = String(block.text || "").trim();
+      return text ? text.slice(0, 48) : "Empty paragraph";
+    }
+
+    return block.title || experienceNames[block.type] || "Experience";
+  }
+
+  function createStarterProject() {
+    const chapter = {
+      id: uid("chapter"),
+      title: "Chapter One",
+      blocks: [
+        makeParagraph(
+          "The doors opened onto a hall filled with crystal light."
+        ),
         {
-          id: "chapter-arrival",
-          title: "Chapter 1 — The Arrival",
-          status: "draft",
-          nextChapterId: "chapter-discordant",
-          scenes: [
-            { id: "scene-open", type: "narration", title: "A house full of history", text: "The Okoye estate looked peaceful from the road. Inside, every polished surface seemed to be keeping a secret.", background: "", color: "#263c2c", audio: "", autoPlayAudio: false, choices: [] },
-            { id: "scene-lexis", type: "dialogue", title: "A very deliberate entrance", character: "Lexis Azunna", characterImage: "", text: "If this family wanted a quiet arrival, they should have invited somebody else.", background: "", color: "#49312b", audio: "", autoPlayAudio: false, choices: [] },
-            { id: "scene-reveal", type: "revelation", title: "The emerald seal", text: "On the table lay an emerald signet bearing the family crest — and a name that should never have appeared there.", background: "", color: "#153d30", audio: "", autoPlayAudio: false, choices: [] },
-            { id: "scene-choice", type: "choice", title: "What should Lexis do?", text: "The room has gone silent. Every eye is on the seal.", background: "", color: "#2a3426", audio: "", autoPlayAudio: false, choices: [
-              { id: "choice-inspect", label: "Inspect the seal", targetSceneId: "scene-inspect" },
-              { id: "choice-question", label: "Ask who brought it", targetSceneId: "scene-question" }
-            ]},
-            { id: "scene-inspect", type: "narration", title: "A closer look", text: "The crest has been altered. Someone wanted the family to notice — but not understand.", background: "", color: "#273c2c", audio: "", autoPlayAudio: false, nextSceneId: "scene-end", choices: [] },
-            { id: "scene-question", type: "dialogue", title: "Nobody answers quickly", character: "Lexis Azunna", characterImage: "", text: "Interesting. Everyone has an opinion until somebody asks a direct question.", background: "", color: "#49312b", audio: "", autoPlayAudio: false, nextSceneId: "scene-end", choices: [] },
-            { id: "scene-end", type: "chapterEnd", title: "The story continues", text: "End of the sample chapter.", background: "", color: "#263c2c", audio: "", autoPlayAudio: false, choices: [] }
-          ]
+          id: uid("experience"),
+          type: "narration",
+          title: "The grand entrance",
+          text: "Every conversation paused as the guests turned to look."
         },
+        makeParagraph(
+          "Lexis stepped forward, determined not to let anyone see her surprise."
+        ),
         {
-          id: "chapter-discordant",
-          title: "Chapter 2 — Discordant Descendants",
-          status: "draft",
-          nextChapterId: "",
-          scenes: [
-            { id: "scene-c2-open", type: "narration", title: "The morning after", text: "By breakfast, the entire house had developed a different version of last night's events.", background: "", color: "#2c3b2b", audio: "", autoPlayAudio: false, choices: [] },
-            { id: "scene-c2-game", type: "game", title: "A challenge appears", text: "A character invites you to play a quick fashion challenge.", gameId: "FASHION-01", background: "", color: "#3d2e43", audio: "", autoPlayAudio: false, choices: [] },
-            { id: "scene-c2-end", type: "chapterEnd", title: "To be continued", text: "", background: "", color: "#263c2c", audio: "", autoPlayAudio: false, choices: [] }
-          ]
+          id: uid("experience"),
+          type: "dialogue",
+          title: "An unexpected greeting",
+          character: "Sirena",
+          text: "You finally decided to show up."
         }
       ]
     };
+
+    return {
+      schemaVersion: 2,
+      id: uid("story"),
+      title: "The Emerald Inheritance",
+      description: "A family story filled with ambition, secrets and unexpected choices.",
+      genre: "Fashion drama · Mystery",
+      status: "draft",
+      release: {
+        plan: "draft",
+        date: ""
+      },
+      chapters: [chapter]
+    };
   }
 
-  function notify(message) {
-    var toast = $("toast");
-    toast.textContent = message;
-    toast.classList.add("show");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toast.classList.remove("show"); }, 2400);
+  function normaliseProject(input) {
+    if (!input || typeof input !== "object") {
+      throw new Error("That file does not contain a valid project.");
+    }
+
+    const chaptersInput = Array.isArray(input.chapters)
+      ? input.chapters
+      : [];
+
+    const chapters = chaptersInput.map((chapter) => {
+      const blocksInput = Array.isArray(chapter.blocks)
+        ? chapter.blocks
+        : Array.isArray(chapter.scenes)
+          ? chapter.scenes
+          : [];
+
+      const blocks = blocksInput.map((block) => {
+        if (block.type === "paragraph") {
+          return {
+            id: block.id || uid("block"),
+            type: "paragraph",
+            text: String(block.text || "")
+          };
+        }
+
+        if (experienceDefaults[block.type]) {
+          return {
+            ...makeExperience(block.type),
+            ...block,
+            id: block.id || uid("experience")
+          };
+        }
+
+        return null;
+      }).filter(Boolean);
+
+      return {
+        id: chapter.id || uid("chapter"),
+        title: String(chapter.title || "Untitled chapter"),
+        blocks: blocks.length ? blocks : [makeParagraph("")]
+      };
+    });
+
+    const result = {
+      schemaVersion: 2,
+      id: input.id || uid("story"),
+      title: String(input.title || "Untitled story"),
+      description: String(input.description || ""),
+      genre: String(input.genre || ""),
+      status: ["draft", "review", "published"].includes(input.status)
+        ? input.status
+        : "draft",
+      release: {
+        plan: input.release && input.release.plan
+          ? input.release.plan
+          : "draft",
+        date: input.release && input.release.date
+          ? input.release.date
+          : ""
+      },
+      chapters: chapters.length ? chapters : [makeChapter("Chapter One")]
+    };
+
+    return result;
   }
 
-  function setSaveStatus(message) {
+  function setStatus(message) {
     $("saveStatus").textContent = message;
   }
 
-  function saveProject(silent) {
-    if (!project) return;
-    project.updatedAt = new Date().toISOString();
+  function saveNow() {
     try {
+      project.title = $("storyTitle").value;
+      project.description = $("storyDescription").value;
+      project.genre = $("storyGenre").value;
+      project.status = $("storyStatus").value;
+      project.release.plan = $("releasePlan").value;
+      project.release.date = $("releaseDate").value;
+
       localStorage.setItem(STORAGE_KEY, JSON.stringify(project));
-      setSaveStatus("Saved locally");
-      if (!silent) notify("Project saved in this browser.");
+      setStatus("Saved on this device");
+      return true;
     } catch (error) {
-      setSaveStatus("Save failed");
-      notify("Browser storage is full. Export a backup and remove large embedded media.");
+      setStatus("Save failed — export a backup");
+      return false;
     }
   }
 
-  function loadProject() {
-    try {
-      var saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        var parsed = JSON.parse(saved);
-        if (parsed && Array.isArray(parsed.chapters)) return parsed;
-      }
-    } catch (error) {}
-    return starterProject();
+  function scheduleSave() {
+    setStatus("Unsaved changes…");
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveNow, 350);
   }
 
-  function currentChapter() {
-    return (project.chapters || []).find(function (chapter) { return chapter.id === activeChapterId; }) || null;
+  function loadProject(input) {
+    project = normaliseProject(input);
+    activeChapterId = project.chapters[0].id;
+    selectedBlockId = project.chapters[0].blocks[0].id;
+
+    fillStoryFields();
+    renderChapters();
+    renderManuscript();
+    renderInspector();
+    renderReleaseFields();
+    saveNow();
   }
 
-  function currentScene() {
-    var chapter = currentChapter();
-    return chapter && chapter.scenes.find(function (scene) { return scene.id === activeSceneId; }) || null;
+  function fillStoryFields() {
+    $("storyTitle").value = project.title;
+    $("storyDescription").value = project.description;
+    $("storyGenre").value = project.genre;
+    $("storyStatus").value = project.status;
   }
 
-  function renderStorySelect() {
-    var select = $("storySelect");
-    select.replaceChildren();
-    var option = document.createElement("option");
-    option.value = project.id;
-    option.textContent = project.title || "Untitled story";
-    select.appendChild(option);
+  function renderReleaseFields() {
+    $("releasePlan").value = project.release.plan || "draft";
+    $("releaseDate").value = project.release.date || "";
   }
 
   function renderChapters() {
-    var list = $("chapterList");
-    list.replaceChildren();
-    $("chapterCount").textContent = project.chapters.length;
-    project.chapters.forEach(function (chapter, index) {
-      var button = document.createElement("button");
+    const list = $("chapterList");
+    list.innerHTML = "";
+
+    project.chapters.forEach((chapter, index) => {
+      const button = document.createElement("button");
+      button.className = "chapter-link" +
+        (chapter.id === activeChapterId ? " active" : "");
       button.type = "button";
-      button.className = "chapter-item" + (chapter.id === activeChapterId ? " selected" : "");
-      var title = document.createElement("strong");
-      title.textContent = chapter.title || "Untitled chapter";
-      var meta = document.createElement("small");
-      meta.textContent = chapter.scenes.length + " scenes · " + (chapter.status || "draft");
-      button.append(title, meta);
-      button.addEventListener("click", function () {
+
+      button.innerHTML =
+        '<span class="chapter-number">' +
+        String(index + 1).padStart(2, "0") +
+        '</span><span>' + escapeHtml(chapter.title) + '</span>';
+
+      button.addEventListener("click", () => {
+        saveCurrentParagraph();
         activeChapterId = chapter.id;
-        activeSceneId = chapter.scenes[0] ? chapter.scenes[0].id : null;
-        renderAll();
+        selectedBlockId = chapter.blocks[0]
+          ? chapter.blocks[0].id
+          : "";
+
+        renderChapters();
+        renderManuscript();
+        renderInspector();
+        $("currentChapterLabel").textContent = chapter.title;
+        scheduleSave();
       });
+
       list.appendChild(button);
     });
   }
 
-  function renderScenes() {
-    var chapter = currentChapter();
-    var list = $("sceneList");
-    list.replaceChildren();
-    $("activeChapterHeading").textContent = chapter ? chapter.title : "Choose a chapter";
-    $("addSceneBtn").disabled = !chapter;
-    if (!chapter) return;
-    chapter.scenes.forEach(function (scene, index) {
-      var button = document.createElement("button");
-      button.type = "button";
-      button.className = "scene-item" + (scene.id === activeSceneId ? " selected" : "");
-      var number = document.createElement("span");
-      number.className = "scene-number";
-      number.textContent = String(index + 1).padStart(2, "0");
-      var copy = document.createElement("span");
-      copy.className = "scene-item-copy";
-      var title = document.createElement("strong");
-      title.textContent = scene.title || labelType(scene.type);
-      var meta = document.createElement("small");
-      meta.textContent = labelType(scene.type);
-      copy.append(title, meta);
-      button.append(number, copy);
-      button.addEventListener("click", function () {
-        activeSceneId = scene.id;
-        renderScenes();
-        renderSceneEditor();
-      });
-      list.appendChild(button);
-    });
-  }
+  function renderManuscript() {
+    const chapter = getActiveChapter();
+    const container = $("manuscript");
 
-  function labelType(type) {
-    return ({ narration: "Narration", dialogue: "Dialogue", revelation: "Revelation", choice: "Player choice", game: "Game placement", chapterEnd: "Chapter ending" })[type] || "Scene";
-  }
-
-  function field(label, name, value, options) {
-    options = options || {};
-    var wrap = document.createElement("div");
-    if (options.span) wrap.className = "span-two";
-    var labelEl = document.createElement("label");
-    labelEl.className = "field-label";
-    labelEl.htmlFor = "field_" + name;
-    labelEl.textContent = label;
-    var control;
-    if (options.select) {
-      control = document.createElement("select");
-      options.select.forEach(function (item) {
-        var opt = document.createElement("option");
-        opt.value = item.value; opt.textContent = item.label;
-        control.appendChild(opt);
-      });
-      control.value = value || options.select[0].value;
-    } else if (options.textarea) {
-      control = document.createElement("textarea");
-      control.rows = options.rows || 4;
-      control.value = value || "";
-    } else {
-      control = document.createElement("input");
-      control.type = options.type || "text";
-      control.value = value || "";
-    }
-    control.className = "control";
-    control.id = "field_" + name;
-    if (options.placeholder) control.placeholder = options.placeholder;
-    if (options.help) {
-      var help = document.createElement("p"); help.className = "small-help"; help.textContent = options.help;
-      wrap.append(labelEl, control, help);
-    } else wrap.append(labelEl, control);
-    return { wrap: wrap, control: control };
-  }
-
-  function renderSceneEditor() {
-    var host = $("sceneEditor");
-    host.replaceChildren();
-    var chapter = currentChapter();
-    var scene = currentScene();
-    if (!chapter || !scene) {
-      host.className = "scene-editor empty-state";
-      host.innerHTML = '<span class="empty-icon">✦</span><h2>Choose a scene to edit</h2><p>Add a scene, then select it to edit its text, visuals, sound, and behaviour.</p>';
+    if (!chapter) {
+      container.innerHTML = "<p>No chapter selected.</p>";
       return;
     }
-    host.className = "scene-editor";
-    var heading = document.createElement("h2");
-    heading.textContent = "Edit scene";
-    host.appendChild(heading);
-    var grid = document.createElement("div");
-    grid.className = "editor-form-grid";
 
-    var typeField = field("Scene type", "type", scene.type, { select: [
-      { value: "narration", label: "Narration" }, { value: "dialogue", label: "Dialogue" },
-      { value: "revelation", label: "Revelation" }, { value: "choice", label: "Player choice" },
-      { value: "game", label: "Game placement" }, { value: "chapterEnd", label: "Chapter ending" }
-    ]});
-    var titleField = field("Scene title", "title", scene.title, { placeholder: "Scene title" });
-    var textField = field("Text / dialogue", "text", scene.text, { textarea: true, rows: 5, span: true, placeholder: "Write what the reader sees or hears..." });
-    var characterField = field("Character / speaker", "character", scene.character, { placeholder: "Optional character name" });
-    var portraitField = field("Character portrait URL", "characterImage", scene.characterImage, { placeholder: "https://... (optional)" });
-    var backgroundField = field("Background image URL", "background", scene.background, { placeholder: "https://... (optional)" });
-    var colorField = field("Fallback background colour", "color", scene.color || "#263c2c", { type: "color" });
-    var audioField = field("Audio URL", "audio", scene.audio, { placeholder: "https://... (optional)", help: "Use a direct audio-file URL. Browser autoplay may be blocked; controls will remain available." });
-    var gameField = field("Game ID", "gameId", scene.gameId, { placeholder: "e.g. FASHION-01" });
-    [typeField, titleField, textField, characterField, portraitField, backgroundField, colorField, audioField, gameField].forEach(function (item) { grid.appendChild(item.wrap); });
-    host.appendChild(grid);
+    $("currentChapterLabel").textContent = chapter.title;
+    $("manuscriptChapterTitle").textContent = chapter.title;
+    container.innerHTML = "";
 
-    var choicesArea = document.createElement("div");
-    choicesArea.className = "span-two";
-    var choicesLabel = document.createElement("label");
-    choicesLabel.className = "field-label";
-    choicesLabel.textContent = "Choice options (one per line: Button label | Target scene title)";
-    var choicesText = document.createElement("textarea");
-    choicesText.className = "control";
-    choicesText.rows = 4;
-    choicesText.placeholder = "Inspect the seal | A closer look\nAsk who brought it | Nobody answers";
-    choicesText.value = (scene.choices || []).map(function (choice) {
-      var target = chapter.scenes.find(function (candidate) { return candidate.id === choice.targetSceneId; });
-      return (choice.label || "") + " | " + (target ? target.title : "");
-    }).join("\n");
-    choicesArea.append(choicesLabel, choicesText);
-    host.appendChild(choicesArea);
-    var choiceHelp = document.createElement("p");
-    choiceHelp.className = "small-help";
-    choiceHelp.textContent = "Choice targets must match another scene title in this chapter. Leave the target blank to continue to the next scene.";
-    host.appendChild(choiceHelp);
+    chapter.blocks.forEach((block, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "story-block" +
+        (block.id === selectedBlockId ? " selected" : "");
+      wrapper.dataset.blockId = block.id;
 
-    var actions = document.createElement("div");
-    actions.className = "form-actions";
-    var up = makeButton("Move up", "button button-outline button-small", function () { moveScene(-1); });
-    var down = makeButton("Move down", "button button-outline button-small", function () { moveScene(1); });
-    var deleteButton = makeButton("Delete scene", "button button-outline button-small", deleteScene);
-    deleteButton.style.color = "var(--danger)";
-    var apply = makeButton("Apply scene changes", "button button-primary", function () {
-      scene.type = typeField.control.value;
-      scene.title = titleField.control.value.trim();
-      scene.text = textField.control.value;
-      scene.character = characterField.control.value.trim();
-      scene.characterImage = portraitField.control.value.trim();
-      scene.background = backgroundField.control.value.trim();
-      scene.color = colorField.control.value;
-      scene.audio = audioField.control.value.trim();
-      scene.gameId = gameField.control.value.trim();
-      if (scene.type === "choice") {
-        scene.choices = choicesText.value.split("\n").map(function (line) {
-          var parts = line.split("|");
-          var label = (parts.shift() || "").trim();
-          var targetTitle = parts.join("|").trim();
-          var target = chapter.scenes.find(function (candidate) { return candidate.id !== scene.id && candidate.title.trim().toLowerCase() === targetTitle.toLowerCase(); });
-          return { id: makeId("choice"), label: label, targetSceneId: target ? target.id : "" };
-        }).filter(function (choice) { return choice.label; });
+      if (block.type === "paragraph") {
+        const textarea = document.createElement("textarea");
+        textarea.className = "paragraph-editor";
+        textarea.value = block.text || "";
+        textarea.placeholder = "Write your story here…";
+        textarea.setAttribute("aria-label", "Story paragraph");
+
+        textarea.addEventListener("focus", () => {
+          lastFocusedParagraphId = block.id;
+          selectedBlockId = block.id;
+          updateSelectedStyles();
+          renderInspector();
+        });
+
+        textarea.addEventListener("input", () => {
+          block.text = textarea.value;
+          scheduleSave();
+        });
+
+        textarea.addEventListener("change", () => {
+          block.text = textarea.value;
+          scheduleSave();
+        });
+
+        wrapper.appendChild(textarea);
       } else {
-        scene.choices = [];
+        const card = document.createElement("div");
+        card.className = "experience-card" +
+          (block.id === selectedBlockId ? " selected" : "");
+
+        const label = experienceNames[block.type] || "Experience";
+        const summary = block.type === "game"
+          ? (block.gameUrl || "Add the game's URL in Edit.")
+          : block.type === "audio"
+            ? (block.audioUrl || block.text || "Add audio details in Edit.")
+            : block.type === "choice"
+              ? (block.options || []).map((item) => item.label).join(" / ")
+              : (block.text || "Select to configure this experience.");
+
+        card.innerHTML =
+          '<div class="experience-card-top">' +
+            '<span class="experience-type">' + escapeHtml(label) + '</span>' +
+            '<span class="experience-badge">EDITABLE</span>' +
+          '</div>' +
+          '<h3 class="experience-name">' +
+            escapeHtml(block.title || label) +
+          '</h3>' +
+          '<p class="experience-summary">' +
+            escapeHtml(summary) +
+          '</p>';
+
+        card.addEventListener("click", () => {
+          selectedBlockId = block.id;
+          renderManuscript();
+          renderInspector();
+        });
+
+        wrapper.appendChild(card);
       }
-      saveProject(true);
-      renderAll();
-      notify("Scene updated.");
-    });
-    actions.append(up, down, deleteButton, apply);
-    host.appendChild(actions);
-  }
 
-  function makeButton(text, className, handler) {
-    var button = document.createElement("button");
-    button.type = "button"; button.className = className; button.textContent = text;
-    button.addEventListener("click", handler);
-    return button;
-  }
+      const tools = document.createElement("div");
+      tools.className = "block-tools";
 
-  function moveScene(direction) {
-    var chapter = currentChapter();
-    if (!chapter) return;
-    var index = chapter.scenes.findIndex(function (scene) { return scene.id === activeSceneId; });
-    var next = index + direction;
-    if (index < 0 || next < 0 || next >= chapter.scenes.length) return;
-    var item = chapter.scenes.splice(index, 1)[0];
-    chapter.scenes.splice(next, 0, item);
-    saveProject(true); renderAll();
-  }
+      tools.innerHTML =
+        '<button type="button" data-action="select">Edit</button>' +
+        '<button type="button" data-action="insert">＋ After this</button>' +
+        '<button type="button" data-action="up" ' +
+          (index === 0 ? "disabled" : "") + '>↑ Move</button>' +
+        '<button type="button" data-action="down" ' +
+          (index === chapter.blocks.length - 1 ? "disabled" : "") +
+          '>↓ Move</button>' +
+        '<button type="button" data-action="delete">Remove</button>';
 
-  function deleteScene() {
-    var chapter = currentChapter();
-    if (!chapter) return;
-    if (!window.confirm("Delete this scene? This cannot be undone unless you have an exported backup.")) return;
-    chapter.scenes = chapter.scenes.filter(function (scene) { return scene.id !== activeSceneId; });
-    activeSceneId = chapter.scenes[0] ? chapter.scenes[0].id : null;
-    saveProject(true); renderAll(); notify("Scene deleted.");
-  }
+      tools.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (!button || button.disabled) return;
 
-  function renderAll() {
-    renderStorySelect();
-    $("storyTitle").value = project.title || "";
-    $("storyDescription").value = project.description || "";
-    $("storyGenre").value = project.genre || "";
-    $("storyStatus").value = project.status || "draft";
-    $("releaseStatus").value = project.release && project.release.status || "draft";
-    $("releaseDate").value = project.release && project.release.date || "";
-    renderChapters(); renderScenes(); renderSceneEditor();
-  }
+        event.stopPropagation();
+        selectedBlockId = block.id;
 
-  function bindStoryFields() {
-    [["storyTitle","title"],["storyDescription","description"],["storyGenre","genre"],["storyStatus","status"]].forEach(function (pair) {
-      $(pair[0]).addEventListener("change", function () {
-        project[pair[1]] = $(pair[0]).value;
-        renderStorySelect(); saveProject(true);
+        const action = button.dataset.action;
+
+        if (action === "select") {
+          renderManuscript();
+          renderInspector();
+        } else if (action === "insert") {
+          openExperienceDialog(block.id);
+        } else if (action === "up") {
+          moveBlock(block.id, -1);
+        } else if (action === "down") {
+          moveBlock(block.id, 1);
+        } else if (action === "delete") {
+          deleteBlock(block.id);
+        }
       });
+
+      wrapper.appendChild(tools);
+      container.appendChild(wrapper);
     });
-    $("releaseStatus").addEventListener("change", function () {
-      project.release = project.release || {};
-      project.release.status = this.value; saveProject(true);
+
+    updateSelectedStyles();
+  }
+
+  function updateSelectedStyles() {
+    document.querySelectorAll(".story-block").forEach((element) => {
+      element.classList.toggle(
+        "selected",
+        element.dataset.blockId === selectedBlockId
+      );
     });
-    $("releaseDate").addEventListener("change", function () {
-      project.release = project.release || {};
-      project.release.date = this.value; saveProject(true);
-    });
+  }
+
+  function saveCurrentParagraph() {
+    const chapter = getActiveChapter();
+    if (!chapter) return;
+
+    const textarea = document.querySelector(
+      '.story-block[data-block-id="' + selectedBlockId + '"] textarea'
+    );
+
+    if (textarea) {
+      const block = chapter.blocks.find(
+        (item) => item.id === selectedBlockId
+      );
+
+      if (block) block.text = textarea.value;
+    }
+  }
+
+  function addParagraph(afterId) {
+    const chapter = getActiveChapter();
+    if (!chapter) return;
+
+    saveCurrentParagraph();
+
+    const paragraph = makeParagraph("");
+    let index = chapter.blocks.findIndex((block) => block.id === afterId);
+
+    if (index < 0) {
+      chapter.blocks.push(paragraph);
+    } else {
+      chapter.blocks.splice(index + 1, 0, paragraph);
+    }
+
+    selectedBlockId = paragraph.id;
+    renderManuscript();
+    renderInspector();
+    scheduleSave();
+
+    const textarea = document.querySelector(
+      '.story-block[data-block-id="' + paragraph.id + '"] textarea'
+    );
+
+    if (textarea) textarea.focus();
+  }
+
+  function moveBlock(blockId, direction) {
+    const chapter = getActiveChapter();
+    if (!chapter) return;
+
+    const index = chapter.blocks.findIndex((block) => block.id === blockId);
+    const nextIndex = index + direction;
+
+    if (index < 0 || nextIndex < 0 || nextIndex >= chapter.blocks.length) {
+      return;
+    }
+
+    const item = chapter.blocks.splice(index, 1)[0];
+    chapter.blocks.splice(nextIndex, 0, item);
+
+    selectedBlockId = blockId;
+    renderManuscript();
+    renderInspector();
+    scheduleSave();
+  }
+
+  function deleteBlock(blockId) {
+    const chapter = getActiveChapter();
+    if (!chapter) return;
+
+    const block = chapter.blocks.find((item) => item.id === blockId);
+    if (!block) return;
+
+    if (!window.confirm("Remove this block from the chapter?")) return;
+
+    chapter.blocks = chapter.blocks.filter((item) => item.id !== blockId);
+
+    if (!chapter.blocks.length) {
+      chapter.blocks.push(makeParagraph(""));
+    }
+
+    selectedBlockId = chapter.blocks[0].id;
+    renderManuscript();
+    renderInspector();
+    scheduleSave();
   }
 
   function addChapter() {
-    var title = window.prompt("Chapter title:", "New chapter");
-    if (title === null) return;
-    var chapter = { id: makeId("chapter"), title: title.trim() || "Untitled chapter", status: "draft", nextChapterId: "", scenes: [
-      { id: makeId("scene"), type: "narration", title: "Opening scene", text: "", background: "", color: "#263c2c", audio: "", autoPlayAudio: false, choices: [] }
-    ]};
+    saveCurrentParagraph();
+
+    const chapter = makeChapter("Chapter " + (project.chapters.length + 1));
     project.chapters.push(chapter);
-    activeChapterId = chapter.id; activeSceneId = chapter.scenes[0].id;
-    saveProject(true); renderAll(); notify("Chapter added.");
+    activeChapterId = chapter.id;
+    selectedBlockId = chapter.blocks[0].id;
+
+    renderChapters();
+    renderManuscript();
+    renderInspector();
+    showPanel("writing");
+    scheduleSave();
   }
 
-  function addScene() {
-    var chapter = currentChapter();
-    if (!chapter) return;
-    var type = window.prompt("Scene type: narration, dialogue, revelation, choice, game, chapterEnd", "narration");
-    if (type === null) return;
-    type = type.trim();
-    var allowed = ["narration","dialogue","revelation","choice","game","chapterEnd"];
-    if (allowed.indexOf(type) < 0) {
-      notify("Unknown type. Using narration."); type = "narration";
+  function openExperienceDialog(afterId) {
+    if (afterId) selectedBlockId = afterId;
+
+    const dialog = $("experienceDialog");
+
+    if (typeof dialog.showModal === "function") {
+      dialog.showModal();
+    } else {
+      window.alert("Your browser does not support this dialog. Please use an updated browser.");
     }
-    var scene = { id: makeId("scene"), type: type, title: "New " + labelType(type).toLowerCase(), text: "", character: "", characterImage: "", background: "", color: "#263c2c", audio: "", autoPlayAudio: false, gameId: "", choices: [] };
-    chapter.scenes.push(scene); activeSceneId = scene.id;
-    saveProject(true); renderAll(); notify("Scene added.");
   }
 
-  function exportProject() {
-    saveProject(true);
-    var blob = new Blob([JSON.stringify(project, null, 2)], { type: "application/json" });
-    var url = URL.createObjectURL(blob);
-    var link = document.createElement("a");
-    link.href = url; link.download = (project.title || "ceeqwinn-story").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + ".json";
-    document.body.appendChild(link); link.click(); link.remove();
-    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-    notify("Project JSON exported.");
+  function insertExperience(type) {
+    const chapter = getActiveChapter();
+    const experience = makeExperience(type);
+    if (!chapter || !experience) return;
+
+    saveCurrentParagraph();
+
+    const index = chapter.blocks.findIndex(
+      (block) => block.id === selectedBlockId
+    );
+
+    chapter.blocks.splice(index < 0 ? chapter.blocks.length : index + 1, 0, experience);
+    selectedBlockId = experience.id;
+
+    $("experienceDialog").close();
+    renderManuscript();
+    renderInspector();
+    scheduleSave();
   }
 
-  function importProjectFile(file) {
+  function field(label, key, value, options) {
+    const settings = options || {};
+    const tag = settings.multiline ? "textarea" : "input";
+    const type = settings.inputType || "text";
+
+    return (
+      '<label for="field-' + key + '">' + escapeHtml(label) + '</label>' +
+      (tag === "textarea"
+        ? '<textarea id="field-' + key + '" data-field="' + key + '">' +
+          escapeHtml(value) + '</textarea>'
+        : '<input id="field-' + key + '" data-field="' + key + '" type="' +
+          type + '" value="' + escapeHtml(value) + '">')
+    );
+  }
+
+  function renderInspector() {
+    const block = getSelectedBlock();
+    const panel = $("blockInspector");
+
+    if (!block) {
+      panel.innerHTML =
+        '<div class="empty-inspector">' +
+          '<span class="empty-icon">✧</span>' +
+          '<h3>Select something to edit</h3>' +
+          '<p>Choose a paragraph or experience in your manuscript.</p>' +
+        '</div>';
+      return;
+    }
+
+    if (block.type === "paragraph") {
+      panel.innerHTML =
+        '<div class="eyebrow">MANUSCRIPT BLOCK</div>' +
+        '<h3>Story paragraph</h3>' +
+        '<p class="muted">Edit the text directly in the manuscript. Your changes are saved locally.</p>' +
+        '<div class="inspector-actions">' +
+          '<button class="button button-quiet" id="inspectorAddAfter">＋ Insert after</button>' +
+          '<button class="button button-quiet" id="inspectorDelete">Remove block</button>' +
+        '</div>';
+
+      $("inspectorAddAfter").addEventListener("click", () => {
+        openExperienceDialog(block.id);
+      });
+
+      $("inspectorDelete").addEventListener("click", () => {
+        deleteBlock(block.id);
+      });
+
+      return;
+    }
+
+    const label = experienceNames[block.type] || "Story experience";
+
+    let html =
+      '<div class="eyebrow">INLINE EXPERIENCE</div>' +
+      '<h3>' + escapeHtml(label) + '</h3>' +
+      '<p class="muted">This element belongs to the story at its current position.</p>' +
+      field("Display title", "title", block.title || "") +
+      field("Description / narration", "text", block.text || "", {
+        multiline: true
+      });
+
+    if (block.type === "dialogue") {
+      html += field("Character name", "character", block.character || "");
+    }
+
+    if (block.type === "reveal" || block.type === "image") {
+      html += field("Image URL", "imageUrl", block.imageUrl || "", {
+        inputType: "url"
+      });
+      html += '<p class="field-help">Use a direct, publicly accessible image URL. Preview images load from that address.</p>';
+    }
+
+    if (block.type === "audio") {
+      html += field("Audio URL", "audioUrl", block.audioUrl || "", {
+        inputType: "url"
+      });
+      html += '<p class="field-help">Use a direct audio file URL. This prototype does not upload audio files.</p>';
+    }
+
+    if (block.type === "game") {
+      html += field("Game URL", "gameUrl", block.gameUrl || "", {
+        inputType: "url"
+      });
+      html += '<p class="field-help">Paste the URL of your existing game. The preview provides a link; it does not embed or control the game engine.</p>';
+    }
+
+    if (block.type === "choice") {
+      const options = Array.isArray(block.options) ? block.options : [];
+
+      html += '<div class="field-label">Reader choices</div>';
+
+      options.forEach((option, index) => {
+        html +=
+          '<label for="choice-' + index + '">Choice ' + (index + 1) + '</label>' +
+          '<input id="choice-' + index + '" data-choice-label="' + index +
+          '" value="' + escapeHtml(option.label || "") + '">' +
+          '<label for="target-' + index + '">Target block ID (optional)</label>' +
+          '<input id="target-' + index + '" data-choice-target="' + index +
+          '" value="' + escapeHtml(option.target || "") + '">';
+      });
+
+      html +=
+        '<button type="button" class="button button-quiet" id="addChoiceButton">＋ Add choice</button>' +
+        '<p class="field-help">Targets are stored as IDs for now. Full branching navigation will be connected to the Reader in a later integration.</p>';
+    }
+
+    if (block.type === "chapterEnd") {
+      html +=
+        '<label for="nextChapterId">Next chapter</label>' +
+        '<select id="nextChapterId" data-field="nextChapterId">' +
+          '<option value="">Choose a chapter</option>' +
+          project.chapters.map((chapter) =>
+            '<option value="' + escapeHtml(chapter.id) + '"' +
+            (block.nextChapterId === chapter.id ? " selected" : "") + '>' +
+            escapeHtml(chapter.title) + '</option>'
+          ).join("") +
+        '</select>';
+    }
+
+    html +=
+      '<div class="inspector-actions">' +
+        '<button type="button" class="button button-gold" id="saveExperienceButton">Save changes</button>' +
+        '<button type="button" class="button button-quiet" id="removeExperienceButton">Remove</button>' +
+      '</div>';
+
+    panel.innerHTML = html;
+
+    const addChoiceButton = $("addChoiceButton");
+
+    if (addChoiceButton) {
+      addChoiceButton.addEventListener("click", () => {
+        readExperienceFields(block);
+        block.options = block.options || [];
+        block.options.push({
+          label: "New choice",
+          target: ""
+        });
+        renderInspector();
+        scheduleSave();
+      });
+    }
+
+    $("saveExperienceButton").addEventListener("click", () => {
+      readExperienceFields(block);
+      renderManuscript();
+      renderInspector();
+      scheduleSave();
+    });
+
+    $("removeExperienceButton").addEventListener("click", () => {
+      deleteBlock(block.id);
+    });
+  }
+
+  function readExperienceFields(block) {
+    document.querySelectorAll("#blockInspector [data-field]").forEach((element) => {
+      block[element.dataset.field] = element.value;
+    });
+
+    document.querySelectorAll("#blockInspector [data-choice-label]").forEach((element) => {
+      const index = Number(element.dataset.choiceLabel);
+      block.options = block.options || [];
+
+      if (block.options[index]) {
+        block.options[index].label = element.value;
+      }
+    });
+
+    document.querySelectorAll("#blockInspector [data-choice-target]").forEach((element) => {
+      const index = Number(element.dataset.choiceTarget);
+      block.options = block.options || [];
+
+      if (block.options[index]) {
+        block.options[index].target = element.value;
+      }
+    });
+  }
+
+  function showPanel(name) {
+    $("overviewPanel").hidden = name !== "overview";
+    $("writingPanel").hidden = name !== "writing";
+    $("releasePanel").hidden = name !== "release";
+
+    $("overviewNav").classList.toggle("active", name === "overview");
+    $("chaptersNav").classList.toggle("active", name === "writing");
+    $("releaseNav").classList.toggle("active", name === "release");
+
+    if (name === "writing") {
+      renderChapters();
+      renderManuscript();
+      renderInspector();
+    }
+  }
+
+  function makeExport() {
+    saveCurrentParagraph();
+    saveNow();
+
+    const data = JSON.stringify(project, null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    const baseName = (project.title || "ceeqwinn-story")
+      .replace(/[^a-z0-9_-]+/gi, "-")
+      .replace(/^-+|-+$/g, "")
+      .toLowerCase() || "ceeqwinn-story";
+
+    link.href = url;
+    link.download = baseName + ".json";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function importFile(file) {
     if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function () {
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
       try {
-        var imported = JSON.parse(reader.result);
-        if (!imported || !Array.isArray(imported.chapters) || typeof imported.title !== "string") throw new Error("Project file needs a title and chapters array.");
-        if (!window.confirm("Replace the current workspace with the imported project? Export a backup first if needed.")) return;
-        project = imported;
-        project.id = project.id || makeId("story");
-        project.release = project.release || { status: "draft", date: "" };
-        activeChapterId = project.chapters[0] ? project.chapters[0].id : null;
-        activeSceneId = project.chapters[0] && project.chapters[0].scenes[0] ? project.chapters[0].scenes[0].id : null;
-        saveProject(true); renderAll(); notify("Project imported.");
-      } catch (error) { window.alert("Could not import this project: " + error.message); }
+        const input = JSON.parse(reader.result);
+
+        if (!window.confirm(
+          "Import this project and replace the current workspace? Export a backup first if you need one."
+        )) return;
+
+        loadProject(input);
+        showPanel("overview");
+        window.alert("Project imported into this browser.");
+      } catch (error) {
+        window.alert("Import failed. Please choose a valid project JSON file.");
+      }
+
+      $("importFile").value = "";
     };
+
     reader.readAsText(file);
   }
 
   function openPreview() {
-    saveProject(true);
-    var modal = $("previewModal");
-    modal.hidden = false; modal.setAttribute("aria-hidden", "false");
-    var chapter = currentChapter() || project.chapters[0];
-    if (chapter) theatre.start(chapter.id);
+    saveCurrentParagraph();
+    saveNow();
+
+    const chapter = getActiveChapter();
+    if (!chapter) return;
+
+    previewState = {
+      chapter: chapter,
+      project: project
+    };
+
+    $("previewStoryTitle").textContent = project.title || "Your story";
+
+    if (window.CeeqwinnTheatre) {
+      window.CeeqwinnTheatre.render(
+        $("theatrePreview"),
+        project,
+        chapter
+      );
+    } else {
+      $("theatrePreview").textContent = "Theatre preview engine is unavailable.";
+    }
+
+    $("previewDialog").showModal();
   }
 
-  function closePreview() {
-    $("previewModal").hidden = true;
-    $("previewModal").setAttribute("aria-hidden", "true");
+  function bindEvents() {
+    ["storyTitle", "storyDescription", "storyGenre", "storyStatus"].forEach((id) => {
+      $(id).addEventListener("input", () => {
+        project.title = $("storyTitle").value;
+        project.description = $("storyDescription").value;
+        project.genre = $("storyGenre").value;
+        project.status = $("storyStatus").value;
+        scheduleSave();
+      });
+
+      $(id).addEventListener("change", scheduleSave);
+    });
+
+    $("releasePlan").addEventListener("change", () => {
+      project.release.plan = $("releasePlan").value;
+      scheduleSave();
+    });
+
+    $("releaseDate").addEventListener("change", () => {
+      project.release.date = $("releaseDate").value;
+      scheduleSave();
+    });
+
+    $("saveButton").addEventListener("click", saveNow);
+    $("exportButton").addEventListener("click", makeExport);
+    $("previewButton").addEventListener("click", openPreview);
+    $("previewChapterButton").addEventListener("click", openPreview);
+    $("closePreviewButton").addEventListener("click", () => {
+      $("previewDialog").close();
+    });
+
+    $("overviewNav").addEventListener("click", () => showPanel("overview"));
+    $("chaptersNav").addEventListener("click", () => showPanel("writing"));
+    $("releaseNav").addEventListener("click", () => showPanel("release"));
+    $("startWritingButton").addEventListener("click", () => showPanel("writing"));
+    $("backToOverview").addEventListener("click", () => showPanel("overview"));
+
+    $("addChapterButton").addEventListener("click", addChapter);
+
+    $("addParagraphButton").addEventListener("click", () => {
+      addParagraph(selectedBlockId);
+    });
+
+    $("bottomAddParagraph").addEventListener("click", () => {
+      const chapter = getActiveChapter();
+      addParagraph(chapter && chapter.blocks.length
+        ? chapter.blocks[chapter.blocks.length - 1].id
+        : "");
+    });
+
+    $("insertExperienceButton").addEventListener("click", () => {
+      openExperienceDialog(selectedBlockId);
+    });
+
+    document.querySelectorAll(".experience-option").forEach((button) => {
+      button.addEventListener("click", () => {
+        insertExperience(button.dataset.type);
+      });
+    });
+
+    $("editTab").addEventListener("click", () => {
+      $("blockInspector").hidden = false;
+      $("previewInspector").hidden = true;
+      $("editTab").classList.add("active");
+      $("previewTab").classList.remove("active");
+    });
+
+    $("previewTab").addEventListener("click", () => {
+      $("blockInspector").hidden = true;
+      $("previewInspector").hidden = false;
+      $("previewTab").classList.add("active");
+      $("editTab").classList.remove("active");
+    });
+
+    $("saveReleaseButton").addEventListener("click", () => {
+      project.release.plan = $("releasePlan").value;
+      project.release.date = $("releaseDate").value;
+      saveNow();
+      window.alert("Release plan saved in your local project. Nothing has been published.");
+    });
+
+    $("importFile").addEventListener("change", (event) => {
+      importFile(event.target.files[0]);
+    });
+
+    const importButton = document.createElement("button");
+    importButton.type = "button";
+    importButton.className = "button button-quiet";
+    importButton.textContent = "Import";
+    importButton.addEventListener("click", () => $("importFile").click());
+    $("exportButton").insertAdjacentElement("afterend", importButton);
+
+    window.addEventListener("beforeunload", () => {
+      saveCurrentParagraph();
+      saveNow();
+    });
   }
 
-  function init() {
-    project = loadProject();
-    if (!project.chapters.length) project.chapters.push({ id: makeId("chapter"), title: "Chapter 1", status: "draft", nextChapterId: "", scenes: [] });
+  function start() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      if (saved) {
+        project = normaliseProject(JSON.parse(saved));
+      } else {
+        project = createStarterProject();
+      }
+    } catch (error) {
+      project = createStarterProject();
+    }
+
     activeChapterId = project.chapters[0].id;
-    activeSceneId = project.chapters[0].scenes[0] ? project.chapters[0].scenes[0].id : null;
-    theatre = new window.CeeqwinnTheatreEngine({ root: $("theatreRoot"), getProject: function () { return project; } });
-    bindStoryFields();
-    $("saveBtn").addEventListener("click", function () { saveProject(false); });
-    $("exportBtn").addEventListener("click", exportProject);
-    $("newStoryBtn").addEventListener("click", function () {
-      if (!window.confirm("Start a new story project? Export the current project first if you want a separate backup.")) return;
-      project = { schemaVersion: 1, id: makeId("story"), title: "Untitled story", description: "", genre: "", status: "draft", release: { status: "draft", date: "" }, chapters: [] };
-      var chapter = { id: makeId("chapter"), title: "Chapter 1", status: "draft", nextChapterId: "", scenes: [{ id: makeId("scene"), type: "narration", title: "Opening scene", text: "", color: "#263c2c", background: "", audio: "", choices: [] }] };
-      project.chapters.push(chapter); activeChapterId = chapter.id; activeSceneId = chapter.scenes[0].id;
-      saveProject(true); renderAll(); notify("New story project created.");
-    });
-    $("addChapterBtn").addEventListener("click", addChapter);
-    $("addSceneBtn").addEventListener("click", addScene);
-    $("previewBtn").addEventListener("click", openPreview);
-    $("closePreviewBtn").addEventListener("click", closePreview);
-    $("restartPreviewBtn").addEventListener("click", function () { var chapter = currentChapter() || project.chapters[0]; if (chapter) theatre.start(chapter.id); });
-    document.querySelectorAll("[data-close-preview]").forEach(function (el) { el.addEventListener("click", closePreview); });
-    $("importBtn").addEventListener("click", function () { $("importFile").click(); });
-    $("importFile").addEventListener("change", function () { importProjectFile(this.files[0]); this.value = ""; });
-    $("resetBtn").addEventListener("click", function () {
-      if (!window.confirm("Replace the current browser draft with the original sample project? Export first if needed.")) return;
-      project = starterProject(); activeChapterId = project.chapters[0].id; activeSceneId = project.chapters[0].scenes[0].id;
-      saveProject(true); renderAll(); notify("Sample project restored.");
-    });
-    document.addEventListener("keydown", function (event) { if (event.key === "Escape" && !$("previewModal").hidden) closePreview(); });
-    renderAll();
-    saveProject(true);
+    selectedBlockId = project.chapters[0].blocks[0].id;
+
+    fillStoryFields();
+    renderReleaseFields();
+    renderChapters();
+    renderManuscript();
+    renderInspector();
+    bindEvents();
+    saveNow();
+    showPanel("overview");
   }
 
-  document.addEventListener("DOMContentLoaded", init);
+  start();
 })();
