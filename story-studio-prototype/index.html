@@ -1,129 +1,192 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#101510">
-  <title>CEEQWINN Story & Theatre Studio — Prototype</title>
-  <link rel="stylesheet" href="css/studio.css">
+  <meta name="theme-color" content="#171512">
+  <title>CEEQWINN Story & Theatre Studio</title>
+  <link rel="stylesheet" href="studio.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#" aria-label="CEEQWINN Studio home">
+    <a class="brand" href="index.html">
       <span class="brand-mark">C</span>
       <span><strong>CEEQWINN</strong><small>STORY & THEATRE STUDIO</small></span>
     </a>
+
     <div class="top-actions">
-      <span id="saveStatus" class="save-status" role="status">Local draft</span>
-      <button id="saveBtn" class="button button-quiet" type="button">Save</button>
-      <button id="exportBtn" class="button button-quiet" type="button">Export project</button>
-      <button id="previewBtn" class="button button-primary" type="button">Preview theatre ↗</button>
+      <span id="saveStatus" class="save-status">Local draft</span>
+      <button id="saveButton" class="button button-quiet">Save</button>
+      <button id="exportButton" class="button button-quiet">Export</button>
+      <button id="previewButton" class="button button-gold">Preview story ↗</button>
     </div>
   </header>
 
-  <main class="app-shell">
+  <div class="app-layout">
     <aside class="sidebar">
-      <div class="side-heading">
-        <span class="eyebrow">WORKSPACE</span>
-        <button id="newStoryBtn" class="icon-button" type="button" aria-label="Create new story" title="Create new story">＋</button>
+      <div class="sidebar-heading">YOUR STORY</div>
+      <button id="overviewNav" class="nav-item active">◈ <span>Story overview</span></button>
+      <button id="chaptersNav" class="nav-item">▤ <span>Chapters & scenes</span></button>
+      <button id="releaseNav" class="nav-item">◇ <span>Release settings</span></button>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-heading">CHAPTERS</div>
+      <div id="chapterList" class="chapter-list"></div>
+      <button id="addChapterButton" class="add-chapter">＋ Add chapter</button>
+
+      <div class="sidebar-bottom">
+        <span class="status-dot"></span>
+        <span>Saved on this device</span>
       </div>
-      <label class="field-label" for="storySelect">Story project</label>
-      <select id="storySelect" class="control"></select>
-      <nav class="side-nav" aria-label="Studio sections">
-        <a class="nav-link active" href="#storyPanel">Story overview</a>
-        <a class="nav-link" href="#chapterPanel">Chapters & scenes</a>
-        <a class="nav-link" href="#publishPanel">Release settings</a>
-      </nav>
-      <div class="side-note">
-        <span class="note-icon">✦</span>
-        <strong>Prototype workspace</strong>
-        <p>Your drafts are saved in this browser. Export a project backup before clearing browser data or moving devices.</p>
-      </div>
-      <button id="importBtn" class="button button-outline full" type="button">Import project JSON</button>
-      <input id="importFile" type="file" accept=".json,application/json" hidden>
-      <button id="resetBtn" class="text-button" type="button">Restore sample project</button>
     </aside>
 
-    <section class="workspace">
-      <section id="storyPanel" class="panel hero-panel">
-        <div class="panel-kicker">YOUR STORY WORLD</div>
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <label class="field-label" for="storyTitle">Story title</label>
-            <input id="storyTitle" class="control title-control" maxlength="120" placeholder="Give your story a title">
-            <label class="field-label" for="storyDescription">Short description</label>
-            <textarea id="storyDescription" class="control" rows="3" placeholder="What is this story about?"></textarea>
-            <div class="inline-fields">
-              <div>
-                <label class="field-label" for="storyGenre">Genre / mood</label>
-                <input id="storyGenre" class="control" placeholder="Fashion drama, mystery...">
-              </div>
-              <div>
-                <label class="field-label" for="storyStatus">Project status</label>
-                <select id="storyStatus" class="control">
-                  <option value="draft">Draft</option>
-                  <option value="review">Ready for review</option>
-                  <option value="published">Published (label only)</option>
-                </select>
-              </div>
+    <main class="main-area">
+      <section id="overviewPanel" class="overview-panel">
+        <div class="eyebrow">YOUR STORY WORLD</div>
+        <h1>Make room for<br><em>your imagination.</em></h1>
+        <p class="intro">Your stories, your characters, your world. Write naturally, then add theatre, games and interactive moments wherever the story needs them.</p>
+
+        <div class="overview-card">
+          <label for="storyTitle">Story title</label>
+          <input id="storyTitle" class="large-input" placeholder="Give your story a name">
+
+          <label for="storyDescription">A little about this story</label>
+          <textarea id="storyDescription" rows="3" placeholder="What is this story about?"></textarea>
+
+          <div class="two-fields">
+            <div>
+              <label for="storyGenre">Genre / mood</label>
+              <input id="storyGenre" placeholder="Fantasy, drama, comedy...">
+            </div>
+            <div>
+              <label for="storyStatus">Project status</label>
+              <select id="storyStatus">
+                <option value="draft">Draft</option>
+                <option value="review">Ready for review</option>
+                <option value="published">Published (label only)</option>
+              </select>
             </div>
           </div>
-          <div class="hero-art">
-            <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
-            <div class="art-gem">✧</div>
-            <span>STORIES THAT MOVE</span>
+
+          <button id="startWritingButton" class="button button-gold">Open writing room →</button>
+        </div>
+
+        <div class="note-card">
+          <span class="note-symbol">✦</span>
+          <div>
+            <strong>Your story stays yours.</strong>
+            <p>Drafts save in this browser. Export a backup when you want to move your project to another device.</p>
           </div>
         </div>
       </section>
 
-      <section id="chapterPanel" class="panel">
-        <div class="section-heading">
-          <div><div class="panel-kicker">BUILD THE EXPERIENCE</div><h1>Chapters & scenes</h1><p class="muted">Arrange scenes in the order your audience experiences them.</p></div>
-          <button id="addChapterBtn" class="button button-outline" type="button">＋ Add chapter</button>
+      <section id="writingPanel" class="writing-panel" hidden>
+        <div class="writing-toolbar">
+          <button id="backToOverview" class="text-button">← Story overview</button>
+          <span class="toolbar-separator">/</span>
+          <span id="currentChapterLabel">Chapter 1</span>
+          <div class="toolbar-spacer"></div>
+          <button id="addParagraphButton" class="button button-quiet">＋ Paragraph</button>
+          <button id="insertExperienceButton" class="button button-gold">＋ Insert experience</button>
         </div>
-        <div class="editor-grid">
-          <div class="chapter-column">
-            <div class="subheading"><strong>Chapters</strong><span id="chapterCount" class="count-pill">0</span></div>
-            <div id="chapterList" class="chapter-list"></div>
-          </div>
-          <div class="scene-column">
-            <div class="subheading"><strong id="activeChapterHeading">Choose a chapter</strong><button id="addSceneBtn" class="button button-small button-primary" type="button">＋ Add scene</button></div>
-            <div id="sceneList" class="scene-list"></div>
-            <div id="sceneEditor" class="scene-editor empty-state">
-              <span class="empty-icon">✦</span><h2>Choose a scene to edit</h2><p>Add a scene, then select it to edit its text, visuals, sound, and behaviour.</p>
+
+        <div class="writing-grid">
+          <div class="manuscript-column">
+            <div class="manuscript-heading">
+              <div class="eyebrow">THE WRITING ROOM</div>
+              <h2 id="manuscriptChapterTitle">Chapter One</h2>
+              <p>Write your story. Select any block to edit it or add an experience after it.</p>
             </div>
+
+            <div id="manuscript" class="manuscript"></div>
+
+            <button id="bottomAddParagraph" class="add-paragraph-wide">＋ Continue writing</button>
+            <p class="manuscript-footnote">Your words are the heart of the story. Theatre and games fit around them.</p>
           </div>
+
+          <aside class="inspector">
+            <div class="inspector-tabs">
+              <button id="editTab" class="inspector-tab active">Edit</button>
+              <button id="previewTab" class="inspector-tab">Preview</button>
+            </div>
+
+            <div id="blockInspector" class="inspector-content">
+              <div class="empty-inspector">
+                <span class="empty-icon">✧</span>
+                <h3>Select something to edit</h3>
+                <p>Choose a paragraph or experience in your manuscript.</p>
+              </div>
+            </div>
+
+            <div id="previewInspector" class="inspector-content" hidden>
+              <div class="eyebrow">READER VIEW</div>
+              <h3>Preview your story</h3>
+              <p class="muted">See the chapter as a reader might experience it.</p>
+              <button id="previewChapterButton" class="button button-gold button-full">Play chapter ↗</button>
+            </div>
+          </aside>
         </div>
       </section>
 
-      <section id="publishPanel" class="panel">
-        <div class="section-heading">
-          <div><div class="panel-kicker">PLAN A RELEASE</div><h1>Release settings</h1><p class="muted">This prototype stores release details only. It does not publish to your live website.</p></div>
-          <span class="status-dot">Not connected to live publishing</span>
-        </div>
-        <div class="release-grid">
-          <div><label class="field-label" for="releaseStatus">Release plan</label><select id="releaseStatus" class="control"><option value="draft">Keep as draft</option><option value="review">Ready for review</option><option value="scheduled">Schedule (metadata only)</option></select></div>
-          <div><label class="field-label" for="releaseDate">Planned date and time</label><input id="releaseDate" class="control" type="datetime-local"></div>
-          <div class="release-help"><strong>What this does today</strong><p>It saves the intended release status and date inside your project file. A later integration must perform the actual release at that time.</p></div>
+      <section id="releasePanel" class="release-panel" hidden>
+        <div class="eyebrow">WHEN YOUR STORY IS READY</div>
+        <h1>Release settings</h1>
+        <p class="intro">Plan the next step for your story. These settings are saved in the project; they do not publish anything live yet.</p>
+
+        <div class="overview-card">
+          <label for="releasePlan">Release plan</label>
+          <select id="releasePlan">
+            <option value="draft">Keep as draft</option>
+            <option value="review">Ready for review</option>
+            <option value="scheduled">Schedule (metadata only)</option>
+          </select>
+
+          <label for="releaseDate">Planned date and time</label>
+          <input id="releaseDate" type="datetime-local">
+
+          <p class="muted">Actual publishing and scheduling require a later connection to your website. Nothing goes live from this panel.</p>
+          <button id="saveReleaseButton" class="button button-gold">Save release plan</button>
         </div>
       </section>
-      <footer class="footer">CEEQWINN Story & Theatre Studio · Local prototype · Vanilla HTML, CSS & JavaScript</footer>
-    </section>
-  </main>
-
-  <div id="previewModal" class="modal" hidden aria-hidden="true">
-    <div class="modal-backdrop" data-close-preview></div>
-    <section class="preview-window" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
-      <header class="preview-topbar">
-        <div><span class="eyebrow">READER PREVIEW</span><h2 id="previewTitle">Theatre preview</h2></div>
-        <div class="preview-actions"><button id="restartPreviewBtn" class="button button-quiet" type="button">Restart</button><button id="closePreviewBtn" class="icon-button" type="button" aria-label="Close preview">×</button></div>
-      </header>
-      <div id="theatreRoot" class="theatre-root"></div>
-    </section>
+    </main>
   </div>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="js/theatre-engine.js"></script>
-  <script src="js/studio.js"></script>
+  <dialog id="experienceDialog" class="experience-dialog">
+    <form method="dialog" class="dialog-header">
+      <div>
+        <div class="eyebrow">ADD TO YOUR STORY</div>
+        <h2>What happens here?</h2>
+      </div>
+      <button class="close-button" aria-label="Close">×</button>
+    </form>
+    <p class="muted">Choose the kind of experience you want to insert after the selected block.</p>
+
+    <div class="experience-options">
+      <button class="experience-option" data-type="narration"><span>✦</span><strong>Narration</strong><small>A cinematic story beat</small></button>
+      <button class="experience-option" data-type="dialogue"><span>❝</span><strong>Dialogue</strong><small>A character speaks</small></button>
+      <button class="experience-option" data-type="reveal"><span>◇</span><strong>Visual reveal</strong><small>Reveal a character or moment</small></button>
+      <button class="experience-option" data-type="choice"><span>⑂</span><strong>Reader choice</strong><small>Let the reader decide</small></button>
+      <button class="experience-option" data-type="game"><span>▣</span><strong>Launch a game</strong><small>Connect an existing game URL</small></button>
+      <button class="experience-option" data-type="audio"><span>♫</span><strong>Audio</strong><small>Add a sound or audio URL</small></button>
+      <button class="experience-option" data-type="image"><span>▧</span><strong>Image</strong><small>Add a visual to the story</small></button>
+      <button class="experience-option" data-type="chapterEnd"><span>→</span><strong>Chapter transition</strong><small>Continue to another chapter</small></button>
+    </div>
+  </dialog>
+
+  <dialog id="previewDialog" class="preview-dialog">
+    <div class="preview-dialog-header">
+      <div>
+        <div class="eyebrow">THE READER EXPERIENCE</div>
+        <h2 id="previewStoryTitle">Your story</h2>
+      </div>
+      <button id="closePreviewButton" class="close-button" aria-label="Close preview">×</button>
+    </div>
+    <div id="theatrePreview" class="theatre-preview"></div>
+  </dialog>
+
+  <input id="importFile" type="file" accept=".json,application/json" hidden>
+
+  <script src="theatre-engine.js"></script>
+  <script src="studio.js"></script>
 </body>
 </html>
