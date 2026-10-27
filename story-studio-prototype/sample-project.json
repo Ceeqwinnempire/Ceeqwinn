@@ -1,146 +1,86 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "id": "emerald-inheritance-demo",
   "title": "The Emerald Inheritance",
-  "description": "A family legacy, a new arrival, and secrets that refuse to stay quiet.",
+  "description": "A family drama of ambition, secrets, fashion and unexpected choices.",
   "genre": "Fashion drama · Mystery",
   "status": "draft",
   "release": {
-    "status": "draft",
+    "plan": "draft",
     "date": ""
   },
   "chapters": [
     {
-      "id": "chapter-arrival",
-      "title": "Chapter 1 — The Arrival",
-      "status": "draft",
-      "nextChapterId": "chapter-discordant",
-      "scenes": [
+      "id": "chapter-one",
+      "title": "The Grand Entrance",
+      "blocks": [
         {
-          "id": "scene-open",
+          "id": "paragraph-one",
+          "type": "paragraph",
+          "text": "The grand doors opened, revealing a hall illuminated by crystal chandeliers. Conversations softened as the guests turned toward the entrance."
+        },
+        {
+          "id": "entrance-narration",
           "type": "narration",
-          "title": "A house full of history",
-          "text": "The Okoye estate looked peaceful from the road. Inside, every polished surface seemed to be keeping a secret.",
-          "background": "",
-          "color": "#263c2c",
-          "audio": "",
-          "choices": []
+          "title": "Every eye turns",
+          "text": "For one suspended moment, the entire room seemed to hold its breath."
         },
         {
-          "id": "scene-lexis",
+          "id": "paragraph-two",
+          "type": "paragraph",
+          "text": "Lexis stepped forward. Her emerald dress caught the light, but she kept her attention on the faces waiting across the hall."
+        },
+        {
+          "id": "sirena-dialogue",
           "type": "dialogue",
-          "title": "A very deliberate entrance",
-          "character": "Lexis Azunna",
-          "characterImage": "",
-          "text": "If this family wanted a quiet arrival, they should have invited somebody else.",
-          "background": "",
-          "color": "#49312b",
-          "audio": "",
-          "choices": []
+          "title": "An unexpected greeting",
+          "character": "Sirena",
+          "text": "You finally decided to show up."
         },
         {
-          "id": "scene-reveal",
-          "type": "revelation",
-          "title": "The emerald seal",
-          "text": "On the table lay an emerald signet bearing the family crest — and a name that should never have appeared there.",
-          "background": "",
-          "color": "#153d30",
-          "audio": "",
-          "choices": []
-        },
-        {
-          "id": "scene-choice",
+          "id": "reader-choice",
           "type": "choice",
-          "title": "What should Lexis do?",
-          "text": "The room has gone silent. Every eye is on the seal.",
-          "background": "",
-          "color": "#2a3426",
-          "audio": "",
-          "choices": [
+          "title": "How will Lexis respond?",
+          "text": "The room waits to see what she will do.",
+          "options": [
             {
-              "id": "choice-inspect",
-              "label": "Inspect the seal",
-              "targetSceneId": "scene-inspect"
+              "label": "Answer with confidence",
+              "target": "confident-response"
             },
             {
-              "id": "choice-question",
-              "label": "Ask who brought it",
-              "targetSceneId": "scene-question"
+              "label": "Stay silent and observe",
+              "target": "silent-response"
             }
           ]
         },
         {
-          "id": "scene-inspect",
-          "type": "narration",
-          "title": "A closer look",
-          "text": "The crest has been altered. Someone wanted the family to notice — but not understand.",
-          "background": "",
-          "color": "#273c2c",
-          "audio": "",
-          "choices": [],
-          "nextSceneId": "scene-end"
-        },
-        {
-          "id": "scene-question",
-          "type": "dialogue",
-          "title": "Nobody answers quickly",
-          "character": "Lexis Azunna",
-          "characterImage": "",
-          "text": "Interesting. Everyone has an opinion until somebody asks a direct question.",
-          "background": "",
-          "color": "#49312b",
-          "audio": "",
-          "choices": [],
-          "nextSceneId": "scene-end"
-        },
-        {
-          "id": "scene-end",
-          "type": "chapterEnd",
-          "title": "The story continues",
-          "text": "End of the sample chapter.",
-          "background": "",
-          "color": "#263c2c",
-          "audio": "",
-          "choices": []
+          "id": "paragraph-three",
+          "type": "paragraph",
+          "text": "Whatever happened next, Lexis knew that tonight would not be forgotten."
         }
       ]
     },
     {
-      "id": "chapter-discordant",
-      "title": "Chapter 2 — Discordant Descendants",
-      "status": "draft",
-      "nextChapterId": "",
-      "scenes": [
+      "id": "chapter-two",
+      "title": "Behind the Smile",
+      "blocks": [
         {
-          "id": "scene-c2-open",
-          "type": "narration",
-          "title": "The morning after",
-          "text": "By breakfast, the entire house had developed a different version of last night's events.",
-          "background": "",
-          "color": "#2c3b2b",
-          "audio": "",
-          "choices": []
+          "id": "chapter-two-opening",
+          "type": "paragraph",
+          "text": "Behind the music and polished smiles, quiet conversations were beginning to reveal a different story."
         },
         {
-          "id": "scene-c2-game",
-          "type": "game",
-          "title": "A challenge appears",
-          "text": "A character invites you to play a quick fashion challenge.",
-          "gameId": "FASHION-01",
-          "background": "",
-          "color": "#3d2e43",
-          "audio": "",
-          "choices": []
+          "id": "reveal-example",
+          "type": "reveal",
+          "title": "A hidden detail",
+          "text": "Add an image URL and change this text to create a visual reveal."
         },
         {
-          "id": "scene-c2-end",
+          "id": "chapter-two-ending",
           "type": "chapterEnd",
-          "title": "To be continued",
-          "text": "",
-          "background": "",
-          "color": "#263c2c",
-          "audio": "",
-          "choices": []
+          "title": "The story continues",
+          "text": "Continue to the next chapter when you're ready.",
+          "nextChapterId": ""
         }
       ]
     }
