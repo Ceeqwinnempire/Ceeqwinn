@@ -1,215 +1,194 @@
+
 (function () {
   "use strict";
 
-  function element(tag, className, text) {
-    const node = document.createElement(tag);
-
-    if (className) node.className = className;
-    if (text !== undefined) node.textContent = text;
-
-    return node;
+  function node(tag, className, text) {
+    const item = document.createElement(tag);
+    if (className) item.className = className;
+    if (text !== undefined) item.textContent = String(text);
+    return item;
   }
 
-  function validWebUrl(value) {
+  function safeUrl(value) {
     const raw = String(value || "").trim();
-
     if (!raw) return "";
-
     try {
-      const parsed = new URL(raw, window.location.href);
-
-      return ["http:", "https:"].includes(parsed.protocol)
-        ? parsed.href
-        : "";
-    } catch (error) {
-      return "";
-    }
+      const url = new URL(raw, window.location.href);
+      if (["http:", "https:"].includes(url.protocol)) return url.href;
+      if (url.protocol === "data:" && /^data:image\//i.test(raw)) return raw;
+    } catch (error) {}
+    return "";
   }
 
-  function addExperience(container, block, project, chapter) {
-    const card = element("section", "reader-experience");
-    const title = element(
-      "h3",
-      "",
-      block.title || "Story experience"
-    );
+  function appendImage(card, block) {
+    const url = safeUrl(block.imageUrl);
+    if (!url) {
+      card.appendChild(node("p", "preview-note", "Add a valid image URL in the Edit panel."));
+      return;
+    }
+    const image = node("img");
+    image.src = url;
+    image.alt = block.title || "Story illustration";
+    image.loading = "lazy";
+    image.addEventListener("error", function () {
+      image.replaceWith(node("p", "preview-note", "This image could not be loaded. Check the image URL."));
+    });
+    card.appendChild(image);
+  }
 
+  function appendChoice(card, block, project, options) {
+    const choices = node("div", "reader-choice");
+    const list = Array.isArray(block.options) ? block.options : [];
+    if (!list.length) {
+      card.appendChild(node("p", "preview-note", "Add at least one choice in the Edit panel."));
+      return;
+    }
+
+    list.forEach(function (option) {
+      const button = node("button", "", option.label || "Continue");
+      button.type = "button";
+      button.addEventListener("click", function () {
+        if (button.disabled) return;
+        choices.querySelectorAll("button").forEach(function (other) {
+          other.disabled = true;
+        });
+        button.textContent = "Selected: " + (option.label || "Continue");
+
+        const target = project.chapters.find(function (chapter) {
+          return chapter.id === option.target || chapter.title === option.target;
+        });
+
+        if (target && typeof options.onNavigate === "function") {
+          const continueButton = node("button", "reader-chapter-link", "Continue to " + target.title + " →");
+          continueButton.addEventListener("click", function () {
+            options.onNavigate(target.id);
+          });
+          choices.appendChild(continueButton);
+        } else {
+          choices.appendChild(node("p", "preview-note",
+            "Your choice: " + (option.label || "Continue") +
+            (option.target ? ". Target: " + option.target : "") +
+            ". This selection is shown in this reading session."));
+        }
+
+        if (typeof options.onChoice === "function") {
+          options.onChoice(block, option);
+        }
+      });
+      choices.appendChild(button);
+    });
+
+    card.appendChild(choices);
+  }
+
+  function appendExperience(container, block, project, options) {
+    const card = node("section", "reader-experience");
+    card.dataset.blockId = block.id || "";
+    card.dataset.experienceType = block.type || "";
+
+    const title = node("h3", "", block.title || defaultTitle(block.type));
     card.appendChild(title);
 
     if (block.type === "dialogue" && block.character) {
-      const speaker = element("p", "preview-note", block.character);
-      card.appendChild(speaker);
+      card.appendChild(node("p", "preview-note", block.character));
     }
 
-    if (block.text) {
-      card.appendChild(element("p", "", block.text));
-    }
+    if (block.text) card.appendChild(node("p", "reader-prose", block.text));
 
     if (block.type === "image" || block.type === "reveal") {
-      const url = validWebUrl(block.imageUrl);
-
-      if (url) {
-        const image = document.createElement("img");
-        image.src = url;
-        image.alt = block.title || "Story illustration";
-        image.loading = "lazy";
-        image.referrerPolicy = "no-referrer";
-        image.addEventListener("error", () => {
-          image.replaceWith(element(
-            "p",
-            "preview-note",
-            "This image could not be loaded. Check the image URL."
-          ));
-        });
-        card.appendChild(image);
-      }
+      appendImage(card, block);
     }
 
     if (block.type === "audio") {
-      const url = validWebUrl(block.audioUrl);
-
+      const url = safeUrl(block.audioUrl);
       if (url) {
-        const audio = document.createElement("audio");
+        const audio = node("audio");
         audio.controls = true;
         audio.preload = "none";
         audio.src = url;
         card.appendChild(audio);
       } else {
-        card.appendChild(element(
-          "p",
-          "preview-note",
-          "Add a direct audio file URL in the Edit panel."
-        ));
+        card.appendChild(node("p", "preview-note", "Add a direct audio file URL."));
       }
     }
 
     if (block.type === "game") {
-      const url = validWebUrl(block.gameUrl);
-
+      const url = safeUrl(block.gameUrl);
       if (url) {
-        const link = document.createElement("a");
-        link.className = "reader-game-link";
+        const link = node("a", "reader-game-link", "Open game ↗");
         link.href = url;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
-        link.textContent = "Open game ↗";
         card.appendChild(link);
-
-        card.appendChild(element(
-          "p",
-          "preview-note",
-          "The game opens in a separate tab. This prototype does not yet connect game progress to story choices."
-        ));
       } else {
-        card.appendChild(element(
-          "p",
-          "preview-note",
-          "Add the URL of your existing game in the Edit panel."
-        ));
+        card.appendChild(node("p", "preview-note", "Add the URL of your existing game."));
       }
     }
 
-    if (block.type === "choice") {
-      const choices = element("div", "reader-choice");
-      const options = Array.isArray(block.options) ? block.options : [];
-
-      options.forEach((option) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.textContent = option.label || "Continue";
-
-        button.addEventListener("click", () => {
-          choices.querySelectorAll("button").forEach((item) => {
-            item.disabled = true;
-          });
-
-          button.textContent = "Selected: " + (option.label || "Continue");
-
-          const result = element(
-            "p",
-            "preview-note",
-            option.target
-              ? "Saved target ID: " + option.target +
-                ". Full branch navigation will be connected later."
-              : "Choice selected. Add a target ID and connect the branch in a future integration."
-          );
-
-          choices.appendChild(result);
-        });
-
-        choices.appendChild(button);
-      });
-
-      card.appendChild(choices);
-    }
+    if (block.type === "choice") appendChoice(card, block, project, options);
 
     if (block.type === "chapterEnd") {
-      const nextChapter = project.chapters.find(
-        (item) => item.id === block.nextChapterId
-      );
-
-      card.appendChild(element(
-        "p",
-        "preview-note",
-        nextChapter
-          ? "Next chapter: " + nextChapter.title +
-            ". Chapter-to-chapter playback will be connected later."
-          : "Choose the next chapter in the Edit panel."
-      ));
+      const next = project.chapters.find(function (chapter) {
+        return chapter.id === block.nextChapterId;
+      });
+      if (next) {
+        const button = node("button", "reader-chapter-link", "Continue to " + next.title + " →");
+        button.type = "button";
+        button.addEventListener("click", function () {
+          if (typeof options.onNavigate === "function") options.onNavigate(next.id);
+          else card.appendChild(node("p", "preview-note", "Next chapter: " + next.title));
+        });
+        card.appendChild(button);
+      } else {
+        card.appendChild(node("p", "preview-note", "Choose the next chapter in the Edit panel."));
+      }
     }
 
     container.appendChild(card);
   }
 
-  function render(container, project, chapter) {
-    container.replaceChildren();
-
-    if (!chapter) {
-      container.appendChild(element(
-        "p",
-        "preview-note",
-        "Choose a chapter to preview."
-      ));
-      return;
-    }
-
-    container.appendChild(element(
-      "h2",
-      "reader-chapter-title",
-      chapter.title || project.title || "Untitled chapter"
-    ));
-
-    const blocks = Array.isArray(chapter.blocks) ? chapter.blocks : [];
-
-    if (!blocks.length) {
-      container.appendChild(element(
-        "p",
-        "reader-prose",
-        "This chapter has no content yet."
-      ));
-      return;
-    }
-
-    blocks.forEach((block) => {
-      if (block.type === "paragraph") {
-        const text = String(block.text || "").trim();
-
-        if (text) {
-          container.appendChild(element("p", "reader-prose", text));
-        }
-      } else {
-        addExperience(container, block, project, chapter);
-      }
-    });
-
-    container.appendChild(element(
-      "p",
-      "preview-note",
-      "Studio preview only. Live Reader integration and complete branching are not connected yet."
-    ));
+  function defaultTitle(type) {
+    const names = {
+      narration: "Narration",
+      dialogue: "Dialogue",
+      reveal: "A reveal",
+      image: "Illustration",
+      choice: "Your choice",
+      game: "Play a game",
+      audio: "Listen",
+      chapterEnd: "Continue the story"
+    };
+    return names[type] || "Story experience";
   }
 
-  window.CeeqwinnTheatre = {
-    render: render
-  };
+  function render(container, project, chapter, options) {
+    if (!container) return;
+    options = options || {};
+    container.replaceChildren();
+
+    if (!project || !chapter) {
+      container.appendChild(node("p", "preview-note", "Choose a chapter to preview."));
+      return;
+    }
+
+    container.appendChild(node("h2", "reader-chapter-title",
+      chapter.title || project.title || "Untitled chapter"));
+
+    const blocks = Array.isArray(chapter.blocks) ? chapter.blocks : [];
+    if (!blocks.length) {
+      container.appendChild(node("p", "reader-prose", "This chapter has no content yet."));
+      return;
+    }
+
+    blocks.forEach(function (block) {
+      if (block.type === "paragraph") {
+        const text = String(block.text || "").trim();
+        if (text) container.appendChild(node("p", "reader-prose", text));
+      } else {
+        appendExperience(container, block, project, options);
+      }
+    });
+  }
+
+  window.CeeqwinnTheatre = { render: render };
 })();
