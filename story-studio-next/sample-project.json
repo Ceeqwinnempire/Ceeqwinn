@@ -1,0 +1,72 @@
+
+{
+  "schemaVersion": 1,
+  "title": "The Emerald Inheritance",
+  "slug": "the-emerald-inheritance",
+  "genre": "Fashion drama",
+  "status": "draft",
+  "description": "A family story of ambition, secrets, style, and inheritance.",
+  "currentChapterId": "chapter-one",
+  "assets": [],
+  "chapters": [
+    {
+      "id": "chapter-one",
+      "title": "Discordant Descendants",
+      "blocks": [
+        {
+          "id": "block-one",
+          "type": "paragraph",
+          "text": "The morning at Emerald High began with a silence that felt far too deliberate."
+        },
+        {
+          "id": "block-two",
+          "type": "narration",
+          "text": "Somewhere beyond the main hall, a door closed. Every conversation stopped."
+        },
+        {
+          "id": "block-three",
+          "type": "dialogue",
+          "speaker": "LEXIS",
+          "text": "If everyone is going to stare, the least they can do is tell me why.",
+          "reaction": "",
+          "heading": "",
+          "caption": "",
+          "url": "",
+          "options": [],
+          "assetId": null
+        },
+        {
+          "id": "block-four",
+          "type": "reveal",
+          "heading": "An unexpected arrival",
+          "text": "A message appeared on the school's announcement screen. The name at the top changed everything."
+        },
+        {
+          "id": "block-five",
+          "type": "transition",
+          "text": "Across the city, another part of the inheritance was already in motion."
+        },
+        {
+          "id": "block-six",
+          "type": "choice",
+          "text": "What should Lexis do?",
+          "options": [
+            {
+              "label": "Investigate the announcement",
+              "result": "Lexis heads towards the administration wing."
+            },
+            {
+              "label": "Confront her friends",
+              "result": "Lexis demands to know what everyone is hiding."
+            }
+          ]
+        },
+        {
+          "id": "block-seven",
+          "type": "chapterEnd",
+          "text": "To be continued…"
+        }
+      ]
+    }
+  ]
+}
