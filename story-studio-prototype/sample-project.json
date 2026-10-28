@@ -1,5 +1,6 @@
+
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "id": "emerald-inheritance-demo",
   "title": "The Emerald Inheritance",
   "description": "A family drama of ambition, secrets, fashion and unexpected choices.",
@@ -9,10 +10,22 @@
     "plan": "draft",
     "date": ""
   },
+  "theme": {
+    "accent": "#d6b16c",
+    "background": "#241019",
+    "text": "#f7edf1",
+    "panel": "#351c2a"
+  },
+  "folders": [
+    "Opening",
+    "The Inheritance"
+  ],
+  "assets": [],
   "chapters": [
     {
       "id": "chapter-one",
       "title": "The Grand Entrance",
+      "folder": "Opening",
       "blocks": [
         {
           "id": "paragraph-one",
@@ -45,11 +58,11 @@
           "options": [
             {
               "label": "Answer with confidence",
-              "target": "confident-response"
+              "target": ""
             },
             {
               "label": "Stay silent and observe",
-              "target": "silent-response"
+              "target": ""
             }
           ]
         },
@@ -57,12 +70,20 @@
           "id": "paragraph-three",
           "type": "paragraph",
           "text": "Whatever happened next, Lexis knew that tonight would not be forgotten."
+        },
+        {
+          "id": "next-chapter",
+          "type": "chapterEnd",
+          "title": "Behind the Smile",
+          "text": "The next chapter reveals what the guests were hiding.",
+          "nextChapterId": "chapter-two"
         }
       ]
     },
     {
       "id": "chapter-two",
       "title": "Behind the Smile",
+      "folder": "The Inheritance",
       "blocks": [
         {
           "id": "chapter-two-opening",
@@ -73,7 +94,8 @@
           "id": "reveal-example",
           "type": "reveal",
           "title": "A hidden detail",
-          "text": "Add an image URL and change this text to create a visual reveal."
+          "text": "Add an image URL in the Edit panel to reveal a photograph, clue, outfit, or important story detail.",
+          "imageUrl": ""
         },
         {
           "id": "chapter-two-ending",
