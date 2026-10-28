@@ -1,0 +1,67 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#241019">
+  <title>CEEQWINN Stories</title>
+  <meta name="description" content="Read stories from CEEQWINN.">
+  <link rel="stylesheet" href="reader.css">
+</head>
+<body>
+  <header class="reader-top">
+    <a class="reader-brand" href="library.html">
+      <span class="reader-brand-mark">C</span>
+      <span><strong>CEEQWINN</strong><small>STORIES & THEATRE</small></span>
+    </a>
+    <a class="reader-library-link" href="library.html">Story library</a>
+  </header>
+
+  <main class="reader-shell">
+    <section id="readerLoading" class="reader-message">
+      <p class="reader-kicker">CEEQWINN STORY WORLD</p>
+      <h1>Preparing your story…</h1>
+      <p>Please wait while the chapter loads.</p>
+    </section>
+
+    <section id="readerError" class="reader-message" hidden>
+      <p class="reader-kicker">STORY UNAVAILABLE</p>
+      <h1>We couldn't open this story.</h1>
+      <p id="readerErrorText">Check the story URL and try again.</p>
+      <p>Make sure the story JSON is deployed in the <code>stories</code> folder and that the filename matches the story slug in the URL.</p>
+      <a class="reader-button" href="library.html">Return to the story library</a>
+    </section>
+
+    <article id="readerApp" hidden>
+      <header class="story-header">
+        <p id="readerGenre" class="reader-kicker"></p>
+        <h1 id="readerTitle"></h1>
+        <p id="readerDescription" class="story-description"></p>
+        <div id="readerChapterPicker" class="reader-chapter-picker" aria-label="Choose a chapter"></div>
+      </header>
+
+      <div class="reading-layout">
+        <aside class="reading-sidebar">
+          <p class="reader-kicker">CHAPTERS</p>
+          <nav id="readerChapterList" class="reader-chapter-list" aria-label="Story chapters"></nav>
+        </aside>
+
+        <section class="reading-main">
+          <div class="reading-progress-track"><div id="readingProgress" class="reading-progress"></div></div>
+          <div id="readerContent" class="reader-content"></div>
+          <nav class="reader-pagination" aria-label="Chapter navigation">
+            <button id="previousChapterButton" class="reader-button reader-button-muted">← Previous</button>
+            <span id="chapterPosition" class="chapter-position"></span>
+            <button id="nextChapterButton" class="reader-button">Next chapter →</button>
+          </nav>
+          <p class="reader-endnote">Created with CEEQWINN Story & Theatre Studio.</p>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  <script src="story-studio-prototype/theatre-engine.js"></script>
+  <script src="reader.js"></script>
+</body>
+</html>
