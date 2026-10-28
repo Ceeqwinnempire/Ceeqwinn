@@ -1,71 +1,66 @@
+
 # CEEQWINN Story & Theatre Studio
 
-A visual story-writing and theatre-authoring prototype built with vanilla
-HTML, CSS and JavaScript.
+## Purpose
+
+A lightweight, vanilla HTML/CSS/JavaScript authoring environment for CEEQWINN stories and theatre experiences.
+
+The Studio is separate from the existing article Reader and does not replace `article.html` or `admin/article.html`.
 
 ## Files
 
-- `index.html` — the Studio interface
-- `studio.css` — styling and responsive layout
-- `studio.js` — writing, chapters, editing, saving and project export
-- `theatre-engine.js` — story preview and experience rendering
-- `sample-project.json` — sample story to import and edit
+- `index.html` — Studio interface
+- `studio.css` — Studio appearance and responsive layouts
+- `studio.js` — Story editing, chapter organization, local saving, assets, import/export, theme and preview controls
+- `theatre-engine.js` — Shared content renderer for Studio preview and the public Reader
+- `sample-project.json` — Example project
 
-## How to open it
+At the repository root:
 
-The Studio is available through the website at:
+- `read.html` — Public story-reading page
+- `reader.css` — Public Reader styling
+- `reader.js` — Loads a story JSON file and handles chapter navigation
+- `stories/` — Published story JSON files
 
-https://ceeqwinn.netlify.app/story-studio-prototype/index.html
+## Open the Studio
 
-You can also test it locally:
+Visit:
 
-1. Download or clone the project.
-2. Keep all files in the same folder.
-3. Open `index.html` in a modern browser.
+`https://ceeqwinn.netlify.app/story-studio-prototype/index.html`
 
-If the browser restricts local file access, open a terminal in this
-folder and run:
+The Studio saves drafts in the browser's local storage. It does not upload drafts automatically.
 
-    python -m http.server 8000
+## Open a sample story in the Studio
 
-Then open:
+Use the Studio's **Open project backup** button and select `sample-project.json`.
 
-    http://localhost:8000
+Importing replaces the current project in the browser, so export a backup first if you need to preserve your current work.
 
-## Basic workflow
+## Publishing a story
 
-1. Open Story overview and enter your story details.
-2. Open the writing room.
-3. Edit paragraphs directly in the manuscript.
-4. Select a block and choose "Insert experience" to add theatre, dialogue,
-   narration, a reveal, a choice, a game link, audio, an image or a transition.
-5. Select an inserted experience to edit its settings.
-6. Use Preview story to see the current chapter.
-7. Use Save to save the draft in this browser.
-8. Use Export to download a JSON backup.
-9. Use Import to restore a project JSON file.
+1. Open the story in Studio.
+2. Set its Reader story slug in the Reader & publishing panel.
+3. Choose **Export story**.
+4. In the GitHub repository, create a root-level `stories` folder if necessary.
+5. Upload the exported JSON to `stories/<slug>.json`.
+6. Commit the file and wait for Netlify to deploy.
+7. Share `https://ceeqwinn.netlify.app/read.html?story=<slug>`.
 
-## Important limitations
+Replace `<slug>` with the actual slug. The JSON filename and URL slug must match.
 
-- Drafts are saved in this browser's local storage, not in a server database.
-- Export a backup before clearing browser data or moving to another device.
-- Game experiences link to existing game URLs; this prototype does not
-  embed or control the game engine.
-- Choice targets are stored but do not yet drive complete branching playback.
-- Chapter transitions are represented in the project but do not yet
-  automatically navigate between chapters.
-- Audio and images use URLs; there is no file-upload manager yet.
-- Release settings are saved as metadata only.
-- This prototype does not publish stories to the live Reader.
-- The existing Reader has not been modified by this prototype.
+## Images and other assets
 
-## Compatibility
+Remote images must use accessible HTTPS or HTTP URLs.
 
-Use a modern browser for the best experience. The interface adapts to
-narrow screens, but older devices and browsers still need testing.
+Device-uploaded images are stored as data URLs in the project and may increase JSON size. Exported JSON contains these embedded images, but a large project may become difficult to store, upload, or load. Prefer appropriately sized images and externally hosted assets for large projects.
 
-## Next integration stage
+## Important limits
 
-After the writing workflow has been tested, connect the Studio project
-format to the existing CEEQWINN Reader without replacing its working
-story progression, saved choices, or game integrations.
+- Browser autosave is local to that browser and device.
+- Exported JSON is a portable project backup.
+- Publishing requires uploading the JSON and deploying the site.
+- The public Reader does not edit stories or upload assets.
+- Reader choices are recorded locally in the reader's browser. Full story-state synchronization and complex conditional branches are not implemented here.
+- External game links open separately; game progress is not connected to the story.
+- This renderer is not the animated Scene MVP or Dialogue MVP engine.
+- No live browser, GitHub or Netlify deployment test is claimed by this handoff.
