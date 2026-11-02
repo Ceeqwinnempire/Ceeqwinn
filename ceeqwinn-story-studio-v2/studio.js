@@ -1,8 +1,11 @@
+
 (function () {
   "use strict";
 
   const STORAGE_KEY = "ceeqwinn_story_studio_v3";
   const SETTINGS_KEY = "ceeqwinn_story_studio_settings_v1";
+  const HISTORY_LIMIT = 40;
+
   const $ = (id) => document.getElementById(id);
 
   const state = {
@@ -11,7 +14,12 @@
     selectedBlockId: "",
     activePanel: "overviewPanel",
     settings: null,
-    saveTimer: null
+    saveTimer: null,
+    history: [],
+    historyIndex: -1,
+    restoringHistory: false,
+    inspectorExpanded: false,
+    sidebarCollapsed: false
   };
 
   const defaultSettings = {
@@ -32,11 +40,39 @@
     "#f8f0f4", "#b9b4bb", "#747078", "#181318", "#263c68"
   ];
 
-  const makeId = (prefix) => prefix + "-" + Date.now().toString(36) +
-    "-" + Math.random().toString(36).slice(2, 7);
+  const makeId = (prefix) =>
+    prefix + "-" + Date.now().toString(36) + "-" +
+    Math.random().toString(36).slice(2, 7);
 
-  function escapeText(value) {
-    return String(value == null ? "" : value);
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function notify(message) {
+    const region = $("toastRegion");
+    if (!region) return;
+
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.textContent = message;
+    region.appendChild(toast);
+
+    window.setTimeout(() => toast.remove(), 3600);
+  }
+
+  function setSaveStatus(message) {
+    const element = $("saveStatus");
+    if (element) element.textContent = message;
+  }
+
+  function safeSet(id, value) {
+    const element = $(id);
+    if (element) element.textContent = value;
+  }
+
+  function bindClick(id, callback) {
+    const element = $(id);
+    if (element) element.addEventListener("click", callback);
   }
 
   function starterProject() {
@@ -61,43 +97,164 @@
         id: makeId("chapter"),
         title: "The Grand Entrance",
         folder: "Opening",
-        blocks: [
-          {
-            id: makeId("paragraph"),
-            type: "paragraph",
-            text: "The grand doors opened, revealing a hall illuminated by crystal chandeliers. Conversations softened as the guests turned toward the entrance."
-          }
-        ]
+        blocks: [{
+          id: makeId("paragraph"),
+          type: "paragraph",
+          text: "The grand doors opened, revealing a hall illuminated by crystal chandeliers. Conversations softened as the guests turned toward the entrance."
+        }]
       }]
     };
   }
 
   function currentChapter() {
+    if (!state.project) return null;
+
     return state.project.chapters.find(
       (chapter) => chapter.id === state.chapterId
-    ) || state.project.chapters[0];
+    ) || state.project.chapters[0] || null;
   }
 
   function currentBlock() {
     const chapter = currentChapter();
-    return chapter && chapter.blocks.find(
+    if (!chapter) return null;
+
+    return chapter.blocks.find(
       (block) => block.id === state.selectedBlockId
-    );
+    ) || null;
   }
 
-  function notify(message) {
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    toast.textContent = message;
-    $("toastRegion").appendChild(toast);
-    window.setTimeout(() => toast.remove(), 3600);
+  function slugify(value) {
+    return String(value || "my-story")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 100) || "my-story";
   }
 
-  function setSaveStatus(message) {
-    $("saveStatus").textContent = message;
+  function normalizeProject(project) {
+    project.schemaVersion = 3;
+    project.assets = Array.isArray(project.assets) ? project.assets : [];
+    project.chapters = Array.isArray(project.chapters) ? project.chapters : [];
+    project.folders = Array.isArray(project.folders) ? project.folders : ["Opening"];
+    project.release = project.release || { plan: "draft", date: "" };
+    project.theme = Object.assign({
+      accent: "#d6ad68",
+      background: "#260d1b",
+      text: "#fbf2f6",
+      panel: "#381b2c"
+    }, project.theme || {});
+
+    project.chapters.forEach((chapter) => {
+      chapter.id = chapter.id || makeId("chapter");
+      chapter.title = chapter.title || "Untitled chapter";
+      chapter.folder = chapter.folder || "Unsorted";
+      chapter.blocks = Array.isArray(chapter.blocks) ? chapter.blocks : [];
+
+      chapter.blocks.forEach((block) => {
+        block.id = block.id || makeId(block.type || "block");
+        block.type = block.type || "paragraph";
+      });
+    });
+
+    if (!project.chapters.length) {
+      project.chapters.push({
+        id: makeId("chapter"),
+        title: "Chapter One",
+        folder: "Unsorted",
+        blocks: []
+      });
+    }
+
+    return project;
+  }
+
+  function snapshot() {
+    return {
+      project: clone(state.project),
+      chapterId: state.chapterId,
+      selectedBlockId: state.selectedBlockId
+    };
+  }
+
+  function recordHistory() {
+    if (state.restoringHistory || !state.project) return;
+
+    const next = snapshot();
+    const current = state.history[state.historyIndex];
+
+    if (current && JSON.stringify(current) === JSON.stringify(next)) {
+      return;
+    }
+
+    state.history = state.history.slice(0, state.historyIndex + 1);
+    state.history.push(next);
+
+    if (state.history.length > HISTORY_LIMIT) {
+      state.history.shift();
+    }
+
+    state.historyIndex = state.history.length - 1;
+    updateHistoryButtons();
+  }
+
+  function restoreSnapshot(item) {
+    if (!item) return;
+
+    state.restoringHistory = true;
+    state.project = clone(item.project);
+    state.chapterId = item.chapterId;
+    state.selectedBlockId = item.selectedBlockId;
+
+    if (!currentChapter()) {
+      state.chapterId = state.project.chapters[0].id;
+    }
+
+    if (!currentBlock()) {
+      state.selectedBlockId = "";
+    }
+
+    state.restoringHistory = false;
+
+    scheduleSave();
+    renderAll();
+    updateHistoryButtons();
+  }
+
+  function undo() {
+    if (state.historyIndex <= 0) return;
+
+    state.historyIndex--;
+    restoreSnapshot(state.history[state.historyIndex]);
+    notify("Last change undone.");
+  }
+
+  function redo() {
+    if (state.historyIndex >= state.history.length - 1) return;
+
+    state.historyIndex++;
+    restoreSnapshot(state.history[state.historyIndex]);
+    notify("Change restored.");
+  }
+
+  function updateHistoryButtons() {
+    const canUndo = state.historyIndex > 0;
+    const canRedo = state.historyIndex < state.history.length - 1;
+
+    ["undoButton", "writingUndoButton"].forEach((id) => {
+      const button = $(id);
+      if (button) button.disabled = !canUndo;
+    });
+
+    ["redoButton", "writingRedoButton"].forEach((id) => {
+      const button = $(id);
+      if (button) button.disabled = !canRedo;
+    });
   }
 
   function saveNow() {
+    if (!state.project) return;
+
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state.project));
       setSaveStatus("Saved in this browser");
@@ -112,14 +269,12 @@
   function scheduleSave() {
     setSaveStatus("Saving…");
     clearTimeout(state.saveTimer);
-    state.saveTimer = window.setTimeout(saveNow, 250);
+    state.saveTimer = window.setTimeout(saveNow, 350);
   }
 
   function loadSettings() {
     try {
-      const saved = JSON.parse(
-        localStorage.getItem(SETTINGS_KEY) || "{}"
-      );
+      const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
       state.settings = Object.assign({}, defaultSettings, saved);
     } catch (error) {
       state.settings = Object.assign({}, defaultSettings);
@@ -128,48 +283,30 @@
 
   function loadProject() {
     try {
-      const saved = JSON.parse(
-        localStorage.getItem(STORAGE_KEY) || "null"
-      );
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
 
-      if (saved && Array.isArray(saved.chapters)) {
-        state.project = saved;
-        state.project.schemaVersion = 3;
-        state.project.assets = Array.isArray(saved.assets)
-          ? saved.assets
-          : [];
-
-        state.project.chapters.forEach((chapter) => {
-          chapter.blocks = Array.isArray(chapter.blocks)
-            ? chapter.blocks
-            : [];
-
-          if (!chapter.folder) chapter.folder = "Unsorted";
-        });
-      } else {
-        state.project = starterProject();
-      }
+      state.project = saved && Array.isArray(saved.chapters)
+        ? normalizeProject(saved)
+        : starterProject();
     } catch (error) {
       state.project = starterProject();
-      notify(
-        "The saved draft could not be read. A fresh project was opened."
-      );
-    }
-
-    if (!state.project.chapters.length) {
-      state.project.chapters.push({
-        id: makeId("chapter"),
-        title: "Chapter One",
-        folder: "Unsorted",
-        blocks: []
-      });
+      notify("The saved draft could not be read. A fresh project was opened.");
     }
 
     state.chapterId = state.project.chapters[0].id;
+    state.selectedBlockId = "";
+
     applySettingsToPage();
+
+    state.history = [];
+    state.historyIndex = -1;
+    recordHistory();
   }
 
   function showPanel(panelId) {
+    const target = $(panelId);
+    if (!target) return;
+
     state.activePanel = panelId;
 
     document.querySelectorAll(".workspace-panel").forEach((panel) => {
@@ -177,11 +314,12 @@
     });
 
     document.querySelectorAll(".nav-item").forEach((button) => {
-      button.classList.toggle(
-        "active",
-        button.dataset.panel === panelId
-      );
+      button.classList.toggle("active", button.dataset.panel === panelId);
     });
+
+    if (panelId === "writingPanel") {
+      renderChapterList();
+    }
   }
 
   function renderAll() {
@@ -190,22 +328,31 @@
     renderInspector();
     renderOverview();
     renderAssetShelf();
+    renderWritingAssetShelf();
     updatePublishUrl();
-
-    $("currentChapterLabel").textContent =
-      currentChapter().title || "Untitled chapter";
-
-    $("manuscriptChapterTitle").value =
-      currentChapter().title || "";
-
-    $("previewStoryTitle").textContent =
-      state.project.title || "Untitled story";
-
     updateCounts();
+
+    const chapter = currentChapter();
+
+    safeSet(
+      "currentChapterLabel",
+      chapter ? chapter.title || "Untitled chapter" : "No chapter"
+    );
+
+    if ($("manuscriptChapterTitle")) {
+      $("manuscriptChapterTitle").value = chapter ? chapter.title || "" : "";
+    }
+
+    safeSet("previewStoryTitle", state.project.title || "Untitled story");
+
+    updateHistoryButtons();
+    updateInspectorState();
   }
 
   function renderChapterList() {
     const list = $("chapterList");
+    if (!list) return;
+
     list.replaceChildren();
 
     state.project.chapters.forEach((chapter) => {
@@ -217,7 +364,6 @@
       open.className =
         "chapter-open" +
         (chapter.id === state.chapterId ? " active" : "");
-
       open.textContent = chapter.title || "Untitled chapter";
       open.title = chapter.title || "Untitled chapter";
 
@@ -241,18 +387,20 @@
           (item) => item.id === chapter.id
         );
 
-        if (index > 0) {
-          [
-            state.project.chapters[index - 1],
-            state.project.chapters[index]
-          ] = [
-            state.project.chapters[index],
-            state.project.chapters[index - 1]
-          ];
+        if (index <= 0) return;
 
-          scheduleSave();
-          renderAll();
-        }
+        recordHistory();
+
+        [
+          state.project.chapters[index - 1],
+          state.project.chapters[index]
+        ] = [
+          state.project.chapters[index],
+          state.project.chapters[index - 1]
+        ];
+
+        scheduleSave();
+        renderAll();
       });
 
       row.appendChild(move);
@@ -261,39 +409,16 @@
   }
 
   function createBlock(type) {
-    const block = {
-      id: makeId(type),
-      type: type
-    };
+    const block = { id: makeId(type), type: type };
 
     const defaults = {
       paragraph: { text: "" },
       narration: { title: "Narration", text: "" },
-      dialogue: {
-        title: "Dialogue",
-        character: "",
-        text: ""
-      },
-      reveal: {
-        title: "Visual reveal",
-        text: "",
-        imageUrl: ""
-      },
-      image: {
-        title: "Illustration",
-        text: "",
-        imageUrl: ""
-      },
-      video: {
-        title: "Short video",
-        text: "",
-        videoUrl: ""
-      },
-      audio: {
-        title: "Audio",
-        text: "",
-        audioUrl: ""
-      },
+      dialogue: { title: "Dialogue", character: "", text: "" },
+      reveal: { title: "Visual reveal", text: "", imageUrl: "" },
+      image: { title: "Illustration", text: "", imageUrl: "" },
+      video: { title: "Short video", text: "", videoUrl: "" },
+      audio: { title: "Audio", text: "", audioUrl: "" },
       choice: {
         title: "Reader choice",
         text: "",
@@ -302,28 +427,18 @@
           { label: "Option two", target: "" }
         ]
       },
-      game: {
-        title: "Game",
-        text: "",
-        gameUrl: ""
-      },
+      game: { title: "Game", text: "", gameUrl: "" },
       chapterEnd: {
         title: "Continue the story",
         text: "",
         nextChapterId: ""
       },
-      reference: {
-        title: "Reference file",
-        assetId: ""
-      }
+      reference: { title: "Reference file", assetId: "" }
     };
 
     return Object.assign(
       block,
-      defaults[type] || {
-        title: "Story experience",
-        text: ""
-      }
+      defaults[type] || { title: "Story experience", text: "" }
     );
   }
 
@@ -331,16 +446,16 @@
     const chapter = currentChapter();
     if (!chapter) return;
 
-    const block = createBlock(type);
+    recordHistory();
 
+    const block = createBlock(type);
     const selectedIndex = chapter.blocks.findIndex(
       (item) => item.id === state.selectedBlockId
     );
 
-    const insertAt =
-      selectedIndex >= 0
-        ? selectedIndex + 1
-        : chapter.blocks.length;
+    const insertAt = selectedIndex >= 0
+      ? selectedIndex + 1
+      : chapter.blocks.length;
 
     chapter.blocks.splice(insertAt, 0, block);
     state.selectedBlockId = block.id;
@@ -354,24 +469,21 @@
         '[data-block-id="' + block.id + '"]'
       );
 
-      if (target) {
-        target.scrollIntoView({
-          behavior: state.settings.reduceMotion
-            ? "auto"
-            : "smooth",
-          block: "center"
-        });
-      }
+      if (!target) return;
 
-      const textArea =
-        target && target.querySelector(".block-text");
+      target.scrollIntoView({
+        behavior: state.settings.reduceMotion ? "auto" : "smooth",
+        block: "center"
+      });
 
+      const textArea = target.querySelector(".block-text");
       if (textArea) textArea.focus();
     }, 40);
   }
 
   function moveBlock(blockId, direction) {
     const chapter = currentChapter();
+    if (!chapter) return;
 
     const index = chapter.blocks.findIndex(
       (block) => block.id === blockId
@@ -385,6 +497,8 @@
       target >= chapter.blocks.length
     ) return;
 
+    recordHistory();
+
     [
       chapter.blocks[index],
       chapter.blocks[target]
@@ -394,11 +508,40 @@
     ];
 
     scheduleSave();
-    renderManuscript();
+    renderAll();
+  }
+
+  function moveBlockTo(blockId, targetId) {
+    const chapter = currentChapter();
+    if (!chapter || blockId === targetId) return;
+
+    const from = chapter.blocks.findIndex(
+      (block) => block.id === blockId
+    );
+
+    const to = chapter.blocks.findIndex(
+      (block) => block.id === targetId
+    );
+
+    if (from < 0 || to < 0) return;
+
+    recordHistory();
+
+    const moved = chapter.blocks.splice(from, 1)[0];
+    const adjustedTarget = chapter.blocks.findIndex(
+      (block) => block.id === targetId
+    );
+
+    chapter.blocks.splice(adjustedTarget, 0, moved);
+
+    state.selectedBlockId = blockId;
+    scheduleSave();
+    renderAll();
   }
 
   function removeBlock(blockId) {
     const chapter = currentChapter();
+    if (!chapter) return;
 
     const index = chapter.blocks.findIndex(
       (block) => block.id === blockId
@@ -406,10 +549,11 @@
 
     if (index < 0) return;
 
-    if (!window.confirm(
-      "Delete this block? This cannot be undone unless you have a backup."
-    )) return;
+    if (!window.confirm("Delete this block? You can use Undo to restore it.")) {
+      return;
+    }
 
+    recordHistory();
     chapter.blocks.splice(index, 1);
 
     if (state.selectedBlockId === blockId) {
@@ -438,198 +582,23 @@
     return names[block.type] || "Story block";
   }
 
-  function renderManuscript() {
-    const container = $("manuscript");
-    container.replaceChildren();
+  function createReferenceSummary(block) {
+    const p = document.createElement("p");
+    p.className = "block-meta";
 
-    const chapter = currentChapter();
+    const asset = state.project.assets.find(
+      (item) => item.id === block.assetId
+    );
 
-    if (!chapter.blocks.length) {
-      const empty = document.createElement("p");
-      empty.className = "block-empty";
-      empty.textContent =
-        "A fresh page. Write a paragraph or add an experience below.";
+    p.textContent = asset
+      ? "Attached reference: " + asset.name
+      : "No reference attached. Choose one from the inspector or Asset shelf.";
 
-      container.appendChild(empty);
-    }
-
-    chapter.blocks.forEach((block, index) => {
-      const card = document.createElement("article");
-
-      card.className =
-        "story-block" +
-        (block.id === state.selectedBlockId ? " selected" : "");
-
-      card.dataset.blockId = block.id;
-
-      card.addEventListener("click", () => {
-        if (state.selectedBlockId !== block.id) {
-          state.selectedBlockId = block.id;
-          renderManuscript();
-          renderInspector();
-        }
-      });
-
-      const header = document.createElement("div");
-      header.className = "block-header";
-
-      const label = document.createElement("span");
-      label.className = "block-type";
-      label.textContent =
-        (index + 1) + " · " + blockLabel(block);
-
-      header.appendChild(label);
-
-      const tools = document.createElement("div");
-      tools.className = "block-tools";
-
-      [
-        ["↑", "Move up", () => moveBlock(block.id, -1)],
-        ["↓", "Move down", () => moveBlock(block.id, 1)],
-        [
-          "＋",
-          "Add after this block",
-          () => {
-            state.selectedBlockId = block.id;
-            addBlock("paragraph");
-          }
-        ],
-        ["×", "Delete block", () => removeBlock(block.id)]
-      ].forEach(([text, title, action]) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.textContent = text;
-        button.title = title;
-
-        button.addEventListener("click", (event) => {
-          event.stopPropagation();
-          action();
-        });
-
-        tools.appendChild(button);
-      });
-
-      header.appendChild(tools);
-      card.appendChild(header);
-
-      if (
-        block.type !== "paragraph" &&
-        block.type !== "reference"
-      ) {
-        const title = document.createElement("input");
-
-        title.className = "block-title-input";
-        title.placeholder = "Experience title";
-        title.value = block.title || "";
-        title.setAttribute("aria-label", "Block title");
-
-        title.addEventListener("click", (event) => {
-          event.stopPropagation();
-        });
-
-        title.addEventListener("input", () => {
-          block.title = title.value;
-          scheduleSave();
-
-          $("previewStoryTitle").textContent =
-            state.project.title || "Untitled story";
-        });
-
-        card.appendChild(title);
-      }
-
-      if (block.type !== "reference") {
-        const textarea = document.createElement("textarea");
-
-        textarea.className = "block-text";
-        textarea.placeholder =
-          block.type === "paragraph"
-            ? "Start writing this paragraph…"
-            : "Add the text for this experience…";
-
-        textarea.value = block.text || "";
-        textarea.setAttribute(
-          "aria-label",
-          blockLabel(block) + " text"
-        );
-
-        textarea.addEventListener("click", (event) => {
-          event.stopPropagation();
-        });
-
-        textarea.addEventListener("input", () => {
-          block.text = textarea.value;
-          scheduleSave();
-          updateCounts();
-        });
-
-        card.appendChild(textarea);
-      } else {
-        card.appendChild(createReferenceSummary(block));
-      }
-
-      if (block.type === "dialogue") {
-        const character = document.createElement("input");
-
-        character.className = "block-title-input";
-        character.placeholder = "Character / speaker name";
-        character.value = block.character || "";
-
-        character.addEventListener("click", (event) => {
-          event.stopPropagation();
-        });
-
-        character.addEventListener("input", () => {
-          block.character = character.value;
-          scheduleSave();
-        });
-
-        card.appendChild(character);
-      }
-
-      const urlField = getMediaField(block);
-
-      if (urlField) {
-        const url = document.createElement("input");
-
-        url.className = "block-title-input";
-        url.placeholder = urlField.placeholder;
-        url.value = block[urlField.key] || "";
-
-        url.setAttribute("aria-label", urlField.placeholder);
-
-        url.addEventListener("click", (event) => {
-          event.stopPropagation();
-        });
-
-        url.addEventListener("input", () => {
-          block[urlField.key] = url.value;
-          scheduleSave();
-        });
-
-        card.appendChild(url);
-      }
-
-      if (block.type === "choice") {
-        const summary = document.createElement("p");
-
-        summary.className = "block-meta";
-        summary.textContent =
-          (block.options || []).length +
-          " choice options · edit labels in the selected block inspector";
-
-        card.appendChild(summary);
-      }
-
-      container.appendChild(card);
-    });
+    return p;
   }
 
   function getMediaField(block) {
-    if (
-      block.type === "image" ||
-      block.type === "reveal"
-    ) {
+    if (block.type === "image" || block.type === "reveal") {
       return {
         key: "imageUrl",
         placeholder: "Image or GIF URL (optional if attached from Asset shelf)"
@@ -651,37 +620,227 @@
     }
 
     if (block.type === "game") {
-      return {
-        key: "gameUrl",
-        placeholder: "Game URL"
-      };
+      return { key: "gameUrl", placeholder: "Game URL" };
     }
 
     return null;
   }
 
-  function createReferenceSummary(block) {
-    const p = document.createElement("p");
-    p.className = "block-meta";
+  function makeBlockInput(block, className, placeholder, value, onInput) {
+    const field = document.createElement("input");
+    field.className = className;
+    field.placeholder = placeholder;
+    field.value = value || "";
 
-    const asset = state.project.assets.find(
-      (item) => item.id === block.assetId
-    );
+    field.addEventListener("click", (event) => event.stopPropagation());
 
-    p.textContent = asset
-      ? "Attached reference: " + asset.name
-      : "No reference attached. Choose one from the inspector or Asset shelf.";
+    field.addEventListener("input", () => {
+      onInput(field.value);
+      scheduleSave();
+    });
 
-    return p;
+    return field;
   }
 
-  function addInspectorField(
-    parent,
-    labelText,
-    value,
-    onInput,
-    options
-  ) {
+  function renderManuscript() {
+    const container = $("manuscript");
+    if (!container) return;
+
+    container.replaceChildren();
+
+    const chapter = currentChapter();
+    if (!chapter) return;
+
+    if (!chapter.blocks.length) {
+      const empty = document.createElement("p");
+      empty.className = "block-empty";
+      empty.textContent =
+        "A fresh page. Write a paragraph or add an experience below.";
+      container.appendChild(empty);
+    }
+
+    chapter.blocks.forEach((block, index) => {
+      const card = document.createElement("article");
+
+      card.className =
+        "story-block" +
+        (block.id === state.selectedBlockId ? " selected" : "");
+
+      card.dataset.blockId = block.id;
+      card.draggable = true;
+
+      card.addEventListener("click", () => {
+        if (state.selectedBlockId === block.id) return;
+
+        state.selectedBlockId = block.id;
+        renderManuscript();
+        renderInspector();
+        updateInspectorState();
+      });
+
+      card.addEventListener("dragstart", (event) => {
+        if (event.target.closest("input, textarea, button, select")) {
+          event.preventDefault();
+          return;
+        }
+
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/ceeqwinn-block", block.id);
+        card.classList.add("dragging");
+      });
+
+      card.addEventListener("dragend", () => {
+        card.classList.remove("dragging");
+        document.querySelectorAll(".story-block").forEach((item) => {
+          item.classList.remove("drag-over");
+        });
+      });
+
+      card.addEventListener("dragover", (event) => {
+        if (!event.dataTransfer.types.includes("text/ceeqwinn-block")) {
+          return;
+        }
+
+        event.preventDefault();
+        card.classList.add("drag-over");
+      });
+
+      card.addEventListener("dragleave", () => {
+        card.classList.remove("drag-over");
+      });
+
+      card.addEventListener("drop", (event) => {
+        const draggedId = event.dataTransfer.getData(
+          "text/ceeqwinn-block"
+        );
+
+        if (!draggedId) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        card.classList.remove("drag-over");
+
+        moveBlockTo(draggedId, block.id);
+      });
+
+      const header = document.createElement("div");
+      header.className = "block-header";
+
+      const label = document.createElement("span");
+      label.className = "block-type";
+      label.textContent = (index + 1) + " · " + blockLabel(block);
+      header.appendChild(label);
+
+      const tools = document.createElement("div");
+      tools.className = "block-tools";
+
+      [
+        ["＋", "Add after this block", () => {
+          state.selectedBlockId = block.id;
+          addBlock("paragraph");
+        }],
+        ["×", "Delete block", () => removeBlock(block.id)]
+      ].forEach(([symbol, title, action]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = symbol;
+        button.title = title;
+
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          action();
+        });
+
+        tools.appendChild(button);
+      });
+
+      header.appendChild(tools);
+      card.appendChild(header);
+
+      if (block.type !== "paragraph" && block.type !== "reference") {
+        const title = makeBlockInput(
+          block,
+          "block-title-input",
+          "Experience title",
+          block.title,
+          (value) => {
+            block.title = value;
+          }
+        );
+
+        title.setAttribute("aria-label", "Block title");
+        card.appendChild(title);
+      }
+
+      if (block.type !== "reference") {
+        const textarea = document.createElement("textarea");
+        textarea.className = "block-text";
+        textarea.placeholder = block.type === "paragraph"
+          ? "Continue writing here…"
+          : "Add the text for this experience…";
+        textarea.value = block.text || "";
+        textarea.setAttribute("aria-label", blockLabel(block) + " text");
+
+        textarea.addEventListener("click", (event) => {
+          event.stopPropagation();
+        });
+
+        textarea.addEventListener("input", () => {
+          block.text = textarea.value;
+          scheduleSave();
+          updateCounts();
+        });
+
+        card.appendChild(textarea);
+      } else {
+        card.appendChild(createReferenceSummary(block));
+      }
+
+      if (block.type === "dialogue") {
+        const character = makeBlockInput(
+          block,
+          "block-title-input",
+          "Character / speaker name",
+          block.character,
+          (value) => {
+            block.character = value;
+          }
+        );
+
+        card.appendChild(character);
+      }
+
+      const media = getMediaField(block);
+
+      if (media) {
+        const url = makeBlockInput(
+          block,
+          "block-title-input",
+          media.placeholder,
+          block[media.key],
+          (value) => {
+            block[media.key] = value;
+          }
+        );
+
+        url.setAttribute("aria-label", media.placeholder);
+        card.appendChild(url);
+      }
+
+      if (block.type === "choice") {
+        const summary = document.createElement("p");
+        summary.className = "block-meta";
+        summary.textContent =
+          (block.options || []).length +
+          " choice options · edit labels in Quick Edit";
+        card.appendChild(summary);
+      }
+
+      container.appendChild(card);
+    });
+  }
+
+  function addInspectorField(parent, labelText, value, onInput, options) {
     options = options || {};
 
     const label = document.createElement("label");
@@ -713,31 +872,34 @@
 
     label.appendChild(field);
 
-    field.addEventListener(
-      options.select ? "change" : "input",
-      () => {
-        onInput(field.value);
-      }
-    );
+    field.addEventListener("change", () => {
+      recordHistory();
+      onInput(field.value);
+      scheduleSave();
+    });
+
+    field.addEventListener("input", () => {
+      onInput(field.value);
+      scheduleSave();
+    });
 
     parent.appendChild(label);
-
     return field;
   }
 
   function renderInspector() {
     const container = $("inspectorContent");
+    if (!container) return;
+
     container.replaceChildren();
 
     const block = currentBlock();
 
     if (!block) {
       const note = document.createElement("p");
-
       note.className = "muted";
       note.textContent =
-        "Select a block in your chapter to edit its details. The extra controls stay here, out of your way.";
-
+        "Select a block in your chapter to edit its details. Quick Edit stays here while you write.";
       container.appendChild(note);
       return;
     }
@@ -745,20 +907,15 @@
     const typeNote = document.createElement("p");
     typeNote.className = "inspector-note";
     typeNote.textContent = blockLabel(block);
-
     container.appendChild(typeNote);
 
-    if (
-      block.type !== "paragraph" &&
-      block.type !== "reference"
-    ) {
+    if (block.type !== "paragraph" && block.type !== "reference") {
       addInspectorField(
         container,
         "Experience title",
         block.title,
         (value) => {
           block.title = value;
-          scheduleSave();
           renderManuscript();
         }
       );
@@ -771,7 +928,6 @@
         block.character,
         (value) => {
           block.character = value;
-          scheduleSave();
           renderManuscript();
         }
       );
@@ -786,7 +942,6 @@
         block[media.key],
         (value) => {
           block[media.key] = value;
-          scheduleSave();
           renderManuscript();
         }
       );
@@ -795,12 +950,9 @@
     if (block.type === "choice") {
       const heading = document.createElement("h3");
       heading.textContent = "Choice options";
-
       container.appendChild(heading);
 
-      block.options = Array.isArray(block.options)
-        ? block.options
-        : [];
+      block.options = Array.isArray(block.options) ? block.options : [];
 
       block.options.forEach((option, index) => {
         addInspectorField(
@@ -809,7 +961,6 @@
           option.label,
           (value) => {
             option.label = value;
-            scheduleSave();
           }
         );
 
@@ -819,18 +970,17 @@
           option.target,
           (value) => {
             option.target = value;
-            scheduleSave();
           }
         );
       });
 
       const add = document.createElement("button");
-
       add.className = "button secondary full-width";
       add.type = "button";
       add.textContent = "＋ Add choice option";
 
       add.addEventListener("click", () => {
+        recordHistory();
         block.options.push({
           label: "New choice",
           target: ""
@@ -844,11 +994,9 @@
       container.appendChild(add);
 
       const note = document.createElement("p");
-
       note.className = "inspector-note";
       note.textContent =
-        "Targets are saved as IDs for future branch integration. Full conditional branching is not enabled yet.";
-
+        "Targets are saved as chapter IDs. Full conditional branching still needs its own Reader integration.";
       container.appendChild(note);
     }
 
@@ -868,7 +1016,6 @@
         block.nextChapterId,
         (value) => {
           block.nextChapterId = value;
-          scheduleSave();
           renderManuscript();
         },
         { select: choices }
@@ -891,32 +1038,25 @@
         block.assetId,
         (value) => {
           block.assetId = value;
-          scheduleSave();
           renderManuscript();
         },
         { select: choices }
       );
     }
 
-    if (
-      ["image", "reveal", "video", "audio"].includes(block.type)
-    ) {
+    if (["image", "reveal", "video", "audio"].includes(block.type)) {
       const choices = [
         { label: "Choose media from Asset shelf", value: "" }
       ].concat(
         state.project.assets
-          .filter((asset) =>
-            asset.kind === "image" ||
-            asset.kind === "video" ||
-            asset.kind === "audio"
-          )
+          .filter((asset) => ["image", "video", "audio"].includes(asset.kind))
           .map((asset) => ({
             label: asset.name,
             value: asset.id
           }))
       );
 
-      const mediaPicker = addInspectorField(
+      const picker = addInspectorField(
         container,
         "Attach saved media",
         block.assetId || "",
@@ -928,52 +1068,101 @@
           );
 
           if (asset && asset.dataUrl) {
-            if (asset.kind === "image") {
-              block.imageUrl = asset.dataUrl;
-            }
-
-            if (asset.kind === "video") {
-              block.videoUrl = asset.dataUrl;
-            }
-
-            if (asset.kind === "audio") {
-              block.audioUrl = asset.dataUrl;
-            }
+            if (asset.kind === "image") block.imageUrl = asset.dataUrl;
+            if (asset.kind === "video") block.videoUrl = asset.dataUrl;
+            if (asset.kind === "audio") block.audioUrl = asset.dataUrl;
           }
 
-          scheduleSave();
           renderManuscript();
         },
         { select: choices }
       );
 
-      mediaPicker.value = block.assetId || "";
+      picker.value = block.assetId || "";
     }
 
-    const deleteButton = document.createElement("button");
+    const trayButton = document.createElement("button");
+    trayButton.type = "button";
+    trayButton.className = "button secondary full-width";
+    trayButton.textContent = "Open asset shelf";
+    trayButton.addEventListener("click", openWritingAssetTray);
+    container.appendChild(trayButton);
 
+    const deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.className = "button quiet full-width";
     deleteButton.style.marginTop = "18px";
     deleteButton.textContent = "Delete this block";
-
-    deleteButton.addEventListener("click", () => {
-      removeBlock(block.id);
-    });
-
+    deleteButton.addEventListener("click", () => removeBlock(block.id));
     container.appendChild(deleteButton);
   }
 
+  function updateInspectorState() {
+    const inspector = $("blockInspector");
+    if (!inspector) return;
+
+    inspector.classList.toggle(
+      "inspector-expanded",
+      state.inspectorExpanded
+    );
+
+    const expandButton = $("expandInspectorButton");
+
+    if (expandButton) {
+      expandButton.textContent = state.inspectorExpanded
+        ? "Restore size"
+        : "Expand Quick Edit";
+
+      expandButton.setAttribute(
+        "aria-expanded",
+        String(state.inspectorExpanded)
+      );
+    }
+  }
+
+  function closeInspector() {
+    const inspector = $("blockInspector");
+    if (!inspector) return;
+
+    inspector.classList.add("inspector-closed");
+    inspector.classList.remove("inspector-expanded");
+    state.inspectorExpanded = false;
+    updateInspectorState();
+  }
+
+  function openInspector() {
+    const inspector = $("blockInspector");
+    if (!inspector) return;
+
+    inspector.classList.remove("inspector-closed");
+    updateInspectorState();
+  }
+
+  function toggleInspectorExpanded() {
+    state.inspectorExpanded = !state.inspectorExpanded;
+    openInspector();
+    updateInspectorState();
+  }
+
   function renderOverview() {
-    $("storyTitle").value = state.project.title || "";
-    $("storyDescription").value =
-      state.project.description || "";
-    $("storyGenre").value = state.project.genre || "";
-    $("storyStatus").value = state.project.status || "draft";
-    $("storySlug").value =
-      state.project.slug || slugify(state.project.title);
+    const fields = [
+      ["storyTitle", state.project.title || ""],
+      ["storyDescription", state.project.description || ""],
+      ["storyGenre", state.project.genre || ""],
+      ["storyStatus", state.project.status || "draft"],
+      ["storySlug", state.project.slug || slugify(state.project.title)]
+    ];
+
+    fields.forEach(([id, value]) => {
+      const field = $(id);
+      if (field && document.activeElement !== field) {
+        field.value = value;
+      }
+    });
 
     const list = $("overviewChapterList");
+    if (!list) return;
+
     list.replaceChildren();
 
     state.project.chapters.forEach((chapter, index) => {
@@ -982,14 +1171,10 @@
 
       const open = document.createElement("button");
       open.type = "button";
-
       open.textContent =
-        (index + 1) +
-        ". " +
+        (index + 1) + ". " +
         (chapter.title || "Untitled chapter") +
-        " · " +
-        chapter.blocks.length +
-        " blocks";
+        " · " + chapter.blocks.length + " blocks";
 
       open.addEventListener("click", () => {
         state.chapterId = chapter.id;
@@ -1011,35 +1196,24 @@
       0
     );
 
-    const words = chapters.reduce(
-      (sum, chapter) =>
-        sum +
-        chapter.blocks.reduce(
-          (total, block) =>
-            total +
-            (
-              String(block.text || "").trim().match(/\S+/g) || []
-            ).length,
-          0
-        ),
-      0
-    );
+    const words = chapters.reduce((total, chapter) => {
+      return total + chapter.blocks.reduce((sum, block) => {
+        return sum + (
+          String(block.text || "").trim().match(/\S+/g) || []
+        ).length;
+      }, 0);
+    }, 0);
 
-    $("chapterCount").textContent = chapters.length;
-    $("blockCount").textContent = blocks;
-    $("wordCount").textContent = words;
-    $("assetCount").textContent = state.project.assets.length;
-    $("assetShelfCount").textContent =
-      state.project.assets.length + " files";
+    safeSet("chapterCount", chapters.length);
+    safeSet("blockCount", blocks);
+    safeSet("wordCount", words);
+    safeSet("assetCount", state.project.assets.length);
+    safeSet("assetShelfCount", state.project.assets.length + " files");
   }
 
   function formatSize(bytes) {
     if (bytes < 1024) return bytes + " B";
-
-    if (bytes < 1024 * 1024) {
-      return (bytes / 1024).toFixed(1) + " KB";
-    }
-
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
     return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   }
 
@@ -1047,24 +1221,10 @@
     if (file.type.startsWith("image/")) return "image";
     if (file.type.startsWith("video/")) return "video";
     if (file.type.startsWith("audio/")) return "audio";
-
-    if (
-      file.type === "application/pdf" ||
-      /\.pdf$/i.test(file.name)
-    ) return "pdf";
-
-    if (/\.(doc|docx|odt|rtf)$/i.test(file.name)) {
-      return "document";
-    }
-
-    if (/\.(xls|xlsx|ppt|pptx|zip)$/i.test(file.name)) {
-      return "file";
-    }
-
-    if (/\.(txt|md|json)$/i.test(file.name)) {
-      return "text";
-    }
-
+    if (file.type === "application/pdf" || /\.pdf$/i.test(file.name)) return "pdf";
+    if (/\.(doc|docx|odt|rtf)$/i.test(file.name)) return "document";
+    if (/\.(xls|xlsx|ppt|pptx|zip)$/i.test(file.name)) return "file";
+    if (/\.(txt|md|json)$/i.test(file.name)) return "text";
     return "file";
   }
 
@@ -1073,8 +1233,9 @@
       const reader = new FileReader();
 
       reader.onload = () => resolve(reader.result);
-      reader.onerror = () =>
-        reject(new Error("Could not read " + file.name));
+      reader.onerror = () => reject(
+        new Error("Could not read " + file.name)
+      );
 
       reader.readAsDataURL(file);
     });
@@ -1082,7 +1243,6 @@
 
   async function addFiles(fileList) {
     const files = Array.from(fileList || []);
-
     if (!files.length) return;
 
     let added = 0;
@@ -1095,12 +1255,13 @@
           file.name +
           " is larger than 18 MB. Keep large files externally and add a link instead."
         );
-
         continue;
       }
 
       try {
         const dataUrl = await readAsDataUrl(file);
+
+        recordHistory();
 
         state.project.assets.push({
           id: makeId("asset"),
@@ -1109,8 +1270,7 @@
           kind: kindForFile(file),
           size: file.size,
           lastModified: file.lastModified || 0,
-          relativePath:
-            file.webkitRelativePath || file.name,
+          relativePath: file.webkitRelativePath || file.name,
           dataUrl: dataUrl,
           addedAt: new Date().toISOString()
         });
@@ -1124,13 +1284,12 @@
     if (added) {
       scheduleSave();
       renderAssetShelf();
+      renderWritingAssetShelf();
       renderOverview();
       updateCounts();
 
       notify(
-        added +
-        " file" +
-        (added === 1 ? "" : "s") +
+        added + " file" + (added === 1 ? "" : "s") +
         " added to your local asset shelf."
       );
     }
@@ -1148,192 +1307,222 @@
     })[asset.kind] || "FILE";
   }
 
+  function createAssetCard(asset, compact) {
+    const card = document.createElement("article");
+    card.className = "asset-card";
+    card.draggable = true;
+    card.dataset.assetId = asset.id;
+
+    card.addEventListener("dragstart", (event) => {
+      event.dataTransfer.effectAllowed = "copy";
+      event.dataTransfer.setData("text/ceeqwinn-asset", asset.id);
+    });
+
+    const thumb = document.createElement("div");
+    thumb.className = "asset-thumb";
+
+    if (asset.kind === "image" && asset.dataUrl) {
+      const image = document.createElement("img");
+      image.src = asset.dataUrl;
+      image.alt = asset.name;
+      image.loading = "lazy";
+      thumb.appendChild(image);
+    } else if (asset.kind === "video" && asset.dataUrl) {
+      const video = document.createElement("video");
+      video.src = asset.dataUrl;
+      video.muted = true;
+      video.preload = "metadata";
+      video.controls = !compact;
+      thumb.appendChild(video);
+    } else {
+      thumb.textContent = assetIcon(asset);
+    }
+
+    card.appendChild(thumb);
+
+    const name = document.createElement("span");
+    name.className = "asset-name";
+    name.textContent = asset.name;
+    card.appendChild(name);
+
+    const size = document.createElement("p");
+    size.className = "asset-size";
+    size.textContent = formatSize(asset.size || 0) + " · " + asset.kind;
+    card.appendChild(size);
+
+    const actions = document.createElement("div");
+    actions.className = "asset-actions";
+
+    if (asset.dataUrl && !compact) {
+      const open = document.createElement("a");
+      open.href = asset.dataUrl;
+      open.target = "_blank";
+      open.rel = "noopener";
+      open.textContent = "Open";
+      actions.appendChild(open);
+
+      const download = document.createElement("a");
+      download.href = asset.dataUrl;
+      download.download = asset.name;
+      download.textContent = "Save copy";
+      actions.appendChild(download);
+    }
+
+    if (["image", "video", "audio"].includes(asset.kind)) {
+      const insert = document.createElement("button");
+      insert.type = "button";
+      insert.textContent = compact ? "Insert" : "Use in story";
+      insert.addEventListener("click", () => insertAssetIntoStory(asset));
+      actions.appendChild(insert);
+    } else {
+      const attach = document.createElement("button");
+      attach.type = "button";
+      attach.textContent = "Attach reference";
+      attach.addEventListener("click", () => attachReference(asset));
+      actions.appendChild(attach);
+    }
+
+    if (!compact) {
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.textContent = "Remove";
+
+      remove.addEventListener("click", () => removeAsset(asset));
+      actions.appendChild(remove);
+    }
+
+    card.appendChild(actions);
+    return card;
+  }
+
   function renderAssetShelf() {
     const shelf = $("assetShelf");
+    if (!shelf) return;
+
     shelf.replaceChildren();
 
     if (!state.project.assets.length) {
       const empty = document.createElement("p");
-
       empty.className = "muted";
       empty.textContent =
         "Your shelf is empty. Drop files above to start collecting your story materials.";
-
       shelf.appendChild(empty);
       return;
     }
 
     state.project.assets.forEach((asset) => {
-      const card = document.createElement("article");
-      card.className = "asset-card";
-
-      const thumb = document.createElement("div");
-      thumb.className = "asset-thumb";
-
-      if (asset.kind === "image" && asset.dataUrl) {
-        const image = document.createElement("img");
-
-        image.src = asset.dataUrl;
-        image.alt = asset.name;
-
-        thumb.appendChild(image);
-      } else if (asset.kind === "video" && asset.dataUrl) {
-        const video = document.createElement("video");
-
-        video.src = asset.dataUrl;
-        video.muted = true;
-        video.preload = "metadata";
-        video.controls = true;
-
-        thumb.appendChild(video);
-      } else {
-        thumb.textContent = assetIcon(asset);
-      }
-
-      card.appendChild(thumb);
-
-      const name = document.createElement("span");
-
-      name.className = "asset-name";
-      name.textContent = asset.name;
-
-      card.appendChild(name);
-
-      const size = document.createElement("p");
-
-      size.className = "asset-size";
-      size.textContent =
-        formatSize(asset.size || 0) + " · " + asset.kind;
-
-      card.appendChild(size);
-
-      const actions = document.createElement("div");
-      actions.className = "asset-actions";
-
-      if (asset.dataUrl) {
-        const open = document.createElement("a");
-
-        open.href = asset.dataUrl;
-        open.target = "_blank";
-        open.rel = "noopener";
-        open.textContent = "Open";
-
-        actions.appendChild(open);
-
-        const download = document.createElement("a");
-
-        download.href = asset.dataUrl;
-        download.download = asset.name;
-        download.textContent = "Save copy";
-
-        actions.appendChild(download);
-      }
-
-      if (
-        ["image", "video", "audio"].includes(asset.kind)
-      ) {
-        const insert = document.createElement("button");
-
-        insert.type = "button";
-        insert.textContent = "Use in story";
-
-        insert.addEventListener("click", () => {
-          insertAssetIntoStory(asset);
-        });
-
-        actions.appendChild(insert);
-      } else {
-        const attach = document.createElement("button");
-
-        attach.type = "button";
-        attach.textContent = "Attach reference";
-
-        attach.addEventListener("click", () => {
-          const block = createBlock("reference");
-          block.assetId = asset.id;
-
-          const chapter = currentChapter();
-
-          const index = chapter.blocks.findIndex(
-            (item) => item.id === state.selectedBlockId
-          );
-
-          chapter.blocks.splice(
-            index >= 0 ? index + 1 : chapter.blocks.length,
-            0,
-            block
-          );
-
-          state.selectedBlockId = block.id;
-
-          showPanel("writingPanel");
-          scheduleSave();
-          renderAll();
-        });
-
-        actions.appendChild(attach);
-      }
-
-      const remove = document.createElement("button");
-
-      remove.type = "button";
-      remove.textContent = "Remove";
-
-      remove.addEventListener("click", () => {
-        if (!window.confirm(
-          "Remove " +
-          asset.name +
-          " from this project's asset shelf?"
-        )) return;
-
-        state.project.assets = state.project.assets.filter(
-          (item) => item.id !== asset.id
-        );
-
-        state.project.chapters.forEach((chapter) => {
-          chapter.blocks.forEach((block) => {
-            if (block.assetId === asset.id) {
-              block.assetId = "";
-            }
-          });
-        });
-
-        scheduleSave();
-        renderAll();
-      });
-
-      actions.appendChild(remove);
-      card.appendChild(actions);
-      shelf.appendChild(card);
+      shelf.appendChild(createAssetCard(asset, false));
     });
   }
 
+  function renderWritingAssetShelf() {
+    const shelf = $("writingAssetShelf");
+    if (!shelf) return;
+
+    shelf.replaceChildren();
+
+    if (!state.project.assets.length) {
+      const empty = document.createElement("p");
+      empty.className = "muted";
+      empty.textContent = "Your asset shelf is empty.";
+      shelf.appendChild(empty);
+      return;
+    }
+
+    state.project.assets.forEach((asset) => {
+      shelf.appendChild(createAssetCard(asset, true));
+    });
+  }
+
+  function openWritingAssetTray() {
+    const tray = $("writingAssetTray");
+    if (!tray) {
+      showPanel("assetsPanel");
+      return;
+    }
+
+    tray.hidden = false;
+    tray.classList.add("asset-tray-open");
+    renderWritingAssetShelf();
+  }
+
+  function closeWritingAssetTray() {
+    const tray = $("writingAssetTray");
+    if (!tray) return;
+
+    tray.hidden = true;
+    tray.classList.remove("asset-tray-open");
+  }
+
+  function removeAsset(asset) {
+    if (!window.confirm(
+      "Remove " + asset.name + " from this project's asset shelf?"
+    )) return;
+
+    recordHistory();
+
+    state.project.assets = state.project.assets.filter(
+      (item) => item.id !== asset.id
+    );
+
+    state.project.chapters.forEach((chapter) => {
+      chapter.blocks.forEach((block) => {
+        if (block.assetId === asset.id) {
+          block.assetId = "";
+        }
+      });
+    });
+
+    scheduleSave();
+    renderAll();
+    notify("Asset removed. Use Undo if you removed it by mistake.");
+  }
+
+  function attachReference(asset) {
+    const chapter = currentChapter();
+    if (!chapter) return;
+
+    recordHistory();
+
+    const block = createBlock("reference");
+    block.assetId = asset.id;
+
+    const index = chapter.blocks.findIndex(
+      (item) => item.id === state.selectedBlockId
+    );
+
+    chapter.blocks.splice(
+      index >= 0 ? index + 1 : chapter.blocks.length,
+      0,
+      block
+    );
+
+    state.selectedBlockId = block.id;
+    showPanel("writingPanel");
+    scheduleSave();
+    renderAll();
+    closeWritingAssetTray();
+  }
+
   function insertAssetIntoStory(asset) {
-    const type =
-      asset.kind === "image"
-        ? "image"
-        : asset.kind === "video"
-          ? "video"
-          : "audio";
+    const type = asset.kind === "image"
+      ? "image"
+      : asset.kind === "video"
+        ? "video"
+        : "audio";
+
+    const chapter = currentChapter();
+    if (!chapter) return;
+
+    recordHistory();
 
     const block = createBlock(type);
-
     block.title = asset.name;
     block.assetId = asset.id;
 
-    if (asset.kind === "image") {
-      block.imageUrl = asset.dataUrl || "";
-    }
-
-    if (asset.kind === "video") {
-      block.videoUrl = asset.dataUrl || "";
-    }
-
-    if (asset.kind === "audio") {
-      block.audioUrl = asset.dataUrl || "";
-    }
-
-    const chapter = currentChapter();
+    if (asset.kind === "image") block.imageUrl = asset.dataUrl || "";
+    if (asset.kind === "video") block.videoUrl = asset.dataUrl || "";
+    if (asset.kind === "audio") block.audioUrl = asset.dataUrl || "";
 
     const index = chapter.blocks.findIndex(
       (item) => item.id === state.selectedBlockId
@@ -1350,6 +1539,7 @@
     showPanel("writingPanel");
     scheduleSave();
     renderAll();
+    closeWritingAssetTray();
 
     notify("Added " + asset.name + " to the chapter.");
   }
@@ -1358,11 +1548,7 @@
     const output = [];
 
     const entries = Array.from(dataTransfer.items || [])
-      .map((item) =>
-        item.webkitGetAsEntry
-          ? item.webkitGetAsEntry()
-          : null
-      )
+      .map((item) => item.webkitGetAsEntry ? item.webkitGetAsEntry() : null)
       .filter(Boolean);
 
     async function walk(entry, path) {
@@ -1373,11 +1559,9 @@
 
         if (file) {
           try {
-            Object.defineProperty(
-              file,
-              "webkitRelativePath",
-              { value: path + file.name }
-            );
+            Object.defineProperty(file, "webkitRelativePath", {
+              value: path + file.name
+            });
           } catch (error) {}
 
           output.push(file);
@@ -1385,13 +1569,9 @@
       } else if (entry.isDirectory) {
         const reader = entry.createReader();
 
-        const readBatch = () =>
-          new Promise((resolve) => {
-            reader.readEntries(
-              resolve,
-              () => resolve([])
-            );
-          });
+        const readBatch = () => new Promise((resolve) => {
+          reader.readEntries(resolve, () => resolve([]));
+        });
 
         let batch;
 
@@ -1416,26 +1596,20 @@
     return Array.from(dataTransfer.files || []);
   }
 
-  function slugify(value) {
-    return String(value || "my-story")
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 100) || "my-story";
-  }
-
   function updatePublishUrl() {
+    const slugField = $("storySlug");
+    const preview = $("publicUrlPreview");
+
+    if (!preview) return;
+
     const slug = slugify(
-      $("storySlug").value ||
+      (slugField && slugField.value) ||
       state.project.slug ||
       state.project.title
     );
 
-    $("publicUrlPreview").textContent =
-      window.location.origin +
-      "/read.html?story=" +
-      slug;
+    preview.textContent =
+      window.location.origin + "/read.html?story=" + slug;
   }
 
   function downloadJson(filename, data) {
@@ -1454,9 +1628,7 @@
     link.click();
     link.remove();
 
-    window.setTimeout(() => {
-      URL.revokeObjectURL(url);
-    }, 1500);
+    window.setTimeout(() => URL.revokeObjectURL(url), 1500);
   }
 
   function exportProject() {
@@ -1471,12 +1643,10 @@
   }
 
   function exportReaderStory() {
-    const project = JSON.parse(
-      JSON.stringify(state.project)
-    );
+    const project = clone(state.project);
 
     project.slug = slugify(
-      $("storySlug").value ||
+      ($("storySlug") && $("storySlug").value) ||
       project.slug ||
       project.title
     );
@@ -1489,10 +1659,7 @@
 
     project.status = "ready";
 
-    downloadJson(
-      project.slug + ".json",
-      project
-    );
+    downloadJson(project.slug + ".json", project);
 
     notify(
       "Reader JSON exported. Upload it to the website's stories folder to publish."
@@ -1503,56 +1670,26 @@
     if (!file) return;
 
     try {
-      const incoming = JSON.parse(
-        await file.text()
-      );
+      const incoming = JSON.parse(await file.text());
 
-      if (
-        !incoming ||
-        !Array.isArray(incoming.chapters)
-      ) {
-        throw new Error(
-          "This is not a Studio project backup."
-        );
+      if (!incoming || !Array.isArray(incoming.chapters)) {
+        throw new Error("This is not a Studio project backup.");
       }
 
       if (!window.confirm(
         "Open this project backup? It will replace the draft currently open in the Studio."
       )) return;
 
-      incoming.schemaVersion = 3;
+      recordHistory();
 
-      incoming.assets = Array.isArray(incoming.assets)
-        ? incoming.assets
-        : [];
-
-      incoming.chapters.forEach((chapter) => {
-        chapter.blocks = Array.isArray(chapter.blocks)
-          ? chapter.blocks
-          : [];
-
-        if (!chapter.folder) {
-          chapter.folder = "Unsorted";
-        }
-      });
-
-      state.project = incoming;
-
-      if (!state.project.chapters.length) {
-        state.project.chapters.push({
-          id: makeId("chapter"),
-          title: "Chapter One",
-          folder: "Unsorted",
-          blocks: []
-        });
-      }
-
+      state.project = normalizeProject(incoming);
       state.chapterId = state.project.chapters[0].id;
       state.selectedBlockId = "";
 
       scheduleSave();
       renderAll();
 
+      recordHistory();
       notify("Project backup opened.");
     } catch (error) {
       notify(
@@ -1563,97 +1700,82 @@
 
   function applySettingsToPage() {
     const settings = state.settings;
+    if (!settings) return;
 
-    document.documentElement.style.setProperty(
-      "--accent",
-      settings.accent
-    );
+    document.documentElement.style.setProperty("--accent", settings.accent);
+    document.documentElement.style.setProperty("--bg", settings.background);
+    document.documentElement.style.setProperty("--panel", settings.panel);
+    document.documentElement.style.setProperty("--writing-font", settings.fontFamily);
+    document.documentElement.style.setProperty("--writing-size", settings.fontSize + "px");
 
-    document.documentElement.style.setProperty(
-      "--bg",
-      settings.background
-    );
+    document.body.classList.toggle("hide-hints", !settings.showHints);
+    document.body.classList.toggle("light-workspace", !settings.darkMode);
+    document.body.classList.toggle("reduce-motion", settings.reduceMotion);
 
-    document.documentElement.style.setProperty(
-      "--panel",
-      settings.panel
-    );
-
-    document.documentElement.style.setProperty(
-      "--writing-font",
-      settings.fontFamily
-    );
-
-    document.documentElement.style.setProperty(
-      "--writing-size",
-      settings.fontSize + "px"
-    );
-
-    document.body.classList.toggle(
-      "hide-hints",
-      !settings.showHints
-    );
-
-    document.body.classList.toggle(
-      "light-workspace",
-      !settings.darkMode
-    );
-
-    document.body.classList.toggle(
-      "reduce-motion",
-      settings.reduceMotion
-    );
+    safeSet("fontSizeValue", settings.fontSize + "px");
 
     if (state.project) {
-      state.project.theme = Object.assign(
-        {},
-        state.project.theme,
-        {
-          accent: settings.accent,
-          background: settings.background,
-          panel: settings.panel
-        }
-      );
+      state.project.theme = Object.assign({}, state.project.theme, {
+        accent: settings.accent,
+        background: settings.background,
+        panel: settings.panel
+      });
     }
   }
 
   function openSettings() {
     const s = state.settings;
 
-    $("showHintsSetting").checked = s.showHints;
-    $("darkModeSetting").checked = s.darkMode;
-    $("fontFamilySetting").value = s.fontFamily;
-    $("fontSizeSetting").value = s.fontSize;
-    $("accentSetting").value = s.accent;
-    $("backgroundSetting").value = s.background;
-    $("panelSetting").value = s.panel;
-    $("transitionSetting").value = s.transition;
-    $("reduceMotionSetting").checked = s.reduceMotion;
+    const values = {
+      showHintsSetting: s.showHints,
+      darkModeSetting: s.darkMode,
+      fontFamilySetting: s.fontFamily,
+      fontSizeSetting: s.fontSize,
+      accentSetting: s.accent,
+      backgroundSetting: s.background,
+      panelSetting: s.panel,
+      transitionSetting: s.transition,
+      reduceMotionSetting: s.reduceMotion
+    };
+
+    Object.keys(values).forEach((id) => {
+      const element = $(id);
+      if (!element) return;
+
+      if (element.type === "checkbox") {
+        element.checked = values[id];
+      } else {
+        element.value = values[id];
+      }
+    });
+
+    safeSet("fontSizeValue", s.fontSize + "px");
 
     renderPalette();
 
-    $("settingsDialog").showModal();
+    if ($("settingsDialog")) {
+      $("settingsDialog").showModal();
+    }
   }
 
   function renderPalette() {
     const container = $("paletteSwatches");
+    if (!container) return;
+
     container.replaceChildren();
 
     palette.forEach((colour) => {
       const button = document.createElement("button");
-
       button.type = "button";
       button.className = "palette-swatch";
       button.style.background = colour;
       button.title = "Use " + colour;
-
-      button.setAttribute(
-        "aria-label",
-        "Use colour " + colour
-      );
+      button.setAttribute("aria-label", "Use colour " + colour);
 
       button.addEventListener("click", () => {
-        $("accentSetting").value = colour;
+        if ($("accentSetting")) {
+          $("accentSetting").value = colour;
+        }
       });
 
       container.appendChild(button);
@@ -1681,16 +1803,13 @@
     applySettingsToPage();
     scheduleSave();
 
-    $("settingsDialog").close();
+    if ($("settingsDialog")) $("settingsDialog").close();
 
     notify("Studio settings saved.");
   }
 
   function resetSettings() {
-    state.settings = Object.assign(
-      {},
-      defaultSettings
-    );
+    state.settings = Object.assign({}, defaultSettings);
 
     localStorage.setItem(
       SETTINGS_KEY,
@@ -1702,20 +1821,29 @@
   }
 
   function openPreview() {
-    $("previewStoryTitle").textContent =
-      state.project.title || "Untitled story";
+    if (!$("previewDialog") || !window.CeeqwinnTheatre) {
+      notify("The theatre preview engine is not available.");
+      return;
+    }
+
+    safeSet(
+      "previewStoryTitle",
+      state.project.title || "Untitled story"
+    );
 
     const frame = $("previewFrame");
 
-    frame.classList.remove(
-      "phone-preview",
-      "tablet-preview",
-      "desktop-preview"
-    );
+    if (frame && $("previewSize")) {
+      frame.classList.remove(
+        "phone-preview",
+        "tablet-preview",
+        "desktop-preview"
+      );
 
-    frame.classList.add(
-      ($("previewSize").value || "phone") + "-preview"
-    );
+      frame.classList.add(
+        ($("previewSize").value || "phone") + "-preview"
+      );
+    }
 
     window.CeeqwinnTheatre.render(
       $("theatrePreview"),
@@ -1732,6 +1860,7 @@
           if (!chapter) return;
 
           state.chapterId = id;
+          state.selectedBlockId = "";
           renderAll();
           openPreview();
         },
@@ -1744,12 +1873,10 @@
   }
 
   function addChapter() {
-    const title = window.prompt(
-      "Chapter title:",
-      "New chapter"
-    );
-
+    const title = window.prompt("Chapter title:", "New chapter");
     if (title === null) return;
+
+    recordHistory();
 
     const chapter = {
       id: makeId("chapter"),
@@ -1769,6 +1896,7 @@
 
   function renameChapter() {
     const chapter = currentChapter();
+    if (!chapter) return;
 
     const title = window.prompt(
       "Chapter title:",
@@ -1777,8 +1905,9 @@
 
     if (title === null) return;
 
-    chapter.title =
-      title.trim() || "Untitled chapter";
+    recordHistory();
+
+    chapter.title = title.trim() || "Untitled chapter";
 
     scheduleSave();
     renderAll();
@@ -1791,8 +1920,10 @@
     }
 
     if (!window.confirm(
-      "Delete this chapter and its blocks? Export a backup first if you may need it."
+      "Delete this chapter and its blocks? You can use Undo to restore it."
     )) return;
+
+    recordHistory();
 
     const index = state.project.chapters.findIndex(
       (chapter) => chapter.id === state.chapterId
@@ -1801,9 +1932,7 @@
     state.project.chapters.splice(index, 1);
 
     state.chapterId =
-      state.project.chapters[
-        Math.max(0, index - 1)
-      ].id;
+      state.project.chapters[Math.max(0, index - 1)].id;
 
     state.selectedBlockId = "";
 
@@ -1811,252 +1940,69 @@
     renderAll();
   }
 
-  function bind() {
-    document.querySelectorAll(".nav-item").forEach((button) => {
-      button.addEventListener("click", () => {
-        showPanel(button.dataset.panel);
-      });
-    });
+  function toggleSidebar() {
+    const sidebar = $("mainSidebar");
+    const layout = document.querySelector(".app-layout");
+    const expandButton = $("expandSidebarButton");
+    const collapseButton = $("collapseSidebarButton");
 
-    $("addChapterButton").addEventListener(
-      "click",
-      addChapter
+    if (!sidebar || !layout) return;
+
+    state.sidebarCollapsed = !state.sidebarCollapsed;
+
+    sidebar.classList.toggle(
+      "collapsed",
+      state.sidebarCollapsed
     );
 
-    $("overviewAddChapterButton").addEventListener(
-      "click",
-      addChapter
+    layout.classList.toggle(
+      "sidebar-collapsed",
+      state.sidebarCollapsed
     );
 
-    $("renameChapterButton").addEventListener(
-      "click",
-      renameChapter
-    );
-
-    $("deleteChapterButton").addEventListener(
-      "click",
-      deleteChapter
-    );
-
-    $("newWritingBatchButton").addEventListener(
-      "click",
-      () => addBlock("paragraph")
-    );
-
-    $("addParagraphButton").addEventListener(
-      "click",
-      () => addBlock("paragraph")
-    );
-
-    $("insertExperienceButton").addEventListener(
-      "click",
-      () => $("experienceDialog").showModal()
-    );
-
-    $("addImageButton").addEventListener("click", () => {
-      showPanel("assetsPanel");
-      $("assetFileInput").accept = "image/*";
-      $("assetFileInput").click();
-    });
-
-    $("addVideoButton").addEventListener("click", () => {
-      showPanel("assetsPanel");
-      $("assetFileInput").accept = "video/*";
-      $("assetFileInput").click();
-    });
-
-    $("addReferenceButton").addEventListener("click", () => {
-      showPanel("assetsPanel");
-
-      $("assetFileInput").accept =
-        ".pdf,.doc,.docx,.txt,.md,.rtf,.odt,.xls,.xlsx,.ppt,.pptx,.json";
-
-      $("assetFileInput").click();
-    });
-
-    document.querySelectorAll(".experience-option").forEach((button) => {
-      button.addEventListener("click", () => {
-        const type = button.dataset.type;
-
-        $("experienceDialog").close();
-        addBlock(type);
-      });
-    });
-
-    document.querySelectorAll(".dialog-close").forEach((button) => {
-      button.addEventListener("click", () => {
-        button.closest("dialog").close();
-      });
-    });
-
-    $("settingsButton").addEventListener(
-      "click",
-      openSettings
-    );
-
-    $("saveSettingsButton").addEventListener(
-      "click",
-      saveSettings
-    );
-
-    $("resetSettingsButton").addEventListener(
-      "click",
-      resetSettings
-    );
-
-    $("previewButton").addEventListener(
-      "click",
-      openPreview
-    );
-
-    $("previewChapterButton").addEventListener(
-      "click",
-      openPreview
-    );
-
-    $("closePreviewButton").addEventListener(
-      "click",
-      () => $("previewDialog").close()
-    );
-
-    $("previewSize").addEventListener("change", () => {
-      $("previewFrame").classList.remove(
-        "phone-preview",
-        "tablet-preview",
-        "desktop-preview"
+    if (expandButton) {
+      expandButton.hidden = !state.sidebarCollapsed;
+      expandButton.setAttribute(
+        "aria-expanded",
+        String(!state.sidebarCollapsed)
       );
+    }
 
-      $("previewFrame").classList.add(
-        $("previewSize").value + "-preview"
+    if (collapseButton) {
+      collapseButton.hidden = state.sidebarCollapsed;
+      collapseButton.setAttribute(
+        "aria-expanded",
+        String(!state.sidebarCollapsed)
       );
+    }
+
+    sidebar.querySelectorAll(
+      ".nav-item span, .sidebar-section, .sidebar-bottom"
+    ).forEach((item) => {
+      item.hidden = state.sidebarCollapsed;
     });
+  }
 
-    $("backToOverview").addEventListener(
-      "click",
-      () => showPanel("overviewPanel")
-    );
+  function openAssetPicker(accept) {
+    showPanel("assetsPanel");
 
-    $("overviewStartWritingButton").addEventListener(
-      "click",
-      () => showPanel("writingPanel")
-    );
+    const input = $("assetFileInput");
+    if (!input) return;
 
-    $("clearSelectionButton").addEventListener("click", () => {
-      state.selectedBlockId = "";
-      renderManuscript();
-      renderInspector();
-    });
+    input.accept = accept || "";
+    input.click();
+  }
 
-    $("manuscriptChapterTitle").addEventListener(
-      "input",
-      () => {
-        currentChapter().title =
-          $("manuscriptChapterTitle").value;
-
-        $("currentChapterLabel").textContent =
-          currentChapter().title || "Untitled chapter";
-
-        scheduleSave();
-        renderChapterList();
-      }
-    );
-
-    [
-      ["storyTitle", "title"],
-      ["storyDescription", "description"],
-      ["storyGenre", "genre"],
-      ["storyStatus", "status"]
-    ].forEach(([id, key]) => {
-      $(id).addEventListener("input", () => {
-        state.project[key] = $(id).value;
-
-        if (key === "title") {
-          $("previewStoryTitle").textContent =
-            $(id).value || "Untitled story";
-
-          if (!$("storySlug").dataset.edited) {
-            $("storySlug").value =
-              slugify($(id).value);
-          }
-        }
-
-        updatePublishUrl();
-        scheduleSave();
-      });
-    });
-
-    $("storySlug").addEventListener("input", () => {
-      $("storySlug").dataset.edited = "true";
-
-      state.project.slug = slugify(
-        $("storySlug").value
-      );
-
-      updatePublishUrl();
-      scheduleSave();
-    });
-
-    $("exportButton").addEventListener(
-      "click",
-      exportProject
-    );
-
-    $("publishingExportButton").addEventListener(
-      "click",
-      exportProject
-    );
-
-    $("exportPublishButton").addEventListener(
-      "click",
-      exportReaderStory
-    );
-
-    $("importButton").addEventListener(
-      "click",
-      () => $("importFile").click()
-    );
-
-    $("importFile").addEventListener("change", () => {
-      importProject($("importFile").files[0]);
-      $("importFile").value = "";
-    });
-
-    $("chooseAssetsButton").addEventListener(
-      "click",
-      () => $("assetFileInput").click()
-    );
-
-    $("dropChooseFilesButton").addEventListener(
-      "click",
-      (event) => {
-        event.stopPropagation();
-        $("assetFileInput").click();
-      }
-    );
-
-    $("chooseFolderButton").addEventListener(
-      "click",
-      (event) => {
-        event.stopPropagation();
-        $("assetFolderInput").click();
-      }
-    );
-
-    $("assetFileInput").addEventListener("change", () => {
-      addFiles($("assetFileInput").files);
-      $("assetFileInput").value = "";
-    });
-
-    $("assetFolderInput").addEventListener("change", () => {
-      addFiles($("assetFolderInput").files);
-      $("assetFolderInput").value = "";
-    });
-
+  function bindAssetDropZone() {
     const dropZone = $("assetDropZone");
+    if (!dropZone) return;
 
     dropZone.addEventListener("click", (event) => {
       if (event.target.closest("button")) return;
-      $("assetFileInput").click();
+
+      if ($("assetFileInput")) {
+        $("assetFileInput").click();
+      }
     });
 
     ["dragenter", "dragover"].forEach((name) => {
@@ -2074,50 +2020,306 @@
     });
 
     dropZone.addEventListener("drop", async (event) => {
-      const files = await collectDroppedEntries(
-        event.dataTransfer
-      );
-
+      const files = await collectDroppedEntries(event.dataTransfer);
       await addFiles(files);
     });
-
-    $("assetShelf").addEventListener(
-      "dragover",
-      (event) => event.preventDefault()
-    );
-
-    $("collapseSidebarButton").addEventListener(
-      "click",
-      () => {
-        const sidebar = $("mainSidebar");
-
-        const collapsed =
-          sidebar.classList.toggle("collapsed");
-
-        document.querySelector(
-          ".app-layout"
-        ).style.gridTemplateColumns =
-          collapsed
-            ? "64px minmax(0,1fr)"
-            : "";
-
-        sidebar.querySelectorAll(
-          ".nav-item span, .sidebar-section, .sidebar-bottom"
-        ).forEach((item) => {
-          item.hidden = collapsed;
-        });
-      }
-    );
   }
 
-  // STARTUP
-  // Story Overview is the default landing screen.
-  // Other panels remain available through the existing navigation.
+  function bindManuscriptAssetDrop() {
+    const manuscript = $("manuscript");
+    if (!manuscript) return;
+
+    manuscript.addEventListener("dragover", (event) => {
+      if (event.dataTransfer.types.includes("text/ceeqwinn-asset")) {
+        event.preventDefault();
+      }
+    });
+
+    manuscript.addEventListener("drop", (event) => {
+      const assetId = event.dataTransfer.getData(
+        "text/ceeqwinn-asset"
+      );
+
+      if (!assetId) return;
+
+      event.preventDefault();
+
+      const asset = state.project.assets.find(
+        (item) => item.id === assetId
+      );
+
+      if (asset) insertAssetIntoStory(asset);
+    });
+  }
+
+  function bind() {
+    document.querySelectorAll(".nav-item").forEach((button) => {
+      button.addEventListener("click", () => {
+        showPanel(button.dataset.panel);
+      });
+    });
+
+    bindClick("addChapterButton", addChapter);
+    bindClick("overviewAddChapterButton", addChapter);
+    bindClick("renameChapterButton", renameChapter);
+    bindClick("deleteChapterButton", deleteChapter);
+
+    bindClick("newWritingBatchButton", () => addBlock("paragraph"));
+    bindClick("addParagraphButton", () => addBlock("paragraph"));
+    bindClick("addParagraphButtonBottom", () => addBlock("paragraph"));
+
+    bindClick("insertExperienceButton", () => {
+      if ($("experienceDialog")) $("experienceDialog").showModal();
+    });
+
+    bindClick("insertExperienceButtonBottom", () => {
+      if ($("experienceDialog")) $("experienceDialog").showModal();
+    });
+
+    bindClick("addImageButton", () => openAssetPicker("image/*"));
+    bindClick("addImageButtonBottom", () => openAssetPicker("image/*"));
+
+    bindClick("addVideoButton", () => openAssetPicker("video/*"));
+    bindClick("addVideoButtonBottom", () => openAssetPicker("video/*"));
+
+    bindClick("addReferenceButton", () => {
+      openAssetPicker(
+        ".pdf,.doc,.docx,.txt,.md,.rtf,.odt,.xls,.xlsx,.ppt,.pptx,.json"
+      );
+    });
+
+    document.querySelectorAll(".experience-option").forEach((button) => {
+      button.addEventListener("click", () => {
+        const type = button.dataset.type;
+
+        if ($("experienceDialog")) {
+          $("experienceDialog").close();
+        }
+
+        if (type) addBlock(type);
+      });
+    });
+
+    document.querySelectorAll(".dialog-close").forEach((button) => {
+      button.addEventListener("click", () => {
+        const dialog = button.closest("dialog");
+        if (dialog) dialog.close();
+      });
+    });
+
+    bindClick("settingsButton", openSettings);
+    bindClick("saveSettingsButton", saveSettings);
+    bindClick("resetSettingsButton", resetSettings);
+
+    bindClick("previewButton", openPreview);
+    bindClick("previewChapterButton", openPreview);
+
+    bindClick("closePreviewButton", () => {
+      if ($("previewDialog")) $("previewDialog").close();
+    });
+
+    if ($("previewSize")) {
+      $("previewSize").addEventListener("change", () => {
+        const frame = $("previewFrame");
+        if (!frame) return;
+
+        frame.classList.remove(
+          "phone-preview",
+          "tablet-preview",
+          "desktop-preview"
+        );
+
+        frame.classList.add(
+          $("previewSize").value + "-preview"
+        );
+      });
+    }
+
+    bindClick("backToOverview", () => showPanel("overviewPanel"));
+    bindClick("overviewStartWritingButton", () => showPanel("writingPanel"));
+
+    bindClick("undoButton", undo);
+    bindClick("redoButton", redo);
+    bindClick("writingUndoButton", undo);
+    bindClick("writingRedoButton", redo);
+
+    bindClick("clearSelectionButton", () => {
+      state.selectedBlockId = "";
+      renderManuscript();
+      renderInspector();
+      updateInspectorState();
+    });
+
+    bindClick("expandInspectorButton", toggleInspectorExpanded);
+    bindClick("closeInspectorButton", closeInspector);
+    bindClick("inspectorCloseButton", closeInspector);
+
+    bindClick("openAssetTrayButton", openWritingAssetTray);
+    bindClick("closeAssetTrayButton", closeWritingAssetTray);
+
+    bindClick("collapseSidebarButton", toggleSidebar);
+    bindClick("expandSidebarButton", toggleSidebar);
+
+    if ($("manuscriptChapterTitle")) {
+      $("manuscriptChapterTitle").addEventListener("input", () => {
+        const chapter = currentChapter();
+        if (!chapter) return;
+
+        chapter.title = $("manuscriptChapterTitle").value;
+
+        safeSet(
+          "currentChapterLabel",
+          chapter.title || "Untitled chapter"
+        );
+
+        scheduleSave();
+        renderChapterList();
+      });
+
+      $("manuscriptChapterTitle").addEventListener("change", recordHistory);
+    }
+
+    [
+      ["storyTitle", "title"],
+      ["storyDescription", "description"],
+      ["storyGenre", "genre"],
+      ["storyStatus", "status"]
+    ].forEach(([id, key]) => {
+      const field = $(id);
+      if (!field) return;
+
+      field.addEventListener("input", () => {
+        state.project[key] = field.value;
+
+        if (key === "title") {
+          safeSet(
+            "previewStoryTitle",
+            field.value || "Untitled story"
+          );
+
+          const slug = $("storySlug");
+
+          if (slug && !slug.dataset.edited) {
+            slug.value = slugify(field.value);
+          }
+        }
+
+        updatePublishUrl();
+        scheduleSave();
+      });
+
+      field.addEventListener("change", recordHistory);
+    });
+
+    if ($("storySlug")) {
+      $("storySlug").addEventListener("input", () => {
+        $("storySlug").dataset.edited = "true";
+        state.project.slug = slugify($("storySlug").value);
+        updatePublishUrl();
+        scheduleSave();
+      });
+    }
+
+    bindClick("exportButton", exportProject);
+    bindClick("publishingExportButton", exportProject);
+    bindClick("exportPublishButton", exportReaderStory);
+
+    bindClick("importButton", () => {
+      if ($("importFile")) $("importFile").click();
+    });
+
+    if ($("importFile")) {
+      $("importFile").addEventListener("change", () => {
+        importProject($("importFile").files[0]);
+        $("importFile").value = "";
+      });
+    }
+
+    bindClick("chooseAssetsButton", () => {
+      if ($("assetFileInput")) $("assetFileInput").click();
+    });
+
+    bindClick("dropChooseFilesButton", (event) => {
+      if (event) event.stopPropagation();
+      if ($("assetFileInput")) $("assetFileInput").click();
+    });
+
+    bindClick("chooseFolderButton", (event) => {
+      if (event) event.stopPropagation();
+      if ($("assetFolderInput")) $("assetFolderInput").click();
+    });
+
+    if ($("assetFileInput")) {
+      $("assetFileInput").addEventListener("change", () => {
+        addFiles($("assetFileInput").files);
+        $("assetFileInput").value = "";
+      });
+    }
+
+    if ($("assetFolderInput")) {
+      $("assetFolderInput").addEventListener("change", () => {
+        addFiles($("assetFolderInput").files);
+        $("assetFolderInput").value = "";
+      });
+    }
+
+    bindAssetDropZone();
+    bindManuscriptAssetDrop();
+
+    if ($("assetShelf")) {
+      $("assetShelf").addEventListener("dragover", (event) => {
+        if (event.dataTransfer.types.includes("Files")) {
+          event.preventDefault();
+        }
+      });
+    }
+
+    if ($("fontSizeSetting")) {
+      $("fontSizeSetting").addEventListener("input", () => {
+        safeSet(
+          "fontSizeValue",
+          $("fontSizeSetting").value + "px"
+        );
+      });
+    }
+
+    document.addEventListener("keydown", (event) => {
+      const key = event.key.toLowerCase();
+      const modifier = event.ctrlKey || event.metaKey;
+
+      if (!modifier || event.altKey) return;
+
+      const target = event.target;
+      const isTyping = target && (
+        target.matches("input, textarea, select") ||
+        target.isContentEditable
+      );
+
+      if (key === "z" && !event.shiftKey) {
+        event.preventDefault();
+        undo();
+      } else if (
+        (key === "y") ||
+        (key === "z" && event.shiftKey)
+      ) {
+        event.preventDefault();
+        redo();
+      } else if (key === "s") {
+        event.preventDefault();
+        saveNow();
+      } else if (key === "b" && !isTyping) {
+        event.preventDefault();
+        addBlock("paragraph");
+      }
+    });
+  }
 
   loadSettings();
   loadProject();
   bind();
   renderAll();
+
+  // Story Overview is the Studio's landing page.
   showPanel("overviewPanel");
 
 })();
