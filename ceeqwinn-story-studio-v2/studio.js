@@ -1,4 +1,3 @@
-
 (function () {
   "use strict";
 
@@ -622,10 +621,6 @@
         card.appendChild(summary);
       }
 
-      if (block.type === "reference") {
-        card.appendChild(createReferenceSummary(block));
-      }
-
       container.appendChild(card);
     });
   }
@@ -718,9 +713,12 @@
 
     label.appendChild(field);
 
-    field.addEventListener("input", () => {
-      onInput(field.value);
-    });
+    field.addEventListener(
+      options.select ? "change" : "input",
+      () => {
+        onInput(field.value);
+      }
+    );
 
     parent.appendChild(label);
 
