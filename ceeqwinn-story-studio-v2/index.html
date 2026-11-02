@@ -38,8 +38,10 @@
     <aside class="sidebar" id="mainSidebar">
       <div class="sidebar-heading">
         <span class="eyebrow sidebar-heading-label">YOUR WORKSPACE</span>
-        <button id="collapseSidebarButton" class="icon-button" type="button" aria-label="Collapse navigation" aria-expanded="true" title="Collapse navigation">‹</button>
-        <button id="expandSidebarButton" class="icon-button sidebar-expand-button" type="button" aria-label="Expand navigation" title="Expand navigation" hidden>›</button>
+        <button id="collapseSidebarButton" class="icon-button" type="button"
+          aria-label="Collapse navigation" aria-expanded="true" title="Collapse navigation">‹</button>
+        <button id="expandSidebarButton" class="icon-button sidebar-expand-button"
+          type="button" aria-label="Expand navigation" title="Expand navigation" hidden>›</button>
       </div>
 
       <nav class="main-nav" aria-label="Studio navigation">
@@ -80,14 +82,30 @@
         <div class="overview-grid">
           <section class="surface-card story-details-card">
             <span class="eyebrow">STORY DETAILS</span>
+
             <label class="field-label" for="storyTitle">Story title</label>
-            <input id="storyTitle" maxlength="180" placeholder="Your story title">
+            <div class="voice-field-wrap">
+              <input id="storyTitle" maxlength="180" placeholder="Your story title">
+              <button class="voice-input-button" type="button"
+                data-voice-target="storyTitle" aria-label="Dictate story title"
+                title="Voice input">🎙</button>
+            </div>
 
             <label class="field-label" for="storyDescription">Description</label>
-            <textarea id="storyDescription" rows="4" placeholder="What is this story about?"></textarea>
+            <div class="voice-field-wrap">
+              <textarea id="storyDescription" rows="4" placeholder="What is this story about?"></textarea>
+              <button class="voice-input-button" type="button"
+                data-voice-target="storyDescription" aria-label="Dictate story description"
+                title="Voice input">🎙</button>
+            </div>
 
             <label class="field-label" for="storyGenre">Genre</label>
-            <input id="storyGenre" placeholder="Fashion drama · Mystery">
+            <div class="voice-field-wrap">
+              <input id="storyGenre" placeholder="Fashion drama · Mystery">
+              <button class="voice-input-button" type="button"
+                data-voice-target="storyGenre" aria-label="Dictate story genre"
+                title="Voice input">🎙</button>
+            </div>
 
             <label class="field-label" for="storyStatus">Status</label>
             <select id="storyStatus">
@@ -107,7 +125,7 @@
             <span class="eyebrow">STORY SNAPSHOT</span>
             <div class="stat-grid">
               <div><strong id="chapterCount">0</strong><span>Chapters</span></div>
-              <div><strong id="blockCount">0</strong><span>Blocks</span></div>
+              <div><strong id="blockCount">0</strong><span>Elements</span></div>
               <div><strong id="wordCount">0</strong><span>Words</span></div>
               <div><strong id="assetCount">0</strong><span>Assets</span></div>
             </div>
@@ -121,15 +139,37 @@
           <div>
             <span class="eyebrow">WRITING ROOM</span>
             <h1 id="currentChapterLabel">Your story</h1>
-            <p class="muted">Write freely. Place theatre experiences and other elements exactly where they belong.</p>
+            <p class="muted">Write freely. Place media and theatre experiences wherever they belong.</p>
           </div>
+
           <div class="heading-actions">
             <button id="backToOverview" class="button quiet" type="button">Story overview</button>
             <button id="previewChapterButton" class="button secondary" type="button">Preview chapter</button>
           </div>
         </div>
 
+        <!-- WRITING MODE -->
+        <div class="writing-mode-bar" role="group" aria-label="Writing layout">
+          <span class="eyebrow">WRITING STYLE</span>
+          <div class="writing-mode-options">
+            <button id="longFormModeButton" class="writing-mode-button active"
+              type="button" data-writing-mode="long"
+              aria-pressed="true">
+              <strong>Long-form</strong>
+              <small>Continuous manuscript</small>
+            </button>
+            <button id="shortFormModeButton" class="writing-mode-button"
+              type="button" data-writing-mode="short"
+              aria-pressed="false">
+              <strong>Short-form</strong>
+              <small>Separate writing batches</small>
+            </button>
+          </div>
+        </div>
+
+        <!-- MAIN WRITING COMMAND BAR -->
         <div class="writing-command-bar" id="writingCommandBar">
+
           <div class="writing-command-group">
             <button id="addParagraphButton" class="insert-button" type="button">＋ Paragraph</button>
             <button id="insertExperienceButton" class="insert-button featured" type="button">＋ Theatre experience</button>
@@ -139,13 +179,52 @@
           </div>
 
           <div class="writing-command-group writing-command-secondary">
-            <button id="openAssetTrayButton" class="button quiet" type="button" aria-expanded="false" aria-controls="writingAssetTray">▧ Assets</button>
-            <button id="openQuickEditButton" class="button quiet" type="button" aria-controls="blockInspector" title="Open Quick Edit">Quick Edit</button>
+            <button id="openAssetTrayButton" class="button quiet" type="button"
+              aria-expanded="false" aria-controls="writingAssetTray">▧ Assets</button>
+            <button id="openQuickEditButton" class="button quiet" type="button"
+              aria-controls="blockInspector" title="Open Quick Edit">Quick Edit</button>
             <button id="writingUndoButton" class="button quiet" type="button" title="Undo" disabled>↶</button>
             <button id="writingRedoButton" class="button quiet" type="button" title="Redo" disabled>↷</button>
           </div>
         </div>
 
+        <!-- TEXT FORMATTING TOOLBAR -->
+        <div id="manuscriptFormattingToolbar" class="manuscript-formatting-toolbar"
+          role="toolbar" aria-label="Writing formatting">
+          <div class="formatting-group">
+            <button type="button" data-format="bold" title="Bold" aria-label="Bold"><strong>B</strong></button>
+            <button type="button" data-format="italic" title="Italic" aria-label="Italic"><em>I</em></button>
+            <button type="button" data-format="underline" title="Underline" aria-label="Underline"><u>U</u></button>
+            <button type="button" data-format="strikeThrough" title="Strikethrough" aria-label="Strikethrough"><s>S</s></button>
+          </div>
+
+          <div class="formatting-group">
+            <button type="button" data-format="justifyLeft" title="Align left" aria-label="Align left">☰</button>
+            <button type="button" data-format="justifyCenter" title="Align centre" aria-label="Align centre">≡</button>
+            <button type="button" data-format="justifyRight" title="Align right" aria-label="Align right">☷</button>
+          </div>
+
+          <div class="formatting-group">
+            <button type="button" data-format="insertUnorderedList" title="Bullet list" aria-label="Bullet list">• List</button>
+            <button type="button" data-format="insertOrderedList" title="Numbered list" aria-label="Numbered list">1. List</button>
+          </div>
+
+          <div class="formatting-group">
+            <label class="formatting-select-label" for="manuscriptHeadingStyle">Text style</label>
+            <select id="manuscriptHeadingStyle" aria-label="Text style">
+              <option value="p">Normal text</option>
+              <option value="h2">Heading</option>
+              <option value="h3">Subheading</option>
+              <option value="blockquote">Quote</option>
+            </select>
+          </div>
+
+          <button id="manuscriptVoiceButton" class="voice-input-button toolbar-voice-button"
+            type="button" data-voice-target="manuscriptCanvas"
+            aria-label="Dictate into manuscript" title="Voice input">🎙 Voice</button>
+        </div>
+
+        <!-- INSERTION DIALOG -->
         <dialog id="insertionDialog" class="studio-dialog insertion-dialog">
           <div class="dialog-heading">
             <div>
@@ -155,7 +234,7 @@
             <button class="icon-button dialog-close" type="button" aria-label="Close">×</button>
           </div>
 
-          <p class="muted">Insert content at your current writing position.</p>
+          <p class="muted">Your insertion will be placed at your current writing position whenever possible.</p>
 
           <div class="experience-picker insertion-picker">
             <button class="experience-option" data-insert-action="paragraph" type="button">
@@ -181,6 +260,7 @@
           </div>
         </dialog>
 
+        <!-- WRITING ASSET TRAY -->
         <section id="writingAssetTray" class="writing-asset-tray" hidden>
           <div class="asset-tray-heading">
             <div>
@@ -190,11 +270,13 @@
             <button id="closeAssetTrayButton" class="icon-button" type="button" aria-label="Close asset tray">×</button>
           </div>
           <div id="writingAssetShelf" class="asset-grid"></div>
-          <p class="muted tiny">Choose an asset to insert it into your selected writing position.</p>
+          <p class="muted tiny">Choose an asset to insert it into your current writing position.</p>
         </section>
 
+        <!-- WRITING WORKSPACE -->
         <div class="writing-layout" id="writingLayout">
           <section class="manuscript-panel">
+
             <div class="panel-toolbar">
               <label class="field-label" for="manuscriptChapterTitle">Chapter title</label>
               <div class="inline-actions">
@@ -203,7 +285,13 @@
               </div>
             </div>
 
-            <input id="manuscriptChapterTitle" class="chapter-title-input" maxlength="180" placeholder="Name this chapter">
+            <div class="voice-field-wrap chapter-title-wrap">
+              <input id="manuscriptChapterTitle" class="chapter-title-input"
+                maxlength="180" placeholder="Name this chapter">
+              <button class="voice-input-button" type="button"
+                data-voice-target="manuscriptChapterTitle"
+                aria-label="Dictate chapter title" title="Voice input">🎙</button>
+            </div>
 
             <div class="chapter-folder-controls">
               <label class="field-label" for="chapterFolderSelect">Chapter folder</label>
@@ -215,7 +303,43 @@
               </div>
             </div>
 
-            <div id="manuscript" class="manuscript" aria-label="Chapter writing blocks"></div>
+            <!--
+              THE MANUSCRIPT CANVAS
+
+              Long-form mode uses one continuous editable document.
+              Short-form mode can organise content into separate batches.
+
+              The JavaScript replacement will manage the document structure,
+              inline media, theatre components, selection and persistence.
+            -->
+            <div id="manuscript" class="manuscript manuscript-workspace"
+              aria-label="Chapter manuscript">
+
+              <div id="manuscriptCanvas" class="manuscript-canvas"
+                contenteditable="true"
+                role="textbox"
+                aria-multiline="true"
+                aria-label="Write your chapter here"
+                data-placeholder="Begin writing your story here...">
+              </div>
+
+              <div id="manuscriptComponentLayer" class="manuscript-component-layer"
+                aria-label="Inserted story components"></div>
+
+              <div id="shortFormBatchList" class="short-form-batch-list" hidden></div>
+
+              <div id="manuscriptEmptyState" class="manuscript-empty-state">
+                <span class="eyebrow">YOUR STORY STARTS HERE</span>
+                <p>Click here and begin writing. You can insert images, GIFs, videos and theatre experiences as your story develops.</p>
+                <button id="emptyStateStartWritingButton" class="button primary" type="button">Start writing</button>
+              </div>
+            </div>
+
+            <!-- MANUSCRIPT FOOTER -->
+            <div class="manuscript-footer">
+              <span id="manuscriptWordCount" class="muted tiny">0 words</span>
+              <span id="manuscriptPositionStatus" class="muted tiny">Ready to write</span>
+            </div>
 
             <div class="add-block-zone">
               <p class="eyebrow">CONTINUE YOUR MANUSCRIPT</p>
@@ -224,26 +348,33 @@
                 <button id="insertExperienceButtonBottom" class="insert-button featured" type="button">＋ Theatre experience</button>
                 <button id="addImageButtonBottom" class="insert-button" type="button">＋ Image / GIF</button>
               </div>
-              <p class="muted tiny">New blocks appear at your selected writing position or at the end of the chapter.</p>
+              <p class="muted tiny">Continue writing or insert a special experience at your current cursor position.</p>
             </div>
           </section>
 
-          <aside id="blockInspector" class="inspector-panel" aria-label="Quick Edit inspector">
+          <!-- QUICK EDIT INSPECTOR -->
+          <aside id="blockInspector" class="inspector-panel"
+            aria-label="Quick Edit inspector" aria-hidden="false">
+
             <div class="inspector-heading">
               <div>
                 <span class="eyebrow">QUICK EDIT</span>
-                <h2>Selected block</h2>
+                <h2>Selected element</h2>
               </div>
               <div class="inspector-heading-actions">
-                <button id="expandInspectorButton" class="icon-button" type="button" aria-label="Expand Quick Edit" title="Expand Quick Edit">⤢</button>
-                <button id="clearSelectionButton" class="icon-button" type="button" aria-label="Close Quick Edit" title="Close Quick Edit">×</button>
+                <button id="expandInspectorButton" class="icon-button" type="button"
+                  aria-label="Expand Quick Edit" title="Expand Quick Edit">⤢</button>
+                <button id="clearSelectionButton" class="icon-button" type="button"
+                  aria-label="Close Quick Edit" title="Close Quick Edit">×</button>
               </div>
             </div>
 
-            <div id="inspectorResizeHandle" class="inspector-resize-handle" role="separator" aria-label="Resize Quick Edit vertically" aria-orientation="horizontal" tabindex="0"></div>
+            <div id="inspectorResizeHandle" class="inspector-resize-handle"
+              role="separator" aria-label="Resize Quick Edit vertically"
+              aria-orientation="horizontal" tabindex="0"></div>
 
             <div id="inspectorContent" class="inspector-content">
-              <p class="muted">Select a block in your chapter to edit its details.</p>
+              <p class="muted">Select text, media or a theatre component to edit its details.</p>
             </div>
           </aside>
         </div>
@@ -255,16 +386,18 @@
           <div>
             <span class="eyebrow">YOUR MATERIALS</span>
             <h1>Asset shelf</h1>
-            <p class="muted">Keep story images, GIFs, videos, documents and research together.</p>
+            <p class="muted">Keep story images, GIFs, videos, audio, documents and research together.</p>
           </div>
 
           <button id="chooseAssetsButton" class="button secondary" type="button">Choose files</button>
 
-          <input id="assetFileInput" type="file" multiple hidden accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.md,.rtf,.odt,.xls,.xlsx,.ppt,.pptx,.json,.zip">
+          <input id="assetFileInput" type="file" multiple hidden
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.md,.rtf,.odt,.xls,.xlsx,.ppt,.pptx,.json,.zip">
           <input id="assetFolderInput" type="file" webkitdirectory directory multiple hidden>
         </div>
 
-        <div id="assetDropZone" class="asset-drop-zone" tabindex="0" role="button" aria-label="Drop files here or choose files">
+        <div id="assetDropZone" class="asset-drop-zone" tabindex="0"
+          role="button" aria-label="Drop files here or choose files">
           <div class="drop-icon">＋</div>
           <h2>Drop files here</h2>
           <p>Images, GIFs, audio, short videos, PDF, Word documents and other references.</p>
@@ -309,7 +442,7 @@
 
         <section class="surface-card publish-card">
           <h2>Public story URL</h2>
-          <p class="muted">Your public Reader loads a JSON file from the website's <code>stories</code> folder.</p>
+          <p class="muted">Your public Reader loads a story file from the website's <code>stories</code> folder.</p>
 
           <label class="field-label" for="storySlug">Story URL slug</label>
           <input id="storySlug" maxlength="100" placeholder="emerald-inheritance">
@@ -347,13 +480,27 @@
     <p class="muted">Choose only what you need. You can add more later.</p>
 
     <div class="experience-picker">
-      <button class="experience-option" data-type="narration" type="button"><strong>Narration</strong><span>Atmosphere, action or a dramatic beat</span></button>
-      <button class="experience-option" data-type="dialogue" type="button"><strong>Dialogue</strong><span>A character speaks</span></button>
-      <button class="experience-option" data-type="reveal" type="button"><strong>Visual reveal</strong><span>Reveal a clue, scene or outfit</span></button>
-      <button class="experience-option" data-type="choice" type="button"><strong>Reader choice</strong><span>Let readers choose a response</span></button>
-      <button class="experience-option" data-type="game" type="button"><strong>Game link</strong><span>Connect an existing game</span></button>
-      <button class="experience-option" data-type="audio" type="button"><strong>Audio</strong><span>Add a sound or voice clip</span></button>
-      <button class="experience-option" data-type="chapterEnd" type="button"><strong>Chapter transition</strong><span>Guide readers to the next chapter</span></button>
+      <button class="experience-option" data-type="narration" type="button">
+        <strong>Narration</strong><span>Atmosphere, action or a dramatic beat</span>
+      </button>
+      <button class="experience-option" data-type="dialogue" type="button">
+        <strong>Dialogue</strong><span>A character speaks</span>
+      </button>
+      <button class="experience-option" data-type="reveal" type="button">
+        <strong>Visual reveal</strong><span>Reveal a clue, scene or outfit</span>
+      </button>
+      <button class="experience-option" data-type="choice" type="button">
+        <strong>Reader choice</strong><span>Let readers choose a response</span>
+      </button>
+      <button class="experience-option" data-type="game" type="button">
+        <strong>Game link</strong><span>Connect an existing game</span>
+      </button>
+      <button class="experience-option" data-type="audio" type="button">
+        <strong>Audio</strong><span>Add a sound or voice clip</span>
+      </button>
+      <button class="experience-option" data-type="chapterEnd" type="button">
+        <strong>Chapter transition</strong><span>Guide readers to the next chapter</span>
+      </button>
     </div>
   </dialog>
 
@@ -408,7 +555,6 @@
       <button class="icon-button dialog-close" type="button" aria-label="Close">×</button>
     </div>
 
-    <!-- GENERAL SETTINGS -->
     <section class="settings-section">
       <span class="eyebrow">WORKSPACE PREFERENCES</span>
 
@@ -492,13 +638,8 @@
         </p>
 
         <div class="mood-editor-actions">
-          <button id="saveMoodButton" class="button primary" type="button">
-            Save current aesthetic
-          </button>
-
-          <button id="cancelMoodEditButton" class="button quiet" type="button" hidden>
-            Cancel renaming
-          </button>
+          <button id="saveMoodButton" class="button primary" type="button">Save current aesthetic</button>
+          <button id="cancelMoodEditButton" class="button quiet" type="button" hidden>Cancel renaming</button>
         </div>
       </div>
 
@@ -511,25 +652,12 @@
         <p class="muted">Your saved colour configurations will appear here.</p>
       </div>
 
-      <!-- IMPORT A PREVIOUSLY EXPORTED MOOD -->
       <div class="mood-import-area">
-        <label class="field-label" for="moodImportFile">
-          Import a saved mood
-        </label>
-
+        <label class="field-label" for="moodImportFile">Import a saved mood</label>
         <div class="button-row">
-          <button id="importMoodButton" class="button secondary" type="button">
-            Import mood JSON
-          </button>
-
-          <input
-            id="moodImportFile"
-            type="file"
-            accept=".json,application/json"
-            hidden
-          >
+          <button id="importMoodButton" class="button secondary" type="button">Import mood JSON</button>
+          <input id="moodImportFile" type="file" accept=".json,application/json" hidden>
         </div>
-
         <p class="muted tiny">
           Import a mood JSON file previously exported from the Studio.
           Imported moods are added to your saved library; they do not
