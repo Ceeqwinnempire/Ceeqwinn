@@ -20,6 +20,7 @@
     historyIndex: -1,
     restoringHistory: false,
     inspectorExpanded: false,
+    inspectorClosed: false,
     sidebarCollapsed: false,
     moods: [],
     editingMoodId: ""
@@ -44,12 +45,7 @@
     "#f8f0f4", "#b9b4bb", "#747078", "#181318", "#263c68"
   ];
 
-  const MOOD_COLOURS = [
-    "accent",
-    "background",
-    "panel",
-    "text"
-  ];
+  const MOOD_COLOURS = ["accent", "background", "panel", "text"];
 
   const makeId = (prefix) =>
     prefix + "-" + Date.now().toString(36) + "-" +
@@ -86,6 +82,15 @@
     if (element) element.addEventListener("click", callback);
   }
 
+  function slugify(value) {
+    return String(value || "my-story")
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 100) || "my-story";
+  }
+
   function starterProject() {
     return {
       schemaVersion: 3,
@@ -103,6 +108,7 @@
         panel: "#381b2c"
       },
       folders: ["Opening"],
+      assetFolders: ["Unsorted"],
       assets: [],
       chapters: [{
         id: makeId("chapter"),
@@ -115,6 +121,73 @@
         }]
       }]
     };
+  }
+
+  function normalizeProject(project) {
+    project.schemaVersion = 3;
+    project.assets = Array.isArray(project.assets) ? project.assets : [];
+    project.chapters = Array.isArray(project.chapters) ? project.chapters : [];
+    project.folders = Array.isArray(project.folders) ? project.folders : ["Opening"];
+    project.assetFolders = Array.isArray(project.assetFolders)
+      ? project.assetFolders
+      : ["Unsorted"];
+    project.release = project.release || { plan: "draft", date: "" };
+
+    project.theme = Object.assign({
+      accent: "#d6ad68",
+      background: "#260d1b",
+      text: "#fbf2f6",
+      panel: "#381b2c"
+    }, project.theme || {});
+
+    project.folders = [...new Set(
+      project.folders.map((folder) => String(folder || "").trim()).filter(Boolean)
+    )];
+
+    if (!project.folders.length) project.folders = ["Unsorted"];
+
+    project.assetFolders = [...new Set(
+      project.assetFolders.map((folder) => String(folder || "").trim()).filter(Boolean)
+    )];
+
+    if (!project.assetFolders.includes("Unsorted")) {
+      project.assetFolders.unshift("Unsorted");
+    }
+
+    project.chapters.forEach((chapter) => {
+      chapter.id = chapter.id || makeId("chapter");
+      chapter.title = chapter.title || "Untitled chapter";
+      chapter.folder = chapter.folder || "Unsorted";
+      chapter.blocks = Array.isArray(chapter.blocks) ? chapter.blocks : [];
+
+      if (!project.folders.includes(chapter.folder)) {
+        project.folders.push(chapter.folder);
+      }
+
+      chapter.blocks.forEach((block) => {
+        block.id = block.id || makeId(block.type || "block");
+        block.type = block.type || "paragraph";
+      });
+    });
+
+    project.assets.forEach((asset) => {
+      asset.folder = asset.folder || "Unsorted";
+
+      if (!project.assetFolders.includes(asset.folder)) {
+        project.assetFolders.push(asset.folder);
+      }
+    });
+
+    if (!project.chapters.length) {
+      project.chapters.push({
+        id: makeId("chapter"),
+        title: "Chapter One",
+        folder: "Unsorted",
+        blocks: []
+      });
+    }
+
+    return project;
   }
 
   function currentChapter() {
@@ -134,53 +207,6 @@
     ) || null;
   }
 
-  function slugify(value) {
-    return String(value || "my-story")
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 100) || "my-story";
-  }
-
-  function normalizeProject(project) {
-    project.schemaVersion = 3;
-    project.assets = Array.isArray(project.assets) ? project.assets : [];
-    project.chapters = Array.isArray(project.chapters) ? project.chapters : [];
-    project.folders = Array.isArray(project.folders) ? project.folders : ["Opening"];
-    project.release = project.release || { plan: "draft", date: "" };
-
-    project.theme = Object.assign({
-      accent: "#d6ad68",
-      background: "#260d1b",
-      text: "#fbf2f6",
-      panel: "#381b2c"
-    }, project.theme || {});
-
-    project.chapters.forEach((chapter) => {
-      chapter.id = chapter.id || makeId("chapter");
-      chapter.title = chapter.title || "Untitled chapter";
-      chapter.folder = chapter.folder || "Unsorted";
-      chapter.blocks = Array.isArray(chapter.blocks) ? chapter.blocks : [];
-
-      chapter.blocks.forEach((block) => {
-        block.id = block.id || makeId(block.type || "block");
-        block.type = block.type || "paragraph";
-      });
-    });
-
-    if (!project.chapters.length) {
-      project.chapters.push({
-        id: makeId("chapter"),
-        title: "Chapter One",
-        folder: "Unsorted",
-        blocks: []
-      });
-    }
-
-    return project;
-  }
-
   function snapshot() {
     return {
       project: clone(state.project),
@@ -195,16 +221,12 @@
     const next = snapshot();
     const current = state.history[state.historyIndex];
 
-    if (current && JSON.stringify(current) === JSON.stringify(next)) {
-      return;
-    }
+    if (current && JSON.stringify(current) === JSON.stringify(next)) return;
 
     state.history = state.history.slice(0, state.historyIndex + 1);
     state.history.push(next);
 
-    if (state.history.length > HISTORY_LIMIT) {
-      state.history.shift();
-    }
+    if (state.history.length > HISTORY_LIMIT) state.history.shift();
 
     state.historyIndex = state.history.length - 1;
     updateHistoryButtons();
@@ -214,7 +236,7 @@
     if (!item) return;
 
     state.restoringHistory = true;
-    state.project = clone(item.project);
+    state.project = normalizeProject(clone(item.project));
     state.chapterId = item.chapterId;
     state.selectedBlockId = item.selectedBlockId;
 
@@ -222,12 +244,9 @@
       state.chapterId = state.project.chapters[0].id;
     }
 
-    if (!currentBlock()) {
-      state.selectedBlockId = "";
-    }
+    if (!currentBlock()) state.selectedBlockId = "";
 
     state.restoringHistory = false;
-
     scheduleSave();
     renderAll();
     updateHistoryButtons();
@@ -272,9 +291,7 @@
       setSaveStatus("Saved in this browser");
     } catch (error) {
       setSaveStatus("Browser storage full");
-      notify(
-        "The draft could not be fully saved. Export a backup and remove large files or videos from the project."
-      );
+      notify("The draft could not be fully saved. Export a backup and remove large files or videos from the project.");
     }
   }
 
@@ -335,18 +352,18 @@
       button.classList.toggle("active", button.dataset.panel === panelId);
     });
 
-    if (panelId === "writingPanel") {
-      renderChapterList();
-    }
+    if (panelId === "writingPanel") renderChapterList();
   }
 
   function renderAll() {
     renderChapterList();
+    renderChapterFolderControls();
     renderManuscript();
     renderInspector();
     renderOverview();
     renderAssetShelf();
     renderWritingAssetShelf();
+    renderAssetFolderControls();
     updatePublishUrl();
     updateCounts();
 
@@ -367,6 +384,217 @@
     updateInspectorState();
   }
 
+  /* =========================================================
+     CHAPTER FOLDERS
+     ========================================================= */
+
+  function uniqueFolderName(name, existing) {
+    const base = String(name || "").trim().slice(0, 60);
+    if (!base) return "";
+
+    let candidate = base;
+    let number = 2;
+
+    while (existing.includes(candidate)) {
+      candidate = base + " " + number;
+      number++;
+    }
+
+    return candidate;
+  }
+
+  function renderChapterFolderControls() {
+    const select = $("chapterFolderSelect");
+    const chapter = currentChapter();
+
+    if (!select) return;
+
+    const previous = chapter ? chapter.folder : "";
+
+    select.replaceChildren();
+
+    state.project.folders.forEach((folder) => {
+      const option = document.createElement("option");
+      option.value = folder;
+      option.textContent = folder;
+      select.appendChild(option);
+    });
+
+    if (chapter) {
+      if (!state.project.folders.includes(chapter.folder)) {
+        state.project.folders.push(chapter.folder);
+      }
+      select.value = chapter.folder;
+    }
+
+    select.disabled = !chapter;
+  }
+
+  function assignChapterFolder(folder) {
+    const chapter = currentChapter();
+    if (!chapter || !folder) return;
+
+    if (!state.project.folders.includes(folder)) return;
+    if (chapter.folder === folder) return;
+
+    recordHistory();
+    chapter.folder = folder;
+
+    scheduleSave();
+    renderChapterList();
+    renderOverview();
+    renderChapterFolderControls();
+
+    notify('Chapter moved to "' + folder + '".');
+  }
+
+  function openChapterFolderDialog() {
+    renderChapterFolderList();
+
+    const dialog = $("chapterFolderDialog");
+    if (dialog) dialog.showModal();
+  }
+
+  function renderChapterFolderList() {
+    const list = $("chapterFolderList");
+    if (!list) return;
+
+    list.replaceChildren();
+
+    state.project.folders.forEach((folder) => {
+      const row = document.createElement("div");
+      row.className = "folder-management-row";
+
+      const name = document.createElement("span");
+      name.textContent = folder;
+      row.appendChild(name);
+
+      const count = state.project.chapters.filter(
+        (chapter) => chapter.folder === folder
+      ).length;
+
+      const detail = document.createElement("small");
+      detail.textContent = count + " chapter" + (count === 1 ? "" : "s");
+      row.appendChild(detail);
+
+      const rename = document.createElement("button");
+      rename.type = "button";
+      rename.textContent = "Rename";
+      rename.addEventListener("click", () => renameChapterFolder(folder));
+      row.appendChild(rename);
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.textContent = "Delete";
+      remove.disabled = state.project.folders.length <= 1;
+      remove.addEventListener("click", () => deleteChapterFolder(folder));
+      row.appendChild(remove);
+
+      list.appendChild(row);
+    });
+  }
+
+  function addChapterFolder() {
+    const input = $("newChapterFolderName");
+    const rawName = input ? input.value.trim() : "";
+
+    if (!rawName) {
+      notify("Enter a name for the new chapter folder.");
+      if (input) input.focus();
+      return;
+    }
+
+    if (state.project.folders.some(
+      (folder) => folder.toLowerCase() === rawName.toLowerCase()
+    )) {
+      notify("A chapter folder with that name already exists.");
+      return;
+    }
+
+    recordHistory();
+
+    const name = uniqueFolderName(rawName, state.project.folders);
+    state.project.folders.push(name);
+
+    if (input) input.value = "";
+
+    scheduleSave();
+    renderChapterFolderControls();
+    renderChapterFolderList();
+
+    notify('Chapter folder "' + name + '" created.');
+  }
+
+  function renameChapterFolder(oldName) {
+    const next = window.prompt("New folder name:", oldName);
+    if (next === null) return;
+
+    const name = next.trim().slice(0, 60);
+    if (!name) {
+      notify("A folder name cannot be empty.");
+      return;
+    }
+
+    if (state.project.folders.some(
+      (folder) => folder !== oldName &&
+        folder.toLowerCase() === name.toLowerCase()
+    )) {
+      notify("A folder with that name already exists.");
+      return;
+    }
+
+    recordHistory();
+
+    state.project.folders = state.project.folders.map(
+      (folder) => folder === oldName ? name : folder
+    );
+
+    state.project.chapters.forEach((chapter) => {
+      if (chapter.folder === oldName) chapter.folder = name;
+    });
+
+    scheduleSave();
+    renderAll();
+    renderChapterFolderList();
+
+    notify("Chapter folder renamed.");
+  }
+
+  function deleteChapterFolder(folder) {
+    if (state.project.folders.length <= 1) {
+      notify("Keep at least one chapter folder.");
+      return;
+    }
+
+    if (!window.confirm(
+      'Delete the "' + folder + '" folder? Its chapters will be moved to Unsorted.'
+    )) return;
+
+    recordHistory();
+
+    const fallback = state.project.folders.find(
+      (item) => item !== folder
+    ) || "Unsorted";
+
+    state.project.chapters.forEach((chapter) => {
+      if (chapter.folder === folder) chapter.folder = fallback;
+    });
+
+    state.project.folders = state.project.folders.filter(
+      (item) => item !== folder
+    );
+
+    scheduleSave();
+    renderAll();
+    renderChapterFolderList();
+
+    notify("Folder deleted. Its chapters were kept.");
+  }
+
+  /* =========================================================
+     CHAPTERS
+     ========================================================= */
+
   function renderChapterList() {
     const list = $("chapterList");
     if (!list) return;
@@ -383,7 +611,8 @@
         "chapter-open" +
         (chapter.id === state.chapterId ? " active" : "");
       open.textContent = chapter.title || "Untitled chapter";
-      open.title = chapter.title || "Untitled chapter";
+      open.title = (chapter.folder || "Unsorted") + " · " +
+        (chapter.title || "Untitled chapter");
 
       open.addEventListener("click", () => {
         state.chapterId = chapter.id;
@@ -425,6 +654,73 @@
       list.appendChild(row);
     });
   }
+
+  function addChapter() {
+    const title = window.prompt("Chapter title:", "New chapter");
+    if (title === null) return;
+
+    recordHistory();
+
+    const chapter = {
+      id: makeId("chapter"),
+      title: title.trim() || "Untitled chapter",
+      folder: currentChapter()?.folder || state.project.folders[0] || "Unsorted",
+      blocks: []
+    };
+
+    state.project.chapters.push(chapter);
+    state.chapterId = chapter.id;
+    state.selectedBlockId = "";
+
+    scheduleSave();
+    showPanel("writingPanel");
+    renderAll();
+  }
+
+  function renameChapter() {
+    const chapter = currentChapter();
+    if (!chapter) return;
+
+    const title = window.prompt("Chapter title:", chapter.title || "");
+    if (title === null) return;
+
+    recordHistory();
+    chapter.title = title.trim() || "Untitled chapter";
+
+    scheduleSave();
+    renderAll();
+  }
+
+  function deleteChapter() {
+    if (state.project.chapters.length <= 1) {
+      notify("A story needs at least one chapter.");
+      return;
+    }
+
+    if (!window.confirm(
+      "Delete this chapter and its blocks? You can use Undo to restore it."
+    )) return;
+
+    recordHistory();
+
+    const index = state.project.chapters.findIndex(
+      (chapter) => chapter.id === state.chapterId
+    );
+
+    state.project.chapters.splice(index, 1);
+
+    state.chapterId =
+      state.project.chapters[Math.max(0, index - 1)].id;
+
+    state.selectedBlockId = "";
+
+    scheduleSave();
+    renderAll();
+  }
+
+  /* =========================================================
+     WRITING BLOCKS
+     ========================================================= */
 
   function createBlock(type) {
     const block = { id: makeId(type), type: type };
@@ -478,6 +774,7 @@
     chapter.blocks.splice(insertAt, 0, block);
     state.selectedBlockId = block.id;
 
+    openInspector();
     showPanel("writingPanel");
     scheduleSave();
     renderAll();
@@ -509,11 +806,7 @@
 
     const target = index + direction;
 
-    if (
-      index < 0 ||
-      target < 0 ||
-      target >= chapter.blocks.length
-    ) return;
+    if (index < 0 || target < 0 || target >= chapter.blocks.length) return;
 
     recordHistory();
 
@@ -624,17 +917,11 @@
     }
 
     if (block.type === "video") {
-      return {
-        key: "videoUrl",
-        placeholder: "Direct video URL (MP4/WebM)"
-      };
+      return { key: "videoUrl", placeholder: "Direct video URL (MP4/WebM)" };
     }
 
     if (block.type === "audio") {
-      return {
-        key: "audioUrl",
-        placeholder: "Direct audio URL"
-      };
+      return { key: "audioUrl", placeholder: "Direct audio URL" };
     }
 
     if (block.type === "game") {
@@ -688,9 +975,10 @@
       card.draggable = true;
 
       card.addEventListener("click", () => {
-        if (state.selectedBlockId === block.id) return;
+        if (state.selectedBlockId === block.id && !state.inspectorClosed) return;
 
         state.selectedBlockId = block.id;
+        openInspector();
         renderManuscript();
         renderInspector();
         updateInspectorState();
@@ -715,10 +1003,7 @@
       });
 
       card.addEventListener("dragover", (event) => {
-        if (!event.dataTransfer.types.includes("text/ceeqwinn-block")) {
-          return;
-        }
-
+        if (!event.dataTransfer.types.includes("text/ceeqwinn-block")) return;
         event.preventDefault();
         card.classList.add("drag-over");
       });
@@ -728,10 +1013,7 @@
       });
 
       card.addEventListener("drop", (event) => {
-        const draggedId = event.dataTransfer.getData(
-          "text/ceeqwinn-block"
-        );
-
+        const draggedId = event.dataTransfer.getData("text/ceeqwinn-block");
         if (!draggedId) return;
 
         event.preventDefault();
@@ -781,9 +1063,7 @@
           "block-title-input",
           "Experience title",
           block.title,
-          (value) => {
-            block.title = value;
-          }
+          (value) => { block.title = value; }
         );
 
         title.setAttribute("aria-label", "Block title");
@@ -799,9 +1079,7 @@
         textarea.value = block.text || "";
         textarea.setAttribute("aria-label", blockLabel(block) + " text");
 
-        textarea.addEventListener("click", (event) => {
-          event.stopPropagation();
-        });
+        textarea.addEventListener("click", (event) => event.stopPropagation());
 
         textarea.addEventListener("input", () => {
           block.text = textarea.value;
@@ -820,9 +1098,7 @@
           "block-title-input",
           "Character / speaker name",
           block.character,
-          (value) => {
-            block.character = value;
-          }
+          (value) => { block.character = value; }
         );
 
         card.appendChild(character);
@@ -836,9 +1112,7 @@
           "block-title-input",
           media.placeholder,
           block[media.key],
-          (value) => {
-            block[media.key] = value;
-          }
+          (value) => { block[media.key] = value; }
         );
 
         url.setAttribute("aria-label", media.placeholder);
@@ -977,18 +1251,14 @@
           container,
           "Option " + (index + 1),
           option.label,
-          (value) => {
-            option.label = value;
-          }
+          (value) => { option.label = value; }
         );
 
         addInspectorField(
           container,
           "Target chapter ID (optional)",
           option.target,
-          (value) => {
-            option.target = value;
-          }
+          (value) => { option.target = value; }
         );
       });
 
@@ -999,11 +1269,7 @@
 
       add.addEventListener("click", () => {
         recordHistory();
-        block.options.push({
-          label: "New choice",
-          target: ""
-        });
-
+        block.options.push({ label: "New choice", target: "" });
         scheduleSave();
         renderInspector();
         renderManuscript();
@@ -1115,6 +1381,10 @@
     container.appendChild(deleteButton);
   }
 
+  /* =========================================================
+     QUICK EDIT INSPECTOR
+     ========================================================= */
+
   function updateInspectorState() {
     const inspector = $("blockInspector");
     if (!inspector) return;
@@ -1123,6 +1393,13 @@
       "inspector-expanded",
       state.inspectorExpanded
     );
+
+    inspector.classList.toggle(
+      "inspector-closed",
+      state.inspectorClosed
+    );
+
+    inspector.hidden = state.inspectorClosed;
 
     const expandButton = $("expandInspectorButton");
 
@@ -1139,20 +1416,17 @@
   }
 
   function closeInspector() {
-    const inspector = $("blockInspector");
-    if (!inspector) return;
-
-    inspector.classList.add("inspector-closed");
-    inspector.classList.remove("inspector-expanded");
+    state.selectedBlockId = "";
     state.inspectorExpanded = false;
+    state.inspectorClosed = true;
+
+    renderManuscript();
+    renderInspector();
     updateInspectorState();
   }
 
   function openInspector() {
-    const inspector = $("blockInspector");
-    if (!inspector) return;
-
-    inspector.classList.remove("inspector-closed");
+    state.inspectorClosed = false;
     updateInspectorState();
   }
 
@@ -1161,6 +1435,10 @@
     openInspector();
     updateInspectorState();
   }
+
+  /* =========================================================
+     OVERVIEW AND COUNTS
+     ========================================================= */
 
   function renderOverview() {
     const fields = [
@@ -1173,9 +1451,7 @@
 
     fields.forEach(([id, value]) => {
       const field = $(id);
-      if (field && document.activeElement !== field) {
-        field.value = value;
-      }
+      if (field && document.activeElement !== field) field.value = value;
     });
 
     const list = $("overviewChapterList");
@@ -1192,7 +1468,8 @@
       open.textContent =
         (index + 1) + ". " +
         (chapter.title || "Untitled chapter") +
-        " · " + chapter.blocks.length + " blocks";
+        " · " + chapter.blocks.length + " blocks" +
+        " · " + (chapter.folder || "Unsorted");
 
       open.addEventListener("click", () => {
         state.chapterId = chapter.id;
@@ -1229,6 +1506,10 @@
     safeSet("assetShelfCount", state.project.assets.length + " files");
   }
 
+  /* =========================================================
+     ASSET FILES
+     ========================================================= */
+
   function formatSize(bytes) {
     if (bytes < 1024) return bytes + " B";
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
@@ -1251,12 +1532,21 @@
       const reader = new FileReader();
 
       reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(
-        new Error("Could not read " + file.name)
-      );
+      reader.onerror = () => reject(new Error("Could not read " + file.name));
 
       reader.readAsDataURL(file);
     });
+  }
+
+  function selectedAssetFolder() {
+    const filter = $("assetFolderFilter");
+    const value = filter ? filter.value : "";
+
+    if (value && value !== "__all__" && state.project.assetFolders.includes(value)) {
+      return value;
+    }
+
+    return "Unsorted";
   }
 
   async function addFiles(fileList) {
@@ -1264,6 +1554,7 @@
     if (!files.length) return;
 
     let added = 0;
+    const destinationFolder = selectedAssetFolder();
 
     for (const file of files) {
       if (!file || file.size === 0) continue;
@@ -1289,6 +1580,7 @@
           size: file.size,
           lastModified: file.lastModified || 0,
           relativePath: file.webkitRelativePath || file.name,
+          folder: destinationFolder,
           dataUrl: dataUrl,
           addedAt: new Date().toISOString()
         });
@@ -1308,7 +1600,7 @@
 
       notify(
         added + " file" + (added === 1 ? "" : "s") +
-        " added to your local asset shelf."
+        ' added to "' + destinationFolder + '".'
       );
     }
   }
@@ -1323,6 +1615,32 @@
       text: "TXT",
       file: "FILE"
     })[asset.kind] || "FILE";
+  }
+
+  function renderAssetFolderControls() {
+    const filter = $("assetFolderFilter");
+    if (!filter) return;
+
+    const previous = filter.value;
+    filter.replaceChildren();
+
+    const all = document.createElement("option");
+    all.value = "__all__";
+    all.textContent = "All folders";
+    filter.appendChild(all);
+
+    state.project.assetFolders.forEach((folder) => {
+      const option = document.createElement("option");
+      option.value = folder;
+      option.textContent = folder;
+      filter.appendChild(option);
+    });
+
+    if (previous === "__all__" || state.project.assetFolders.includes(previous)) {
+      filter.value = previous;
+    } else {
+      filter.value = "__all__";
+    }
   }
 
   function createAssetCard(asset, compact) {
@@ -1368,6 +1686,40 @@
     size.textContent = formatSize(asset.size || 0) + " · " + asset.kind;
     card.appendChild(size);
 
+    if (!compact) {
+      const folderLabel = document.createElement("label");
+      folderLabel.className = "asset-folder-label";
+      folderLabel.textContent = "Folder";
+
+      const folderSelect = document.createElement("select");
+      folderSelect.setAttribute("aria-label", "Move " + asset.name + " to folder");
+
+      state.project.assetFolders.forEach((folder) => {
+        const option = document.createElement("option");
+        option.value = folder;
+        option.textContent = folder;
+        folderSelect.appendChild(option);
+      });
+
+      folderSelect.value = asset.folder || "Unsorted";
+
+      folderSelect.addEventListener("click", (event) => event.stopPropagation());
+
+      folderSelect.addEventListener("change", () => {
+        if (asset.folder === folderSelect.value) return;
+
+        recordHistory();
+        asset.folder = folderSelect.value;
+        scheduleSave();
+        renderAssetShelf();
+        renderWritingAssetShelf();
+        notify('"' + asset.name + '" moved to "' + asset.folder + '".');
+      });
+
+      folderLabel.appendChild(folderSelect);
+      card.appendChild(folderLabel);
+    }
+
     const actions = document.createElement("div");
     actions.className = "asset-actions";
 
@@ -1404,7 +1756,6 @@
       const remove = document.createElement("button");
       remove.type = "button";
       remove.textContent = "Remove";
-
       remove.addEventListener("click", () => removeAsset(asset));
       actions.appendChild(remove);
     }
@@ -1413,22 +1764,36 @@
     return card;
   }
 
+  function getFilteredAssets() {
+    const filter = $("assetFolderFilter");
+    const folder = filter ? filter.value : "__all__";
+
+    if (!folder || folder === "__all__") return state.project.assets;
+
+    return state.project.assets.filter(
+      (asset) => (asset.folder || "Unsorted") === folder
+    );
+  }
+
   function renderAssetShelf() {
     const shelf = $("assetShelf");
     if (!shelf) return;
 
     shelf.replaceChildren();
 
-    if (!state.project.assets.length) {
+    const assets = getFilteredAssets();
+
+    if (!assets.length) {
       const empty = document.createElement("p");
       empty.className = "muted";
-      empty.textContent =
-        "Your shelf is empty. Drop files above to start collecting your story materials.";
+      empty.textContent = state.project.assets.length
+        ? "There are no files in this folder yet."
+        : "Your shelf is empty. Drop files above to start collecting your story materials.";
       shelf.appendChild(empty);
       return;
     }
 
-    state.project.assets.forEach((asset) => {
+    assets.forEach((asset) => {
       shelf.appendChild(createAssetCard(asset, false));
     });
   }
@@ -1452,6 +1817,96 @@
     });
   }
 
+  function addAssetFolder() {
+    const input = $("newAssetFolderName");
+    const rawName = input ? input.value.trim() : "";
+
+    if (!rawName) {
+      notify("Enter a name for the new asset folder.");
+      if (input) input.focus();
+      return;
+    }
+
+    if (state.project.assetFolders.some(
+      (folder) => folder.toLowerCase() === rawName.toLowerCase()
+    )) {
+      notify("An asset folder with that name already exists.");
+      return;
+    }
+
+    recordHistory();
+
+    const name = uniqueFolderName(rawName, state.project.assetFolders);
+    state.project.assetFolders.push(name);
+
+    if (input) input.value = "";
+
+    scheduleSave();
+    renderAssetFolderControls();
+    renderAssetShelf();
+
+    const filter = $("assetFolderFilter");
+    if (filter) {
+      filter.value = name;
+      renderAssetShelf();
+    }
+
+    const dialog = $("assetFolderDialog");
+    if (dialog) dialog.close();
+
+    notify('Asset folder "' + name + '" created.');
+  }
+
+  function removeAsset(asset) {
+    if (!window.confirm(
+      "Remove " + asset.name + " from this project's asset shelf?"
+    )) return;
+
+    recordHistory();
+
+    state.project.assets = state.project.assets.filter(
+      (item) => item.id !== asset.id
+    );
+
+    state.project.chapters.forEach((chapter) => {
+      chapter.blocks.forEach((block) => {
+        if (block.assetId === asset.id) block.assetId = "";
+      });
+    });
+
+    scheduleSave();
+    renderAll();
+    notify("Asset removed. Use Undo if you removed it by mistake.");
+  }
+
+  function deleteAssetFolder(folder) {
+    if (folder === "Unsorted") {
+      notify('The "Unsorted" folder is kept as the default folder.');
+      return;
+    }
+
+    if (!window.confirm(
+      'Delete the "' + folder + '" folder? Its files will be moved to Unsorted.'
+    )) return;
+
+    recordHistory();
+
+    state.project.assets.forEach((asset) => {
+      if (asset.folder === folder) asset.folder = "Unsorted";
+    });
+
+    state.project.assetFolders = state.project.assetFolders.filter(
+      (item) => item !== folder
+    );
+
+    scheduleSave();
+    renderAssetFolderControls();
+    renderAssetShelf();
+    renderWritingAssetShelf();
+
+    notify("Asset folder deleted. Its files were kept.");
+  }
+
   function openWritingAssetTray() {
     const tray = $("writingAssetTray");
     if (!tray) {
@@ -1470,30 +1925,6 @@
 
     tray.hidden = true;
     tray.classList.remove("asset-tray-open");
-  }
-
-  function removeAsset(asset) {
-    if (!window.confirm(
-      "Remove " + asset.name + " from this project's asset shelf?"
-    )) return;
-
-    recordHistory();
-
-    state.project.assets = state.project.assets.filter(
-      (item) => item.id !== asset.id
-    );
-
-    state.project.chapters.forEach((chapter) => {
-      chapter.blocks.forEach((block) => {
-        if (block.assetId === asset.id) {
-          block.assetId = "";
-        }
-      });
-    });
-
-    scheduleSave();
-    renderAll();
-    notify("Asset removed. Use Undo if you removed it by mistake.");
   }
 
   function attachReference(asset) {
@@ -1516,6 +1947,7 @@
     );
 
     state.selectedBlockId = block.id;
+    openInspector();
     showPanel("writingPanel");
     scheduleSave();
     renderAll();
@@ -1554,6 +1986,7 @@
 
     state.selectedBlockId = block.id;
 
+    openInspector();
     showPanel("writingPanel");
     scheduleSave();
     renderAll();
@@ -1604,15 +2037,16 @@
     }
 
     if (entries.length) {
-      for (const entry of entries) {
-        await walk(entry, "");
-      }
-
+      for (const entry of entries) await walk(entry, "");
       return output;
     }
 
     return Array.from(dataTransfer.files || []);
   }
+
+  /* =========================================================
+     PUBLISHING AND PROJECT IMPORT / EXPORT
+     ========================================================= */
 
   function updatePublishUrl() {
     const slugField = $("storySlug");
@@ -1680,9 +2114,7 @@
 
     downloadJson(project.slug + ".json", project);
 
-    notify(
-      "Reader JSON exported. Upload it to the website's stories folder to publish."
-    );
+    notify("Reader JSON exported. Upload it to the website's stories folder to publish.");
   }
 
   async function importProject(file) {
@@ -1711,9 +2143,7 @@
       recordHistory();
       notify("Project backup opened.");
     } catch (error) {
-      notify(
-        "Could not open that JSON file. Choose a valid Studio project backup."
-      );
+      notify("Could not open that JSON file. Choose a valid Studio project backup.");
     }
   }
 
@@ -1780,9 +2210,7 @@
     renderPalette();
     renderMoodLibrary();
 
-    if ($("settingsDialog")) {
-      $("settingsDialog").showModal();
-    }
+    if ($("settingsDialog")) $("settingsDialog").showModal();
   }
 
   function renderPalette() {
@@ -1800,9 +2228,7 @@
       button.setAttribute("aria-label", "Use colour " + colour);
 
       button.addEventListener("click", () => {
-        if ($("accentSetting")) {
-          $("accentSetting").value = colour;
-        }
+        if ($("accentSetting")) $("accentSetting").value = colour;
       });
 
       container.appendChild(button);
@@ -1830,10 +2256,7 @@
       reduceMotion: $("reduceMotionSetting").checked
     };
 
-    localStorage.setItem(
-      SETTINGS_KEY,
-      JSON.stringify(state.settings)
-    );
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
 
     applySettingsToPage();
     scheduleSave();
@@ -1846,10 +2269,7 @@
   function resetSettings() {
     state.settings = Object.assign({}, defaultSettings);
 
-    localStorage.setItem(
-      SETTINGS_KEY,
-      JSON.stringify(state.settings)
-    );
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
 
     applySettingsToPage();
     openSettings();
@@ -1857,8 +2277,6 @@
 
   /* =========================================================
      SAVED MOOD LIBRARY
-     A mood is an exact set of four HEX colour values.
-     This storage is separate from the story project.
      ========================================================= */
 
   function isHexColour(value) {
@@ -1870,7 +2288,6 @@
     if (!mood || typeof mood !== "object") return null;
 
     const colours = mood.colours || mood.theme || {};
-
     const normalizedColours = {};
 
     for (const key of MOOD_COLOURS) {
@@ -1918,9 +2335,7 @@
 
     MOOD_COLOURS.forEach((key) => {
       const field = $(key + "Setting");
-      const value = field
-        ? field.value
-        : state.settings[key];
+      const value = field ? field.value : state.settings[key];
 
       colours[key] = isHexColour(value)
         ? value.toLowerCase()
@@ -1940,13 +2355,8 @@
       nameField.focus();
     }
 
-    if (saveButton) {
-      saveButton.textContent = editing ? "Update mood" : "Save mood";
-    }
-
-    if (cancelButton) {
-      cancelButton.hidden = !editing;
-    }
+    if (saveButton) saveButton.textContent = editing ? "Update mood" : "Save mood";
+    if (cancelButton) cancelButton.hidden = !editing;
   }
 
   function cancelMoodEdit() {
@@ -2023,10 +2433,7 @@
 
     state.settings = Object.assign({}, state.settings, mood.colours);
 
-    localStorage.setItem(
-      SETTINGS_KEY,
-      JSON.stringify(state.settings)
-    );
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
 
     applySettingsToPage();
     scheduleSave();
@@ -2049,9 +2456,7 @@
     const mood = state.moods.find((item) => item.id === moodId);
     if (!mood) return;
 
-    if (!window.confirm(
-      'Delete "' + mood.name + '" from the Mood Library?'
-    )) return;
+    if (!window.confirm('Delete "' + mood.name + '" from the Mood Library?')) return;
 
     const previous = state.moods;
     state.moods = state.moods.filter((item) => item.id !== moodId);
@@ -2061,9 +2466,7 @@
       return;
     }
 
-    if (state.editingMoodId === moodId) {
-      cancelMoodEdit();
-    }
+    if (state.editingMoodId === moodId) cancelMoodEdit();
 
     renderMoodLibrary();
     notify("Mood deleted.");
@@ -2073,11 +2476,7 @@
     const mood = state.moods.find((item) => item.id === moodId);
     if (!mood) return;
 
-    downloadJson(
-      slugify(mood.name) + "-mood.json",
-      clone(mood)
-    );
-
+    downloadJson(slugify(mood.name) + "-mood.json", clone(mood));
     notify('"' + mood.name + '" exported.');
   }
 
@@ -2089,7 +2488,10 @@
 
     input.addEventListener("change", async () => {
       const file = input.files && input.files[0];
-      if (!file) return;
+      if (!file) {
+        input.remove();
+        return;
+      }
 
       try {
         const parsed = JSON.parse(await file.text());
@@ -2102,9 +2504,7 @@
 
         const valid = candidates.map(normalizeMood).filter(Boolean);
 
-        if (!valid.length) {
-          throw new Error("No valid mood data found.");
-        }
+        if (!valid.length) throw new Error("No valid mood data found.");
 
         let imported = 0;
 
@@ -2113,9 +2513,7 @@
             (item) => item.id === incoming.id
           );
 
-          if (duplicate) {
-            incoming.id = makeId("mood");
-          }
+          if (duplicate) incoming.id = makeId("mood");
 
           state.moods.push(incoming);
           imported++;
@@ -2146,10 +2544,7 @@
     const list = $("moodLibraryList");
     const count = $("moodCount");
 
-    if (count) {
-      count.textContent = String(state.moods.length);
-    }
-
+    if (count) count.textContent = String(state.moods.length);
     if (!list) return;
 
     list.replaceChildren();
@@ -2190,10 +2585,7 @@
         swatch.style.backgroundColor = mood.colours[key];
         swatch.style.border = "1px solid rgba(255,255,255,.2)";
         swatch.title = key + ": " + mood.colours[key];
-        swatch.setAttribute(
-          "aria-label",
-          key + " " + mood.colours[key]
-        );
+        swatch.setAttribute("aria-label", key + " " + mood.colours[key]);
         swatches.appendChild(swatch);
       });
 
@@ -2240,7 +2632,6 @@
   function bindMoodLibrary() {
     bindClick("saveMoodButton", saveMood);
     bindClick("cancelMoodEditButton", cancelMoodEdit);
-
     bindClick("importMoodButton", createMoodImportInput);
     bindClick("importMoodButtonAlt", createMoodImportInput);
 
@@ -2250,13 +2641,10 @@
         return;
       }
 
-      downloadJson(
-        "ceeqwinn-mood-library.json",
-        {
-          schemaVersion: 1,
-          moods: state.moods
-        }
-      );
+      downloadJson("ceeqwinn-mood-library.json", {
+        schemaVersion: 1,
+        moods: state.moods
+      });
 
       notify("Mood Library exported.");
     });
@@ -2270,15 +2658,13 @@
           saveMood();
         }
 
-        if (event.key === "Escape") {
-          cancelMoodEdit();
-        }
+        if (event.key === "Escape") cancelMoodEdit();
       });
     }
   }
 
   /* =========================================================
-     PREVIEW
+     THEATRE PREVIEW
      ========================================================= */
 
   function openPreview() {
@@ -2287,10 +2673,7 @@
       return;
     }
 
-    safeSet(
-      "previewStoryTitle",
-      state.project.title || "Untitled story"
-    );
+    safeSet("previewStoryTitle", state.project.title || "Untitled story");
 
     const frame = $("previewFrame");
 
@@ -2301,9 +2684,7 @@
         "desktop-preview"
       );
 
-      frame.classList.add(
-        ($("previewSize").value || "phone") + "-preview"
-      );
+      frame.classList.add(($("previewSize").value || "phone") + "-preview");
     }
 
     window.CeeqwinnTheatre.render(
@@ -2333,73 +2714,9 @@
     $("previewDialog").showModal();
   }
 
-  function addChapter() {
-    const title = window.prompt("Chapter title:", "New chapter");
-    if (title === null) return;
-
-    recordHistory();
-
-    const chapter = {
-      id: makeId("chapter"),
-      title: title.trim() || "Untitled chapter",
-      folder: "Unsorted",
-      blocks: []
-    };
-
-    state.project.chapters.push(chapter);
-    state.chapterId = chapter.id;
-    state.selectedBlockId = "";
-
-    scheduleSave();
-    showPanel("writingPanel");
-    renderAll();
-  }
-
-  function renameChapter() {
-    const chapter = currentChapter();
-    if (!chapter) return;
-
-    const title = window.prompt(
-      "Chapter title:",
-      chapter.title || ""
-    );
-
-    if (title === null) return;
-
-    recordHistory();
-
-    chapter.title = title.trim() || "Untitled chapter";
-
-    scheduleSave();
-    renderAll();
-  }
-
-  function deleteChapter() {
-    if (state.project.chapters.length <= 1) {
-      notify("A story needs at least one chapter.");
-      return;
-    }
-
-    if (!window.confirm(
-      "Delete this chapter and its blocks? You can use Undo to restore it."
-    )) return;
-
-    recordHistory();
-
-    const index = state.project.chapters.findIndex(
-      (chapter) => chapter.id === state.chapterId
-    );
-
-    state.project.chapters.splice(index, 1);
-
-    state.chapterId =
-      state.project.chapters[Math.max(0, index - 1)].id;
-
-    state.selectedBlockId = "";
-
-    scheduleSave();
-    renderAll();
-  }
+  /* =========================================================
+     SIDEBAR AND FILE PICKERS
+     ========================================================= */
 
   function toggleSidebar() {
     const sidebar = $("mainSidebar");
@@ -2411,30 +2728,17 @@
 
     state.sidebarCollapsed = !state.sidebarCollapsed;
 
-    sidebar.classList.toggle(
-      "collapsed",
-      state.sidebarCollapsed
-    );
-
-    layout.classList.toggle(
-      "sidebar-collapsed",
-      state.sidebarCollapsed
-    );
+    sidebar.classList.toggle("collapsed", state.sidebarCollapsed);
+    layout.classList.toggle("sidebar-collapsed", state.sidebarCollapsed);
 
     if (expandButton) {
       expandButton.hidden = !state.sidebarCollapsed;
-      expandButton.setAttribute(
-        "aria-expanded",
-        String(!state.sidebarCollapsed)
-      );
+      expandButton.setAttribute("aria-expanded", String(!state.sidebarCollapsed));
     }
 
     if (collapseButton) {
       collapseButton.hidden = state.sidebarCollapsed;
-      collapseButton.setAttribute(
-        "aria-expanded",
-        String(!state.sidebarCollapsed)
-      );
+      collapseButton.setAttribute("aria-expanded", String(!state.sidebarCollapsed));
     }
 
     sidebar.querySelectorAll(
@@ -2460,10 +2764,7 @@
 
     dropZone.addEventListener("click", (event) => {
       if (event.target.closest("button")) return;
-
-      if ($("assetFileInput")) {
-        $("assetFileInput").click();
-      }
+      if ($("assetFileInput")) $("assetFileInput").click();
     });
 
     ["dragenter", "dragover"].forEach((name) => {
@@ -2497,10 +2798,7 @@
     });
 
     manuscript.addEventListener("drop", (event) => {
-      const assetId = event.dataTransfer.getData(
-        "text/ceeqwinn-asset"
-      );
-
+      const assetId = event.dataTransfer.getData("text/ceeqwinn-asset");
       if (!assetId) return;
 
       event.preventDefault();
@@ -2513,17 +2811,37 @@
     });
   }
 
+  /* =========================================================
+     EVENT BINDINGS
+     ========================================================= */
+
   function bind() {
     document.querySelectorAll(".nav-item").forEach((button) => {
-      button.addEventListener("click", () => {
-        showPanel(button.dataset.panel);
-      });
+      button.addEventListener("click", () => showPanel(button.dataset.panel));
     });
 
     bindClick("addChapterButton", addChapter);
     bindClick("overviewAddChapterButton", addChapter);
     bindClick("renameChapterButton", renameChapter);
     bindClick("deleteChapterButton", deleteChapter);
+
+    bindClick("manageChapterFoldersButton", openChapterFolderDialog);
+    bindClick("addChapterFolderButton", addChapterFolder);
+
+    if ($("chapterFolderSelect")) {
+      $("chapterFolderSelect").addEventListener("change", () => {
+        assignChapterFolder($("chapterFolderSelect").value);
+      });
+    }
+
+    if ($("newChapterFolderName")) {
+      $("newChapterFolderName").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          addChapterFolder();
+        }
+      });
+    }
 
     bindClick("newWritingBatchButton", () => addBlock("paragraph"));
     bindClick("addParagraphButton", () => addBlock("paragraph"));
@@ -2539,24 +2857,17 @@
 
     bindClick("addImageButton", () => openAssetPicker("image/*"));
     bindClick("addImageButtonBottom", () => openAssetPicker("image/*"));
-
     bindClick("addVideoButton", () => openAssetPicker("video/*"));
     bindClick("addVideoButtonBottom", () => openAssetPicker("video/*"));
 
     bindClick("addReferenceButton", () => {
-      openAssetPicker(
-        ".pdf,.doc,.docx,.txt,.md,.rtf,.odt,.xls,.xlsx,.ppt,.pptx,.json"
-      );
+      openAssetPicker(".pdf,.doc,.docx,.txt,.md,.rtf,.odt,.xls,.xlsx,.ppt,.pptx,.json");
     });
 
     document.querySelectorAll(".experience-option").forEach((button) => {
       button.addEventListener("click", () => {
         const type = button.dataset.type;
-
-        if ($("experienceDialog")) {
-          $("experienceDialog").close();
-        }
-
+        if ($("experienceDialog")) $("experienceDialog").close();
         if (type) addBlock(type);
       });
     });
@@ -2592,9 +2903,7 @@
           "desktop-preview"
         );
 
-        frame.classList.add(
-          $("previewSize").value + "-preview"
-        );
+        frame.classList.add($("previewSize").value + "-preview");
       });
     }
 
@@ -2623,6 +2932,29 @@
     bindClick("collapseSidebarButton", toggleSidebar);
     bindClick("expandSidebarButton", toggleSidebar);
 
+    bindClick("createAssetFolderButton", () => {
+      if ($("assetFolderDialog")) $("assetFolderDialog").showModal();
+    });
+
+    bindClick("saveAssetFolderButton", addAssetFolder);
+
+    bindClick("cancelAssetFolderButton", () => {
+      if ($("assetFolderDialog")) $("assetFolderDialog").close();
+    });
+
+    if ($("newAssetFolderName")) {
+      $("newAssetFolderName").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          addAssetFolder();
+        }
+      });
+    }
+
+    if ($("assetFolderFilter")) {
+      $("assetFolderFilter").addEventListener("change", renderAssetShelf);
+    }
+
     if ($("manuscriptChapterTitle")) {
       $("manuscriptChapterTitle").addEventListener("input", () => {
         const chapter = currentChapter();
@@ -2630,10 +2962,7 @@
 
         chapter.title = $("manuscriptChapterTitle").value;
 
-        safeSet(
-          "currentChapterLabel",
-          chapter.title || "Untitled chapter"
-        );
+        safeSet("currentChapterLabel", chapter.title || "Untitled chapter");
 
         scheduleSave();
         renderChapterList();
@@ -2655,16 +2984,10 @@
         state.project[key] = field.value;
 
         if (key === "title") {
-          safeSet(
-            "previewStoryTitle",
-            field.value || "Untitled story"
-          );
+          safeSet("previewStoryTitle", field.value || "Untitled story");
 
           const slug = $("storySlug");
-
-          if (slug && !slug.dataset.edited) {
-            slug.value = slugify(field.value);
-          }
+          if (slug && !slug.dataset.edited) slug.value = slugify(field.value);
         }
 
         updatePublishUrl();
@@ -2731,18 +3054,13 @@
 
     if ($("assetShelf")) {
       $("assetShelf").addEventListener("dragover", (event) => {
-        if (event.dataTransfer.types.includes("Files")) {
-          event.preventDefault();
-        }
+        if (event.dataTransfer.types.includes("Files")) event.preventDefault();
       });
     }
 
     if ($("fontSizeSetting")) {
       $("fontSizeSetting").addEventListener("input", () => {
-        safeSet(
-          "fontSizeValue",
-          $("fontSizeSetting").value + "px"
-        );
+        safeSet("fontSizeValue", $("fontSizeSetting").value + "px");
       });
     }
 
@@ -2761,10 +3079,7 @@
       if (key === "z" && !event.shiftKey) {
         event.preventDefault();
         undo();
-      } else if (
-        (key === "y") ||
-        (key === "z" && event.shiftKey)
-      ) {
+      } else if (key === "y" || (key === "z" && event.shiftKey)) {
         event.preventDefault();
         redo();
       } else if (key === "s") {
@@ -2777,6 +3092,10 @@
     });
   }
 
+  /* =========================================================
+     STARTUP
+     ========================================================= */
+
   loadSettings();
   loadMoods();
   loadProject();
@@ -2784,7 +3103,6 @@
   renderAll();
   renderMoodLibrary();
 
-  // Story Overview is the Studio's landing page.
   showPanel("overviewPanel");
 
 })();
