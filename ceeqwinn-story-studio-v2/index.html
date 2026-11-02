@@ -507,10 +507,34 @@
         <span id="moodCount" class="muted tiny">0 moods</span>
       </div>
 
-      <!-- JavaScript will render saved mood cards here.
-           Each card will have Apply, Rename and Delete actions. -->
       <div id="moodLibraryList" class="mood-library-list" aria-live="polite">
         <p class="muted">Your saved colour configurations will appear here.</p>
+      </div>
+
+      <!-- IMPORT A PREVIOUSLY EXPORTED MOOD -->
+      <div class="mood-import-area">
+        <label class="field-label" for="moodImportFile">
+          Import a saved mood
+        </label>
+
+        <div class="button-row">
+          <button id="importMoodButton" class="button secondary" type="button">
+            Import mood JSON
+          </button>
+
+          <input
+            id="moodImportFile"
+            type="file"
+            accept=".json,application/json"
+            hidden
+          >
+        </div>
+
+        <p class="muted tiny">
+          Import a mood JSON file previously exported from the Studio.
+          Imported moods are added to your saved library; they do not
+          replace your story project.
+        </p>
       </div>
     </section>
 
