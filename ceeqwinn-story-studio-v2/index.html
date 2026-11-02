@@ -1,0 +1,594 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#260d1b">
+  <meta name="description" content="CEEQWINN Story & Theatre Studio">
+  <title>CEEQWINN Story & Theatre Studio</title>
+  <link rel="stylesheet" href="studio.css">
+</head>
+
+<body>
+  <div class="studio-shell">
+
+    <!-- HEADER -->
+    <header class="studio-header">
+      <div class="brand-area">
+        <div class="brand-mark">C</div>
+        <div>
+          <div class="brand-name">CEEQWINN</div>
+          <div class="brand-subtitle">STORY & THEATRE STUDIO</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <span id="saveStatus" aria-live="polite">All changes saved</span>
+        <button id="settingsButton" type="button">Settings</button>
+        <button id="previewButton" type="button">Preview</button>
+        <button id="exportButton" type="button">Export Project</button>
+      </div>
+    </header>
+
+    <!-- MAIN LAYOUT -->
+    <div class="studio-layout">
+
+      <!-- SIDEBAR -->
+      <aside class="studio-sidebar" id="mainSidebar">
+        <div class="sidebar-top">
+          <div class="sidebar-heading">WORKSPACE</div>
+
+          <nav class="main-navigation" aria-label="Studio navigation">
+            <button class="nav-button active" data-panel="writingPanel" type="button">
+              Writing Room
+            </button>
+            <button class="nav-button" data-panel="overviewPanel" type="button">
+              Story Overview
+            </button>
+            <button class="nav-button" data-panel="assetsPanel" type="button">
+              Media Library
+            </button>
+            <button class="nav-button" data-panel="publishingPanel" type="button">
+              Release & Export
+            </button>
+            <button class="nav-button" data-panel="playbookPanel" type="button">
+              Sequence Playbook
+            </button>
+          </nav>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-heading">CHAPTERS</div>
+          <div id="chapterList" class="chapter-list"></div>
+
+          <button id="addChapterButton" class="secondary-button" type="button">
+            + New Chapter
+          </button>
+        </div>
+
+        <div class="sidebar-bottom">
+          <button id="newWritingBatchButton" class="secondary-button" type="button">
+            + New Writing Batch
+          </button>
+
+          <button id="collapseSidebarButton" type="button" aria-label="Collapse sidebar">
+            Collapse Sidebar
+          </button>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="studio-main">
+
+        <!-- WRITING ROOM -->
+        <section id="writingPanel" class="studio-panel active">
+
+          <div class="panel-heading-row">
+            <div>
+              <div class="eyebrow">MANUSCRIPT WORKSPACE</div>
+              <h1 id="currentChapterLabel">Chapter One</h1>
+            </div>
+
+            <div class="panel-heading-actions">
+              <button id="backToOverview" type="button">Overview</button>
+              <button id="previewChapterButton" type="button">Preview Chapter</button>
+            </div>
+          </div>
+
+          <!-- WRITING MODE SELECTOR -->
+          <section class="writing-mode-section">
+            <div class="section-heading">
+              <div>
+                <div class="eyebrow">CHOOSE YOUR WORKING SPACE</div>
+                <h2>Writing Mode</h2>
+              </div>
+            </div>
+
+            <div class="writing-mode-selector" id="writingModeSelector">
+              <button
+                class="writing-mode-button active"
+                type="button"
+                data-writing-mode="normal">
+                <strong>Normal Writing</strong>
+                <span>Write, edit and organise your manuscript.</span>
+              </button>
+
+              <button
+                class="writing-mode-button"
+                type="button"
+                data-writing-mode="advanced">
+                <strong>Advanced Writing</strong>
+                <span>Develop selected passages and storytelling techniques.</span>
+              </button>
+
+              <button
+                class="writing-mode-button"
+                type="button"
+                data-writing-mode="focus">
+                <strong>Focus Writing</strong>
+                <span>Concentrate on one passage or writing batch.</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- WRITING BATCHES -->
+          <section class="writing-batch-section">
+            <div class="batch-heading">
+              <div>
+                <div class="eyebrow">CHAPTER WRITING STRUCTURE</div>
+                <h2>Writing Batches</h2>
+              </div>
+
+              <span class="batch-count">2 BATCHES PER CHAPTER</span>
+            </div>
+
+            <div class="writing-batch-selector" id="writingBatchSelector">
+              <button
+                class="writing-batch-button active"
+                type="button"
+                data-batch-id="batch-1">
+                <span>Batch 01</span>
+                <strong>First Writing Batch</strong>
+              </button>
+
+              <button
+                class="writing-batch-button"
+                type="button"
+                data-batch-id="batch-2">
+                <span>Batch 02</span>
+                <strong>Second Writing Batch</strong>
+              </button>
+            </div>
+
+            <p class="batch-description" id="batchDescription">
+              Working in the first writing batch.
+            </p>
+          </section>
+
+          <!-- CHAPTER EDITOR -->
+          <section class="manuscript-section">
+            <div class="manuscript-toolbar">
+              <div class="manuscript-title-area">
+                <label for="manuscriptChapterTitle">Chapter title</label>
+                <input
+                  id="manuscriptChapterTitle"
+                  type="text"
+                  placeholder="Enter chapter title">
+              </div>
+
+              <div class="manuscript-actions">
+                <button id="renameChapterButton" type="button">Rename</button>
+                <button id="deleteChapterButton" type="button">Delete Chapter</button>
+              </div>
+            </div>
+
+            <!-- EDITING ACTIONS -->
+            <div class="writing-toolbar">
+              <div class="toolbar-group">
+                <button id="undoButton" type="button" disabled>Undo</button>
+                <button id="redoButton" type="button" disabled>Redo</button>
+              </div>
+
+              <div class="toolbar-group">
+                <button id="highlightSelectionButton" type="button">
+                  Highlight Selection
+                </button>
+
+                <button id="saveSequenceButton" type="button">
+                  Save to Playbook
+                </button>
+              </div>
+
+              <div class="toolbar-group">
+                <button id="addParagraphButton" type="button">
+                  + Paragraph
+                </button>
+
+                <button id="insertExperienceButton" type="button">
+                  + Theatre Element
+                </button>
+              </div>
+            </div>
+
+            <!-- MANUSCRIPT -->
+            <div id="manuscript" class="manuscript-editor"></div>
+
+            <!-- INSERT OPTIONS -->
+            <div class="manuscript-footer">
+              <button id="addImageButton" type="button">Add Image</button>
+              <button id="addVideoButton" type="button">Add Video</button>
+              <button id="addReferenceButton" type="button">Add Reference</button>
+            </div>
+          </section>
+
+          <!-- ADVANCED WRITING ASSISTANCE -->
+          <section id="advancedWritingPanel" class="writing-assistance-panel" hidden>
+            <div class="eyebrow">PASSAGE DEVELOPMENT</div>
+            <h2>Advanced Writing Workspace</h2>
+
+            <p>
+              Work with a selected passage. Explore expression, pacing,
+              atmosphere, character voice and narrative development.
+            </p>
+
+            <div class="assistance-content" id="advancedWritingContent">
+              <p>Select a passage in your manuscript to begin.</p>
+            </div>
+          </section>
+
+          <!-- FOCUS WRITING -->
+          <section id="focusWritingPanel" class="focus-writing-panel" hidden>
+            <div class="focus-heading">
+              <div>
+                <div class="eyebrow">DISTRACTION-REDUCED WORKSPACE</div>
+                <h2>Focus Writing</h2>
+              </div>
+
+              <button id="exitFocusWritingButton" type="button">
+                Return to Normal Writing
+              </button>
+            </div>
+
+            <div id="focusWritingContent" class="focus-writing-content">
+              <p>Select a passage or writing batch to focus on.</p>
+            </div>
+          </section>
+
+          <!-- BLOCK INSPECTOR -->
+          <section id="blockInspector" class="block-inspector">
+            <div class="inspector-heading">
+              <h2>Element Inspector</h2>
+              <button id="clearSelectionButton" type="button">Clear Selection</button>
+            </div>
+
+            <div id="inspectorContent">
+              <p>Select a manuscript element to inspect and edit it.</p>
+            </div>
+          </section>
+
+        </section>
+
+        <!-- STORY OVERVIEW -->
+        <section id="overviewPanel" class="studio-panel" hidden>
+          <div class="eyebrow">YOUR STORY AT A GLANCE</div>
+          <h1>Story Overview</h1>
+
+          <div class="overview-editor">
+            <label for="storyTitle">Story Title</label>
+            <input id="storyTitle" type="text">
+
+            <label for="storyDescription">Story Description</label>
+            <textarea id="storyDescription"></textarea>
+
+            <label for="storyGenre">Genre</label>
+            <input id="storyGenre" type="text">
+
+            <label for="storyStatus">Story Status</label>
+            <select id="storyStatus">
+              <option value="draft">Draft</option>
+              <option value="in-progress">In Progress</option>
+              <option value="ready">Ready for Release</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+
+          <div class="overview-statistics">
+            <div class="stat-card">
+              <span>Chapters</span>
+              <strong id="chapterCount">0</strong>
+            </div>
+
+            <div class="stat-card">
+              <span>Story Elements</span>
+              <strong id="blockCount">0</strong>
+            </div>
+
+            <div class="stat-card">
+              <span>Words</span>
+              <strong id="wordCount">0</strong>
+            </div>
+
+            <div class="stat-card">
+              <span>Assets</span>
+              <strong id="assetCount">0</strong>
+            </div>
+          </div>
+
+          <div class="overview-chapters">
+            <div class="section-heading">
+              <h2>Chapter Directory</h2>
+              <button id="overviewAddChapterButton" type="button">
+                + Add Chapter
+              </button>
+            </div>
+
+            <div id="overviewChapterList"></div>
+          </div>
+
+          <button id="overviewStartWritingButton" type="button">
+            Return to Writing Room
+          </button>
+        </section>
+
+        <!-- MEDIA LIBRARY -->
+        <section id="assetsPanel" class="studio-panel" hidden>
+          <div class="eyebrow">STORY MATERIALS</div>
+          <h1>Media Library</h1>
+
+          <p>
+            Keep your story images, video references and other creative assets
+            organised in one place.
+          </p>
+
+          <div class="asset-actions">
+            <button id="chooseAssetsButton" type="button">Choose Files</button>
+            <button id="chooseFolderButton" type="button">Choose Folder</button>
+          </div>
+
+          <input id="assetFileInput" type="file" multiple hidden
+            accept="image/*,video/*,audio/*">
+
+          <input id="assetFolderInput" type="file" multiple hidden
+            webkitdirectory directory>
+
+          <div id="assetDropZone" class="asset-drop-zone">
+            <p>Drop files here to add them to your library.</p>
+            <button id="dropChooseFilesButton" type="button">
+              Browse Files
+            </button>
+          </div>
+
+          <div class="asset-shelf-heading">
+            <h2>Your Assets</h2>
+            <span id="assetShelfCount">0 assets</span>
+          </div>
+
+          <div id="assetShelf" class="asset-shelf"></div>
+        </section>
+
+        <!-- RELEASE & EXPORT -->
+        <section id="publishingPanel" class="studio-panel" hidden>
+          <div class="eyebrow">PROJECT DELIVERY</div>
+          <h1>Release & Export</h1>
+
+          <p>
+            Prepare your story project and export it for the existing
+            CEEQWINN Article-to-HTML Reader.
+          </p>
+
+          <label for="storySlug">Story Slug</label>
+          <input id="storySlug" type="text" placeholder="my-story">
+
+          <div class="public-url-section">
+            <span>Reader URL Preview</span>
+            <div id="publicUrlPreview"></div>
+          </div>
+
+          <div class="release-actions">
+            <button id="exportPublishButton" type="button">
+              Export Reader Story
+            </button>
+
+            <button id="publishingExportButton" type="button">
+              Backup Full Project
+            </button>
+
+            <button id="importButton" type="button">
+              Import Project Backup
+            </button>
+
+            <input id="importFile" type="file" accept=".json,application/json" hidden>
+          </div>
+        </section>
+
+        <!-- SEQUENCE PLAYBOOK -->
+        <section id="playbookPanel" class="studio-panel" hidden>
+          <div class="eyebrow">YOUR REUSABLE STORY LANGUAGE</div>
+          <h1>Sequence Playbook</h1>
+
+          <p>
+            Save interesting words, expressions and phrases from your writing.
+            Record what they communicate and where they might be useful again.
+          </p>
+
+          <div class="playbook-toolbar">
+            <input
+              id="playbookSearch"
+              type="search"
+              placeholder="Search saved sequences...">
+
+            <button id="addPlaybookEntryButton" type="button">
+              + Add Entry
+            </button>
+          </div>
+
+          <div id="playbookEditor" class="playbook-editor" hidden>
+            <label for="playbookPhrase">Word or Phrase</label>
+            <textarea id="playbookPhrase" rows="2"></textarea>
+
+            <label for="playbookMeaning">Meaning or Intended Effect</label>
+            <textarea id="playbookMeaning" rows="3"></textarea>
+
+            <label for="playbookContext">Usage Context</label>
+            <textarea id="playbookContext" rows="3"></textarea>
+
+            <label for="playbookExamples">Possible Story Examples</label>
+            <textarea id="playbookExamples" rows="3"></textarea>
+
+            <div class="playbook-editor-actions">
+              <button id="savePlaybookEntryButton" type="button">Save Entry</button>
+              <button id="cancelPlaybookEntryButton" type="button">Cancel</button>
+            </div>
+          </div>
+
+          <div id="playbookList" class="playbook-list">
+            <p>Your saved sequences will appear here.</p>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- THEATRE ELEMENT DIALOG -->
+  <dialog id="experienceDialog" class="studio-dialog">
+    <div class="dialog-heading">
+      <h2>Add a Theatre Element</h2>
+      <button type="button" data-close-dialog="experienceDialog">Close</button>
+    </div>
+
+    <div class="experience-options">
+      <button class="experience-option" type="button" data-type="narration">
+        Narration
+      </button>
+
+      <button class="experience-option" type="button" data-type="dialogue">
+        Dialogue
+      </button>
+
+      <button class="experience-option" type="button" data-type="reveal">
+        Visual Reveal
+      </button>
+
+      <button class="experience-option" type="button" data-type="choice">
+        Reader Choice
+      </button>
+
+      <button class="experience-option" type="button" data-type="game">
+        Mini Game
+      </button>
+
+      <button class="experience-option" type="button" data-type="audio">
+        Audio
+      </button>
+
+      <button class="experience-option" type="button" data-type="chapterEnd">
+        Chapter Ending
+      </button>
+    </div>
+  </dialog>
+
+  <!-- SETTINGS DIALOG -->
+  <dialog id="settingsDialog" class="studio-dialog">
+    <div class="dialog-heading">
+      <h2>Studio Settings</h2>
+      <button type="button" data-close-dialog="settingsDialog">Close</button>
+    </div>
+
+    <div class="settings-content">
+      <label>
+        <input id="showHintsSetting" type="checkbox">
+        Show writing hints
+      </label>
+
+      <label>
+        <input id="darkModeSetting" type="checkbox">
+        Dark mode
+      </label>
+
+      <label for="fontFamilySetting">Writing Font</label>
+      <select id="fontFamilySetting">
+        <option value="Georgia">Georgia</option>
+        <option value="serif">Serif</option>
+        <option value="Arial">Arial</option>
+        <option value="sans-serif">Sans Serif</option>
+      </select>
+
+      <label for="fontSizeSetting">Writing Font Size</label>
+      <select id="fontSizeSetting">
+        <option value="14">14px</option>
+        <option value="16">16px</option>
+        <option value="18">18px</option>
+        <option value="20">20px</option>
+        <option value="22">22px</option>
+      </select>
+
+      <label for="accentSetting">Accent Colour</label>
+      <select id="accentSetting">
+        <option value="#d6ad68">Gold</option>
+        <option value="#a83d55">Ruby</option>
+        <option value="#39765f">Emerald</option>
+        <option value="#536b9b">Sapphire</option>
+        <option value="#b78aa8">Pearl Rose</option>
+      </select>
+
+      <div id="paletteSwatches" class="palette-swatches"></div>
+
+      <label for="backgroundSetting">Workspace Background</label>
+      <input id="backgroundSetting" type="color" value="#260d1b">
+
+      <label for="panelSetting">Panel Colour</label>
+      <input id="panelSetting" type="color" value="#381b2c">
+
+      <label for="transitionSetting">Theatre Transition</label>
+      <select id="transitionSetting">
+        <option value="fade">Fade</option>
+        <option value="none">None</option>
+      </select>
+
+      <label>
+        <input id="reduceMotionSetting" type="checkbox">
+        Reduce motion
+      </label>
+
+      <div class="dialog-actions">
+        <button id="resetSettingsButton" type="button">Reset Settings</button>
+        <button id="saveSettingsButton" type="button">Save Settings</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- THEATRE PREVIEW -->
+  <dialog id="previewDialog" class="preview-dialog">
+    <div class="preview-heading">
+      <div>
+        <div class="eyebrow">THEATRE PREVIEW</div>
+        <h2 id="previewStoryTitle">Story Preview</h2>
+      </div>
+
+      <div class="preview-controls">
+        <select id="previewSize" aria-label="Preview size">
+          <option value="phone">Phone</option>
+          <option value="tablet">Tablet</option>
+          <option value="desktop">Desktop</option>
+        </select>
+
+        <button id="closePreviewButton" type="button">Close Preview</button>
+      </div>
+    </div>
+
+    <div id="previewFrame" class="preview-frame">
+      <div id="theatrePreview"></div>
+    </div>
+  </dialog>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+  <!-- SCRIPTS -->
+  <script src="theatre-engine.js"></script>
+  <script src="studio.js"></script>
+</body>
+</html>
+```
