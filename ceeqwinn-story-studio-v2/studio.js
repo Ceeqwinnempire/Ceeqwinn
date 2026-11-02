@@ -4,6 +4,7 @@
 
   const STORAGE_KEY = "ceeqwinn_story_studio_v3";
   const SETTINGS_KEY = "ceeqwinn_story_studio_settings_v1";
+  const MOODS_KEY = "ceeqwinn_story_studio_moods_v1";
   const HISTORY_LIMIT = 40;
 
   const $ = (id) => document.getElementById(id);
@@ -19,7 +20,9 @@
     historyIndex: -1,
     restoringHistory: false,
     inspectorExpanded: false,
-    sidebarCollapsed: false
+    sidebarCollapsed: false,
+    moods: [],
+    editingMoodId: ""
   };
 
   const defaultSettings = {
@@ -30,6 +33,7 @@
     accent: "#d6ad68",
     background: "#260d1b",
     panel: "#381b2c",
+    text: "#fbf2f6",
     transition: "fade",
     reduceMotion: false
   };
@@ -38,6 +42,13 @@
     "#7c1537", "#a51e45", "#c62852", "#e34370", "#ef82a7",
     "#d00069", "#a92b81", "#6e255f", "#d6ad68", "#f1d9a4",
     "#f8f0f4", "#b9b4bb", "#747078", "#181318", "#263c68"
+  ];
+
+  const MOOD_COLOURS = [
+    "accent",
+    "background",
+    "panel",
+    "text"
   ];
 
   const makeId = (prefix) =>
@@ -138,6 +149,7 @@
     project.chapters = Array.isArray(project.chapters) ? project.chapters : [];
     project.folders = Array.isArray(project.folders) ? project.folders : ["Opening"];
     project.release = project.release || { plan: "draft", date: "" };
+
     project.theme = Object.assign({
       accent: "#d6ad68",
       background: "#260d1b",
@@ -279,6 +291,12 @@
     } catch (error) {
       state.settings = Object.assign({}, defaultSettings);
     }
+
+    MOOD_COLOURS.forEach((key) => {
+      if (!isHexColour(state.settings[key])) {
+        state.settings[key] = defaultSettings[key];
+      }
+    });
   }
 
   function loadProject() {
@@ -1654,7 +1672,8 @@
     project.theme = Object.assign({}, project.theme, {
       accent: state.settings.accent,
       background: state.settings.background,
-      panel: state.settings.panel
+      panel: state.settings.panel,
+      text: state.settings.text
     });
 
     project.status = "ready";
@@ -1698,6 +1717,10 @@
     }
   }
 
+  /* =========================================================
+     SETTINGS
+     ========================================================= */
+
   function applySettingsToPage() {
     const settings = state.settings;
     if (!settings) return;
@@ -1705,6 +1728,7 @@
     document.documentElement.style.setProperty("--accent", settings.accent);
     document.documentElement.style.setProperty("--bg", settings.background);
     document.documentElement.style.setProperty("--panel", settings.panel);
+    document.documentElement.style.setProperty("--text", settings.text);
     document.documentElement.style.setProperty("--writing-font", settings.fontFamily);
     document.documentElement.style.setProperty("--writing-size", settings.fontSize + "px");
 
@@ -1718,7 +1742,8 @@
       state.project.theme = Object.assign({}, state.project.theme, {
         accent: settings.accent,
         background: settings.background,
-        panel: settings.panel
+        panel: settings.panel,
+        text: settings.text
       });
     }
   }
@@ -1734,6 +1759,7 @@
       accentSetting: s.accent,
       backgroundSetting: s.background,
       panelSetting: s.panel,
+      textSetting: s.text,
       transitionSetting: s.transition,
       reduceMotionSetting: s.reduceMotion
     };
@@ -1752,6 +1778,7 @@
     safeSet("fontSizeValue", s.fontSize + "px");
 
     renderPalette();
+    renderMoodLibrary();
 
     if ($("settingsDialog")) {
       $("settingsDialog").showModal();
@@ -1783,14 +1810,22 @@
   }
 
   function saveSettings() {
+    const readColour = (id, fallback) => {
+      const field = $(id);
+      return field && isHexColour(field.value)
+        ? field.value.toLowerCase()
+        : fallback;
+    };
+
     state.settings = {
       showHints: $("showHintsSetting").checked,
       darkMode: $("darkModeSetting").checked,
       fontFamily: $("fontFamilySetting").value,
       fontSize: Number($("fontSizeSetting").value),
-      accent: $("accentSetting").value,
-      background: $("backgroundSetting").value,
-      panel: $("panelSetting").value,
+      accent: readColour("accentSetting", defaultSettings.accent),
+      background: readColour("backgroundSetting", defaultSettings.background),
+      panel: readColour("panelSetting", defaultSettings.panel),
+      text: readColour("textSetting", defaultSettings.text),
       transition: $("transitionSetting").value,
       reduceMotion: $("reduceMotionSetting").checked
     };
@@ -1819,6 +1854,432 @@
     applySettingsToPage();
     openSettings();
   }
+
+  /* =========================================================
+     SAVED MOOD LIBRARY
+     A mood is an exact set of four HEX colour values.
+     This storage is separate from the story project.
+     ========================================================= */
+
+  function isHexColour(value) {
+    return typeof value === "string" &&
+      /^#[0-9a-fA-F]{6}$/.test(value);
+  }
+
+  function normalizeMood(mood) {
+    if (!mood || typeof mood !== "object") return null;
+
+    const colours = mood.colours || mood.theme || {};
+
+    const normalizedColours = {};
+
+    for (const key of MOOD_COLOURS) {
+      if (!isHexColour(colours[key])) return null;
+      normalizedColours[key] = colours[key].toLowerCase();
+    }
+
+    const name = String(mood.name || "").trim().slice(0, 80);
+    if (!name) return null;
+
+    return {
+      schemaVersion: 1,
+      id: String(mood.id || makeId("mood")),
+      name,
+      colours: normalizedColours,
+      createdAt: mood.createdAt || new Date().toISOString(),
+      updatedAt: mood.updatedAt || new Date().toISOString()
+    };
+  }
+
+  function loadMoods() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(MOODS_KEY) || "[]");
+
+      state.moods = Array.isArray(saved)
+        ? saved.map(normalizeMood).filter(Boolean)
+        : [];
+    } catch (error) {
+      state.moods = [];
+    }
+  }
+
+  function saveMoodsToStorage() {
+    try {
+      localStorage.setItem(MOODS_KEY, JSON.stringify(state.moods));
+      return true;
+    } catch (error) {
+      notify("The Mood Library could not be saved in this browser.");
+      return false;
+    }
+  }
+
+  function getCurrentColours() {
+    const colours = {};
+
+    MOOD_COLOURS.forEach((key) => {
+      const field = $(key + "Setting");
+      const value = field
+        ? field.value
+        : state.settings[key];
+
+      colours[key] = isHexColour(value)
+        ? value.toLowerCase()
+        : defaultSettings[key];
+    });
+
+    return colours;
+  }
+
+  function setMoodEditor(name, editing) {
+    const nameField = $("moodNameInput");
+    const saveButton = $("saveMoodButton");
+    const cancelButton = $("cancelMoodEditButton");
+
+    if (nameField) {
+      nameField.value = name || "";
+      nameField.focus();
+    }
+
+    if (saveButton) {
+      saveButton.textContent = editing ? "Update mood" : "Save mood";
+    }
+
+    if (cancelButton) {
+      cancelButton.hidden = !editing;
+    }
+  }
+
+  function cancelMoodEdit() {
+    state.editingMoodId = "";
+    setMoodEditor("", false);
+  }
+
+  function saveMood() {
+    const nameField = $("moodNameInput");
+    const name = nameField ? nameField.value.trim() : "";
+
+    if (!name) {
+      notify("Give this mood a name first.");
+      if (nameField) nameField.focus();
+      return;
+    }
+
+    const colours = getCurrentColours();
+    const now = new Date().toISOString();
+
+    if (state.editingMoodId) {
+      const existing = state.moods.find(
+        (mood) => mood.id === state.editingMoodId
+      );
+
+      if (!existing) {
+        state.editingMoodId = "";
+        notify("That mood could not be found. Save it as a new mood.");
+        return;
+      }
+
+      existing.name = name.slice(0, 80);
+      existing.colours = colours;
+      existing.updatedAt = now;
+
+      if (!saveMoodsToStorage()) return;
+
+      cancelMoodEdit();
+      renderMoodLibrary();
+      notify("Mood updated with the current exact colours.");
+      return;
+    }
+
+    const mood = {
+      schemaVersion: 1,
+      id: makeId("mood"),
+      name: name.slice(0, 80),
+      colours,
+      createdAt: now,
+      updatedAt: now
+    };
+
+    state.moods.push(mood);
+
+    if (!saveMoodsToStorage()) {
+      state.moods.pop();
+      return;
+    }
+
+    if (nameField) nameField.value = "";
+
+    renderMoodLibrary();
+    notify("Mood saved to your Mood Library.");
+  }
+
+  function applyMood(moodId) {
+    const mood = state.moods.find((item) => item.id === moodId);
+    if (!mood) return;
+
+    MOOD_COLOURS.forEach((key) => {
+      const field = $(key + "Setting");
+      if (field) field.value = mood.colours[key];
+    });
+
+    state.settings = Object.assign({}, state.settings, mood.colours);
+
+    localStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify(state.settings)
+    );
+
+    applySettingsToPage();
+    scheduleSave();
+
+    notify('"' + mood.name + '" applied. Save Settings to close this window.');
+    renderMoodLibrary();
+  }
+
+  function renameMood(moodId) {
+    const mood = state.moods.find((item) => item.id === moodId);
+    if (!mood) return;
+
+    state.editingMoodId = mood.id;
+    setMoodEditor(mood.name, true);
+
+    notify("Change the name or colours, then choose Update mood.");
+  }
+
+  function deleteMood(moodId) {
+    const mood = state.moods.find((item) => item.id === moodId);
+    if (!mood) return;
+
+    if (!window.confirm(
+      'Delete "' + mood.name + '" from the Mood Library?'
+    )) return;
+
+    const previous = state.moods;
+    state.moods = state.moods.filter((item) => item.id !== moodId);
+
+    if (!saveMoodsToStorage()) {
+      state.moods = previous;
+      return;
+    }
+
+    if (state.editingMoodId === moodId) {
+      cancelMoodEdit();
+    }
+
+    renderMoodLibrary();
+    notify("Mood deleted.");
+  }
+
+  function exportMood(moodId) {
+    const mood = state.moods.find((item) => item.id === moodId);
+    if (!mood) return;
+
+    downloadJson(
+      slugify(mood.name) + "-mood.json",
+      clone(mood)
+    );
+
+    notify('"' + mood.name + '" exported.');
+  }
+
+  function createMoodImportInput() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json,application/json";
+    input.hidden = true;
+
+    input.addEventListener("change", async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+
+      try {
+        const parsed = JSON.parse(await file.text());
+
+        const candidates = Array.isArray(parsed)
+          ? parsed
+          : Array.isArray(parsed.moods)
+            ? parsed.moods
+            : [parsed];
+
+        const valid = candidates.map(normalizeMood).filter(Boolean);
+
+        if (!valid.length) {
+          throw new Error("No valid mood data found.");
+        }
+
+        let imported = 0;
+
+        valid.forEach((incoming) => {
+          const duplicate = state.moods.find(
+            (item) => item.id === incoming.id
+          );
+
+          if (duplicate) {
+            incoming.id = makeId("mood");
+          }
+
+          state.moods.push(incoming);
+          imported++;
+        });
+
+        if (!saveMoodsToStorage()) {
+          state.moods.splice(state.moods.length - imported, imported);
+          return;
+        }
+
+        renderMoodLibrary();
+        notify(
+          imported + " mood" + (imported === 1 ? "" : "s") +
+          " imported into your library."
+        );
+      } catch (error) {
+        notify("That file is not a valid CEEQWINN mood JSON file.");
+      }
+
+      input.remove();
+    });
+
+    document.body.appendChild(input);
+    input.click();
+  }
+
+  function renderMoodLibrary() {
+    const list = $("moodLibraryList");
+    const count = $("moodCount");
+
+    if (count) {
+      count.textContent = String(state.moods.length);
+    }
+
+    if (!list) return;
+
+    list.replaceChildren();
+
+    if (!state.moods.length) {
+      const empty = document.createElement("p");
+      empty.className = "muted";
+      empty.textContent =
+        "Your Mood Library is empty. Set your four workspace colours, name the mood and save it here.";
+      list.appendChild(empty);
+      return;
+    }
+
+    state.moods.forEach((mood) => {
+      const card = document.createElement("article");
+      card.className = "mood-card";
+      card.style.padding = "14px";
+      card.style.marginBottom = "12px";
+      card.style.border = "1px solid var(--border, rgba(255,255,255,.14))";
+      card.style.borderRadius = "12px";
+
+      const heading = document.createElement("h3");
+      heading.textContent = mood.name;
+      heading.style.margin = "0 0 10px";
+      card.appendChild(heading);
+
+      const swatches = document.createElement("div");
+      swatches.style.display = "grid";
+      swatches.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
+      swatches.style.gap = "6px";
+      swatches.style.marginBottom = "10px";
+
+      MOOD_COLOURS.forEach((key) => {
+        const swatch = document.createElement("div");
+        swatch.style.minWidth = "0";
+        swatch.style.height = "34px";
+        swatch.style.borderRadius = "7px";
+        swatch.style.backgroundColor = mood.colours[key];
+        swatch.style.border = "1px solid rgba(255,255,255,.2)";
+        swatch.title = key + ": " + mood.colours[key];
+        swatch.setAttribute(
+          "aria-label",
+          key + " " + mood.colours[key]
+        );
+        swatches.appendChild(swatch);
+      });
+
+      card.appendChild(swatches);
+
+      const details = document.createElement("p");
+      details.className = "mood-colour-values";
+      details.style.fontSize = "12px";
+      details.style.lineHeight = "1.6";
+      details.style.overflowWrap = "anywhere";
+      details.textContent =
+        "Accent " + mood.colours.accent +
+        " · Background " + mood.colours.background +
+        " · Panel " + mood.colours.panel +
+        " · Text " + mood.colours.text;
+
+      card.appendChild(details);
+
+      const actions = document.createElement("div");
+      actions.className = "mood-actions";
+      actions.style.display = "flex";
+      actions.style.flexWrap = "wrap";
+      actions.style.gap = "7px";
+
+      [
+        ["Apply", () => applyMood(mood.id)],
+        ["Rename / Edit", () => renameMood(mood.id)],
+        ["Export JSON", () => exportMood(mood.id)],
+        ["Delete", () => deleteMood(mood.id)]
+      ].forEach(([label, action]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "button secondary";
+        button.textContent = label;
+        button.addEventListener("click", action);
+        actions.appendChild(button);
+      });
+
+      card.appendChild(actions);
+      list.appendChild(card);
+    });
+  }
+
+  function bindMoodLibrary() {
+    bindClick("saveMoodButton", saveMood);
+    bindClick("cancelMoodEditButton", cancelMoodEdit);
+
+    bindClick("importMoodButton", createMoodImportInput);
+    bindClick("importMoodButtonAlt", createMoodImportInput);
+
+    bindClick("exportAllMoodsButton", () => {
+      if (!state.moods.length) {
+        notify("There are no moods to export yet.");
+        return;
+      }
+
+      downloadJson(
+        "ceeqwinn-mood-library.json",
+        {
+          schemaVersion: 1,
+          moods: state.moods
+        }
+      );
+
+      notify("Mood Library exported.");
+    });
+
+    const nameField = $("moodNameInput");
+
+    if (nameField) {
+      nameField.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          saveMood();
+        }
+
+        if (event.key === "Escape") {
+          cancelMoodEdit();
+        }
+      });
+    }
+  }
+
+  /* =========================================================
+     PREVIEW
+     ========================================================= */
 
   function openPreview() {
     if (!$("previewDialog") || !window.CeeqwinnTheatre) {
@@ -2111,6 +2572,8 @@
     bindClick("saveSettingsButton", saveSettings);
     bindClick("resetSettingsButton", resetSettings);
 
+    bindMoodLibrary();
+
     bindClick("previewButton", openPreview);
     bindClick("previewChapterButton", openPreview);
 
@@ -2315,9 +2778,11 @@
   }
 
   loadSettings();
+  loadMoods();
   loadProject();
   bind();
   renderAll();
+  renderMoodLibrary();
 
   // Story Overview is the Studio's landing page.
   showPanel("overviewPanel");
