@@ -1,267 +1,431 @@
 
-:root {
-  --bg: #260d1b;
-  --panel: #381b2c;
-  --panel-soft: #301425;
-  --panel-raised: #472239;
-  --accent: #d6ad68;
-  --accent-soft: rgba(214,173,104,.13);
-  --text: #fbf2f6;
-  --muted: #c5aeba;
-  --line: rgba(235,207,221,.15);
-  --danger: #ef829b;
-  --shadow: 0 18px 55px rgba(0,0,0,.25);
-  --writing-font: Georgia, serif;
-  --writing-size: 18px;
-  color-scheme: dark;
-}
-* { box-sizing: border-box; }
-[hidden] { display: none !important; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--text);
-  background: var(--bg);
-  font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-button, input, textarea, select { font: inherit; }
-button { cursor: pointer; }
-button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-}
-button:disabled { cursor: not-allowed; opacity: .45; }
-a { color: var(--accent); }
-code { color: var(--accent); overflow-wrap: anywhere; }
-h1, h2, h3, p { margin-top: 0; }
-h1 { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2; }
-h2 { font-size: 1.05rem; line-height: 1.3; }
-h3 { font-size: .98rem; }
-.muted { color: var(--muted); }
-.tiny { font-size: .76rem; }
-.eyebrow { display: block; color: var(--accent); font-size: .66rem; font-weight: 800; letter-spacing: .16em; }
-.full-width { width: 100%; }
-.danger-text { color: var(--danger) !important; }
-.button {
-  min-height: 38px;
-  padding: 9px 13px;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  color: var(--text);
-  background: var(--panel-raised);
-  font-weight: 650;
-  transition: background .16s ease, transform .16s ease;
-}
-.button:hover { transform: translateY(-1px); background: var(--panel-raised); }
-.button.primary { border-color: var(--accent); color: #25121c; background: var(--accent); }
-.button.secondary { border-color: rgba(214,173,104,.55); color: var(--accent); background: var(--accent-soft); }
-.button.quiet { background: transparent; }
-.icon-button, .tiny-button {
-  display: inline-grid;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  color: var(--muted);
-  background: transparent;
-}
-.icon-button { width: 36px; height: 36px; font-size: 1.35rem; }
-.tiny-button { min-height: 28px; padding: 4px 8px; font-size: .78rem; }
-.button-row, .inline-actions, .heading-actions, .header-actions, .preview-header-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.app-header {
-  position: sticky;
-  z-index: 20;
-  top: 0;
-  display: flex;
-  min-height: 68px;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  padding: 10px clamp(12px, 2.5vw, 30px);
-  border-bottom: 1px solid var(--line);
-  background: color-mix(in srgb, var(--bg) 94%, transparent);
-  backdrop-filter: blur(16px);
-}
-.brand { display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; letter-spacing: .08em; }
-.brand strong { display: block; font-size: .85rem; }
-.brand small { display: block; color: var(--accent); font-size: .58rem; letter-spacing: .13em; }
-.brand-mark { display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--accent); border-radius: 50%; color: var(--accent); font: 1.2rem Georgia,serif; }
-.save-status { color: var(--muted); font-size: .76rem; }
-.app-layout { display: grid; grid-template-columns: 248px minmax(0,1fr); min-height: calc(100vh - 68px); }
-.sidebar { display: flex; flex-direction: column; gap: 24px; min-width: 0; padding: 20px 14px; border-right: 1px solid var(--line); background: var(--panel-soft); }
-.sidebar-heading, .section-title, .workspace-heading, .panel-toolbar, .inspector-heading, .dialog-heading, .asset-shelf-heading {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-}
-.main-nav { display: grid; gap: 5px; }
-.nav-item { display: flex; align-items: center; gap: 11px; width: 100%; padding: 11px; border: 1px solid transparent; border-radius: 9px; color: var(--muted); background: transparent; text-align: left; }
-.nav-item.active { border-color: var(--line); color: var(--accent); background: var(--accent-soft); }
-.sidebar-section { min-height: 100px; }
-.section-title { margin-bottom: 10px; color: var(--muted); font-size: .67rem; font-weight: 800; letter-spacing: .12em; }
-.chapter-list { display: grid; gap: 5px; }
-.chapter-nav-item { display: flex; gap: 4px; min-width: 0; }
-.chapter-open { flex: 1; min-width: 0; padding: 9px 10px; overflow: hidden; border: 1px solid transparent; border-radius: 8px; color: var(--muted); background: transparent; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
-.chapter-open.active { border-color: var(--line); color: var(--text); background: var(--panel); }
-.chapter-move { width: 27px; border: 0; color: var(--muted); background: transparent; }
-.sidebar-bottom { margin-top: auto; }
-.main-area { min-width: 0; padding: clamp(16px, 3vw, 34px); }
-.workspace-panel { min-width: 0; max-width: 1600px; margin: 0 auto; }
-.workspace-heading { align-items: flex-start; margin-bottom: 24px; }
-.workspace-heading h1 { margin: 5px 0 7px; }
-.workspace-heading p { margin-bottom: 0; }
-.heading-actions { justify-content: flex-end; }
-.writing-layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(240px,310px); align-items: start; gap: 16px; }
-.manuscript-panel, .inspector-panel, .surface-card {
-  min-width: 0; border: 1px solid var(--line); border-radius: 15px; background: var(--panel-soft);
-}
-.manuscript-panel { padding: clamp(13px, 2vw, 23px); }
-.panel-toolbar { margin-bottom: 9px; }
-.field-label { display: block; margin: 13px 0 6px; color: var(--muted); font-size: .78rem; font-weight: 650; }
-input:not([type="checkbox"]):not([type="color"]):not([type="range"]), textarea, select {
-  width: 100%; min-width: 0; padding: 10px 11px; border: 1px solid var(--line); border-radius: 9px; color: var(--text); background: var(--panel); outline-offset: 1px;
-}
-input::placeholder, textarea::placeholder { color: #9f8795; }
-.chapter-title-input { margin-bottom: 22px; font-size: 1.1rem !important; font-weight: 700; }
-.manuscript { display: grid; gap: 11px; }
-.story-block {
-  min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 11px; background: var(--panel);
-}
-.story-block.selected { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(214,173,104,.12); }
-.block-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
-.block-type { color: var(--accent); font-size: .67rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
-.block-tools { display: flex; flex-wrap: wrap; gap: 4px; }
-.block-tools button { min-height: 27px; padding: 3px 7px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); background: transparent; font-size: .72rem; }
-.block-tools button:hover { color: var(--accent); }
-.block-text {
-  display: block; width: 100%; min-height: 92px; padding: 12px !important;
-  resize: vertical; font-family: var(--writing-font); font-size: var(--writing-size) !important; line-height: 1.8;
-}
-.block-title-input { margin-bottom: 8px; }
-.block-preview-media { display: block; max-width: 100%; max-height: 280px; margin-top: 9px; border-radius: 8px; object-fit: contain; }
-.block-meta { margin-top: 8px; color: var(--muted); font-size: .75rem; }
-.block-empty { color: var(--muted); font-size: .85rem; }
-.add-block-zone { margin-top: 20px; padding: 16px; border: 1px dashed var(--line); border-radius: 12px; background: rgba(255,255,255,.015); }
-.add-block-zone > p { margin-bottom: 10px; }
-.insert-toolbar { display: flex; flex-wrap: wrap; gap: 7px; }
-.insert-button { min-height: 37px; padding: 8px 11px; border: 1px solid var(--line); border-radius: 9px; color: var(--text); background: var(--panel); }
-.insert-button.featured { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
-.inspector-panel { position: sticky; top: 88px; max-height: calc(100vh - 108px); overflow: auto; }
-.inspector-heading { position: sticky; z-index: 2; top: 0; padding: 14px; border-bottom: 1px solid var(--line); background: var(--panel-soft); }
-.inspector-heading h2 { margin: 4px 0 0; }
-.inspector-content { padding: 14px; }
-.inspector-content textarea { resize: vertical; }
-.inspector-content .field-label:first-child { margin-top: 0; }
-.inspector-note { padding: 10px; border-radius: 8px; color: var(--muted); background: var(--panel); font-size: .78rem; }
-.asset-drop-zone {
-  display: grid; justify-items: center; gap: 10px; padding: clamp(22px, 5vw, 48px) 15px;
-  border: 1px dashed rgba(214,173,104,.55); border-radius: 16px; background: var(--accent-soft); text-align: center;
-}
-.asset-drop-zone.drag-over { border-color: var(--accent); background: rgba(214,173,104,.2); }
-.asset-drop-zone h2 { margin: 0; }
-.asset-drop-zone p { max-width: 650px; margin: 0; color: var(--muted); }
-.drop-icon { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid var(--accent); border-radius: 50%; color: var(--accent); font-size: 1.7rem; }
-.drop-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 8px 0; }
-.asset-shelf-heading { margin: 25px 0 12px; }
-.asset-shelf-heading h2 { margin: 0; }
-.asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px,1fr)); gap: 12px; }
-.asset-card { min-width: 0; padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-soft); }
-.asset-thumb { display: grid; place-items: center; width: 100%; height: 112px; margin-bottom: 9px; overflow: hidden; border-radius: 8px; color: var(--accent); background: var(--panel); font-size: 2rem; }
-.asset-thumb img, .asset-thumb video { width: 100%; height: 100%; object-fit: contain; }
-.asset-name { display: block; overflow-wrap: anywhere; font-size: .82rem; font-weight: 650; }
-.asset-size { margin: 4px 0 10px; color: var(--muted); font-size: .7rem; }
-.asset-actions { display: flex; flex-wrap: wrap; gap: 5px; }
-.asset-actions button, .asset-actions a { padding: 5px 7px; border: 1px solid var(--line); border-radius: 7px; color: var(--accent); background: transparent; font-size: .73rem; text-decoration: none; }
-.overview-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 15px; }
-.surface-card { padding: clamp(15px, 2.5vw, 23px); }
-.story-details-card { grid-row: span 2; }
-.overview-chapters { display: grid; gap: 8px; margin: 12px 0; }
-.overview-chapter { display: flex; align-items: center; gap: 9px; padding: 10px; border: 1px solid var(--line); border-radius: 9px; }
-.overview-chapter button { flex: 1; border: 0; color: var(--text); background: transparent; text-align: left; }
-.stat-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-top: 12px; }
-.stat-grid > div { padding: 15px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
-.stat-grid strong { display: block; color: var(--accent); font-size: 1.6rem; }
-.stat-grid span { color: var(--muted); font-size: .75rem; }
-.publish-card { max-width: 800px; margin-bottom: 15px; }
-.url-preview { padding: 10px; border-radius: 8px; background: var(--panel); color: var(--accent); overflow-wrap: anywhere; }
-.studio-dialog, .preview-dialog {
-  width: min(720px, calc(100% - 24px)); max-width: none; max-height: 88vh; padding: 0; overflow: hidden;
-  border: 1px solid var(--line); border-radius: 17px; color: var(--text); background: var(--panel-soft); box-shadow: var(--shadow);
-}
-.studio-dialog::backdrop, .preview-dialog::backdrop { background: rgba(10,3,8,.75); backdrop-filter: blur(5px); }
-.studio-dialog { padding: 22px; overflow-y: auto; }
-.dialog-heading { margin-bottom: 15px; }
-.dialog-heading h2 { margin: 4px 0 0; }
-.dialog-close { flex: 0 0 auto; }
-.experience-picker { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 9px; margin-top: 18px; }
-.experience-option { display: grid; gap: 6px; min-height: 94px; padding: 14px; border: 1px solid var(--line); border-radius: 11px; color: var(--text); background: var(--panel); text-align: left; }
-.experience-option:hover { border-color: var(--accent); background: var(--accent-soft); }
-.experience-option strong { color: var(--accent); }
-.experience-option span { color: var(--muted); font-size: .78rem; }
-.settings-dialog { width: min(650px, calc(100% - 24px)); }
-.settings-grid { display: grid; gap: 10px; }
-.setting-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-.setting-row input { width: 19px; height: 19px; accent-color: var(--accent); }
-.settings-grid input[type="range"] { width: 100%; accent-color: var(--accent); }
-.settings-grid input[type="color"] { width: 44px; height: 35px; padding: 2px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); }
-.colour-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
-.palette-swatches { display: flex; flex-wrap: wrap; gap: 7px; }
-.palette-swatch { width: 25px; height: 25px; border: 2px solid rgba(255,255,255,.35); border-radius: 50%; }
-.dialog-footer { display: flex; justify-content: space-between; gap: 10px; margin-top: 22px; }
-.preview-dialog { width: min(1200px, calc(100% - 16px)); height: min(92vh, 1000px); max-height: 92vh; }
-.preview-header {
-  position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--panel-soft);
-}
-.preview-header h2 { margin: 4px 0 0; }
-.preview-header-actions { justify-content: flex-end; }
-.preview-size-label { color: var(--muted); font-size: .76rem; }
-.preview-size-label + select { width: auto; }
-.preview-frame { height: calc(100% - 70px); margin: 0 auto; padding: 16px; overflow: auto; background: #150a11; transition: max-width .2s ease; }
-.preview-frame.phone-preview { max-width: 430px; }
-.preview-frame.tablet-preview { max-width: 820px; }
-.preview-frame.desktop-preview { max-width: 100%; }
-.theatre-preview { min-height: 100%; padding: clamp(16px,3vw,32px); border: 1px solid rgba(214,173,104,.2); border-radius: 12px; color: var(--text); background: var(--bg); font-family: var(--writing-font); font-size: var(--writing-size); }
-.toast-region { position: fixed; right: 16px; bottom: 16px; z-index: 100; display: grid; gap: 8px; width: min(340px,calc(100% - 32px)); }
-.toast { padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; color: var(--text); background: var(--panel-raised); box-shadow: var(--shadow); }
-body.hide-hints .muted.tiny { display: none; }
-body.light-workspace { --bg: #f7eef3; --panel: #fff8fb; --panel-soft: #fffafd; --panel-raised: #f0dfe8; --text: #311526; --muted: #745c6b; --line: rgba(82,40,62,.18); --accent-soft: rgba(173,45,103,.1); color-scheme: light; }
-body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
-@media (max-width: 1050px) {
-  .app-layout { grid-template-columns: 210px minmax(0,1fr); }
-  .writing-layout { grid-template-columns: minmax(0,1fr); }
-  .inspector-panel { position: static; max-height: none; }
-}
-@media (max-width: 720px) {
-  .app-header { align-items: flex-start; flex-wrap: wrap; }
-  .header-actions { justify-content: flex-start; }
-  .app-layout { grid-template-columns: minmax(0,1fr); }
-  .sidebar { gap: 12px; padding: 10px 12px; border-right: 0; border-bottom: 1px solid var(--line); }
-  .sidebar-heading, .sidebar-section, .sidebar-bottom { display: none; }
-  .main-nav { grid-template-columns: repeat(4,minmax(0,1fr)); }
-  .nav-item { justify-content: center; padding: 9px 4px; font-size: .78rem; }
-  .nav-item span { overflow: hidden; text-overflow: ellipsis; }
-  .workspace-heading { flex-direction: column; }
-  .heading-actions { justify-content: flex-start; }
-  .overview-grid { grid-template-columns: minmax(0,1fr); }
-  .story-details-card { grid-row: auto; }
-  .preview-header { align-items: flex-start; }
-  .preview-header-actions { gap: 5px; }
-  .preview-size-label { display: none; }
-  .preview-frame { padding: 8px; }
-}
-@media (max-width: 430px) {
-  .brand small { font-size: .5rem; }
-  .header-actions { width: 100%; }
-  .header-actions .button { flex: 1; }
-  .save-status { flex: 1 0 100%; }
-  .main-area { padding: 13px 10px; }
-  .experience-picker { grid-template-columns: minmax(0,1fr); }
-  .insert-toolbar > button { flex: 1 1 42%; }
-  .preview-header { padding: 9px; }
-  .preview-header h2 { max-width: 130px; overflow-wrap: anywhere; }
-  .preview-header-actions select { max-width: 95px; }
-  .preview-frame { height: calc(100% - 75px); }
-}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#260d1b">
+  <meta name="description" content="CEEQWINN Story and Theatre Studio">
+  <title>CEEQWINN Story & Theatre Studio</title>
+  <link rel="stylesheet" href="studio.css">
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="index.html" aria-label="CEEQWINN Story Studio home">
+      <span class="brand-mark">C</span>
+      <span><strong>CEEQWINN</strong><small>STORY & THEATRE STUDIO</small></span>
+    </a>
+
+    <div class="header-actions">
+      <span id="saveStatus" class="save-status" role="status">Draft ready</span>
+      <button id="undoButton" class="button quiet" type="button" title="Undo last change" disabled>↶ Undo</button>
+      <button id="redoButton" class="button quiet" type="button" title="Redo last change" disabled>↷ Redo</button>
+      <button id="settingsButton" class="button quiet" type="button">⚙ Settings</button>
+      <button id="previewButton" class="button secondary" type="button">Preview</button>
+      <button id="exportButton" class="button primary" type="button">Export backup</button>
+    </div>
+  </header>
+
+  <div class="app-layout">
+    <aside class="sidebar" id="mainSidebar">
+      <div class="sidebar-heading">
+        <span class="eyebrow sidebar-heading-label">YOUR WORKSPACE</span>
+        <button id="collapseSidebarButton" class="icon-button" type="button"
+          aria-label="Collapse navigation" aria-expanded="true" title="Collapse navigation">‹</button>
+        <button id="expandSidebarButton" class="icon-button sidebar-expand-button"
+          type="button" aria-label="Expand navigation" title="Expand navigation" hidden>›</button>
+      </div>
+
+      <nav class="main-nav" aria-label="Studio navigation">
+        <button class="nav-item" data-panel="overviewPanel" type="button">
+          ▦ <span>Story overview</span>
+        </button>
+        <button class="nav-item" data-panel="writingPanel" type="button">
+          ✎ <span>Writing room</span>
+        </button>
+        <button class="nav-item" data-panel="assetsPanel" type="button">
+          ▧ <span>Asset shelf</span>
+        </button>
+        <button class="nav-item" data-panel="publishingPanel" type="button">
+          ↗ <span>Reader & publishing</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>CHAPTERS</span>
+          <button id="addChapterButton" class="tiny-button" type="button" title="Add chapter">＋</button>
+        </div>
+        <div id="chapterList" class="chapter-list"></div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button id="newWritingBatchButton" class="button secondary full-width" type="button">
+          ＋ New writing batch
+        </button>
+        <p class="muted tiny">Your draft saves in this browser. Export backups regularly.</p>
+      </div>
+    </aside>
+
+    <main class="main-area">
+
+      <!-- STORY OVERVIEW -->
+      <section id="overviewPanel" class="workspace-panel">
+        <div class="workspace-heading">
+          <div>
+            <span class="eyebrow">THE BIG PICTURE</span>
+            <h1>Story overview</h1>
+            <p class="muted">Shape the story before getting lost in the details.</p>
+          </div>
+          <button id="overviewStartWritingButton" class="button primary" type="button">
+            Start writing
+          </button>
+        </div>
+
+        <div class="overview-grid">
+          <section class="surface-card story-details-card">
+            <span class="eyebrow">STORY DETAILS</span>
+
+            <label class="field-label" for="storyTitle">Story title</label>
+            <input id="storyTitle" maxlength="180" placeholder="Your story title">
+
+            <label class="field-label" for="storyDescription">Description</label>
+            <textarea id="storyDescription" rows="4" placeholder="What is this story about?"></textarea>
+
+            <label class="field-label" for="storyGenre">Genre</label>
+            <input id="storyGenre" placeholder="Fashion drama · Mystery">
+
+            <label class="field-label" for="storyStatus">Status</label>
+            <select id="storyStatus">
+              <option value="draft">Draft</option>
+              <option value="editing">In progress</option>
+              <option value="ready">Ready to publish</option>
+            </select>
+          </section>
+
+          <section class="surface-card">
+            <span class="eyebrow">CHAPTER MAP</span>
+            <div id="overviewChapterList" class="overview-chapters"></div>
+            <button id="overviewAddChapterButton" class="button secondary full-width" type="button">
+              ＋ Add chapter
+            </button>
+          </section>
+
+          <section class="surface-card">
+            <span class="eyebrow">STORY SNAPSHOT</span>
+            <div class="stat-grid">
+              <div><strong id="chapterCount">0</strong><span>Chapters</span></div>
+              <div><strong id="blockCount">0</strong><span>Blocks</span></div>
+              <div><strong id="wordCount">0</strong><span>Words</span></div>
+              <div><strong id="assetCount">0</strong><span>Assets</span></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <!-- WRITING ROOM -->
+      <section id="writingPanel" class="workspace-panel" hidden>
+        <div class="workspace-heading">
+          <div>
+            <span class="eyebrow">WRITING ROOM</span>
+            <h1 id="currentChapterLabel">Your story</h1>
+            <p class="muted">Write freely. Place theatre experiences and other elements exactly where they belong.</p>
+          </div>
+
+          <div class="heading-actions">
+            <button id="backToOverview" class="button quiet" type="button">Story overview</button>
+            <button id="previewChapterButton" class="button secondary" type="button">Preview chapter</button>
+          </div>
+        </div>
+
+        <!-- WRITING TOOLBAR -->
+        <div class="writing-command-bar" id="writingCommandBar">
+          <div class="writing-command-group">
+            <button id="addParagraphButton" class="insert-button" type="button">＋ Paragraph</button>
+            <button id="insertExperienceButton" class="insert-button featured" type="button">＋ Theatre experience</button>
+            <button id="addImageButton" class="insert-button" type="button">＋ Image / GIF</button>
+            <button id="addVideoButton" class="insert-button" type="button">＋ Short video</button>
+            <button id="addReferenceButton" class="insert-button" type="button">＋ Reference file</button>
+          </div>
+
+          <div class="writing-command-group writing-command-secondary">
+            <button id="openAssetTrayButton" class="button quiet" type="button"
+              aria-expanded="false" aria-controls="writingAssetTray">▧ Assets</button>
+            <button id="writingUndoButton" class="button quiet" type="button" title="Undo" disabled>↶</button>
+            <button id="writingRedoButton" class="button quiet" type="button" title="Redo" disabled>↷</button>
+          </div>
+        </div>
+
+        <!-- COLLAPSIBLE ASSET TRAY -->
+        <section id="writingAssetTray" class="writing-asset-tray" hidden>
+          <div class="asset-tray-heading">
+            <div>
+              <span class="eyebrow">YOUR MATERIALS</span>
+              <h2>Insert an existing asset</h2>
+            </div>
+            <button id="closeAssetTrayButton" class="icon-button" type="button"
+              aria-label="Close asset tray">×</button>
+          </div>
+          <div id="writingAssetShelf" class="asset-grid"></div>
+          <p class="muted tiny">Choose an asset to insert it into your selected writing position.</p>
+        </section>
+
+        <div class="writing-layout" id="writingLayout">
+          <section class="manuscript-panel">
+            <div class="panel-toolbar">
+              <label class="field-label" for="manuscriptChapterTitle">Chapter title</label>
+              <div class="inline-actions">
+                <button id="renameChapterButton" class="tiny-button" type="button">Rename</button>
+                <button id="deleteChapterButton" class="tiny-button danger-text" type="button">Delete chapter</button>
+              </div>
+            </div>
+
+            <input id="manuscriptChapterTitle" class="chapter-title-input"
+              maxlength="180" placeholder="Name this chapter">
+
+            <div id="manuscript" class="manuscript" aria-label="Chapter writing blocks"></div>
+
+            <div class="add-block-zone">
+              <p class="eyebrow">CONTINUE YOUR MANUSCRIPT</p>
+              <div class="insert-toolbar">
+                <button id="addParagraphButtonBottom" class="insert-button" type="button">＋ Paragraph</button>
+                <button id="insertExperienceButtonBottom" class="insert-button featured" type="button">＋ Theatre experience</button>
+                <button id="addImageButtonBottom" class="insert-button" type="button">＋ Image / GIF</button>
+              </div>
+              <p class="muted tiny">New blocks appear at your selected position or at the end of the chapter.</p>
+            </div>
+          </section>
+
+          <!-- QUICK EDIT INSPECTOR -->
+          <aside id="blockInspector" class="inspector-panel" aria-label="Quick Edit inspector">
+            <div class="inspector-heading">
+              <div>
+                <span class="eyebrow">QUICK EDIT</span>
+                <h2>Selected block</h2>
+              </div>
+              <div class="inspector-heading-actions">
+                <button id="expandInspectorButton" class="icon-button" type="button"
+                  aria-label="Expand Quick Edit" title="Expand Quick Edit">⤢</button>
+                <button id="clearSelectionButton" class="icon-button" type="button"
+                  aria-label="Close Quick Edit" title="Close Quick Edit">×</button>
+              </div>
+            </div>
+
+            <div id="inspectorResizeHandle" class="inspector-resize-handle"
+              role="separator" aria-label="Resize Quick Edit vertically"
+              aria-orientation="horizontal" tabindex="0"></div>
+
+            <div id="inspectorContent" class="inspector-content">
+              <p class="muted">Select a block in your chapter to edit its details.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ASSET SHELF -->
+      <section id="assetsPanel" class="workspace-panel" hidden>
+        <div class="workspace-heading">
+          <div>
+            <span class="eyebrow">YOUR MATERIALS</span>
+            <h1>Asset shelf</h1>
+            <p class="muted">Keep story images, GIFs, videos, documents and research together.</p>
+          </div>
+
+          <button id="chooseAssetsButton" class="button secondary" type="button">Choose files</button>
+
+          <input id="assetFileInput" type="file" multiple hidden
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.md,.rtf,.odt,.xls,.xlsx,.ppt,.pptx,.json,.zip">
+
+          <input id="assetFolderInput" type="file" webkitdirectory directory multiple hidden>
+        </div>
+
+        <div id="assetDropZone" class="asset-drop-zone" tabindex="0"
+          role="button" aria-label="Drop files here or choose files">
+          <div class="drop-icon">＋</div>
+          <h2>Drop files here</h2>
+          <p>Images, GIFs, audio, short videos, PDF, Word documents and other references.</p>
+
+          <div class="drop-actions">
+            <button id="dropChooseFilesButton" class="button primary" type="button">Choose files</button>
+            <button id="chooseFolderButton" class="button secondary" type="button">Choose a folder</button>
+          </div>
+
+          <p class="muted tiny">Folder dropping depends on your browser. Choose a folder if dropping one does not work.</p>
+        </div>
+
+        <div class="asset-shelf-heading">
+          <h2>Saved assets</h2>
+          <span id="assetShelfCount" class="muted tiny">0 files</span>
+        </div>
+
+        <div id="assetShelf" class="asset-grid"></div>
+      </section>
+
+      <!-- READER AND PUBLISHING -->
+      <section id="publishingPanel" class="workspace-panel" hidden>
+        <div class="workspace-heading">
+          <div>
+            <span class="eyebrow">FROM DRAFT TO READER</span>
+            <h1>Reader & publishing</h1>
+            <p class="muted">Prepare a story file for the public Reader.</p>
+          </div>
+        </div>
+
+        <section class="surface-card publish-card">
+          <h2>Public story URL</h2>
+          <p class="muted">Your public Reader loads a JSON file from the website's <code>stories</code> folder.</p>
+
+          <label class="field-label" for="storySlug">Story URL slug</label>
+          <input id="storySlug" maxlength="100" placeholder="emerald-inheritance">
+
+          <p class="url-preview" id="publicUrlPreview">https://ceeqwinn.netlify.app/read.html?story=emerald-inheritance</p>
+
+          <button id="exportPublishButton" class="button primary" type="button">
+            Export Reader story JSON
+          </button>
+
+          <p class="muted tiny">After exporting, upload the JSON to <code>stories/&lt;slug&gt;.json</code> in GitHub and wait for Netlify to deploy. This button does not publish to GitHub automatically.</p>
+        </section>
+
+        <section class="surface-card publish-card">
+          <h2>Backups and portability</h2>
+          <p>Project backup includes story content, settings and asset data that the browser can store. Large videos and documents can make backups very large.</p>
+
+          <div class="button-row">
+            <button id="publishingExportButton" class="button secondary" type="button">Export full project backup</button>
+            <button id="importButton" class="button secondary" type="button">Open project backup</button>
+            <input id="importFile" type="file" accept=".json,application/json" hidden>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- THEATRE EXPERIENCE PICKER -->
+  <dialog id="experienceDialog" class="studio-dialog">
+    <div class="dialog-heading">
+      <div><span class="eyebrow">INSERT INTO YOUR STORY</span><h2>Choose an experience</h2></div>
+      <button class="icon-button dialog-close" type="button" aria-label="Close">×</button>
+    </div>
+
+    <p class="muted">Choose only what you need. You can add more later.</p>
+
+    <div class="experience-picker">
+      <button class="experience-option" data-type="narration" type="button">
+        <strong>Narration</strong><span>Atmosphere, action or a dramatic beat</span>
+      </button>
+      <button class="experience-option" data-type="dialogue" type="button">
+        <strong>Dialogue</strong><span>A character speaks</span>
+      </button>
+      <button class="experience-option" data-type="reveal" type="button">
+        <strong>Visual reveal</strong><span>Reveal a clue, scene or outfit</span>
+      </button>
+      <button class="experience-option" data-type="choice" type="button">
+        <strong>Reader choice</strong><span>Let readers choose a response</span>
+      </button>
+      <button class="experience-option" data-type="game" type="button">
+        <strong>Game link</strong><span>Connect an existing game</span>
+      </button>
+      <button class="experience-option" data-type="audio" type="button">
+        <strong>Audio</strong><span>Add a sound or voice clip</span>
+      </button>
+      <button class="experience-option" data-type="chapterEnd" type="button">
+        <strong>Chapter transition</strong><span>Guide readers to the next chapter</span>
+      </button>
+    </div>
+  </dialog>
+
+  <!-- SETTINGS -->
+  <dialog id="settingsDialog" class="studio-dialog settings-dialog">
+    <div class="dialog-heading">
+      <div><span class="eyebrow">MAKE IT YOURS</span><h2>Studio settings</h2></div>
+      <button class="icon-button dialog-close" type="button" aria-label="Close">×</button>
+    </div>
+
+    <div class="settings-grid">
+      <label class="setting-row">
+        <span>Show editing hints</span>
+        <input id="showHintsSetting" type="checkbox" checked>
+      </label>
+
+      <label class="setting-row">
+        <span>Dark workspace</span>
+        <input id="darkModeSetting" type="checkbox" checked>
+      </label>
+
+      <label class="field-label" for="fontFamilySetting">Writing font</label>
+      <select id="fontFamilySetting">
+        <option value="Georgia, serif">Georgia — literary</option>
+        <option value="Arial, sans-serif">Arial — clean</option>
+        <option value="'Times New Roman', serif">Times New Roman</option>
+        <option value="Verdana, sans-serif">Verdana — readable</option>
+        <option value="system-ui, sans-serif">System font</option>
+      </select>
+
+      <label class="field-label" for="fontSizeSetting">Writing text size</label>
+      <div class="font-size-control">
+        <input id="fontSizeSetting" type="range" min="15" max="25" value="18">
+        <output id="fontSizeValue" for="fontSizeSetting">18 px</output>
+      </div>
+
+      <label class="field-label" for="accentSetting">Accent colour</label>
+      <div class="colour-row">
+        <input id="accentSetting" type="color" value="#d6ad68">
+        <div id="paletteSwatches" class="palette-swatches"></div>
+      </div>
+
+      <label class="field-label" for="backgroundSetting">Workspace background</label>
+      <input id="backgroundSetting" type="color" value="#260d1b">
+
+      <label class="field-label" for="panelSetting">Panel colour</label>
+      <input id="panelSetting" type="color" value="#381b2c">
+
+      <label class="field-label" for="transitionSetting">Preview transition</label>
+      <select id="transitionSetting">
+        <option value="fade">Soft fade</option>
+        <option value="none">No transition</option>
+        <option value="slide">Gentle slide</option>
+      </select>
+
+      <label class="setting-row">
+        <span>Reduce motion</span>
+        <input id="reduceMotionSetting" type="checkbox">
+      </label>
+    </div>
+
+    <div class="dialog-footer">
+      <button id="resetSettingsButton" class="button quiet" type="button">Reset settings</button>
+      <button id="saveSettingsButton" class="button primary" type="button">Save settings</button>
+    </div>
+  </dialog>
+
+  <!-- READER PREVIEW -->
+  <dialog id="previewDialog" class="preview-dialog">
+    <div class="preview-header">
+      <div>
+        <span class="eyebrow">READER PREVIEW</span>
+        <h2 id="previewStoryTitle">Your story</h2>
+      </div>
+
+      <div class="preview-header-actions">
+        <label class="preview-size-label" for="previewSize">Preview size</label>
+        <select id="previewSize">
+          <option value="phone">Phone</option>
+          <option value="tablet">Tablet</option>
+          <option value="desktop">Desktop</option>
+        </select>
+        <button id="closePreviewButton" class="icon-button" type="button" aria-label="Close preview">×</button>
+      </div>
+    </div>
+
+    <div id="previewFrame" class="preview-frame phone-preview">
+      <div id="theatrePreview" class="theatre-preview"></div>
+    </div>
+  </dialog>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+
+  <script src="theatre-engine.js"></script>
+  <script src="studio.js"></script>
+</body>
+</html>
