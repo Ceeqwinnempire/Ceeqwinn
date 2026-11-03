@@ -409,7 +409,55 @@
     });
   }
 
-function captureHistory(group)
+    function captureHistory(group) {
+    if (state.restoringHistory || !state.project) return;
+
+    let next;
+
+    try {
+      next = snapshot();
+    } catch (error) {
+      return;
+    }
+
+    const current = state.history[state.historyIndex];
+
+    // Ignore identical snapshots.
+    // Different changes always receive separate history entries.
+    if (current && JSON.stringify(current) === JSON.stringify(next)) {
+      state.historyGroup = group || "";
+      updateHistoryButtons();
+      return;
+    }
+
+    // Remove future history if a new edit happens after Undo.
+    state.history = state.history.slice(0, state.historyIndex + 1);
+
+    // Save this change as its own Undo/Redo entry.
+    state.history.push(next);
+
+    // Preserve the existing history limit.
+    if (state.history.length > HISTORY_LIMIT) {
+      state.history.shift();
+    }
+
+    state.historyIndex = state.history.length - 1;
+    state.historyGroup = group || "";
+
+    updateHistoryButtons();
+  }
+    state.history = state.history.slice(0, state.historyIndex + 1);
+    state.history.push(next);
+
+    if (state.history.length > HISTORY_LIMIT) {
+      state.history.shift();
+    }
+
+    state.historyIndex = state.history.length - 1;
+    state.historyGroup = group || "";
+
+    updateHistoryButtons();
+  }
 
   function recordHistory(group) {
     if (state.restoringHistory || !state.project) return;
