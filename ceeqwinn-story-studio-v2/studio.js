@@ -409,50 +409,7 @@
     });
   }
 
-  function captureHistory(group) {
-    if (state.restoringHistory || !state.project) return;
-
-    let next;
-
-    try {
-      next = snapshot();
-    } catch (error) {
-      return;
-    }
-
-    const current = state.history[state.historyIndex];
-
-    if (current && JSON.stringify(current) === JSON.stringify(next)) {
-      state.historyGroup = group || "";
-      updateHistoryButtons();
-      return;
-    }
-
-    // Repeated typing in the same field updates one history entry.
-    // The previous completed state remains available for Undo.
-    if (
-      group &&
-      group === state.historyGroup &&
-      state.historyIndex === state.history.length - 1 &&
-      state.historyIndex >= 0
-    ) {
-      state.history[state.historyIndex] = next;
-      updateHistoryButtons();
-      return;
-    }
-
-    state.history = state.history.slice(0, state.historyIndex + 1);
-    state.history.push(next);
-
-    if (state.history.length > HISTORY_LIMIT) {
-      state.history.shift();
-    }
-
-    state.historyIndex = state.history.length - 1;
-    state.historyGroup = group || "";
-
-    updateHistoryButtons();
-  }
+function captureHistory(group)
 
   function recordHistory(group) {
     if (state.restoringHistory || !state.project) return;
