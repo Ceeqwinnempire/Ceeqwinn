@@ -2,10 +2,25 @@
 (function () {
   "use strict";
 
+  /* =========================================================
+     CEEQWINN STORY & THEATRE STUDIO
+     Complete Studio controller
+     Vanilla JavaScript
+     ========================================================= */
+
   const STORAGE_KEY = "ceeqwinn_story_studio_v3";
   const SETTINGS_KEY = "ceeqwinn_story_studio_settings_v1";
   const MOODS_KEY = "ceeqwinn_story_studio_moods_v1";
+
   const HISTORY_LIMIT = 40;
+
+  // Conservative browser-storage limit.
+  // Large media files should be hosted externally and linked.
+  const MAX_PROJECT_STORAGE_CHARS = 3400000;
+  const MAX_SINGLE_FILE_BYTES = 18 * 1024 * 1024;
+  const MAX_PROJECT_CHAPTERS = 2000;
+  const MAX_BLOCKS_PER_CHAPTER = 5000;
+  const MAX_PROJECT_ASSETS = 500;
 
   const $ = (id) => document.getElementById(id);
 
@@ -16,12 +31,17 @@
     activePanel: "overviewPanel",
     settings: null,
     saveTimer: null,
+
     history: [],
     historyIndex: -1,
     restoringHistory: false,
+    historyCapturePending: false,
+    historyGroup: "",
+
     inspectorExpanded: false,
     inspectorClosed: false,
     sidebarCollapsed: false,
+
     moods: [],
     editingMoodId: ""
   };
@@ -47,6 +67,20 @@
 
   const MOOD_COLOURS = ["accent", "background", "panel", "text"];
 
+  const BLOCK_TYPES = [
+    "paragraph",
+    "narration",
+    "dialogue",
+    "reveal",
+    "image",
+    "video",
+    "audio",
+    "choice",
+    "game",
+    "chapterEnd",
+    "reference"
+  ];
+
   const makeId = (prefix) =>
     prefix + "-" + Date.now().toString(36) + "-" +
     Math.random().toString(36).slice(2, 7);
@@ -64,7 +98,9 @@
     toast.textContent = message;
     region.appendChild(toast);
 
-    window.setTimeout(() => toast.remove(), 3600);
+    window.setTimeout(() => {
+      if (toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 3600);
   }
 
   function setSaveStatus(message) {
@@ -74,7 +110,7 @@
 
   function safeSet(id, value) {
     const element = $(id);
-    if (element) element.textContent = value;
+    if (element) element.textContent = String(value);
   }
 
   function bindClick(id, callback) {
@@ -91,6 +127,29 @@
       .slice(0, 100) || "my-story";
   }
 
+  function isHexColour(value) {
+    return typeof value === "string" &&
+      /^#[0-9a-fA-F]{6}$/.test(value);
+  }
+
+  function readLocalStorage(key, fallback) {
+    try {
+      const value = localStorage.getItem(key);
+      return value === null ? fallback : value;
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function writeLocalStorage(key, value) {
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   function starterProject() {
     return {
       schemaVersion: 3,
@@ -100,7 +159,10 @@
       genre: "Fashion drama · Mystery",
       status: "draft",
       slug: "emerald-inheritance",
-      release: { plan: "draft", date: "" },
+      release: {
+        plan: "draft",
+        date: ""
+      },
       theme: {
         accent: "#d6ad68",
         background: "#260d1b",
@@ -123,15 +185,35 @@
     };
   }
 
+  /* =========================================================
+     PROJECT NORMALIZATION AND VALIDATION
+     ========================================================= */
+
   function normalizeProject(project) {
+    if (!project || typeof project !== "object" || Array.isArray(project)) {
+      throw new Error("Invalid project object.");
+    }
+
     project.schemaVersion = 3;
+
+    project.id = String(project.id || makeId("story"));
+    project.title = String(project.title || "Untitled story");
+    project.description = String(project.description || "");
+    project.genre = String(project.genre || "");
+    project.status = String(project.status || "draft");
+    project.slug = slugify(project.slug || project.title);
+
     project.assets = Array.isArray(project.assets) ? project.assets : [];
     project.chapters = Array.isArray(project.chapters) ? project.chapters : [];
     project.folders = Array.isArray(project.folders) ? project.folders : ["Opening"];
+
     project.assetFolders = Array.isArray(project.assetFolders)
       ? project.assetFolders
       : ["Unsorted"];
-    project.release = project.release || { plan: "draft", date: "" };
+
+    project.release = project.release && typeof project.release === "object"
+      ? project.release
+      : { plan: "draft", date: "" };
 
     project.theme = Object.assign({
       accent: "#d6ad68",
@@ -141,13 +223,17 @@
     }, project.theme || {});
 
     project.folders = [...new Set(
-      project.folders.map((folder) => String(folder || "").trim()).filter(Boolean)
+      project.folders
+        .map((folder) => String(folder || "").trim())
+        .filter(Boolean)
     )];
 
     if (!project.folders.length) project.folders = ["Unsorted"];
 
     project.assetFolders = [...new Set(
-      project.assetFolders.map((folder) => String(folder || "").trim()).filter(Boolean)
+      project.assetFolders
+        .map((folder) => String(folder || "").trim())
+        .filter(Boolean)
     )];
 
     if (!project.assetFolders.includes("Unsorted")) {
@@ -155,9 +241,9 @@
     }
 
     project.chapters.forEach((chapter) => {
-      chapter.id = chapter.id || makeId("chapter");
-      chapter.title = chapter.title || "Untitled chapter";
-      chapter.folder = chapter.folder || "Unsorted";
+      chapter.id = String(chapter.id || makeId("chapter"));
+      chapter.title = String(chapter.title || "Untitled chapter");
+      chapter.folder = String(chapter.folder || "Unsorted");
       chapter.blocks = Array.isArray(chapter.blocks) ? chapter.blocks : [];
 
       if (!project.folders.includes(chapter.folder)) {
@@ -165,13 +251,29 @@
       }
 
       chapter.blocks.forEach((block) => {
-        block.id = block.id || makeId(block.type || "block");
-        block.type = block.type || "paragraph";
+        block.id = String(block.id || makeId(block.type || "block"));
+        block.type = String(block.type || "paragraph");
+
+        if (typeof block.text !== "string") {
+          block.text = block.text == null ? "" : String(block.text);
+        }
+
+        if (block.type === "choice") {
+          block.options = Array.isArray(block.options) ? block.options : [];
+          block.options = block.options.map((option) => ({
+            label: String(option && option.label || ""),
+            target: String(option && option.target || "")
+          }));
+        }
       });
     });
 
     project.assets.forEach((asset) => {
-      asset.folder = asset.folder || "Unsorted";
+      asset.id = String(asset.id || makeId("asset"));
+      asset.name = String(asset.name || "Untitled file");
+      asset.kind = String(asset.kind || "file");
+      asset.folder = String(asset.folder || "Unsorted");
+      asset.dataUrl = typeof asset.dataUrl === "string" ? asset.dataUrl : "";
 
       if (!project.assetFolders.includes(asset.folder)) {
         project.assetFolders.push(asset.folder);
@@ -182,12 +284,85 @@
       project.chapters.push({
         id: makeId("chapter"),
         title: "Chapter One",
-        folder: "Unsorted",
+        folder: project.folders[0] || "Unsorted",
         blocks: []
       });
     }
 
     return project;
+  }
+
+  function validateIncomingProject(project) {
+    if (!project || typeof project !== "object" || Array.isArray(project)) {
+      throw new Error("The file does not contain a project object.");
+    }
+
+    if (!Array.isArray(project.chapters)) {
+      throw new Error("The project has no valid chapter list.");
+    }
+
+    if (!project.chapters.length) {
+      throw new Error("The project must contain at least one chapter.");
+    }
+
+    if (project.chapters.length > MAX_PROJECT_CHAPTERS) {
+      throw new Error("The project contains too many chapters.");
+    }
+
+    if (project.assets !== undefined && !Array.isArray(project.assets)) {
+      throw new Error("The asset list is invalid.");
+    }
+
+    if ((project.assets || []).length > MAX_PROJECT_ASSETS) {
+      throw new Error("The project contains too many assets.");
+    }
+
+    project.chapters.forEach((chapter, chapterIndex) => {
+      if (!chapter || typeof chapter !== "object" || Array.isArray(chapter)) {
+        throw new Error("Chapter " + (chapterIndex + 1) + " is invalid.");
+      }
+
+      if (chapter.blocks !== undefined && !Array.isArray(chapter.blocks)) {
+        throw new Error("A chapter contains an invalid block list.");
+      }
+
+      const blocks = chapter.blocks || [];
+
+      if (blocks.length > MAX_BLOCKS_PER_CHAPTER) {
+        throw new Error("A chapter contains too many blocks.");
+      }
+
+      blocks.forEach((block) => {
+        if (!block || typeof block !== "object" || Array.isArray(block)) {
+          throw new Error("A story block is invalid.");
+        }
+
+        if (block.options !== undefined && !Array.isArray(block.options)) {
+          throw new Error("A choice block contains invalid options.");
+        }
+      });
+    });
+
+    (project.assets || []).forEach((asset) => {
+      if (!asset || typeof asset !== "object" || Array.isArray(asset)) {
+        throw new Error("An asset entry is invalid.");
+      }
+
+      if (asset.dataUrl !== undefined && typeof asset.dataUrl !== "string") {
+        throw new Error("An asset contains invalid file data.");
+      }
+    });
+
+    const normalized = normalizeProject(clone(project));
+    const serialized = JSON.stringify(normalized);
+
+    if (serialized.length > MAX_PROJECT_STORAGE_CHARS) {
+      throw new Error(
+        "This project is too large for reliable browser storage. Remove large embedded files or use external media links."
+      );
+    }
+
+    return normalized;
   }
 
   function currentChapter() {
@@ -207,65 +382,16 @@
     ) || null;
   }
 
+  /* =========================================================
+     UNDO / REDO
+     ========================================================= */
+
   function snapshot() {
     return {
       project: clone(state.project),
       chapterId: state.chapterId,
       selectedBlockId: state.selectedBlockId
     };
-  }
-
-  function recordHistory() {
-    if (state.restoringHistory || !state.project) return;
-
-    const next = snapshot();
-    const current = state.history[state.historyIndex];
-
-    if (current && JSON.stringify(current) === JSON.stringify(next)) return;
-
-    state.history = state.history.slice(0, state.historyIndex + 1);
-    state.history.push(next);
-
-    if (state.history.length > HISTORY_LIMIT) state.history.shift();
-
-    state.historyIndex = state.history.length - 1;
-    updateHistoryButtons();
-  }
-
-  function restoreSnapshot(item) {
-    if (!item) return;
-
-    state.restoringHistory = true;
-    state.project = normalizeProject(clone(item.project));
-    state.chapterId = item.chapterId;
-    state.selectedBlockId = item.selectedBlockId;
-
-    if (!currentChapter()) {
-      state.chapterId = state.project.chapters[0].id;
-    }
-
-    if (!currentBlock()) state.selectedBlockId = "";
-
-    state.restoringHistory = false;
-    scheduleSave();
-    renderAll();
-    updateHistoryButtons();
-  }
-
-  function undo() {
-    if (state.historyIndex <= 0) return;
-
-    state.historyIndex--;
-    restoreSnapshot(state.history[state.historyIndex]);
-    notify("Last change undone.");
-  }
-
-  function redo() {
-    if (state.historyIndex >= state.history.length - 1) return;
-
-    state.historyIndex++;
-    restoreSnapshot(state.history[state.historyIndex]);
-    notify("Change restored.");
   }
 
   function updateHistoryButtons() {
@@ -283,27 +409,182 @@
     });
   }
 
-  function saveNow() {
-    if (!state.project) return;
+  function captureHistory(group) {
+    if (state.restoringHistory || !state.project) return;
+
+    let next;
 
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.project));
+      next = snapshot();
+    } catch (error) {
+      return;
+    }
+
+    const current = state.history[state.historyIndex];
+
+    if (current && JSON.stringify(current) === JSON.stringify(next)) {
+      state.historyGroup = group || "";
+      updateHistoryButtons();
+      return;
+    }
+
+    // Repeated typing in the same field updates one history entry.
+    // The previous completed state remains available for Undo.
+    if (
+      group &&
+      group === state.historyGroup &&
+      state.historyIndex === state.history.length - 1 &&
+      state.historyIndex >= 0
+    ) {
+      state.history[state.historyIndex] = next;
+      updateHistoryButtons();
+      return;
+    }
+
+    state.history = state.history.slice(0, state.historyIndex + 1);
+    state.history.push(next);
+
+    if (state.history.length > HISTORY_LIMIT) {
+      state.history.shift();
+    }
+
+    state.historyIndex = state.history.length - 1;
+    state.historyGroup = group || "";
+
+    updateHistoryButtons();
+  }
+
+  function recordHistory(group) {
+    if (state.restoringHistory || !state.project) return;
+
+    state.historyGroup = group || "";
+
+    if (state.historyCapturePending) return;
+
+    state.historyCapturePending = true;
+
+    // Capture after the current synchronous action finishes.
+    // This supports the existing functions that call recordHistory
+    // immediately before making their change.
+    Promise.resolve().then(() => {
+      state.historyCapturePending = false;
+      captureHistory(group || "");
+    });
+  }
+
+  function flushPendingHistory() {
+    if (!state.historyCapturePending) return;
+
+    state.historyCapturePending = false;
+    captureHistory(state.historyGroup);
+  }
+
+  function finishHistoryGroup() {
+    flushPendingHistory();
+    state.historyGroup = "";
+  }
+
+  function restoreSnapshot(item) {
+    if (!item || !item.project) return;
+
+    state.restoringHistory = true;
+
+    try {
+      state.project = normalizeProject(clone(item.project));
+      state.chapterId = item.chapterId;
+      state.selectedBlockId = item.selectedBlockId;
+
+      if (!state.project.chapters.some(
+        (chapter) => chapter.id === state.chapterId
+      )) {
+        state.chapterId = state.project.chapters[0].id;
+      }
+
+      const chapter = currentChapter();
+
+      if (
+        !chapter ||
+        !chapter.blocks.some((block) => block.id === state.selectedBlockId)
+      ) {
+        state.selectedBlockId = "";
+      }
+    } finally {
+      state.restoringHistory = false;
+    }
+
+    state.historyGroup = "";
+
+    scheduleSave();
+    renderAll();
+    updateHistoryButtons();
+  }
+
+  function undo() {
+    flushPendingHistory();
+
+    if (state.historyIndex <= 0) return;
+
+    state.historyIndex--;
+    restoreSnapshot(state.history[state.historyIndex]);
+    notify("Last change undone.");
+  }
+
+  function redo() {
+    flushPendingHistory();
+
+    if (state.historyIndex >= state.history.length - 1) return;
+
+    state.historyIndex++;
+    restoreSnapshot(state.history[state.historyIndex]);
+    notify("Change restored.");
+  }
+
+  /* =========================================================
+     SAVING AND STARTUP
+     ========================================================= */
+
+  function saveNow() {
+    if (!state.project) return false;
+
+    try {
+      const serialized = JSON.stringify(state.project);
+
+      if (serialized.length > MAX_PROJECT_STORAGE_CHARS) {
+        setSaveStatus("Draft too large for browser storage");
+        notify(
+          "The draft is larger than the safe browser-storage limit. Export a backup and move large media files to external hosting."
+        );
+        return false;
+      }
+
+      localStorage.setItem(STORAGE_KEY, serialized);
       setSaveStatus("Saved in this browser");
+      return true;
     } catch (error) {
       setSaveStatus("Browser storage full");
-      notify("The draft could not be fully saved. Export a backup and remove large files or videos from the project.");
+      notify(
+        "The draft could not be saved. Export a project backup before making more changes, then reduce large embedded files."
+      );
+      return false;
     }
   }
 
   function scheduleSave() {
     setSaveStatus("Saving…");
-    clearTimeout(state.saveTimer);
-    state.saveTimer = window.setTimeout(saveNow, 350);
+
+    if (state.saveTimer) {
+      window.clearTimeout(state.saveTimer);
+    }
+
+    state.saveTimer = window.setTimeout(() => {
+      state.saveTimer = null;
+      saveNow();
+    }, 350);
   }
 
   function loadSettings() {
     try {
-      const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
+      const saved = JSON.parse(readLocalStorage(SETTINGS_KEY, "{}"));
       state.settings = Object.assign({}, defaultSettings, saved);
     } catch (error) {
       state.settings = Object.assign({}, defaultSettings);
@@ -314,18 +595,39 @@
         state.settings[key] = defaultSettings[key];
       }
     });
+
+    const size = Number(state.settings.fontSize);
+
+    state.settings.fontSize = Number.isFinite(size)
+      ? Math.max(12, Math.min(32, size))
+      : defaultSettings.fontSize;
+
+    if (typeof state.settings.showHints !== "boolean") {
+      state.settings.showHints = defaultSettings.showHints;
+    }
+
+    if (typeof state.settings.darkMode !== "boolean") {
+      state.settings.darkMode = defaultSettings.darkMode;
+    }
+
+    if (typeof state.settings.reduceMotion !== "boolean") {
+      state.settings.reduceMotion = defaultSettings.reduceMotion;
+    }
   }
 
   function loadProject() {
     try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      const saved = JSON.parse(readLocalStorage(STORAGE_KEY, "null"));
 
       state.project = saved && Array.isArray(saved.chapters)
         ? normalizeProject(saved)
         : starterProject();
     } catch (error) {
       state.project = starterProject();
-      notify("The saved draft could not be read. A fresh project was opened.");
+
+      notify(
+        "The saved draft could not be read. A fresh project was opened. If you have a backup, import it before continuing."
+      );
     }
 
     state.chapterId = state.project.chapters[0].id;
@@ -335,8 +637,15 @@
 
     state.history = [];
     state.historyIndex = -1;
-    recordHistory();
+    state.historyGroup = "";
+    state.historyCapturePending = false;
+
+    captureHistory("");
   }
+
+  /* =========================================================
+     PANEL NAVIGATION AND GENERAL RENDERING
+     ========================================================= */
 
   function showPanel(panelId) {
     const target = $(panelId);
@@ -356,6 +665,8 @@
   }
 
   function renderAll() {
+    if (!state.project) return;
+
     renderChapterList();
     renderChapterFolderControls();
     renderManuscript();
@@ -364,6 +675,7 @@
     renderAssetShelf();
     renderWritingAssetShelf();
     renderAssetFolderControls();
+
     updatePublishUrl();
     updateCounts();
 
@@ -409,8 +721,6 @@
 
     if (!select) return;
 
-    const previous = chapter ? chapter.folder : "";
-
     select.replaceChildren();
 
     state.project.folders.forEach((folder) => {
@@ -424,6 +734,7 @@
       if (!state.project.folders.includes(chapter.folder)) {
         state.project.folders.push(chapter.folder);
       }
+
       select.value = chapter.folder;
     }
 
@@ -438,6 +749,7 @@
     if (chapter.folder === folder) return;
 
     recordHistory();
+
     chapter.folder = folder;
 
     scheduleSave();
@@ -530,6 +842,7 @@
     if (next === null) return;
 
     const name = next.trim().slice(0, 60);
+
     if (!name) {
       notify("A folder name cannot be empty.");
       return;
@@ -567,7 +880,7 @@
     }
 
     if (!window.confirm(
-      'Delete the "' + folder + '" folder? Its chapters will be moved to Unsorted.'
+      'Delete the "' + folder + '" folder? Its chapters will be moved to another folder.'
     )) return;
 
     recordHistory();
@@ -610,13 +923,17 @@
       open.className =
         "chapter-open" +
         (chapter.id === state.chapterId ? " active" : "");
+
       open.textContent = chapter.title || "Untitled chapter";
       open.title = (chapter.folder || "Unsorted") + " · " +
         (chapter.title || "Untitled chapter");
 
       open.addEventListener("click", () => {
+        finishHistoryGroup();
+
         state.chapterId = chapter.id;
         state.selectedBlockId = "";
+
         showPanel("writingPanel");
         renderAll();
       });
@@ -659,6 +976,7 @@
     const title = window.prompt("Chapter title:", "New chapter");
     if (title === null) return;
 
+    finishHistoryGroup();
     recordHistory();
 
     const chapter = {
@@ -684,7 +1002,9 @@
     const title = window.prompt("Chapter title:", chapter.title || "");
     if (title === null) return;
 
+    finishHistoryGroup();
     recordHistory();
+
     chapter.title = title.trim() || "Untitled chapter";
 
     scheduleSave();
@@ -701,11 +1021,14 @@
       "Delete this chapter and its blocks? You can use Undo to restore it."
     )) return;
 
+    finishHistoryGroup();
     recordHistory();
 
     const index = state.project.chapters.findIndex(
       (chapter) => chapter.id === state.chapterId
     );
+
+    if (index < 0) return;
 
     state.project.chapters.splice(index, 1);
 
@@ -723,16 +1046,55 @@
      ========================================================= */
 
   function createBlock(type) {
-    const block = { id: makeId(type), type: type };
+    if (!BLOCK_TYPES.includes(type)) {
+      type = "paragraph";
+    }
+
+    const block = {
+      id: makeId(type),
+      type: type
+    };
 
     const defaults = {
-      paragraph: { text: "" },
-      narration: { title: "Narration", text: "" },
-      dialogue: { title: "Dialogue", character: "", text: "" },
-      reveal: { title: "Visual reveal", text: "", imageUrl: "" },
-      image: { title: "Illustration", text: "", imageUrl: "" },
-      video: { title: "Short video", text: "", videoUrl: "" },
-      audio: { title: "Audio", text: "", audioUrl: "" },
+      paragraph: {
+        text: ""
+      },
+
+      narration: {
+        title: "Narration",
+        text: ""
+      },
+
+      dialogue: {
+        title: "Dialogue",
+        character: "",
+        text: ""
+      },
+
+      reveal: {
+        title: "Visual reveal",
+        text: "",
+        imageUrl: ""
+      },
+
+      image: {
+        title: "Illustration",
+        text: "",
+        imageUrl: ""
+      },
+
+      video: {
+        title: "Short video",
+        text: "",
+        videoUrl: ""
+      },
+
+      audio: {
+        title: "Audio",
+        text: "",
+        audioUrl: ""
+      },
+
       choice: {
         title: "Reader choice",
         text: "",
@@ -741,13 +1103,23 @@
           { label: "Option two", target: "" }
         ]
       },
-      game: { title: "Game", text: "", gameUrl: "" },
+
+      game: {
+        title: "Game",
+        text: "",
+        gameUrl: ""
+      },
+
       chapterEnd: {
         title: "Continue the story",
         text: "",
         nextChapterId: ""
       },
-      reference: { title: "Reference file", assetId: "" }
+
+      reference: {
+        title: "Reference file",
+        assetId: ""
+      }
     };
 
     return Object.assign(
@@ -760,9 +1132,11 @@
     const chapter = currentChapter();
     if (!chapter) return;
 
+    finishHistoryGroup();
     recordHistory();
 
     const block = createBlock(type);
+
     const selectedIndex = chapter.blocks.findIndex(
       (item) => item.id === state.selectedBlockId
     );
@@ -808,6 +1182,7 @@
 
     if (index < 0 || target < 0 || target >= chapter.blocks.length) return;
 
+    finishHistoryGroup();
     recordHistory();
 
     [
@@ -836,9 +1211,11 @@
 
     if (from < 0 || to < 0) return;
 
+    finishHistoryGroup();
     recordHistory();
 
     const moved = chapter.blocks.splice(from, 1)[0];
+
     const adjustedTarget = chapter.blocks.findIndex(
       (block) => block.id === targetId
     );
@@ -846,6 +1223,7 @@
     chapter.blocks.splice(adjustedTarget, 0, moved);
 
     state.selectedBlockId = blockId;
+
     scheduleSave();
     renderAll();
   }
@@ -864,7 +1242,9 @@
       return;
     }
 
+    finishHistoryGroup();
     recordHistory();
+
     chapter.blocks.splice(index, 1);
 
     if (state.selectedBlockId === blockId) {
@@ -917,15 +1297,24 @@
     }
 
     if (block.type === "video") {
-      return { key: "videoUrl", placeholder: "Direct video URL (MP4/WebM)" };
+      return {
+        key: "videoUrl",
+        placeholder: "Direct video URL (MP4/WebM)"
+      };
     }
 
     if (block.type === "audio") {
-      return { key: "audioUrl", placeholder: "Direct audio URL" };
+      return {
+        key: "audioUrl",
+        placeholder: "Direct audio URL"
+      };
     }
 
     if (block.type === "game") {
-      return { key: "gameUrl", placeholder: "Game URL" };
+      return {
+        key: "gameUrl",
+        placeholder: "Game URL"
+      };
     }
 
     return null;
@@ -933,6 +1322,7 @@
 
   function makeBlockInput(block, className, placeholder, value, onInput) {
     const field = document.createElement("input");
+
     field.className = className;
     field.placeholder = placeholder;
     field.value = value || "";
@@ -941,8 +1331,12 @@
 
     field.addEventListener("input", () => {
       onInput(field.value);
+      recordHistory("typing");
       scheduleSave();
     });
+
+    field.addEventListener("change", finishHistoryGroup);
+    field.addEventListener("blur", finishHistoryGroup);
 
     return field;
   }
@@ -975,9 +1369,15 @@
       card.draggable = true;
 
       card.addEventListener("click", () => {
-        if (state.selectedBlockId === block.id && !state.inspectorClosed) return;
+        if (
+          state.selectedBlockId === block.id &&
+          !state.inspectorClosed
+        ) return;
+
+        finishHistoryGroup();
 
         state.selectedBlockId = block.id;
+
         openInspector();
         renderManuscript();
         renderInspector();
@@ -997,13 +1397,17 @@
 
       card.addEventListener("dragend", () => {
         card.classList.remove("dragging");
+
         document.querySelectorAll(".story-block").forEach((item) => {
           item.classList.remove("drag-over");
         });
       });
 
       card.addEventListener("dragover", (event) => {
-        if (!event.dataTransfer.types.includes("text/ceeqwinn-block")) return;
+        if (!Array.from(event.dataTransfer.types || []).includes(
+          "text/ceeqwinn-block"
+        )) return;
+
         event.preventDefault();
         card.classList.add("drag-over");
       });
@@ -1018,8 +1422,8 @@
 
         event.preventDefault();
         event.stopPropagation();
-        card.classList.remove("drag-over");
 
+        card.classList.remove("drag-over");
         moveBlockTo(draggedId, block.id);
       });
 
@@ -1042,6 +1446,7 @@
         ["×", "Delete block", () => removeBlock(block.id)]
       ].forEach(([symbol, title, action]) => {
         const button = document.createElement("button");
+
         button.type = "button";
         button.textContent = symbol;
         button.title = title;
@@ -1063,7 +1468,9 @@
           "block-title-input",
           "Experience title",
           block.title,
-          (value) => { block.title = value; }
+          (value) => {
+            block.title = value;
+          }
         );
 
         title.setAttribute("aria-label", "Block title");
@@ -1072,20 +1479,29 @@
 
       if (block.type !== "reference") {
         const textarea = document.createElement("textarea");
+
         textarea.className = "block-text";
         textarea.placeholder = block.type === "paragraph"
           ? "Continue writing here…"
           : "Add the text for this experience…";
+
         textarea.value = block.text || "";
         textarea.setAttribute("aria-label", blockLabel(block) + " text");
 
-        textarea.addEventListener("click", (event) => event.stopPropagation());
+        textarea.addEventListener("click", (event) => {
+          event.stopPropagation();
+        });
 
         textarea.addEventListener("input", () => {
           block.text = textarea.value;
+
+          recordHistory("typing");
           scheduleSave();
           updateCounts();
         });
+
+        textarea.addEventListener("change", finishHistoryGroup);
+        textarea.addEventListener("blur", finishHistoryGroup);
 
         card.appendChild(textarea);
       } else {
@@ -1098,7 +1514,9 @@
           "block-title-input",
           "Character / speaker name",
           block.character,
-          (value) => { block.character = value; }
+          (value) => {
+            block.character = value;
+          }
         );
 
         card.appendChild(character);
@@ -1112,7 +1530,9 @@
           "block-title-input",
           media.placeholder,
           block[media.key],
-          (value) => { block[media.key] = value; }
+          (value) => {
+            block[media.key] = value;
+          }
         );
 
         url.setAttribute("aria-label", media.placeholder);
@@ -1122,15 +1542,21 @@
       if (block.type === "choice") {
         const summary = document.createElement("p");
         summary.className = "block-meta";
+
         summary.textContent =
           (block.options || []).length +
           " choice options · edit labels in Quick Edit";
+
         card.appendChild(summary);
       }
 
       container.appendChild(card);
     });
   }
+
+  /* =========================================================
+     QUICK EDIT INSPECTOR
+     ========================================================= */
 
   function addInspectorField(parent, labelText, value, onInput, options) {
     options = options || {};
@@ -1164,16 +1590,14 @@
 
     label.appendChild(field);
 
-    field.addEventListener("change", () => {
-      recordHistory();
+    field.addEventListener("input", () => {
       onInput(field.value);
+      recordHistory("typing");
       scheduleSave();
     });
 
-    field.addEventListener("input", () => {
-      onInput(field.value);
-      scheduleSave();
-    });
+    field.addEventListener("change", finishHistoryGroup);
+    field.addEventListener("blur", finishHistoryGroup);
 
     parent.appendChild(label);
     return field;
@@ -1190,8 +1614,10 @@
     if (!block) {
       const note = document.createElement("p");
       note.className = "muted";
+
       note.textContent =
         "Select a block in your chapter to edit its details. Quick Edit stays here while you write.";
+
       container.appendChild(note);
       return;
     }
@@ -1251,25 +1677,36 @@
           container,
           "Option " + (index + 1),
           option.label,
-          (value) => { option.label = value; }
+          (value) => {
+            option.label = value;
+          }
         );
 
         addInspectorField(
           container,
           "Target chapter ID (optional)",
           option.target,
-          (value) => { option.target = value; }
+          (value) => {
+            option.target = value;
+          }
         );
       });
 
       const add = document.createElement("button");
+
       add.className = "button secondary full-width";
       add.type = "button";
       add.textContent = "＋ Add choice option";
 
       add.addEventListener("click", () => {
+        finishHistoryGroup();
         recordHistory();
-        block.options.push({ label: "New choice", target: "" });
+
+        block.options.push({
+          label: "New choice",
+          target: ""
+        });
+
         scheduleSave();
         renderInspector();
         renderManuscript();
@@ -1279,8 +1716,10 @@
 
       const note = document.createElement("p");
       note.className = "inspector-note";
+
       note.textContent =
         "Targets are saved as chapter IDs. Full conditional branching still needs its own Reader integration.";
+
       container.appendChild(note);
     }
 
@@ -1316,7 +1755,7 @@
         }))
       );
 
-      addInspectorField(
+      const picker = addInspectorField(
         container,
         "Attached reference",
         block.assetId,
@@ -1326,6 +1765,8 @@
         },
         { select: choices }
       );
+
+      picker.value = block.assetId || "";
     }
 
     if (["image", "reveal", "video", "audio"].includes(block.type)) {
@@ -1366,24 +1807,24 @@
     }
 
     const trayButton = document.createElement("button");
+
     trayButton.type = "button";
     trayButton.className = "button secondary full-width";
     trayButton.textContent = "Open asset shelf";
     trayButton.addEventListener("click", openWritingAssetTray);
+
     container.appendChild(trayButton);
 
     const deleteButton = document.createElement("button");
+
     deleteButton.type = "button";
     deleteButton.className = "button quiet full-width";
     deleteButton.style.marginTop = "18px";
     deleteButton.textContent = "Delete this block";
     deleteButton.addEventListener("click", () => removeBlock(block.id));
+
     container.appendChild(deleteButton);
   }
-
-  /* =========================================================
-     QUICK EDIT INSPECTOR
-     ========================================================= */
 
   function updateInspectorState() {
     const inspector = $("blockInspector");
@@ -1416,6 +1857,8 @@
   }
 
   function closeInspector() {
+    finishHistoryGroup();
+
     state.selectedBlockId = "";
     state.inspectorExpanded = false;
     state.inspectorClosed = true;
@@ -1432,6 +1875,7 @@
 
   function toggleInspectorExpanded() {
     state.inspectorExpanded = !state.inspectorExpanded;
+
     openInspector();
     updateInspectorState();
   }
@@ -1451,7 +1895,10 @@
 
     fields.forEach(([id, value]) => {
       const field = $(id);
-      if (field && document.activeElement !== field) field.value = value;
+
+      if (field && document.activeElement !== field) {
+        field.value = value;
+      }
     });
 
     const list = $("overviewChapterList");
@@ -1465,6 +1912,7 @@
 
       const open = document.createElement("button");
       open.type = "button";
+
       open.textContent =
         (index + 1) + ". " +
         (chapter.title || "Untitled chapter") +
@@ -1472,8 +1920,11 @@
         " · " + (chapter.folder || "Unsorted");
 
       open.addEventListener("click", () => {
+        finishHistoryGroup();
+
         state.chapterId = chapter.id;
         state.selectedBlockId = "";
+
         showPanel("writingPanel");
         renderAll();
       });
@@ -1513,6 +1964,7 @@
   function formatSize(bytes) {
     if (bytes < 1024) return bytes + " B";
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+
     return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   }
 
@@ -1520,10 +1972,15 @@
     if (file.type.startsWith("image/")) return "image";
     if (file.type.startsWith("video/")) return "video";
     if (file.type.startsWith("audio/")) return "audio";
-    if (file.type === "application/pdf" || /\.pdf$/i.test(file.name)) return "pdf";
+
+    if (file.type === "application/pdf" || /\.pdf$/i.test(file.name)) {
+      return "pdf";
+    }
+
     if (/\.(doc|docx|odt|rtf)$/i.test(file.name)) return "document";
     if (/\.(xls|xlsx|ppt|pptx|zip)$/i.test(file.name)) return "file";
     if (/\.(txt|md|json)$/i.test(file.name)) return "text";
+
     return "file";
   }
 
@@ -1532,9 +1989,24 @@
       const reader = new FileReader();
 
       reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(new Error("Could not read " + file.name));
+      reader.onerror = () => reject(
+        new Error("Could not read " + file.name)
+      );
 
       reader.readAsDataURL(file);
+    });
+  }
+
+  function readFileAsText(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(
+        new Error("Could not read " + file.name)
+      );
+
+      reader.readAsText(file);
     });
   }
 
@@ -1542,7 +2014,11 @@
     const filter = $("assetFolderFilter");
     const value = filter ? filter.value : "";
 
-    if (value && value !== "__all__" && state.project.assetFolders.includes(value)) {
+    if (
+      value &&
+      value !== "__all__" &&
+      state.project.assetFolders.includes(value)
+    ) {
       return value;
     }
 
@@ -1559,7 +2035,7 @@
     for (const file of files) {
       if (!file || file.size === 0) continue;
 
-      if (file.size > 18 * 1024 * 1024) {
+      if (file.size > MAX_SINGLE_FILE_BYTES) {
         notify(
           file.name +
           " is larger than 18 MB. Keep large files externally and add a link instead."
@@ -1567,12 +2043,15 @@
         continue;
       }
 
+      if (state.project.assets.length >= MAX_PROJECT_ASSETS) {
+        notify("The project has reached its asset limit.");
+        break;
+      }
+
       try {
         const dataUrl = await readAsDataUrl(file);
 
-        recordHistory();
-
-        state.project.assets.push({
+        const asset = {
           id: makeId("asset"),
           name: file.name,
           type: file.type || "application/octet-stream",
@@ -1583,7 +2062,24 @@
           folder: destinationFolder,
           dataUrl: dataUrl,
           addedAt: new Date().toISOString()
-        });
+        };
+
+        // Check the complete project size before accepting the file.
+        const projected = clone(state.project);
+        projected.assets.push(asset);
+
+        if (JSON.stringify(projected).length > MAX_PROJECT_STORAGE_CHARS) {
+          notify(
+            file.name +
+            " was not added because it would exceed the safe browser-storage limit. Use an externally hosted media link instead."
+          );
+          continue;
+        }
+
+        finishHistoryGroup();
+
+        state.project.assets.push(asset);
+        recordHistory();
 
         added++;
       } catch (error) {
@@ -1593,6 +2089,7 @@
 
     if (added) {
       scheduleSave();
+
       renderAssetShelf();
       renderWritingAssetShelf();
       renderOverview();
@@ -1636,7 +2133,10 @@
       filter.appendChild(option);
     });
 
-    if (previous === "__all__" || state.project.assetFolders.includes(previous)) {
+    if (
+      previous === "__all__" ||
+      state.project.assetFolders.includes(previous)
+    ) {
       filter.value = previous;
     } else {
       filter.value = "__all__";
@@ -1645,6 +2145,7 @@
 
   function createAssetCard(asset, compact) {
     const card = document.createElement("article");
+
     card.className = "asset-card";
     card.draggable = true;
     card.dataset.assetId = asset.id;
@@ -1659,16 +2160,20 @@
 
     if (asset.kind === "image" && asset.dataUrl) {
       const image = document.createElement("img");
+
       image.src = asset.dataUrl;
       image.alt = asset.name;
       image.loading = "lazy";
+
       thumb.appendChild(image);
     } else if (asset.kind === "video" && asset.dataUrl) {
       const video = document.createElement("video");
+
       video.src = asset.dataUrl;
       video.muted = true;
       video.preload = "metadata";
       video.controls = !compact;
+
       thumb.appendChild(video);
     } else {
       thumb.textContent = assetIcon(asset);
@@ -1692,7 +2197,11 @@
       folderLabel.textContent = "Folder";
 
       const folderSelect = document.createElement("select");
-      folderSelect.setAttribute("aria-label", "Move " + asset.name + " to folder");
+
+      folderSelect.setAttribute(
+        "aria-label",
+        "Move " + asset.name + " to folder"
+      );
 
       state.project.assetFolders.forEach((folder) => {
         const option = document.createElement("option");
@@ -1703,16 +2212,22 @@
 
       folderSelect.value = asset.folder || "Unsorted";
 
-      folderSelect.addEventListener("click", (event) => event.stopPropagation());
+      folderSelect.addEventListener("click", (event) => {
+        event.stopPropagation();
+      });
 
       folderSelect.addEventListener("change", () => {
         if (asset.folder === folderSelect.value) return;
 
+        finishHistoryGroup();
         recordHistory();
+
         asset.folder = folderSelect.value;
+
         scheduleSave();
         renderAssetShelf();
         renderWritingAssetShelf();
+
         notify('"' + asset.name + '" moved to "' + asset.folder + '".');
       });
 
@@ -1725,38 +2240,48 @@
 
     if (asset.dataUrl && !compact) {
       const open = document.createElement("a");
+
       open.href = asset.dataUrl;
       open.target = "_blank";
       open.rel = "noopener";
       open.textContent = "Open";
+
       actions.appendChild(open);
 
       const download = document.createElement("a");
+
       download.href = asset.dataUrl;
       download.download = asset.name;
       download.textContent = "Save copy";
+
       actions.appendChild(download);
     }
 
     if (["image", "video", "audio"].includes(asset.kind)) {
       const insert = document.createElement("button");
+
       insert.type = "button";
       insert.textContent = compact ? "Insert" : "Use in story";
       insert.addEventListener("click", () => insertAssetIntoStory(asset));
+
       actions.appendChild(insert);
     } else {
       const attach = document.createElement("button");
+
       attach.type = "button";
       attach.textContent = "Attach reference";
       attach.addEventListener("click", () => attachReference(asset));
+
       actions.appendChild(attach);
     }
 
     if (!compact) {
       const remove = document.createElement("button");
+
       remove.type = "button";
       remove.textContent = "Remove";
       remove.addEventListener("click", () => removeAsset(asset));
+
       actions.appendChild(remove);
     }
 
@@ -1768,7 +2293,9 @@
     const filter = $("assetFolderFilter");
     const folder = filter ? filter.value : "__all__";
 
-    if (!folder || folder === "__all__") return state.project.assets;
+    if (!folder || folder === "__all__") {
+      return state.project.assets;
+    }
 
     return state.project.assets.filter(
       (asset) => (asset.folder || "Unsorted") === folder
@@ -1786,9 +2313,11 @@
     if (!assets.length) {
       const empty = document.createElement("p");
       empty.className = "muted";
+
       empty.textContent = state.project.assets.length
         ? "There are no files in this folder yet."
         : "Your shelf is empty. Drop files above to start collecting your story materials.";
+
       shelf.appendChild(empty);
       return;
     }
@@ -1808,6 +2337,7 @@
       const empty = document.createElement("p");
       empty.className = "muted";
       empty.textContent = "Your asset shelf is empty.";
+
       shelf.appendChild(empty);
       return;
     }
@@ -1834,6 +2364,7 @@
       return;
     }
 
+    finishHistoryGroup();
     recordHistory();
 
     const name = uniqueFolderName(rawName, state.project.assetFolders);
@@ -1846,6 +2377,7 @@
     renderAssetShelf();
 
     const filter = $("assetFolderFilter");
+
     if (filter) {
       filter.value = name;
       renderAssetShelf();
@@ -1862,6 +2394,7 @@
       "Remove " + asset.name + " from this project's asset shelf?"
     )) return;
 
+    finishHistoryGroup();
     recordHistory();
 
     state.project.assets = state.project.assets.filter(
@@ -1876,6 +2409,7 @@
 
     scheduleSave();
     renderAll();
+
     notify("Asset removed. Use Undo if you removed it by mistake.");
   }
 
@@ -1889,6 +2423,7 @@
       'Delete the "' + folder + '" folder? Its files will be moved to Unsorted.'
     )) return;
 
+    finishHistoryGroup();
     recordHistory();
 
     state.project.assets.forEach((asset) => {
@@ -1909,6 +2444,7 @@
 
   function openWritingAssetTray() {
     const tray = $("writingAssetTray");
+
     if (!tray) {
       showPanel("assetsPanel");
       return;
@@ -1916,6 +2452,7 @@
 
     tray.hidden = false;
     tray.classList.add("asset-tray-open");
+
     renderWritingAssetShelf();
   }
 
@@ -1931,6 +2468,7 @@
     const chapter = currentChapter();
     if (!chapter) return;
 
+    finishHistoryGroup();
     recordHistory();
 
     const block = createBlock("reference");
@@ -1947,8 +2485,10 @@
     );
 
     state.selectedBlockId = block.id;
+
     openInspector();
     showPanel("writingPanel");
+
     scheduleSave();
     renderAll();
     closeWritingAssetTray();
@@ -1964,9 +2504,11 @@
     const chapter = currentChapter();
     if (!chapter) return;
 
+    finishHistoryGroup();
     recordHistory();
 
     const block = createBlock(type);
+
     block.title = asset.name;
     block.assetId = asset.id;
 
@@ -1988,6 +2530,7 @@
 
     openInspector();
     showPanel("writingPanel");
+
     scheduleSave();
     renderAll();
     closeWritingAssetTray();
@@ -2037,7 +2580,10 @@
     }
 
     if (entries.length) {
-      for (const entry of entries) await walk(entry, "");
+      for (const entry of entries) {
+        await walk(entry, "");
+      }
+
       return output;
     }
 
@@ -2084,6 +2630,7 @@
   }
 
   function exportProject() {
+    finishHistoryGroup();
     saveNow();
 
     downloadJson(
@@ -2095,6 +2642,8 @@
   }
 
   function exportReaderStory() {
+    finishHistoryGroup();
+
     const project = clone(state.project);
 
     project.slug = slugify(
@@ -2110,30 +2659,33 @@
       text: state.settings.text
     });
 
-    project.status = "ready";
+    // Do not silently mark the story ready.
+    // The user's actual project status is preserved.
+    project.status = state.project.status || "draft";
 
     downloadJson(project.slug + ".json", project);
 
-    notify("Reader JSON exported. Upload it to the website's stories folder to publish.");
+    notify(
+      "Reader JSON exported. Upload it to the website's stories folder when you are ready to publish."
+    );
   }
 
   async function importProject(file) {
     if (!file) return;
 
     try {
-      const incoming = JSON.parse(await file.text());
-
-      if (!incoming || !Array.isArray(incoming.chapters)) {
-        throw new Error("This is not a Studio project backup.");
-      }
+      const rawText = await readFileAsText(file);
+      const incoming = JSON.parse(rawText);
+      const validated = validateIncomingProject(incoming);
 
       if (!window.confirm(
         "Open this project backup? It will replace the draft currently open in the Studio."
       )) return;
 
+      finishHistoryGroup();
       recordHistory();
 
-      state.project = normalizeProject(incoming);
+      state.project = validated;
       state.chapterId = state.project.chapters[0].id;
       state.selectedBlockId = "";
 
@@ -2141,9 +2693,12 @@
       renderAll();
 
       recordHistory();
+
       notify("Project backup opened.");
     } catch (error) {
-      notify("Could not open that JSON file. Choose a valid Studio project backup.");
+      notify(
+        "Could not open that JSON file. Check that it is a valid Studio project backup and is not too large."
+      );
     }
   }
 
@@ -2159,12 +2714,31 @@
     document.documentElement.style.setProperty("--bg", settings.background);
     document.documentElement.style.setProperty("--panel", settings.panel);
     document.documentElement.style.setProperty("--text", settings.text);
-    document.documentElement.style.setProperty("--writing-font", settings.fontFamily);
-    document.documentElement.style.setProperty("--writing-size", settings.fontSize + "px");
 
-    document.body.classList.toggle("hide-hints", !settings.showHints);
-    document.body.classList.toggle("light-workspace", !settings.darkMode);
-    document.body.classList.toggle("reduce-motion", settings.reduceMotion);
+    document.documentElement.style.setProperty(
+      "--writing-font",
+      settings.fontFamily
+    );
+
+    document.documentElement.style.setProperty(
+      "--writing-size",
+      settings.fontSize + "px"
+    );
+
+    document.body.classList.toggle(
+      "hide-hints",
+      !settings.showHints
+    );
+
+    document.body.classList.toggle(
+      "light-workspace",
+      !settings.darkMode
+    );
+
+    document.body.classList.toggle(
+      "reduce-motion",
+      settings.reduceMotion
+    );
 
     safeSet("fontSizeValue", settings.fontSize + "px");
 
@@ -2210,7 +2784,9 @@
     renderPalette();
     renderMoodLibrary();
 
-    if ($("settingsDialog")) $("settingsDialog").showModal();
+    if ($("settingsDialog")) {
+      $("settingsDialog").showModal();
+    }
   }
 
   function renderPalette() {
@@ -2221,6 +2797,7 @@
 
     palette.forEach((colour) => {
       const button = document.createElement("button");
+
       button.type = "button";
       button.className = "palette-swatch";
       button.style.background = colour;
@@ -2228,7 +2805,9 @@
       button.setAttribute("aria-label", "Use colour " + colour);
 
       button.addEventListener("click", () => {
-        if ($("accentSetting")) $("accentSetting").value = colour;
+        if ($("accentSetting")) {
+          $("accentSetting").value = colour;
+        }
       });
 
       container.appendChild(button);
@@ -2236,32 +2815,64 @@
   }
 
   function saveSettings() {
+    const showHints = $("showHintsSetting");
+    const darkMode = $("darkModeSetting");
+    const fontFamily = $("fontFamilySetting");
+    const fontSize = $("fontSizeSetting");
+    const transition = $("transitionSetting");
+    const reduceMotion = $("reduceMotionSetting");
+
+    if (
+      !showHints ||
+      !darkMode ||
+      !fontFamily ||
+      !fontSize ||
+      !transition ||
+      !reduceMotion
+    ) {
+      notify("Some settings controls are missing from the page.");
+      return;
+    }
+
     const readColour = (id, fallback) => {
       const field = $(id);
+
       return field && isHexColour(field.value)
         ? field.value.toLowerCase()
         : fallback;
     };
 
+    const requestedSize = Number(fontSize.value);
+
     state.settings = {
-      showHints: $("showHintsSetting").checked,
-      darkMode: $("darkModeSetting").checked,
-      fontFamily: $("fontFamilySetting").value,
-      fontSize: Number($("fontSizeSetting").value),
+      showHints: showHints.checked,
+      darkMode: darkMode.checked,
+      fontFamily: fontFamily.value,
+      fontSize: Number.isFinite(requestedSize)
+        ? Math.max(12, Math.min(32, requestedSize))
+        : defaultSettings.fontSize,
       accent: readColour("accentSetting", defaultSettings.accent),
       background: readColour("backgroundSetting", defaultSettings.background),
       panel: readColour("panelSetting", defaultSettings.panel),
       text: readColour("textSetting", defaultSettings.text),
-      transition: $("transitionSetting").value,
-      reduceMotion: $("reduceMotionSetting").checked
+      transition: transition.value,
+      reduceMotion: reduceMotion.checked
     };
 
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
+    if (!writeLocalStorage(
+      SETTINGS_KEY,
+      JSON.stringify(state.settings)
+    )) {
+      notify("Settings could not be saved in this browser.");
+      return;
+    }
 
     applySettingsToPage();
     scheduleSave();
 
-    if ($("settingsDialog")) $("settingsDialog").close();
+    if ($("settingsDialog")) {
+      $("settingsDialog").close();
+    }
 
     notify("Studio settings saved.");
   }
@@ -2269,7 +2880,13 @@
   function resetSettings() {
     state.settings = Object.assign({}, defaultSettings);
 
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
+    if (!writeLocalStorage(
+      SETTINGS_KEY,
+      JSON.stringify(state.settings)
+    )) {
+      notify("Default settings could not be saved.");
+      return;
+    }
 
     applySettingsToPage();
     openSettings();
@@ -2279,11 +2896,6 @@
      SAVED MOOD LIBRARY
      ========================================================= */
 
-  function isHexColour(value) {
-    return typeof value === "string" &&
-      /^#[0-9a-fA-F]{6}$/.test(value);
-  }
-
   function normalizeMood(mood) {
     if (!mood || typeof mood !== "object") return null;
 
@@ -2292,6 +2904,7 @@
 
     for (const key of MOOD_COLOURS) {
       if (!isHexColour(colours[key])) return null;
+
       normalizedColours[key] = colours[key].toLowerCase();
     }
 
@@ -2301,7 +2914,7 @@
     return {
       schemaVersion: 1,
       id: String(mood.id || makeId("mood")),
-      name,
+      name: name,
       colours: normalizedColours,
       createdAt: mood.createdAt || new Date().toISOString(),
       updatedAt: mood.updatedAt || new Date().toISOString()
@@ -2310,7 +2923,7 @@
 
   function loadMoods() {
     try {
-      const saved = JSON.parse(localStorage.getItem(MOODS_KEY) || "[]");
+      const saved = JSON.parse(readLocalStorage(MOODS_KEY, "[]"));
 
       state.moods = Array.isArray(saved)
         ? saved.map(normalizeMood).filter(Boolean)
@@ -2321,13 +2934,12 @@
   }
 
   function saveMoodsToStorage() {
-    try {
-      localStorage.setItem(MOODS_KEY, JSON.stringify(state.moods));
-      return true;
-    } catch (error) {
+    if (!writeLocalStorage(MOODS_KEY, JSON.stringify(state.moods))) {
       notify("The Mood Library could not be saved in this browser.");
       return false;
     }
+
+    return true;
   }
 
   function getCurrentColours() {
@@ -2355,8 +2967,15 @@
       nameField.focus();
     }
 
-    if (saveButton) saveButton.textContent = editing ? "Update mood" : "Save mood";
-    if (cancelButton) cancelButton.hidden = !editing;
+    if (saveButton) {
+      saveButton.textContent = editing
+        ? "Update mood"
+        : "Save mood";
+    }
+
+    if (cancelButton) {
+      cancelButton.hidden = !editing;
+    }
   }
 
   function cancelMoodEdit() {
@@ -2384,18 +3003,25 @@
 
       if (!existing) {
         state.editingMoodId = "";
+
         notify("That mood could not be found. Save it as a new mood.");
         return;
       }
+
+      const previous = clone(existing);
 
       existing.name = name.slice(0, 80);
       existing.colours = colours;
       existing.updatedAt = now;
 
-      if (!saveMoodsToStorage()) return;
+      if (!saveMoodsToStorage()) {
+        Object.assign(existing, previous);
+        return;
+      }
 
       cancelMoodEdit();
       renderMoodLibrary();
+
       notify("Mood updated with the current exact colours.");
       return;
     }
@@ -2404,7 +3030,7 @@
       schemaVersion: 1,
       id: makeId("mood"),
       name: name.slice(0, 80),
-      colours,
+      colours: colours,
       createdAt: now,
       updatedAt: now
     };
@@ -2423,27 +3049,45 @@
   }
 
   function applyMood(moodId) {
-    const mood = state.moods.find((item) => item.id === moodId);
+    const mood = state.moods.find(
+      (item) => item.id === moodId
+    );
+
     if (!mood) return;
 
     MOOD_COLOURS.forEach((key) => {
       const field = $(key + "Setting");
-      if (field) field.value = mood.colours[key];
+
+      if (field) {
+        field.value = mood.colours[key];
+      }
     });
 
     state.settings = Object.assign({}, state.settings, mood.colours);
 
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.settings));
+    if (!writeLocalStorage(
+      SETTINGS_KEY,
+      JSON.stringify(state.settings)
+    )) {
+      notify("The selected mood could not be saved.");
+      return;
+    }
 
     applySettingsToPage();
     scheduleSave();
 
-    notify('"' + mood.name + '" applied. Save Settings to close this window.');
+    notify(
+      '"' + mood.name + '" applied. Save Settings to close this window.'
+    );
+
     renderMoodLibrary();
   }
 
   function renameMood(moodId) {
-    const mood = state.moods.find((item) => item.id === moodId);
+    const mood = state.moods.find(
+      (item) => item.id === moodId
+    );
+
     if (!mood) return;
 
     state.editingMoodId = mood.id;
@@ -2453,48 +3097,66 @@
   }
 
   function deleteMood(moodId) {
-    const mood = state.moods.find((item) => item.id === moodId);
+    const mood = state.moods.find(
+      (item) => item.id === moodId
+    );
+
     if (!mood) return;
 
-    if (!window.confirm('Delete "' + mood.name + '" from the Mood Library?')) return;
+    if (!window.confirm(
+      'Delete "' + mood.name + '" from the Mood Library?'
+    )) return;
 
     const previous = state.moods;
-    state.moods = state.moods.filter((item) => item.id !== moodId);
+    state.moods = state.moods.filter(
+      (item) => item.id !== moodId
+    );
 
     if (!saveMoodsToStorage()) {
       state.moods = previous;
       return;
     }
 
-    if (state.editingMoodId === moodId) cancelMoodEdit();
+    if (state.editingMoodId === moodId) {
+      cancelMoodEdit();
+    }
 
     renderMoodLibrary();
     notify("Mood deleted.");
   }
 
   function exportMood(moodId) {
-    const mood = state.moods.find((item) => item.id === moodId);
+    const mood = state.moods.find(
+      (item) => item.id === moodId
+    );
+
     if (!mood) return;
 
-    downloadJson(slugify(mood.name) + "-mood.json", clone(mood));
+    downloadJson(
+      slugify(mood.name) + "-mood.json",
+      clone(mood)
+    );
+
     notify('"' + mood.name + '" exported.');
   }
 
   function createMoodImportInput() {
     const input = document.createElement("input");
+
     input.type = "file";
     input.accept = ".json,application/json";
     input.hidden = true;
 
     input.addEventListener("change", async () => {
       const file = input.files && input.files[0];
+
       if (!file) {
         input.remove();
         return;
       }
 
       try {
-        const parsed = JSON.parse(await file.text());
+        const parsed = JSON.parse(await readFileAsText(file));
 
         const candidates = Array.isArray(parsed)
           ? parsed
@@ -2502,31 +3164,38 @@
             ? parsed.moods
             : [parsed];
 
-        const valid = candidates.map(normalizeMood).filter(Boolean);
+        const valid = candidates
+          .map(normalizeMood)
+          .filter(Boolean);
 
-        if (!valid.length) throw new Error("No valid mood data found.");
+        if (!valid.length) {
+          throw new Error("No valid mood data found.");
+        }
 
-        let imported = 0;
+        const previousLength = state.moods.length;
 
         valid.forEach((incoming) => {
           const duplicate = state.moods.find(
             (item) => item.id === incoming.id
           );
 
-          if (duplicate) incoming.id = makeId("mood");
+          if (duplicate) {
+            incoming.id = makeId("mood");
+          }
 
           state.moods.push(incoming);
-          imported++;
         });
 
         if (!saveMoodsToStorage()) {
-          state.moods.splice(state.moods.length - imported, imported);
+          state.moods.splice(previousLength);
           return;
         }
 
         renderMoodLibrary();
+
         notify(
-          imported + " mood" + (imported === 1 ? "" : "s") +
+          valid.length + " mood" +
+          (valid.length === 1 ? "" : "s") +
           " imported into your library."
         );
       } catch (error) {
@@ -2544,22 +3213,28 @@
     const list = $("moodLibraryList");
     const count = $("moodCount");
 
-    if (count) count.textContent = String(state.moods.length);
+    if (count) {
+      count.textContent = String(state.moods.length);
+    }
+
     if (!list) return;
 
     list.replaceChildren();
 
     if (!state.moods.length) {
       const empty = document.createElement("p");
+
       empty.className = "muted";
       empty.textContent =
         "Your Mood Library is empty. Set your four workspace colours, name the mood and save it here.";
+
       list.appendChild(empty);
       return;
     }
 
     state.moods.forEach((mood) => {
       const card = document.createElement("article");
+
       card.className = "mood-card";
       card.style.padding = "14px";
       card.style.marginBottom = "12px";
@@ -2567,11 +3242,14 @@
       card.style.borderRadius = "12px";
 
       const heading = document.createElement("h3");
+
       heading.textContent = mood.name;
       heading.style.margin = "0 0 10px";
+
       card.appendChild(heading);
 
       const swatches = document.createElement("div");
+
       swatches.style.display = "grid";
       swatches.style.gridTemplateColumns = "repeat(4, minmax(0, 1fr))";
       swatches.style.gap = "6px";
@@ -2579,23 +3257,31 @@
 
       MOOD_COLOURS.forEach((key) => {
         const swatch = document.createElement("div");
+
         swatch.style.minWidth = "0";
         swatch.style.height = "34px";
         swatch.style.borderRadius = "7px";
         swatch.style.backgroundColor = mood.colours[key];
         swatch.style.border = "1px solid rgba(255,255,255,.2)";
         swatch.title = key + ": " + mood.colours[key];
-        swatch.setAttribute("aria-label", key + " " + mood.colours[key]);
+
+        swatch.setAttribute(
+          "aria-label",
+          key + " " + mood.colours[key]
+        );
+
         swatches.appendChild(swatch);
       });
 
       card.appendChild(swatches);
 
       const details = document.createElement("p");
+
       details.className = "mood-colour-values";
       details.style.fontSize = "12px";
       details.style.lineHeight = "1.6";
       details.style.overflowWrap = "anywhere";
+
       details.textContent =
         "Accent " + mood.colours.accent +
         " · Background " + mood.colours.background +
@@ -2605,6 +3291,7 @@
       card.appendChild(details);
 
       const actions = document.createElement("div");
+
       actions.className = "mood-actions";
       actions.style.display = "flex";
       actions.style.flexWrap = "wrap";
@@ -2617,10 +3304,12 @@
         ["Delete", () => deleteMood(mood.id)]
       ].forEach(([label, action]) => {
         const button = document.createElement("button");
+
         button.type = "button";
         button.className = "button secondary";
         button.textContent = label;
         button.addEventListener("click", action);
+
         actions.appendChild(button);
       });
 
@@ -2658,7 +3347,9 @@
           saveMood();
         }
 
-        if (event.key === "Escape") cancelMoodEdit();
+        if (event.key === "Escape") {
+          cancelMoodEdit();
+        }
       });
     }
   }
@@ -2673,7 +3364,10 @@
       return;
     }
 
-    safeSet("previewStoryTitle", state.project.title || "Untitled story");
+    safeSet(
+      "previewStoryTitle",
+      state.project.title || "Untitled story"
+    );
 
     const frame = $("previewFrame");
 
@@ -2684,7 +3378,9 @@
         "desktop-preview"
       );
 
-      frame.classList.add(($("previewSize").value || "phone") + "-preview");
+      frame.classList.add(
+        ($("previewSize").value || "phone") + "-preview"
+      );
     }
 
     window.CeeqwinnTheatre.render(
@@ -2703,6 +3399,7 @@
 
           state.chapterId = id;
           state.selectedBlockId = "";
+
           renderAll();
           openPreview();
         },
@@ -2728,17 +3425,32 @@
 
     state.sidebarCollapsed = !state.sidebarCollapsed;
 
-    sidebar.classList.toggle("collapsed", state.sidebarCollapsed);
-    layout.classList.toggle("sidebar-collapsed", state.sidebarCollapsed);
+    sidebar.classList.toggle(
+      "collapsed",
+      state.sidebarCollapsed
+    );
+
+    layout.classList.toggle(
+      "sidebar-collapsed",
+      state.sidebarCollapsed
+    );
 
     if (expandButton) {
       expandButton.hidden = !state.sidebarCollapsed;
-      expandButton.setAttribute("aria-expanded", String(!state.sidebarCollapsed));
+
+      expandButton.setAttribute(
+        "aria-expanded",
+        String(!state.sidebarCollapsed)
+      );
     }
 
     if (collapseButton) {
       collapseButton.hidden = state.sidebarCollapsed;
-      collapseButton.setAttribute("aria-expanded", String(!state.sidebarCollapsed));
+
+      collapseButton.setAttribute(
+        "aria-expanded",
+        String(!state.sidebarCollapsed)
+      );
     }
 
     sidebar.querySelectorAll(
@@ -2764,7 +3476,10 @@
 
     dropZone.addEventListener("click", (event) => {
       if (event.target.closest("button")) return;
-      if ($("assetFileInput")) $("assetFileInput").click();
+
+      if ($("assetFileInput")) {
+        $("assetFileInput").click();
+      }
     });
 
     ["dragenter", "dragover"].forEach((name) => {
@@ -2792,7 +3507,11 @@
     if (!manuscript) return;
 
     manuscript.addEventListener("dragover", (event) => {
-      if (event.dataTransfer.types.includes("text/ceeqwinn-asset")) {
+      if (
+        Array.from(event.dataTransfer.types || []).includes(
+          "text/ceeqwinn-asset"
+        )
+      ) {
         event.preventDefault();
       }
     });
@@ -2817,7 +3536,10 @@
 
   function bind() {
     document.querySelectorAll(".nav-item").forEach((button) => {
-      button.addEventListener("click", () => showPanel(button.dataset.panel));
+      button.addEventListener("click", () => {
+        finishHistoryGroup();
+        showPanel(button.dataset.panel);
+      });
     });
 
     bindClick("addChapterButton", addChapter);
@@ -2825,7 +3547,11 @@
     bindClick("renameChapterButton", renameChapter);
     bindClick("deleteChapterButton", deleteChapter);
 
-    bindClick("manageChapterFoldersButton", openChapterFolderDialog);
+    bindClick(
+      "manageChapterFoldersButton",
+      openChapterFolderDialog
+    );
+
     bindClick("addChapterFolderButton", addChapterFolder);
 
     if ($("chapterFolderSelect")) {
@@ -2848,26 +3574,37 @@
     bindClick("addParagraphButtonBottom", () => addBlock("paragraph"));
 
     bindClick("insertExperienceButton", () => {
-      if ($("experienceDialog")) $("experienceDialog").showModal();
+      if ($("experienceDialog")) {
+        $("experienceDialog").showModal();
+      }
     });
 
     bindClick("insertExperienceButtonBottom", () => {
-      if ($("experienceDialog")) $("experienceDialog").showModal();
+      if ($("experienceDialog")) {
+        $("experienceDialog").showModal();
+      }
     });
 
     bindClick("addImageButton", () => openAssetPicker("image/*"));
     bindClick("addImageButtonBottom", () => openAssetPicker("image/*"));
+
     bindClick("addVideoButton", () => openAssetPicker("video/*"));
     bindClick("addVideoButtonBottom", () => openAssetPicker("video/*"));
 
     bindClick("addReferenceButton", () => {
-      openAssetPicker(".pdf,.doc,.docx,.txt,.md,.rtf,.odt,.xls,.xlsx,.ppt,.pptx,.json");
+      openAssetPicker(
+        ".pdf,.doc,.docx,.txt,.md,.rtf,.odt,.xls,.xlsx,.ppt,.pptx,.json"
+      );
     });
 
     document.querySelectorAll(".experience-option").forEach((button) => {
       button.addEventListener("click", () => {
         const type = button.dataset.type;
-        if ($("experienceDialog")) $("experienceDialog").close();
+
+        if ($("experienceDialog")) {
+          $("experienceDialog").close();
+        }
+
         if (type) addBlock(type);
       });
     });
@@ -2889,7 +3626,9 @@
     bindClick("previewChapterButton", openPreview);
 
     bindClick("closePreviewButton", () => {
-      if ($("previewDialog")) $("previewDialog").close();
+      if ($("previewDialog")) {
+        $("previewDialog").close();
+      }
     });
 
     if ($("previewSize")) {
@@ -2903,12 +3642,17 @@
           "desktop-preview"
         );
 
-        frame.classList.add($("previewSize").value + "-preview");
+        frame.classList.add(
+          $("previewSize").value + "-preview"
+        );
       });
     }
 
     bindClick("backToOverview", () => showPanel("overviewPanel"));
-    bindClick("overviewStartWritingButton", () => showPanel("writingPanel"));
+
+    bindClick("overviewStartWritingButton", () => {
+      showPanel("writingPanel");
+    });
 
     bindClick("undoButton", undo);
     bindClick("redoButton", redo);
@@ -2916,7 +3660,10 @@
     bindClick("writingRedoButton", redo);
 
     bindClick("clearSelectionButton", () => {
+      finishHistoryGroup();
+
       state.selectedBlockId = "";
+
       renderManuscript();
       renderInspector();
       updateInspectorState();
@@ -2933,13 +3680,17 @@
     bindClick("expandSidebarButton", toggleSidebar);
 
     bindClick("createAssetFolderButton", () => {
-      if ($("assetFolderDialog")) $("assetFolderDialog").showModal();
+      if ($("assetFolderDialog")) {
+        $("assetFolderDialog").showModal();
+      }
     });
 
     bindClick("saveAssetFolderButton", addAssetFolder);
 
     bindClick("cancelAssetFolderButton", () => {
-      if ($("assetFolderDialog")) $("assetFolderDialog").close();
+      if ($("assetFolderDialog")) {
+        $("assetFolderDialog").close();
+      }
     });
 
     if ($("newAssetFolderName")) {
@@ -2952,7 +3703,10 @@
     }
 
     if ($("assetFolderFilter")) {
-      $("assetFolderFilter").addEventListener("change", renderAssetShelf);
+      $("assetFolderFilter").addEventListener(
+        "change",
+        renderAssetShelf
+      );
     }
 
     if ($("manuscriptChapterTitle")) {
@@ -2962,13 +3716,25 @@
 
         chapter.title = $("manuscriptChapterTitle").value;
 
-        safeSet("currentChapterLabel", chapter.title || "Untitled chapter");
+        safeSet(
+          "currentChapterLabel",
+          chapter.title || "Untitled chapter"
+        );
 
+        recordHistory("typing");
         scheduleSave();
         renderChapterList();
       });
 
-      $("manuscriptChapterTitle").addEventListener("change", recordHistory);
+      $("manuscriptChapterTitle").addEventListener(
+        "change",
+        finishHistoryGroup
+      );
+
+      $("manuscriptChapterTitle").addEventListener(
+        "blur",
+        finishHistoryGroup
+      );
     }
 
     [
@@ -2984,26 +3750,41 @@
         state.project[key] = field.value;
 
         if (key === "title") {
-          safeSet("previewStoryTitle", field.value || "Untitled story");
+          safeSet(
+            "previewStoryTitle",
+            field.value || "Untitled story"
+          );
 
           const slug = $("storySlug");
-          if (slug && !slug.dataset.edited) slug.value = slugify(field.value);
+
+          if (slug && !slug.dataset.edited) {
+            slug.value = slugify(field.value);
+            state.project.slug = slugify(field.value);
+          }
         }
 
+        recordHistory("typing");
         updatePublishUrl();
         scheduleSave();
       });
 
-      field.addEventListener("change", recordHistory);
+      field.addEventListener("change", finishHistoryGroup);
+      field.addEventListener("blur", finishHistoryGroup);
     });
 
     if ($("storySlug")) {
       $("storySlug").addEventListener("input", () => {
         $("storySlug").dataset.edited = "true";
+
         state.project.slug = slugify($("storySlug").value);
+
+        recordHistory("typing");
         updatePublishUrl();
         scheduleSave();
       });
+
+      $("storySlug").addEventListener("change", finishHistoryGroup);
+      $("storySlug").addEventListener("blur", finishHistoryGroup);
     }
 
     bindClick("exportButton", exportProject);
@@ -3011,7 +3792,9 @@
     bindClick("exportPublishButton", exportReaderStory);
 
     bindClick("importButton", () => {
-      if ($("importFile")) $("importFile").click();
+      if ($("importFile")) {
+        $("importFile").click();
+      }
     });
 
     if ($("importFile")) {
@@ -3022,17 +3805,25 @@
     }
 
     bindClick("chooseAssetsButton", () => {
-      if ($("assetFileInput")) $("assetFileInput").click();
+      if ($("assetFileInput")) {
+        $("assetFileInput").click();
+      }
     });
 
     bindClick("dropChooseFilesButton", (event) => {
       if (event) event.stopPropagation();
-      if ($("assetFileInput")) $("assetFileInput").click();
+
+      if ($("assetFileInput")) {
+        $("assetFileInput").click();
+      }
     });
 
     bindClick("chooseFolderButton", (event) => {
       if (event) event.stopPropagation();
-      if ($("assetFolderInput")) $("assetFolderInput").click();
+
+      if ($("assetFolderInput")) {
+        $("assetFolderInput").click();
+      }
     });
 
     if ($("assetFileInput")) {
@@ -3054,13 +3845,20 @@
 
     if ($("assetShelf")) {
       $("assetShelf").addEventListener("dragover", (event) => {
-        if (event.dataTransfer.types.includes("Files")) event.preventDefault();
+        if (
+          Array.from(event.dataTransfer.types || []).includes("Files")
+        ) {
+          event.preventDefault();
+        }
       });
     }
 
     if ($("fontSizeSetting")) {
       $("fontSizeSetting").addEventListener("input", () => {
-        safeSet("fontSizeValue", $("fontSizeSetting").value + "px");
+        safeSet(
+          "fontSizeValue",
+          $("fontSizeSetting").value + "px"
+        );
       });
     }
 
@@ -3071,6 +3869,7 @@
       if (!modifier || event.altKey) return;
 
       const target = event.target;
+
       const isTyping = target && (
         target.matches("input, textarea, select") ||
         target.isContentEditable
@@ -3079,7 +3878,10 @@
       if (key === "z" && !event.shiftKey) {
         event.preventDefault();
         undo();
-      } else if (key === "y" || (key === "z" && event.shiftKey)) {
+      } else if (
+        key === "y" ||
+        (key === "z" && event.shiftKey)
+      ) {
         event.preventDefault();
         redo();
       } else if (key === "s") {
@@ -3090,6 +3892,18 @@
         addBlock("paragraph");
       }
     });
+
+    // Capture any pending typing before the user leaves the page.
+    window.addEventListener("beforeunload", () => {
+      finishHistoryGroup();
+
+      if (state.saveTimer) {
+        window.clearTimeout(state.saveTimer);
+        state.saveTimer = null;
+      }
+
+      saveNow();
+    });
   }
 
   /* =========================================================
@@ -3099,7 +3913,9 @@
   loadSettings();
   loadMoods();
   loadProject();
+
   bind();
+
   renderAll();
   renderMoodLibrary();
 
