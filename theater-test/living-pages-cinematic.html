@@ -1,0 +1,926 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101b19">
+<title>CEEQWINN — Living Pages Cinematic</title>
+
+<style>
+* { box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #101b19;
+}
+
+body {
+  font-family: Georgia, serif;
+  color: #fff5e6;
+}
+
+#world {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#controls {
+  position: fixed;
+  z-index: 10;
+  left: max(18px, env(safe-area-inset-left));
+  bottom: max(18px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  max-width: calc(100vw - 36px);
+  transition: opacity .7s;
+}
+
+.control {
+  padding: 12px 17px;
+  border: 1px solid #e3c68a88;
+  border-radius: 30px;
+  background: #171b19c9;
+  color: #f3dfb5;
+  backdrop-filter: blur(12px);
+  font: 600 12px system-ui;
+  letter-spacing: .04em;
+  cursor: pointer;
+}
+
+.control.primary {
+  background: #dfc18b;
+  color: #211b16;
+}
+
+.control:active { transform: scale(.96); }
+
+#caption {
+  position: fixed;
+  z-index: 5;
+  top: 12%;
+  left: 50%;
+  width: min(750px, 88vw);
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 3px 30px #000;
+  transition: opacity 1.2s;
+}
+
+#caption small {
+  color: #f2d59e;
+  font: 800 10px system-ui;
+  letter-spacing: .3em;
+}
+
+#caption h1 {
+  margin: 15px 0;
+  font-size: clamp(2rem, 6vw, 5.5rem);
+  font-weight: 400;
+  line-height: 1.05;
+  color: #fff0cf;
+}
+
+#caption p {
+  font-size: clamp(.85rem, 1.7vw, 1.2rem);
+  color: #f5e9da;
+}
+
+#passage {
+  position: fixed;
+  z-index: 8;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 30px;
+  background: #090b0c;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1.5s;
+}
+
+#passage.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.passage-inner {
+  width: min(650px, 90vw);
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 1.5s 0.3s;
+}
+
+#passage.visible .passage-inner {
+  transform: none;
+  opacity: 1;
+}
+
+.passage-inner small {
+  color: #d8b77c;
+  font: 800 10px system-ui;
+  letter-spacing: .25em;
+}
+
+.passage-inner h2 {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 400;
+  color: #e9cf9d;
+  line-height: 1.1;
+}
+
+.passage-inner p {
+  color: #e2d6ca;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.9;
+}
+
+#passage button {
+  margin-top: 20px;
+  padding: 12px 22px;
+  border: 1px solid #d8b77c;
+  border-radius: 30px;
+  color: #e9cf9d;
+  background: transparent;
+  cursor: pointer;
+}
+
+#status {
+  position: fixed;
+  z-index: 10;
+  top: 18px;
+  right: 18px;
+  color: #ffffff9c;
+  font: 10px system-ui;
+  letter-spacing: .12em;
+  pointer-events: none;
+}
+
+@media (max-width: 500px) {
+  #controls { gap: 6px; }
+  .control { padding: 10px 12px; font-size: 11px; }
+  #caption { top: 17%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #passage, #caption, #controls { transition-duration: .01ms; }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="world"></canvas>
+
+<div id="status">CEEQWINN · LIVING PAGES</div>
+
+<div id="caption">
+  <small>THE HIDDEN GARDEN</small>
+  <h1>Where the earth remembers.</h1>
+  <p>Somewhere beyond the silence, something beautiful is waking.</p>
+</div>
+
+<div id="controls">
+  <button class="control primary" id="grow">✦ Awaken the garden</button>
+  <button class="control" id="fade">Enter the next passage</button>
+  <button class="control" id="break">Break the glass</button>
+  <button class="control" id="reset">Begin again</button>
+  <button class="control" id="fullscreen">⛶ Fullscreen</button>
+</div>
+
+<section id="passage">
+  <div class="passage-inner">
+    <small>THE EMERALD INHERITANCE · SCENE TWO</small>
+    <h2>And the garden opened its eyes.</h2>
+    <p>
+      The branches stretched towards the golden sky.
+      Beneath them, the grass swayed in the afternoon breeze.
+      Flowers emerged from the earth, and little flecks of
+      light danced through the leaves.
+    </p>
+    <p>
+      She had thought the garden was forgotten.
+      But the garden had been waiting.
+    </p>
+    <button id="return">Return to the garden</button>
+  </div>
+</section>
+
+<script>
+(() => {
+"use strict";
+
+const canvas = document.getElementById("world");
+const ctx = canvas.getContext("2d", { alpha: false });
+
+if (!ctx) {
+  document.getElementById("status").textContent =
+    "CANVAS NOT SUPPORTED";
+  return;
+}
+
+const reducedMotion =
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const memory = navigator.deviceMemory || 4;
+const cores = navigator.hardwareConcurrency || 4;
+
+const quality = Math.min(
+  1,
+  Math.max(.35, memory / 8),
+  Math.max(.4, cores / 8)
+);
+
+const W = 1600;
+const H = 900;
+
+let width = innerWidth;
+let height = innerHeight;
+let dpr = 1;
+let started = false;
+let growth = .13;
+let targetGrowth = .13;
+let wind = 0;
+let lastTime = 0;
+let transition = "";
+let transitionStart = 0;
+let snapshot = null;
+let fragments = [];
+let raf = 0;
+
+const random = (min, max) =>
+  min + Math.random() * (max - min);
+
+function resize() {
+  width = innerWidth;
+  height = innerHeight;
+
+  dpr = Math.min(devicePixelRatio || 1,
+    quality < .6 ? 1 : 1.7);
+
+  canvas.width = Math.round(width * dpr);
+  canvas.height = Math.round(height * dpr);
+
+  canvas.style.width = width + "px";
+  canvas.style.height = height + "px";
+
+  render(0);
+}
+
+function beginCoordinates() {
+  const scale = Math.max(width / W, height / H);
+  const ox = (width - W * scale) / 2;
+  const oy = (height - H * scale) / 2;
+
+  ctx.setTransform(
+    dpr * scale, 0,
+    0, dpr * scale,
+    dpr * ox, dpr * oy
+  );
+}
+
+// ------------------------------------
+// SKY AND DISTANT LANDSCAPE
+// ------------------------------------
+
+function drawSky(t) {
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+
+  sky.addColorStop(0, "#172d35");
+  sky.addColorStop(.35, "#536b65");
+  sky.addColorStop(.65, "#b5a17a");
+  sky.addColorStop(1, "#53654b");
+
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  // Sunlight
+
+  const sun = ctx.createRadialGradient(
+    1080, 280, 10,
+    1080, 280, 470
+  );
+
+  sun.addColorStop(0, "#ffeac4aa");
+  sun.addColorStop(.2, "#f6d6a04d");
+  sun.addColorStop(1, "#e8c98b00");
+
+  ctx.fillStyle = sun;
+  ctx.fillRect(450, 0, 1100, 800);
+
+  // Distant hills
+
+  function hill(y, amplitude, color, offset) {
+    ctx.beginPath();
+    ctx.moveTo(0, H);
+
+    for (let x = 0; x <= W; x += 12) {
+      const yy =
+        y +
+        Math.sin(x * .004 + offset) * amplitude +
+        Math.sin(x * .011 + offset * 2) * amplitude * .3;
+
+      ctx.lineTo(x, yy);
+    }
+
+    ctx.lineTo(W, H);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  hill(510, 55, "#516953", 1);
+  hill(590, 42, "#405b42", 3);
+  hill(670, 35, "#354e38", 5);
+
+  // Atmospheric light shafts
+
+  ctx.save();
+  ctx.globalAlpha = .07;
+
+  for (let i = 0; i < 9; i++) {
+    const x = 800 + i * 100;
+
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x + 170, 0);
+    ctx.lineTo(x - 160, 800);
+    ctx.lineTo(x - 210, 800);
+    ctx.closePath();
+
+    ctx.fillStyle = "#ffe8b8";
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+// ------------------------------------
+// TREE GROWTH
+// ------------------------------------
+
+function branch(x, y, length, angle, depth, amount) {
+  if (depth <= 0 || amount <= 0) return;
+
+  const progress = Math.min(1, amount * 1.45);
+
+  const endX = x + Math.cos(angle) * length * progress;
+  const endY = y + Math.sin(angle) * length * progress;
+
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+
+  ctx.quadraticCurveTo(
+    x + Math.cos(angle) * length * .5 - Math.sin(angle) * 12,
+    y + Math.sin(angle) * length * .5,
+    endX,
+    endY
+  );
+
+  ctx.strokeStyle =
+    depth > 2 ? "#503c2b" : "#755a39";
+
+  ctx.lineWidth = Math.max(1, depth * 3.2);
+  ctx.lineCap = "round";
+  ctx.stroke();
+
+  if (progress < 1) return;
+
+  if (depth <= 2) {
+    drawLeaves(endX, endY, depth);
+    return;
+  }
+
+  const nextLength = length * .73;
+
+  branch(
+    endX, endY, nextLength,
+    angle - .55, depth - 1, amount - .13
+  );
+
+  branch(
+    endX, endY, nextLength * .85,
+    angle + .48, depth - 1, amount - .13
+  );
+}
+
+function drawLeaves(x, y, depth) {
+  const count = depth === 2 ? 8 : 5;
+
+  for (let i = 0; i < count; i++) {
+    const px = x + random(-24, 24);
+    const py = y + random(-19, 19);
+
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.rotate(random(-1, 1));
+
+    const g = ctx.createLinearGradient(-12, -12, 12, 12);
+    g.addColorStop(0, "#b5bd79");
+    g.addColorStop(.5, "#587c48");
+    g.addColorStop(1, "#263f30");
+
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, random(8, 17), random(4, 9), 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+function drawMainTree(amount, t) {
+  if (amount <= 0) return;
+
+  const x = 1080;
+  const base = 850;
+  const top = 190;
+  const progress = Math.min(1, amount * 1.5);
+
+  const currentTop = base - (base - top) * progress;
+
+  const sway = Math.sin(t * .0005) * 4;
+
+  // Main trunk
+
+  const trunk = ctx.createLinearGradient(x - 70, 0, x + 70, 0);
+  trunk.addColorStop(0, "#382c25");
+  trunk.addColorStop(.45, "#806044");
+  trunk.addColorStop(1, "#30271f");
+
+  ctx.fillStyle = trunk;
+  ctx.beginPath();
+  ctx.moveTo(x - 15, base);
+  ctx.bezierCurveTo(
+    x - 80, base - 200,
+    x - 65 + sway, currentTop + 100,
+    x - 5, currentTop
+  );
+  ctx.bezierCurveTo(
+    x + 45, currentTop + 100,
+    x + 55, base - 170,
+    x + 75, base
+  );
+  ctx.closePath();
+  ctx.fill();
+
+  // Branches
+
+  if (progress > .35) {
+    branch(x, base - 330, 205, -2.35, 5, amount - .25);
+    branch(x + 5, base - 420, 235, -1.1, 5, amount - .25);
+    branch(x + 15, base - 270, 175, -.4, 4, amount - .2);
+    branch(x - 10, base - 490, 160, -2.8, 4, amount - .2);
+  }
+
+  // Root details
+
+  if (progress > .5) {
+    ctx.strokeStyle = "#493629";
+    ctx.lineWidth = 13;
+    ctx.lineCap = "round";
+
+    for (let i = -2; i <= 2; i++) {
+      ctx.beginPath();
+      ctx.moveTo(x + i * 13, base - 15);
+      ctx.quadraticCurveTo(
+        x + i * 45, base + 4,
+        x + i * 65, base + 20
+      );
+      ctx.stroke();
+    }
+  }
+}
+
+// ------------------------------------
+// FOREGROUND GRASS
+// ------------------------------------
+
+const blades = [];
+
+for (let i = 0; i < 1700 * quality; i++) {
+  blades.push({
+    x: random(-30, W + 30),
+    y: random(680, 920),
+    length: random(12, 75),
+    angle: random(-.5, .5),
+    shade: random(0, 1),
+    phase: random(0, 7)
+  });
+}
+
+function drawGrass(t, amount) {
+  const visible = Math.floor(blades.length * amount);
+
+  for (let i = 0; i < visible; i++) {
+    const b = blades[i];
+    const sway = Math.sin(t * .001 + b.phase) * 7;
+
+    const endX = b.x + b.angle * b.length + sway;
+    const endY = b.y - b.length;
+
+    ctx.beginPath();
+    ctx.moveTo(b.x, b.y);
+
+    ctx.quadraticCurveTo(
+      b.x + sway,
+      b.y - b.length * .5,
+      endX,
+      endY
+    );
+
+    const green = Math.floor(65 + b.shade * 85);
+
+    ctx.strokeStyle =
+      `rgb(${green * .55},${green},${green * .48})`;
+
+    ctx.lineWidth = b.shade * 1.6 + .7;
+    ctx.stroke();
+  }
+}
+
+// ------------------------------------
+// FLOWERS
+// ------------------------------------
+
+const flowers = [];
+
+for (let i = 0; i < 85 * quality; i++) {
+  flowers.push({
+    x: random(0, W),
+    y: random(730, 875),
+    size: random(3, 9),
+    color: ["#e8d9b4", "#c88c91", "#e5c56f", "#c5b2d5"][i % 4],
+    phase: random(0, 7)
+  });
+}
+
+function drawFlowers(t, amount) {
+  const visible = Math.floor(flowers.length * amount);
+
+  for (let i = 0; i < visible; i++) {
+    const f = flowers[i];
+    const bob = Math.sin(t * .001 + f.phase) * 2;
+
+    ctx.save();
+    ctx.translate(f.x, f.y + bob);
+
+    ctx.strokeStyle = "#557448";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(0, 8);
+    ctx.lineTo(0, -f.size * 1.5);
+    ctx.stroke();
+
+    ctx.fillStyle = f.color;
+
+    for (let p = 0; p < 5; p++) {
+      const angle = p * Math.PI * 2 / 5;
+
+      ctx.beginPath();
+      ctx.ellipse(
+        Math.cos(angle) * f.size,
+        Math.sin(angle) * f.size - f.size * 1.5,
+        f.size * .65,
+        f.size * .4,
+        angle,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    }
+
+    ctx.fillStyle = "#e9c36c";
+    ctx.beginPath();
+    ctx.arc(0, -f.size * 1.5, f.size * .35, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+// ------------------------------------
+// ATMOSPHERE
+// ------------------------------------
+
+const particles = [];
+
+for (let i = 0; i < 130 * quality; i++) {
+  particles.push({
+    x: random(0, W),
+    y: random(0, H),
+    size: random(.8, 3),
+    speed: random(.15, .7),
+    phase: random(0, 7)
+  });
+}
+
+function drawParticles(t) {
+  for (const p of particles) {
+    const x = p.x + Math.sin(t * .0005 + p.phase) * 25;
+    const y = (p.y - t * p.speed * .02 + H * 10) % H;
+
+    ctx.beginPath();
+    ctx.arc(x, y, p.size, 0, Math.PI * 2);
+
+    ctx.fillStyle = "#ffe8b6";
+    ctx.globalAlpha = .2 + Math.sin(t * .002 + p.phase) * .2;
+    ctx.fill();
+  }
+
+  ctx.globalAlpha = 1;
+}
+
+// ------------------------------------
+// COMPLETE SCENE
+// ------------------------------------
+
+function drawScene(t) {
+  drawSky(t);
+
+  // Distant trees
+
+  for (let i = 0; i < 12; i++) {
+    const x = i * 155 - 60;
+    const h = 140 + Math.sin(i * 7) * 45;
+
+    ctx.fillStyle = "#243e34";
+    ctx.fillRect(x, 580 - h * .25, 12, h);
+
+    ctx.beginPath();
+    ctx.arc(x + 5, 580 - h * .45, h * .38, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  drawMainTree(growth, t);
+  drawGrass(t, growth);
+  drawFlowers(t, growth);
+  drawParticles(t);
+
+  // Cinematic foreground vignette
+
+  const vignette = ctx.createRadialGradient(
+    W / 2, H / 2, 200,
+    W / 2, H / 2, 950
+  );
+
+  vignette.addColorStop(0, "#00000000");
+  vignette.addColorStop(1, "#050b08a0");
+
+  ctx.fillStyle = vignette;
+  ctx.fillRect(0, 0, W, H);
+}
+
+// ------------------------------------
+// FULL-SCREEN GLASS FRACTURE
+// ------------------------------------
+
+function makeFractures() {
+  snapshot = document.createElement("canvas");
+  snapshot.width = canvas.width;
+  snapshot.height = canvas.height;
+
+  snapshot.getContext("2d").drawImage(canvas, 0, 0);
+
+  fragments = [];
+
+  const cols = Math.max(6, Math.round(width / 110));
+  const rows = Math.max(5, Math.round(height / 110));
+
+  const points = [];
+
+  for (let y = 0; y <= rows; y++) {
+    points[y] = [];
+
+    for (let x = 0; x <= cols; x++) {
+      points[y][x] = {
+        x: x * width / cols + random(-12, 12),
+        y: y * height / rows + random(-12, 12)
+      };
+    }
+  }
+
+  const cx = width / 2;
+  const cy = height / 2;
+
+  function addTriangle(a, b, c) {
+    const mx = (a.x + b.x + c.x) / 3;
+    const my = (a.y + b.y + c.y) / 3;
+
+    const dx = mx - cx;
+    const dy = my - cy;
+    const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+
+    fragments.push({
+      a, b, c, mx, my,
+      dx: dx / distance,
+      dy: dy / distance,
+      rotation: random(-.4, .4),
+      delay: random(0, .22)
+    });
+  }
+
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const a = points[y][x];
+      const b = points[y][x + 1];
+      const c = points[y + 1][x];
+      const d = points[y + 1][x + 1];
+
+      if (Math.random() > .5) {
+        addTriangle(a, b, d);
+        addTriangle(a, d, c);
+      } else {
+        addTriangle(a, b, c);
+        addTriangle(b, d, c);
+      }
+    }
+  }
+
+  transition = "glass";
+  transitionStart = performance.now();
+}
+
+function drawFractures(now) {
+  if (!snapshot) return;
+
+  const elapsed = (now - transitionStart) / 1000;
+
+  // Initial fracture lines
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+
+  if (elapsed < .25) {
+    ctx.drawImage(snapshot, 0, 0, width, height);
+
+    ctx.strokeStyle = "#ffffffcc";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+
+    for (const f of fragments) {
+      ctx.moveTo(f.a.x, f.a.y);
+      ctx.lineTo(f.b.x, f.b.y);
+      ctx.lineTo(f.c.x, f.c.y);
+      ctx.lineTo(f.a.x, f.a.y);
+    }
+
+    ctx.stroke();
+    return;
+  }
+
+  const progress = Math.min(1, (elapsed - .25) / 1.1);
+
+  ctx.fillStyle = "#07090a";
+  ctx.fillRect(0, 0, width, height);
+
+  for (const f of fragments) {
+    const p = Math.max(0, Math.min(1,
+      (progress - f.delay) / .78
+    ));
+
+    const distance = p * (100 + random(0, 0) + 320);
+
+    const ox = f.dx * distance;
+    const oy = f.dy * distance + p * p * 120;
+    const angle = f.rotation * p;
+
+    const imageX = f.mx - f.a.x;
+    const imageY = f.my - f.a.y;
+
+    ctx.save();
+    ctx.translate(f.mx + ox, f.my + oy);
+    ctx.rotate(angle);
+    ctx.translate(-f.mx, -f.my);
+
+    ctx.beginPath();
+    ctx.moveTo(f.a.x, f.a.y);
+    ctx.lineTo(f.b.x, f.b.y);
+    ctx.lineTo(f.c.x, f.c.y);
+    ctx.closePath();
+    ctx.clip();
+
+    ctx.drawImage(snapshot, 0, 0, width, height);
+
+    ctx.restore();
+  }
+
+  if (progress >= 1) {
+    transition = "";
+    snapshot = null;
+    showPassage();
+  }
+}
+
+// ------------------------------------
+// PASSAGE TRANSITIONS
+// ------------------------------------
+
+function showPassage() {
+  document.getElementById("passage").classList.add("visible");
+  document.getElementById("controls").style.opacity = "0";
+}
+
+function hidePassage() {
+  document.getElementById("passage").classList.remove("visible");
+  document.getElementById("controls").style.opacity = "1";
+}
+
+function fadeToPassage() {
+  transition = "fade";
+  transitionStart = performance.now();
+}
+
+function render(now) {
+  if (!ctx) return;
+
+  const dt = lastTime ? Math.min(50, now - lastTime) : 16;
+  lastTime = now;
+
+  if (started) {
+    growth += (targetGrowth - growth) *
+      (reducedMotion ? 1 : Math.min(1, dt * .00035));
+  }
+
+  if (transition === "glass") {
+    drawFractures(now);
+    return;
+  }
+
+  beginCoordinates();
+  drawScene(now);
+
+  if (transition === "fade") {
+    const elapsed = now - transitionStart;
+    const opacity = Math.min(1, elapsed / 1200);
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = `rgba(0,0,0,${opacity})`;
+    ctx.fillRect(0, 0, width, height);
+
+    if (elapsed > 1700) {
+      transition = "";
+      showPassage();
+    }
+  }
+}
+
+function loop(now) {
+  render(now);
+  raf = requestAnimationFrame(loop);
+}
+
+// ------------------------------------
+// CONTROLS
+// ------------------------------------
+
+document.getElementById("grow").onclick = () => {
+  started = true;
+  targetGrowth = 1;
+};
+
+document.getElementById("fade").onclick = fadeToPassage;
+
+document.getElementById("break").onclick = makeFractures;
+
+document.getElementById("reset").onclick = () => {
+  started = false;
+  growth = .13;
+  targetGrowth = .13;
+  transition = "";
+  snapshot = null;
+  hidePassage();
+};
+
+document.getElementById("return").onclick = hidePassage;
+
+document.getElementById("fullscreen").onclick = async () => {
+  try {
+    if (!document.fullscreenElement) {
+      await document.documentElement.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  } catch (error) {
+    document.getElementById("status").textContent =
+      "FULLSCREEN UNAVAILABLE";
+  }
+};
+
+window.addEventListener("resize", resize);
+
+resize();
+raf = requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>
