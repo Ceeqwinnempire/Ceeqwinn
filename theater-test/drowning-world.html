@@ -1,0 +1,639 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#061b2b">
+<title>CEEQWINN — The Drowning World</title>
+<style>
+:root {
+  color-scheme: dark;
+  --gold: #d9bd83;
+  --ink: #061522;
+}
+* { box-sizing: border-box; }
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #061522;
+  color: #f3eee5;
+  font-family: Georgia, "Times New Roman", serif;
+}
+#stage {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 35%, #28556a 0%, #102e43 45%, #061522 100%);
+}
+canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 42%, #020b13aa 100%);
+}
+.topline {
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top));
+  left: 22px;
+  right: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  z-index: 3;
+  font: 10px/1.4 Arial, sans-serif;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: #e6d5b2;
+  text-shadow: 0 2px 12px #00101c;
+}
+.brand { opacity: .9; }
+.controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+button {
+  border: 1px solid #d8c59b66;
+  background: #071b2bc9;
+  color: #f6eddb;
+  border-radius: 30px;
+  padding: 10px 15px;
+  min-height: 38px;
+  font: 11px Arial, sans-serif;
+  letter-spacing: .08em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+button:focus-visible {
+  outline: 2px solid #f0d49a;
+  outline-offset: 3px;
+}
+button:hover { background: #173b50e8; }
+.story-copy {
+  position: absolute;
+  z-index: 2;
+  left: 8%;
+  right: 8%;
+  bottom: 13%;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 3px 18px #00111d;
+}
+.eyebrow {
+  color: #e4c991;
+  font: 10px Arial, sans-serif;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+h1 {
+  font-size: clamp(30px, 6vw, 68px);
+  line-height: 1.05;
+  font-weight: normal;
+  margin: 0;
+  color: #fff9eb;
+}
+#subtitle {
+  margin: 14px auto 0;
+  max-width: 580px;
+  font-size: clamp(14px, 2vw, 18px);
+  line-height: 1.55;
+  color: #d8e9e9;
+}
+#continueButton {
+  pointer-events: auto;
+  margin-top: 22px;
+  display: none;
+  border-color: #e6cf9c;
+  background: #102e3cdd;
+  padding: 13px 22px;
+}
+#continueButton.show { display: inline-block; }
+#status {
+  position: absolute;
+  z-index: 4;
+  bottom: max(12px, env(safe-area-inset-bottom));
+  left: 16px;
+  font: 10px Arial, sans-serif;
+  color: #c4d9dcaa;
+  letter-spacing: .08em;
+  pointer-events: none;
+}
+#skipButton { display: none; }
+#stage.finished #skipButton { display: none; }
+@media (max-width: 520px) {
+  .topline { left: 12px; right: 12px; top: 12px; }
+  .brand { font-size: 9px; letter-spacing: .13em; }
+  button { padding: 8px 11px; min-height: 35px; font-size: 10px; }
+  .story-copy { bottom: 12%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  button { transition: none; }
+}
+</style>
+</head>
+<body>
+<main id="stage" aria-label="The Drowning World transition">
+  <canvas id="world" aria-hidden="true"></canvas>
+  <div class="vignette"></div>
+
+  <div class="topline">
+    <div class="brand">CEEQWINN · LIVING SCENE DIRECTOR</div>
+    <div class="controls">
+      <button id="fullscreenButton" type="button">Enter fullscreen</button>
+      <button id="replayButton" type="button">Replay</button>
+    </div>
+  </div>
+
+  <section class="story-copy" aria-live="polite">
+    <div class="eyebrow" id="eyebrow">A passage beneath the world</div>
+    <h1 id="heading">The Drowning World</h1>
+    <p id="subtitle">Somewhere beyond the doorway, another world is waiting.</p>
+    <button id="continueButton" type="button">Continue story →</button>
+  </section>
+
+  <div id="status">Preparing scene…</div>
+</main>
+
+<script>
+(() => {
+  "use strict";
+
+  const canvas = document.getElementById("world");
+  const ctx = canvas.getContext("2d", { alpha: false });
+  const stage = document.getElementById("stage");
+  const heading = document.getElementById("heading");
+  const subtitle = document.getElementById("subtitle");
+  const eyebrow = document.getElementById("eyebrow");
+  const continueButton = document.getElementById("continueButton");
+  const status = document.getElementById("status");
+  const fullscreenButton = document.getElementById("fullscreenButton");
+  const replayButton = document.getElementById("replayButton");
+
+  const reducedMotion = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let width = 0, height = 0, dpr = 1;
+  let startedAt = 0;
+  let lastFrame = 0;
+  let fps = 60;
+  let quality = 1;
+  let finished = false;
+  let animationFrame = 0;
+  let bubbles = [];
+  let motes = [];
+  let ripples = [];
+  let seed = 19;
+
+  const random = () => {
+    seed = (seed * 16807) % 2147483647;
+    return (seed - 1) / 2147483646;
+  };
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const smooth = (a, b, x) => {
+    const t = clamp((x - a) / (b - a), 0, 1);
+    return t * t * (3 - 2 * t);
+  };
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    dpr = Math.min(window.devicePixelRatio || 1, quality > .7 ? 1.7 : 1);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function makeParticles() {
+    bubbles = [];
+    motes = [];
+    const bubbleCount = Math.round((width * height / 18000) * quality);
+    const moteCount = Math.round((width * height / 10000) * quality);
+
+    for (let i = 0; i < bubbleCount; i++) {
+      bubbles.push({
+        x: random() * width,
+        y: random() * height,
+        r: 1.5 + random() * 5,
+        speed: 15 + random() * 38,
+        drift: (random() - .5) * 15,
+        alpha: .18 + random() * .42
+      });
+    }
+    for (let i = 0; i < moteCount; i++) {
+      motes.push({
+        x: random() * width,
+        y: random() * height,
+        r: .5 + random() * 2,
+        speed: 3 + random() * 10,
+        phase: random() * 6.28,
+        alpha: .12 + random() * .35
+      });
+    }
+  }
+
+  function roundedRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+  }
+
+  function drawDoor(progress) {
+    const cx = width * .5;
+    const base = height * .79;
+    const doorW = Math.min(width * .34, 270);
+    const doorH = Math.min(height * .66, 520);
+    const open = smooth(.12, .42, progress);
+    const glow = smooth(.25, .58, progress);
+
+    ctx.save();
+    ctx.translate(cx, base - doorH / 2);
+
+    // Shadowed stone entrance
+    ctx.fillStyle = "#06121d";
+    ctx.beginPath();
+    ctx.ellipse(0, doorH * .49, doorW * .95, 22, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#152c38";
+    roundedRect(-doorW / 2 - 17, -doorH / 2 - 14, doorW + 34, doorH + 28, doorW / 2);
+    ctx.fill();
+
+    // Door opening
+    ctx.save();
+    ctx.beginPath();
+    ctx.ellipse(0, 0, doorW / 2, doorH / 2, 0, Math.PI, 0);
+    ctx.lineTo(doorW / 2, doorH / 2);
+    ctx.lineTo(-doorW / 2, doorH / 2);
+    ctx.closePath();
+    ctx.clip();
+
+    const light = ctx.createRadialGradient(0, -doorH * .08, 5, 0, 0, doorW * 1.3);
+    light.addColorStop(0, `rgba(121,218,221,${.8 * glow})`);
+    light.addColorStop(.45, `rgba(29,114,140,${.65 * glow})`);
+    light.addColorStop(1, "#061521");
+    ctx.fillStyle = light;
+    ctx.fillRect(-doorW, -doorH, doorW * 2, doorH * 2);
+
+    // The door panels slide outward
+    const panel = doorW * .49 * (1 - open);
+    ctx.fillStyle = "#304b54";
+    ctx.fillRect(-doorW / 2, -doorH / 2, panel, doorH);
+    ctx.fillRect(doorW / 2 - panel, -doorH / 2, panel, doorH);
+    ctx.restore();
+
+    ctx.strokeStyle = `rgba(220,198,150,${.5 + glow * .35})`;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, doorW / 2, doorH / 2, 0, Math.PI, 0);
+    ctx.lineTo(doorW / 2, doorH / 2);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  function drawWaterline(progress, time) {
+    const rise = smooth(.18, .74, progress);
+    const y = height * (1.13 - rise * 1.35);
+    const wave = reducedMotion ? 0 : Math.sin(time * .0014) * 9;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(0, y + wave);
+    for (let x = 0; x <= width + 20; x += 20) {
+      const yy = y + Math.sin(x * .012 + time * .0018) * (5 + rise * 7)
+        + Math.sin(x * .025 - time * .001) * 3;
+      ctx.lineTo(x, yy);
+    }
+    ctx.lineTo(width, height);
+    ctx.lineTo(0, height);
+    ctx.closePath();
+
+    const water = ctx.createLinearGradient(0, y - 100, 0, height);
+    water.addColorStop(0, `rgba(45,145,166,${.22 + rise * .26})`);
+    water.addColorStop(.35, `rgba(12,83,116,${.78 + rise * .15})`);
+    water.addColorStop(1, "#041b2b");
+    ctx.fillStyle = water;
+    ctx.fill();
+
+    ctx.strokeStyle = `rgba(186,237,230,${.15 + rise * .25})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.restore();
+    return rise;
+  }
+
+  function drawLightRays(time, strength) {
+    if (strength <= 0) return;
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    const count = Math.max(2, Math.round(5 * quality));
+    for (let i = 0; i < count; i++) {
+      const x = width * (i + .5) / count + Math.sin(time * .0003 + i) * 24;
+      const spread = width * (.07 + i * .006);
+      const gradient = ctx.createLinearGradient(x, 0, x + spread, height);
+      gradient.addColorStop(0, `rgba(142,226,224,${.09 * strength})`);
+      gradient.addColorStop(1, "rgba(80,184,199,0)");
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.moveTo(x - 10, 0);
+      ctx.lineTo(x + 22, 0);
+      ctx.lineTo(x + spread, height);
+      ctx.lineTo(x - spread * .25, height);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawSeabed(time, reveal) {
+    if (reveal <= 0) return;
+    const top = height * .82;
+    ctx.save();
+    ctx.globalAlpha = reveal;
+
+    const ground = ctx.createLinearGradient(0, top, 0, height);
+    ground.addColorStop(0, "#1b555b");
+    ground.addColorStop(.4, "#103b49");
+    ground.addColorStop(1, "#071d2b");
+    ctx.fillStyle = ground;
+    ctx.beginPath();
+    ctx.moveTo(0, top + 25);
+    for (let x = 0; x <= width + 20; x += 18) {
+      ctx.lineTo(x, top + Math.sin(x * .009 + time * .00025) * 13
+        + Math.sin(x * .021) * 5);
+    }
+    ctx.lineTo(width, height);
+    ctx.lineTo(0, height);
+    ctx.closePath();
+    ctx.fill();
+
+    // Soft silhouettes of underwater plants
+    const plants = Math.max(5, Math.round(width / 105));
+    for (let i = 0; i < plants; i++) {
+      const x = (i / plants) * width + 20;
+      const h = 35 + ((i * 37) % 75);
+      ctx.strokeStyle = i % 2 ? "#397b70" : "#4d8d79";
+      ctx.lineWidth = 2 + (i % 3);
+      ctx.beginPath();
+      ctx.moveTo(x, height);
+      ctx.quadraticCurveTo(
+        x + Math.sin(time * .0007 + i) * 13,
+        height - h * .5,
+        x + Math.sin(time * .0005 + i * 2) * 22,
+        height - h
+      );
+      ctx.stroke();
+    }
+
+    // Distant arch-like ruins
+    ctx.strokeStyle = "rgba(130,181,169,.28)";
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(width * .15, top + 15);
+    ctx.lineTo(width * .15, top - 65);
+    ctx.quadraticCurveTo(width * .28, top - 135, width * .4, top - 65);
+    ctx.lineTo(width * .4, top + 15);
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  function drawParticles(dt, time, submerged) {
+    if (!submerged) return;
+    ctx.save();
+
+    for (const b of bubbles) {
+      b.y -= b.speed * dt;
+      b.x += Math.sin(time * .001 + b.y * .01) * b.drift * dt;
+      if (b.y < -12) {
+        b.y = height + 10;
+        b.x = random() * width;
+      }
+      ctx.beginPath();
+      ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(200,244,239,${b.alpha})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(b.x - b.r * .3, b.y - b.r * .3, Math.max(.5, b.r * .18), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${b.alpha * .7})`;
+      ctx.fill();
+    }
+
+    for (const m of motes) {
+      m.y -= m.speed * dt;
+      if (m.y < -5) {
+        m.y = height + 5;
+        m.x = random() * width;
+      }
+      const pulse = .65 + Math.sin(time * .001 + m.phase) * .35;
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(202,238,218,${m.alpha * pulse})`;
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawSurfaceShimmer(time, strength) {
+    if (strength <= 0) return;
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    ctx.globalAlpha = .18 * strength;
+    for (let i = 0; i < 5; i++) {
+      const y = height * (.13 + i * .035);
+      ctx.beginPath();
+      for (let x = 0; x <= width; x += 12) {
+        const yy = y + Math.sin(x * .012 + time * .001 + i) * 5;
+        if (x === 0) ctx.moveTo(x, yy);
+        else ctx.lineTo(x, yy);
+      }
+      ctx.strokeStyle = "#b7f2e8";
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function updateCopy(progress) {
+    if (progress < .2) {
+      eyebrow.textContent = "A passage beneath the world";
+      heading.textContent = "The Drowning World";
+      subtitle.textContent = "Somewhere beyond the doorway, another world is waiting.";
+    } else if (progress < .55) {
+      eyebrow.textContent = "The threshold is opening";
+      heading.textContent = "Into the Deep";
+      subtitle.textContent = "The familiar world slips away beneath the water.";
+    } else if (progress < .88) {
+      eyebrow.textContent = "Beneath the surface";
+      heading.textContent = "A World Below";
+      subtitle.textContent = "Light moves through the deep. Something ancient waits below.";
+    } else if (!finished) {
+      eyebrow.textContent = "Destination reached";
+      heading.textContent = "The Drowning World";
+      subtitle.textContent = "The water is quiet now. The story continues beneath the surface.";
+    }
+  }
+
+  function render(now) {
+    if (!startedAt) startedAt = now;
+    if (!lastFrame) lastFrame = now;
+
+    const frameMs = Math.min(60, now - lastFrame);
+    lastFrame = now;
+    const dt = frameMs / 1000;
+
+    // A lightweight frame-time monitor adjusts visual density.
+    if (frameMs > 0) {
+      const instantFps = 1000 / frameMs;
+      fps = fps * .92 + instantFps * .08;
+      if (fps < 32 && quality > .48) {
+        quality = Math.max(.48, quality - .08);
+        resize();
+        makeParticles();
+      } else if (fps > 54 && quality < 1 && now - startedAt > 5000) {
+        quality = Math.min(1, quality + .025);
+        makeParticles();
+      }
+    }
+
+    const elapsed = reducedMotion ? 18000 : now - startedAt;
+    const duration = 18000;
+    const progress = clamp(elapsed / duration, 0, 1);
+    const submerged = smooth(.22, .78, progress);
+    const reveal = smooth(.64, .94, progress);
+
+    ctx.clearRect(0, 0, width, height);
+
+    // The world begins as a shadowed, atmospheric doorway.
+    const sky = ctx.createLinearGradient(0, 0, 0, height);
+    sky.addColorStop(0, "#18394b");
+    sky.addColorStop(.5, "#102b3d");
+    sky.addColorStop(1, "#071522");
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, width, height);
+
+    drawDoor(progress);
+    const waterRise = drawWaterline(progress, now);
+    drawLightRays(now, submerged);
+    drawSeabed(now, reveal);
+    drawSurfaceShimmer(now, submerged);
+    drawParticles(dt, now, submerged);
+
+    // A gentle deep-water tint gradually covers the whole frame.
+    ctx.fillStyle = `rgba(2,31,49,${submerged * .27})`;
+    ctx.fillRect(0, 0, width, height);
+
+    updateCopy(progress);
+
+    if (progress >= 1 && !finished) {
+      finished = true;
+      stage.classList.add("finished");
+      continueButton.classList.add("show");
+      status.textContent = "Scene ready · " + Math.round(fps) + " FPS · quality " +
+        Math.round(quality * 100) + "%";
+    } else {
+      status.textContent = "Transition playing · " + Math.round(fps) +
+        " FPS · quality " + Math.round(quality * 100) + "%";
+    }
+
+    if (!finished) animationFrame = requestAnimationFrame(render);
+    else {
+      // Keep only the subtle underwater atmosphere moving.
+      animationFrame = requestAnimationFrame(renderIdle);
+    }
+  }
+
+  function renderIdle(now) {
+    const dt = Math.min(.05, (now - (lastFrame || now)) / 1000);
+    lastFrame = now;
+    ctx.clearRect(0, 0, width, height);
+
+    const bg = ctx.createLinearGradient(0, 0, 0, height);
+    bg.addColorStop(0, "#17445a");
+    bg.addColorStop(.55, "#0a3045");
+    bg.addColorStop(1, "#061b2b");
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, width, height);
+
+    drawLightRays(now, .8);
+    drawSeabed(now, 1);
+    drawSurfaceShimmer(now, .8);
+    drawParticles(dt, now, true);
+
+    animationFrame = requestAnimationFrame(renderIdle);
+  }
+
+  function start() {
+    cancelAnimationFrame(animationFrame);
+    startedAt = 0;
+    lastFrame = 0;
+    finished = false;
+    stage.classList.remove("finished");
+    continueButton.classList.remove("show");
+    quality = 1;
+    seed = 19;
+    resize();
+    makeParticles();
+    animationFrame = requestAnimationFrame(render);
+  }
+
+  async function toggleFullscreen() {
+    try {
+      if (!document.fullscreenElement) {
+        await stage.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (error) {
+      status.textContent = "Fullscreen is not available in this browser.";
+    }
+  }
+
+  document.addEventListener("fullscreenchange", () => {
+    fullscreenButton.textContent = document.fullscreenElement
+      ? "Exit fullscreen" : "Enter fullscreen";
+    resize();
+    makeParticles();
+  });
+
+  fullscreenButton.addEventListener("click", toggleFullscreen);
+  replayButton.addEventListener("click", start);
+
+  continueButton.addEventListener("click", () => {
+    // Integration point: the Reader should handle the next story event.
+    // This demo dispatches an event instead of navigating to another page.
+    window.dispatchEvent(new CustomEvent("ceeqwinn:transition-complete", {
+      detail: { transition: "drowning-world" }
+    }));
+    subtitle.textContent = "Transition complete. Connect this point to the next Reader scene.";
+    continueButton.textContent = "Transition complete";
+    continueButton.disabled = true;
+  });
+
+  window.addEventListener("resize", () => {
+    resize();
+    makeParticles();
+  });
+
+  // Begin automatically. No tap is needed to start the transition.
+  start();
+})();
+</script>
+</body>
+</html>
