@@ -1,0 +1,1037 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>CEEQWINN — Living Scene Director</title>
+
+<style>
+:root {
+  --gold: #d8b77a;
+  --wine: #32151f;
+  --ink: #09090d;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--ink);
+  color: #fff8e9;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #10151a;
+}
+
+canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#story {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(24px, 8vw, 110px);
+  opacity: 0;
+  pointer-events: none;
+  background: rgba(5, 5, 9, .12);
+  transition: opacity 1.4s ease;
+}
+
+#story.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.story-inner {
+  width: min(720px, 100%);
+  max-height: 78vh;
+  overflow-y: auto;
+  text-align: center;
+  padding: 28px 8px;
+  text-shadow: 0 2px 18px #000;
+}
+
+.story-kicker {
+  color: var(--gold);
+  font: 11px Arial, sans-serif;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+}
+
+.story-inner h1 {
+  font-size: clamp(32px, 6vw, 65px);
+  font-weight: normal;
+  line-height: 1.08;
+  margin: 0 0 28px;
+}
+
+.story-inner p {
+  font-size: clamp(17px, 2.4vw, 22px);
+  line-height: 1.9;
+  color: #eee5d6;
+  margin: 0 auto;
+  max-width: 620px;
+}
+
+#controls {
+  position: absolute;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  padding: 10px;
+}
+
+button, select {
+  color: #f8ecd8;
+  background: rgba(27, 18, 22, .88);
+  border: 1px solid rgba(216, 183, 122, .58);
+  border-radius: 30px;
+  padding: 12px 17px;
+  font: 12px Arial, sans-serif;
+  letter-spacing: .05em;
+  cursor: pointer;
+  min-height: 43px;
+}
+
+button:active { transform: scale(.97); }
+
+button:hover, select:hover {
+  background: rgba(100, 62, 54, .9);
+}
+
+#quality {
+  position: absolute;
+  z-index: 11;
+  top: max(12px, env(safe-area-inset-top));
+  left: 12px;
+  padding: 8px 11px;
+  border-radius: 20px;
+  color: #e9d9b8;
+  background: rgba(0,0,0,.55);
+  font: 10px Arial, sans-serif;
+  letter-spacing: .08em;
+}
+
+#fullscreen {
+  position: absolute;
+  z-index: 12;
+  top: max(12px, env(safe-area-inset-top));
+  right: 12px;
+  padding: 10px 14px;
+}
+
+#fade {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  background: #050509;
+  opacity: 1;
+  pointer-events: none;
+}
+
+@media (max-width: 600px) {
+  #controls { gap: 6px; }
+  button, select {
+    padding: 11px 12px;
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div id="stage">
+  <canvas id="world"></canvas>
+
+  <div id="fade"></div>
+
+  <div id="story">
+    <div class="story-inner">
+      <div class="story-kicker">The Emerald Inheritance</div>
+      <h1>The Garden Remembered</h1>
+      <p>
+        The garden had been silent for years.
+
+        Then, somewhere beneath the old stone path,
+        something began to awaken.
+
+        A leaf unfolded. A branch stretched towards
+        the evening light. And the world remembered
+        how to grow.
+      </p>
+    </div>
+  </div>
+
+  <div id="quality">INITIALISING SCENE</div>
+
+  <button id="fullscreen">Exit Fullscreen</button>
+
+  <div id="controls">
+    <button id="awaken">Awaken Garden</button>
+    <button id="fracture">Break Into Story</button>
+    <button id="return">Return to Garden</button>
+
+    <select id="theatre">
+      <option value="narration">Narration Theatre</option>
+      <option value="love">Love Theatre</option>
+      <option value="sadness">Sadness Theatre</option>
+      <option value="show">Show Theatre</option>
+    </select>
+  </div>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+const canvas = document.getElementById("world");
+const ctx = canvas.getContext("2d", { alpha: false });
+const story = document.getElementById("story");
+const fade = document.getElementById("fade");
+const qualityLabel = document.getElementById("quality");
+
+if (!ctx) {
+  qualityLabel.textContent = "CANVAS NOT AVAILABLE";
+  return;
+}
+
+let W = 0, H = 0, DPR = 1;
+let quality = 0.65;
+let fps = 0;
+let frames = 0;
+let lastMeasure = performance.now();
+let lastFrame = performance.now();
+
+let phase = "garden";
+let growth = 0;
+let transition = 0;
+let storyOpacity = 0;
+let theatreMode = "narration";
+let reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+let snapshot = document.createElement("canvas");
+let snapCtx = snapshot.getContext("2d");
+
+const TAU = Math.PI * 2;
+
+function random(seed) {
+  let x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+function resize() {
+  W = innerWidth;
+  H = innerHeight;
+
+  const deviceLimit = Math.min(
+    1.5,
+    window.devicePixelRatio || 1
+  );
+
+  DPR = Math.max(.65, Math.min(deviceLimit, quality));
+
+  canvas.width = Math.floor(W * DPR);
+  canvas.height = Math.floor(H * DPR);
+
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+  snapshot.width = canvas.width;
+  snapshot.height = canvas.height;
+}
+
+function setQuality(next) {
+  quality = Math.max(.38, Math.min(1, next));
+  resize();
+}
+
+window.addEventListener("resize", resize);
+resize();
+
+/* --------------------------------------------------
+   THEATRE ATMOSPHERE
+-------------------------------------------------- */
+
+const atmospheres = {
+  narration: {
+    sky: ["#253b45", "#b7a17b"],
+    light: "#f3d9a0",
+    particle: "#f4dba6"
+  },
+  love: {
+    sky: ["#422b43", "#c38d8d"],
+    light: "#ffd8b0",
+    particle: "#f7c8cf"
+  },
+  sadness: {
+    sky: ["#152a3c", "#667d8d"],
+    light: "#b8d0df",
+    particle: "#b8d6e5"
+  },
+  show: {
+    sky: ["#281d39", "#9b6b77"],
+    light: "#ffe2a2",
+    particle: "#f8d18b"
+  }
+};
+
+function atmosphere() {
+  return atmospheres[theatreMode] || atmospheres.narration;
+}
+
+/* --------------------------------------------------
+   SCENE BACKGROUND
+-------------------------------------------------- */
+
+function drawSky() {
+  const a = atmosphere();
+
+  const sky = ctx.createLinearGradient(0, 0, 0, H);
+  sky.addColorStop(0, a.sky[0]);
+  sky.addColorStop(.55, a.sky[1]);
+  sky.addColorStop(1, "#253b32");
+
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, W, H);
+
+  const glow = ctx.createRadialGradient(
+    W * .72, H * .26, 5,
+    W * .72, H * .26, W * .55
+  );
+
+  glow.addColorStop(0, a.light + "55");
+  glow.addColorStop(1, "transparent");
+
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, W, H);
+}
+
+function drawHills() {
+  const horizon = H * .63;
+
+  ctx.fillStyle = "#354c3e";
+  ctx.beginPath();
+  ctx.moveTo(0, horizon);
+  ctx.bezierCurveTo(
+    W * .22, H * .43,
+    W * .36, H * .73,
+    W * .58, H * .57
+  );
+  ctx.bezierCurveTo(
+    W * .77, H * .42,
+    W * .86, H * .60,
+    W, H * .48
+  );
+  ctx.lineTo(W, H);
+  ctx.lineTo(0, H);
+  ctx.fill();
+
+  ctx.fillStyle = "#263b30";
+  ctx.beginPath();
+  ctx.moveTo(0, H * .76);
+  ctx.bezierCurveTo(
+    W * .25, H * .61,
+    W * .55, H * .78,
+    W, H * .65
+  );
+  ctx.lineTo(W, H);
+  ctx.lineTo(0, H);
+  ctx.fill();
+}
+
+/* --------------------------------------------------
+   TREE AND BRANCH GROWTH
+-------------------------------------------------- */
+
+function branch(x, y, length, angle, width, depth, seed, amount) {
+  if (depth <= 0 || amount <= 0) return;
+
+  const visible = Math.min(1, amount * (1 + depth * .09));
+  const len = length * visible;
+
+  const ex = x + Math.cos(angle) * len;
+  const ey = y + Math.sin(angle) * len;
+
+  ctx.strokeStyle = depth > 3 ? "#46352b" : "#5c4533";
+  ctx.lineWidth = Math.max(.7, width * visible);
+  ctx.lineCap = "round";
+
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.quadraticCurveTo(
+    x + Math.cos(angle - .13) * len * .48,
+    y + Math.sin(angle - .13) * len * .48,
+    ex, ey
+  );
+  ctx.stroke();
+
+  if (depth <= 2) {
+    const leafCount = 3 + Math.floor(random(seed) * 4);
+
+    for (let i = 0; i < leafCount; i++) {
+      const t = random(seed * 9 + i);
+      const lx = ex + (random(seed + i * 3) - .5) * 32;
+      const ly = ey + (random(seed + i * 7) - .5) * 24;
+
+      drawLeaf(lx, ly, t, visible);
+    }
+  }
+
+  const spread = .34 + random(seed + depth) * .2;
+
+  branch(
+    ex, ey, length * (.68 + random(seed + 2) * .12),
+    angle - spread, width * .69, depth - 1,
+    seed + 17, amount - .11
+  );
+
+  branch(
+    ex, ey, length * (.66 + random(seed + 4) * .12),
+    angle + spread, width * .67, depth - 1,
+    seed + 31, amount - .12
+  );
+}
+
+function drawLeaf(x, y, seed, amount) {
+  const size = (4 + random(seed * 11) * 7) * amount;
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(random(seed * 4) * TAU);
+
+  ctx.fillStyle = random(seed * 2) > .5
+    ? "#658b4f"
+    : "#91a96a";
+
+  ctx.beginPath();
+  ctx.ellipse(0, 0, size * .5, size, 0, 0, TAU);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+function drawTree(amount) {
+  if (amount <= 0) return;
+
+  const x = W * .22;
+  const base = H * .78;
+  const trunkHeight = Math.min(H * .43, 310) * amount;
+
+  ctx.save();
+
+  const trunk = ctx.createLinearGradient(
+    x - 20, 0, x + 35, 0
+  );
+  trunk.addColorStop(0, "#382b24");
+  trunk.addColorStop(.5, "#76513a");
+  trunk.addColorStop(1, "#33261f");
+
+  ctx.fillStyle = trunk;
+  ctx.beginPath();
+  ctx.moveTo(x - 17, base);
+  ctx.quadraticCurveTo(x - 8, base - trunkHeight * .5, x - 5, base - trunkHeight);
+  ctx.lineTo(x + 13, base - trunkHeight);
+  ctx.quadraticCurveTo(x + 10, base - trunkHeight * .45, x + 22, base);
+  ctx.fill();
+
+  if (amount > .1) {
+    const startY = base - trunkHeight;
+    const depth = 5;
+
+    branch(
+      x + 3, startY,
+      Math.min(95, W * .12),
+      -Math.PI / 2 - .5,
+      13, depth, 12, amount
+    );
+
+    branch(
+      x + 3, startY + 28,
+      Math.min(115, W * .13),
+      -Math.PI / 2 + .56,
+      11, depth, 23, amount
+    );
+
+    branch(
+      x + 4, startY + 60,
+      Math.min(95, W * .11),
+      -Math.PI / 2 - .12,
+      9, depth - 1, 44, amount
+    );
+  }
+
+  ctx.restore();
+}
+
+/* --------------------------------------------------
+   GRASS AND FLOWERS
+-------------------------------------------------- */
+
+function drawGrass(amount, time) {
+  const count = Math.floor(850 * quality);
+
+  ctx.lineCap = "round";
+
+  for (let i = 0; i < count; i++) {
+    const x = random(i * 4 + 12) * W;
+    const y = H * .78 + random(i * 9 + 3) * H * .23;
+
+    const height = (8 + random(i * 2 + 5) * 28)
+      * amount;
+
+    const sway = Math.sin(time * .0008 + i) * 4;
+
+    ctx.strokeStyle = random(i + 8) > .5
+      ? "#66834b"
+      : "#82995b";
+
+    ctx.lineWidth = 1 + random(i + 1);
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.quadraticCurveTo(
+      x + sway, y - height * .5,
+      x + sway * 1.8, y - height
+    );
+    ctx.stroke();
+  }
+}
+
+function drawFlowers(amount) {
+  const count = Math.floor(35 * quality);
+
+  for (let i = 0; i < count; i++) {
+    const x = random(i * 17 + 1) * W;
+    const y = H * .80 + random(i * 31 + 4) * H * .17;
+
+    const size = (3 + random(i * 5) * 4) * amount;
+
+    ctx.fillStyle = i % 3 === 0
+      ? "#e5b9ba"
+      : i % 3 === 1
+        ? "#f0d99e"
+        : "#d8d2df";
+
+    for (let p = 0; p < 5; p++) {
+      const a = p * TAU / 5;
+
+      ctx.beginPath();
+      ctx.ellipse(
+        x + Math.cos(a) * size * .7,
+        y + Math.sin(a) * size * .7,
+        size * .45,
+        size * .7,
+        a, 0, TAU
+      );
+      ctx.fill();
+    }
+
+    ctx.fillStyle = "#c59a51";
+    ctx.beginPath();
+    ctx.arc(x, y, size * .28, 0, TAU);
+    ctx.fill();
+  }
+}
+
+/* --------------------------------------------------
+   FLOATING PARTICLES
+-------------------------------------------------- */
+
+function drawParticles(time, amount) {
+  const count = Math.floor(35 * quality * amount);
+  const color = atmosphere().particle;
+
+  for (let i = 0; i < count; i++) {
+    const x = (random(i * 19) * W
+      + Math.sin(time * .0004 + i) * 24) % W;
+
+    const y = (random(i * 29) * H
+      - time * (.008 + random(i) * .01)) % H;
+
+    const r = 1 + random(i * 3) * 2;
+
+    ctx.globalAlpha = .3 + random(i * 7) * .5;
+    ctx.fillStyle = color;
+
+    ctx.beginPath();
+    ctx.arc(x, (y + H) % H, r, 0, TAU);
+    ctx.fill();
+  }
+
+  ctx.globalAlpha = 1;
+}
+
+/* --------------------------------------------------
+   COMPLETE GARDEN
+-------------------------------------------------- */
+
+function drawGarden(time, amount) {
+  ctx.save();
+
+  drawSky();
+  drawHills();
+
+  const ground = ctx.createLinearGradient(
+    0, H * .73, 0, H
+  );
+
+  ground.addColorStop(0, "#344b32");
+  ground.addColorStop(1, "#18291f");
+
+  ctx.fillStyle = ground;
+  ctx.fillRect(0, H * .72, W, H * .28);
+
+  drawTree(amount);
+  drawGrass(amount, time);
+  drawFlowers(amount);
+  drawParticles(time, amount);
+
+  ctx.restore();
+}
+
+/* --------------------------------------------------
+   GLASS FRACTURE GENERATION
+-------------------------------------------------- */
+
+let cracks = [];
+
+function createCracks() {
+  cracks = [];
+
+  const cx = W * .5;
+  const cy = H * .5;
+
+  for (let i = 0; i < 22; i++) {
+    const angle = i * TAU / 22 + random(i + 5) * .15;
+    const length = Math.max(W, H) * (.55 + random(i + 9) * .5);
+
+    const points = [];
+    let x = cx, y = cy;
+
+    points.push({x, y});
+
+    const steps = 12;
+
+    for (let s = 1; s <= steps; s++) {
+      const bend = (random(i * 100 + s) - .5) * 24;
+
+      x += Math.cos(angle) * length / steps
+        + Math.cos(angle + Math.PI / 2) * bend;
+
+      y += Math.sin(angle) * length / steps
+        + Math.sin(angle + Math.PI / 2) * bend;
+
+      points.push({x, y});
+    }
+
+    cracks.push({
+      points,
+      branches: random(i * 11) > .4
+    });
+  }
+}
+
+function drawCracks(progress) {
+  ctx.save();
+
+  ctx.strokeStyle = "rgba(230,240,255,.86)";
+  ctx.lineWidth = Math.max(1, 1.4 * quality);
+  ctx.shadowColor = "rgba(220,240,255,.65)";
+  ctx.shadowBlur = 7;
+
+  for (const crack of cracks) {
+    const total = crack.points.length - 1;
+    const visible = progress * total;
+
+    ctx.beginPath();
+    ctx.moveTo(crack.points[0].x, crack.points[0].y);
+
+    for (let i = 1; i <= Math.floor(visible); i++) {
+      ctx.lineTo(crack.points[i].x, crack.points[i].y);
+    }
+
+    const remainder = visible % 1;
+    const index = Math.floor(visible);
+
+    if (index < total && crack.points[index + 1]) {
+      const a = crack.points[index];
+      const b = crack.points[index + 1];
+
+      ctx.lineTo(
+        a.x + (b.x - a.x) * remainder,
+        a.y + (b.y - a.y) * remainder
+      );
+    }
+
+    ctx.stroke();
+
+    if (crack.branches && progress > .3) {
+      const p = crack.points[Math.min(
+        total - 1,
+        Math.floor(total * progress * .65)
+      )];
+
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(
+        p.x + (random(p.x) - .5) * 70,
+        p.y + (random(p.y) - .5) * 70
+      );
+      ctx.stroke();
+    }
+  }
+
+  ctx.restore();
+}
+
+/* --------------------------------------------------
+   SHATTER CELLS
+-------------------------------------------------- */
+
+let shards = [];
+
+function createShards() {
+  shards = [];
+
+  const cols = 13;
+  const rows = 9;
+  const points = [];
+
+  for (let y = 0; y <= rows; y++) {
+    points[y] = [];
+
+    for (let x = 0; x <= cols; x++) {
+      points[y][x] = {
+        x: x * W / cols + (x > 0 && x < cols
+          ? (random(x * 7 + y) - .5) * 15 : 0),
+        y: y * H / rows + (y > 0 && y < rows
+          ? (random(y * 11 + x) - .5) * 15 : 0)
+      };
+    }
+  }
+
+  function addTriangle(a, b, c, seed) {
+    const cx = (a.x + b.x + c.x) / 3;
+    const cy = (a.y + b.y + c.y) / 3;
+
+    shards.push({
+      a, b, c, cx, cy,
+      seed,
+      direction: Math.atan2(cy - H / 2, cx - W / 2),
+      distance: 25 + random(seed) * 150,
+      rotation: (random(seed + 4) - .5) * .7
+    });
+  }
+
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const a = points[y][x];
+      const b = points[y][x + 1];
+      const c = points[y + 1][x];
+      const d = points[y + 1][x + 1];
+
+      addTriangle(a, b, c, x * 91 + y * 13);
+      addTriangle(b, d, c, x * 77 + y * 19);
+    }
+  }
+}
+
+function drawShard(shard, progress) {
+  const move = progress * shard.distance;
+
+  const dx = Math.cos(shard.direction) * move;
+  const dy = Math.sin(shard.direction) * move;
+
+  ctx.save();
+  ctx.globalAlpha = Math.max(0, 1 - progress * 1.25);
+
+  ctx.translate(
+    shard.cx + dx,
+    shard.cy + dy
+  );
+
+  ctx.rotate(shard.rotation * progress);
+
+  ctx.translate(-shard.cx, -shard.cy);
+
+  ctx.beginPath();
+  ctx.moveTo(shard.a.x, shard.a.y);
+  ctx.lineTo(shard.b.x, shard.b.y);
+  ctx.lineTo(shard.c.x, shard.c.y);
+  ctx.closePath();
+
+  ctx.clip();
+
+  ctx.drawImage(
+    snapshot,
+    0, 0, snapshot.width, snapshot.height,
+    0, 0, W, H
+  );
+
+  ctx.restore();
+}
+
+function drawShatter(progress) {
+  if (progress < .55) {
+    ctx.drawImage(snapshot, 0, 0, W, H);
+    drawCracks(progress / .55);
+    return;
+  }
+
+  const p = (progress - .55) / .45;
+
+  for (const shard of shards) {
+    drawShard(shard, p);
+  }
+
+  ctx.fillStyle = `rgba(3,4,8,${Math.min(1, p * 1.4)})`;
+  ctx.fillRect(0, 0, W, H);
+}
+
+/* --------------------------------------------------
+   GARDEN GROWS OVER THE STORY
+-------------------------------------------------- */
+
+function drawForegroundGrowth(amount, time) {
+  ctx.save();
+
+  ctx.globalAlpha = amount;
+
+  const count = Math.floor(90 * quality);
+
+  for (let i = 0; i < count; i++) {
+    const side = i % 2 === 0 ? 0 : W;
+    const x = side + (random(i * 9) - .5) * W * .4;
+    const y = H * (.75 + random(i * 3) * .25);
+
+    const height = (20 + random(i * 5) * 85) * amount;
+    const sway = Math.sin(time * .001 + i) * 10;
+
+    ctx.strokeStyle = i % 2
+      ? "#6d914e"
+      : "#a1a76b";
+
+    ctx.lineWidth = 2 + random(i) * 2;
+
+    ctx.beginPath();
+    ctx.moveTo(x, H);
+    ctx.quadraticCurveTo(
+      x + sway, y,
+      x + sway * 1.7, y - height
+    );
+    ctx.stroke();
+
+    if (i % 3 === 0) {
+      drawLeaf(
+        x + sway * 1.7,
+        y - height,
+        i * 2,
+        amount
+      );
+    }
+  }
+
+  ctx.restore();
+}
+
+/* --------------------------------------------------
+   SCENE CONTROL
+-------------------------------------------------- */
+
+function startAwakening() {
+  phase = "garden";
+  growth = 0;
+  transition = 0;
+  storyOpacity = 0;
+  story.classList.remove("visible");
+  fade.style.opacity = 0;
+}
+
+function startFracture() {
+  if (phase !== "garden") return;
+
+  // Capture the complete visible garden before breaking it.
+  snapshot.width = canvas.width;
+  snapshot.height = canvas.height;
+
+  snapCtx.setTransform(1, 0, 0, 1, 0, 0);
+  snapCtx.drawImage(canvas, 0, 0);
+
+  createCracks();
+  createShards();
+
+  phase = "fracture";
+  transition = 0;
+  story.classList.remove("visible");
+}
+
+function startReturn() {
+  if (phase !== "story") return;
+
+  phase = "return";
+  transition = 0;
+  growth = 0;
+}
+
+function update(dt) {
+  const speed = reducedMotion ? .00035 : .00065;
+
+  if (phase === "garden") {
+    growth = Math.min(1, growth + dt * speed);
+  }
+
+  if (phase === "fracture") {
+    transition = Math.min(1, transition + dt * .00055);
+
+    if (transition >= 1) {
+      phase = "story";
+      story.classList.add("visible");
+      storyOpacity = 1;
+    }
+  }
+
+  if (phase === "return") {
+    transition = Math.min(1, transition + dt * .00055);
+    growth = transition;
+
+    storyOpacity = 1 - transition;
+
+    story.style.opacity = storyOpacity;
+
+    if (transition >= 1) {
+      phase = "garden";
+      story.classList.remove("visible");
+      story.style.opacity = "";
+    }
+  }
+}
+
+/* --------------------------------------------------
+   AUTOMATIC PERFORMANCE MONITOR
+-------------------------------------------------- */
+
+function measureQuality(now) {
+  frames++;
+
+  if (now - lastMeasure < 2200) return;
+
+  fps = frames * 1000 / (now - lastMeasure);
+
+  const lowMemory =
+    navigator.deviceMemory && navigator.deviceMemory <= 2;
+
+  const lowCPU =
+    navigator.hardwareConcurrency &&
+    navigator.hardwareConcurrency <= 4;
+
+  if (frames > 0 && fps < 24) {
+    setQuality(quality - .10);
+  } else if (fps > 53 && !lowMemory && !lowCPU) {
+    setQuality(quality + .035);
+  }
+
+  qualityLabel.textContent =
+    `PERFORMANCE ${Math.round(fps)} FPS · QUALITY ${Math.round(quality * 100)}%`;
+
+  frames = 0;
+  lastMeasure = now;
+}
+
+/* --------------------------------------------------
+   MAIN RENDER LOOP
+-------------------------------------------------- */
+
+function render(now) {
+  const dt = Math.min(50, now - lastFrame);
+  lastFrame = now;
+
+  update(dt);
+  measureQuality(now);
+
+  if (phase === "fracture") {
+    drawShatter(transition);
+  } else {
+    drawGarden(now, growth);
+
+    if (phase === "return") {
+      // The garden grows into the foreground as the story disappears.
+      drawForegroundGrowth(transition, now);
+    }
+  }
+
+  requestAnimationFrame(render);
+}
+
+requestAnimationFrame(render);
+
+/* --------------------------------------------------
+   CONTROLS
+-------------------------------------------------- */
+
+document.getElementById("awaken")
+  .addEventListener("click", startAwakening);
+
+document.getElementById("fracture")
+  .addEventListener("click", startFracture);
+
+document.getElementById("return")
+  .addEventListener("click", startReturn);
+
+document.getElementById("theatre")
+  .addEventListener("change", event => {
+    theatreMode = event.target.value;
+  });
+
+document.getElementById("fullscreen")
+  .addEventListener("click", async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else {
+        await document.documentElement.requestFullscreen();
+      }
+    } catch (error) {
+      qualityLabel.textContent = "FULLSCREEN NOT AVAILABLE";
+    }
+  });
+
+document.addEventListener("fullscreenchange", () => {
+  document.getElementById("fullscreen").textContent =
+    document.fullscreenElement
+      ? "Exit Fullscreen"
+      : "Enter Fullscreen";
+});
+
+})();
+</script>
+</body>
+</html>
