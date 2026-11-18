@@ -1,0 +1,34 @@
+
+name: Sync GitHub to GitLab
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get GitHub repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push latest code to GitLab
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          set -e
+
+          git remote add gitlab https://gitlab.com/ceeqwinn-group/ceeqwinn-labs.git
+
+          AUTH=$(printf 'oauth2:%s' "$GITLAB_TOKEN" | base64 -w0)
+
+          git -c http.extraheader="AUTHORIZATION: Basic $AUTH" \
+            push gitlab HEAD:main
