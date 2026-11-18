@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chikamso – Ceeqwinn Multiverse</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(to bottom right, #33001a, #ff0066);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    header {
+      padding: 1em;
+      text-align: center;
+      background: #111;
+      font-size: 1.5em;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .container {
+      padding: 2em;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .image-box {
+      position: relative;
+      overflow: hidden;
+      max-width: 100%;
+      margin-bottom: 2em;
+    }
+
+    .image-box img {
+      width: 100%;
+      filter: blur(15px);
+      transition: filter 0.3s ease-in-out;
+    }
+
+    .image-box.unlocked img {
+      filter: blur(0);
+    }
+
+    .ad-block-message {
+      background: #ff3399;
+      padding: 1em;
+      text-align: center;
+      font-weight: bold;
+      display: none;
+      margin-bottom: 1em;
+    }
+
+    h2 {
+      margin-top: 1.5em;
+      color: #ffcce0;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 0.5em;
+      padding: 0.7em 1.5em;
+      border-radius: 8px;
+      background: #ff3399;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #e60073;
+    }
+
+    footer {
+      margin-top: 3em;
+      text-align: center;
+      font-size: 0.9em;
+      color: #aaa;
+    }
+
+    audio {
+      display: block;
+      margin: 2em auto;
+    }
+  </style>
+</head>
+
+<body>
+  <header>Ceeqwinn Multiverse</header>
+
+  <div class="container">
+    <div id="adBlockNotice" class="ad-block-message">
+      Please turn off your ad blocker to see this character's true form!
+    </div>
+
+    <div id="imageContainer" class="image-box">
+      <img src="https://i.postimg.cc/90WXR2gw/image-3.png" alt="Chikamso – Character Art" />
+    </div>
+
+    <h2>🔮 CHIKAMSO</h2>
+    <p><strong>SYMBOLISM:</strong> Jealousy, insecurity, and the painful hunger to belong</p>
+    <p><strong>LIFE ROLE:</strong> Elite student; antagonist with potential for redemption</p>
+    <p><strong>LIFE-CHANGING EVENT:</strong> Losing her rank as the only elite girl when Ceeqwinn arrives</p>
+    <p><strong>SECRET:</strong> She craves love and validation more than power</p>
+    <p><strong>CORE DESIRE:</strong> To matter. To be seen as valuable — not just powerful.</p>
+
+    <h2>🧠 PERSONALITY/MIND:</h2>
+    <ul>
+      <li>Flawed but layered</li>
+      <li>Highly competitive</li>
+      <li>Prideful, sharp-tongued</li>
+      <li>Covers emotional instability</li>
+      <li>Soft side when sick or vulnerable</li>
+    </ul>
+
+    <h2>💬 REACTIONS TO OTHERS:</h2>
+    <ul>
+      <li>Strangers: Cold, calculating</li>
+      <li>Friends: Passive-aggressive loyalty</li>
+      <li>Enemies: Plots, pretends</li>
+      <li>Ceeqwinn: Rivalry masked as curiosity</li>
+      <li>Precious: Frienemy — chaotic alliance</li>
+      <li>Dorcas: Envies her confidence, tries to ignore her</li>
+    </ul>
+
+    <h2>💅 STYLE / AESTHETIC:</h2>
+    <ul>
+      <li>Look: Snatched, perfect edges, statement outfits</li>
+      <li>Scent: Bitter-cherry vanilla</li>
+      <li>Signature Vibe: Glam-girl war armor</li>
+      <li>Fan Signal: Sparkling red claw ring</li>
+      <li>Voice: Crisp, prideful tone</li>
+      <li>Aura: Hot pink tension</li>
+    </ul>
+
+    <h2>🎧 Coming Soon: Chikamso’s Theme Song</h2>
+    <audio controls>
+      <source src="comingsoon.mp3" type="audio/mpeg" />
+      Your browser does not support the audio tag.
+    </audio>
+
+    <div style="text-align:center;">
+      <a href="chapter1.html" class="btn">📖 Read Chapter 1</a>
+      <a href="characters.html" class="btn">👑 Back to Character Hub</a>
+      <a href="#" class="btn">🌍 Language: English</a>
+      <a href="#" class="btn">🇳🇬 Nigerian English</a>
+      <a href="#" class="btn">🗣️ Pidgin</a>
+    </div>
+  </div>
+
+  <footer>
+    Copyright © 2025 Ceeqwinn Multiverse • Powered by INTJ Energy
+  </footer>
+
+  <script>
+    // Ad Block Detection Script
+    window.addEventListener("load", function () {
+      var adBlockEnabled = false;
+      var testAd = document.createElement("div");
+      testAd.innerHTML = "&nbsp;";
+      testAd.className = "adsbox";
+      testAd.style.height = "1px";
+      document.body.appendChild(testAd);
+      window.setTimeout(function () {
+        if (testAd.offsetHeight === 0) {
+          adBlockEnabled = true;
+          document.getElementById("adBlockNotice").style.display = "block";
+        } else {
+          document.getElementById("imageContainer").classList.add("unlocked");
+        }
+        testAd.remove();
+      }, 100);
+    });
+  </script>
+</body>
+</html>
