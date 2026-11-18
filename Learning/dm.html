@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DM Ceeqwinn 💌</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom right, #fbeaf3, #fdf7f0);
+      color: #2c001e;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      color: #8b0000;
+    }
+    form {
+      max-width: 500px;
+      margin: auto;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+    }
+    button {
+      width: 100%;
+      padding: 0.8rem;
+      background: #8b0000;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #b22222;
+    }
+  </style>
+</head>
+<body>
+  <h1>💌 Message Me (Ceeqwinn DM)</h1>
+  <form name="ceeqwinn-dm" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" data-netlify-tags="proof-upload" enctype="multipart/form-data">
+    <input type="hidden" name="form-name" value="ceeqwinn-dm" />
+
+    <label for="name">Your Name</label>
+    <input type="text" name="name" id="name" required>
+
+    <label for="email">Your Email (optional)</label>
+    <input type="email" name="email" id="email">
+
+    <label for="message">Your Message</label>
+    <textarea name="message" id="message" rows="5" required></textarea>
+
+    <label for="proof">Upload Image (Optional)</label>
+    <input type="file" name="proof" id="proof" accept="image/*">
+
+    <button type="submit">📤 Send Message</button>
+  </form>
+</body>
+</html>
