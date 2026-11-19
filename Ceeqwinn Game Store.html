@@ -668,6 +668,29 @@ h1{
     }
 }
 
+
+.purchase-reminder{
+    margin:22px 0;
+    padding:22px;
+    border:1px solid rgba(198,167,94,.45);
+    border-radius:22px;
+    background:linear-gradient(135deg,rgba(139,16,37,.07),rgba(181,45,104,.06),rgba(198,167,94,.08));
+    box-shadow:0 12px 28px rgba(60,5,20,.08);
+}
+.purchase-reminder[hidden]{display:none}
+.reminder-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.reminder-heading span{font-size:10px;letter-spacing:3px;color:var(--muted);font-weight:800}
+.reminder-heading h2{margin:6px 0;font:500 25px Georgia,serif;color:var(--ruby)}
+.reminder-heading p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.dismiss-reminder{flex:0 0 auto;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.8);color:var(--ink);font-size:22px;cursor:pointer}
+.pending-purchase{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;border-top:1px solid rgba(139,16,37,.12)}
+.pending-purchase strong{display:block;font-size:14px}
+.pending-purchase small{display:block;margin-top:4px;color:var(--muted);font-size:12px}
+.pending-claim{border:0;border-radius:999px;padding:10px 16px;background:linear-gradient(110deg,var(--ruby),var(--magenta),var(--purple));color:white;font-weight:800;cursor:pointer}
+.pending-claim:disabled{opacity:.55;cursor:wait}
+.purchase-reminder-link{display:inline-block;margin-top:12px;color:var(--ruby);font-size:13px;font-weight:800;text-decoration:none}
+@media(max-width:480px){.pending-purchase{align-items:flex-start;flex-direction:column}.pending-claim{width:100%}}
+
 </style>
 
 </head>
@@ -680,8 +703,6 @@ h1{
 <main class="page">
 
 <header class="header">
-
-```
 <div class="brand-mark">
     ✦
 </div>
@@ -705,13 +726,9 @@ h1{
     discovering.
 
 </p>
-```
-
 </header>
 
 <section class="wallet-bar">
-
-```
 <div class="wallet-label">
     Your CEEQWINN Wallet
 </div>
@@ -722,13 +739,9 @@ h1{
 >
     Connecting...
 </div>
-```
-
 </section>
 
 <div class="store-intro">
-
-```
 <div>
 
     <h2>
@@ -740,15 +753,11 @@ h1{
     </p>
 
 </div>
-```
-
 </div>
 
 <section class="products">
 
 <article class="product-card">
-
-```
 <span class="product-tag">
     First Edition
 </span>
@@ -789,10 +798,22 @@ h1{
     </button>
 
 </div>
-```
-
 </article>
 
+</section>
+
+
+<section id="pendingPurchasePanel" class="purchase-reminder" hidden aria-live="polite">
+  <div class="reminder-heading">
+    <div>
+      <span>YOUR CEEQWINN PURCHASES</span>
+      <h2>Your treasure is waiting</h2>
+      <p id="pendingPurchaseCount">You can claim your purchases whenever you're ready.</p>
+    </div>
+    <button id="dismissPendingPurchases" class="dismiss-reminder" type="button" aria-label="Dismiss reminder">×</button>
+  </div>
+  <div id="pendingPurchaseList"></div>
+  <a class="purchase-reminder-link" href="purchase-return.html">Open all purchase details</a>
 </section>
 
 <div
@@ -803,15 +824,11 @@ h1{
 </div>
 
 <footer class="footer">
-
-```
 CEEQWINN Game Store
 
 <br>
 
 Wonderland Edition · 100 Diamonds
-```
-
 </footer>
 
 </main>
@@ -900,6 +917,24 @@ const buyButton =
     document.getElementById(
         "buyButton"
     );
+
+
+const pendingPurchasePanel =
+    document.getElementById("pendingPurchasePanel");
+
+const pendingPurchaseCount =
+    document.getElementById("pendingPurchaseCount");
+
+const pendingPurchaseList =
+    document.getElementById("pendingPurchaseList");
+
+const dismissPendingPurchases =
+    document.getElementById("dismissPendingPurchases");
+
+dismissPendingPurchases.addEventListener("click",()=>{
+    pendingPurchasePanel.hidden = true;
+});
+
 
 
 let currentSession = null;
@@ -1155,20 +1190,13 @@ async function getWorkingSession(){
 
 
     /*
-        Refresh failed.
-
-        We create a fresh anonymous player
-        rather than showing the player an
-        expired-JWT error.
+        Do not silently replace an existing guest identity.
+        That could disconnect purchases from their owner.
     */
-
-    console.warn(
-        "Anonymous session refresh failed.",
-        refreshError
+    console.warn("Guest session refresh failed.",refreshError);
+    throw new Error(
+        "Your saved guest session could not be refreshed. Please restore the same account before continuing; your existing purchase identity has not been replaced."
     );
-
-
-    return await createFreshAnonymousPlayer();
 
 }
 
@@ -1201,39 +1229,13 @@ async function getCurrentPlayer(){
 
 
     /*
-        If the JWT somehow became invalid between
-        getSession() and getUser(), recover once.
+        Never replace an existing guest identity after an auth error.
+        A replacement user would not own the old purchases.
     */
-
-    if(
-        error &&
-        isAuthError(error)
-    ){
-
-        console.warn(
-            "Expired/invalid anonymous JWT detected. Recovering..."
+    if(error && isAuthError(error)){
+        throw new Error(
+            "Your saved guest session needs recovery. We have kept its identity intact so your purchases are not silently separated."
         );
-
-
-        await createFreshAnonymousPlayer();
-
-
-        currentUser =
-            currentUser ||
-            null;
-
-
-        if(!currentUser){
-
-            throw new Error(
-                "CEEQWINN could not recover the anonymous player."
-            );
-
-        }
-
-
-        return currentUser;
-
     }
 
 
@@ -1244,21 +1246,8 @@ async function getCurrentPlayer(){
     }
 
 
-    /*
-        No player returned.
-
-        Create one.
-    */
-
-    if(
-        !data ||
-        !data.user
-    ){
-
-        await createFreshAnonymousPlayer();
-
-        return currentUser;
-
+    if(!data || !data.user){
+        throw new Error("CEEQWINN could not load the current guest identity.");
     }
 
 
@@ -1297,41 +1286,10 @@ async function loadWallet(){
 
     if(error){
 
-        /*
-            If this is an authentication problem,
-            recover the player and retry once.
-        */
-
         if(isAuthError(error)){
-
-            await createFreshAnonymousPlayer();
-
-
-            const retry =
-                await client
-                    .from("wallets")
-                    .select(
-                        "balance_diamonds"
-                    )
-                    .eq(
-                        "player_id",
-                        currentUser.id
-                    )
-                    .single();
-
-
-            if(retry.error){
-
-                throw retry.error;
-
-            }
-
-
-            walletBalance.textContent =
-                `${retry.data.balance_diamonds} 💎`;
-
-            return;
-
+            throw new Error(
+                "Your saved guest session needs recovery. We will not create a replacement identity that could hide your purchases."
+            );
         }
 
 
@@ -1346,6 +1304,99 @@ async function loadWallet(){
 }
 
 
+
+/*
+=====================================================
+LOAD AND DISPLAY UNCLAIMED PURCHASES
+=====================================================
+*/
+async function loadUnclaimedPurchases(){
+    if(!currentUser) return;
+
+    const {data,error} = await client
+        .from("purchase_entitlements")
+        .select("id,product_name,diamonds,created_at")
+        .eq("status","unclaimed")
+        .order("created_at",{ascending:true});
+
+    if(error){
+        console.warn("Unclaimed purchase list could not load:",error);
+        return;
+    }
+
+    pendingPurchaseList.replaceChildren();
+
+    const purchases = data || [];
+    pendingPurchasePanel.hidden = purchases.length === 0;
+
+    if(purchases.length === 0) return;
+
+    pendingPurchaseCount.textContent =
+        purchases.length + " unclaimed purchase" +
+        (purchases.length === 1 ? " is" : "s are") +
+        " safely waiting in your account. Claim them whenever you're ready.";
+
+    purchases.forEach((purchase)=>{
+        const row = document.createElement("div");
+        row.className = "pending-purchase";
+
+        const details = document.createElement("div");
+        const title = document.createElement("strong");
+        title.textContent = purchase.product_name || "CEEQWINN purchase";
+        const description = document.createElement("small");
+        description.textContent = String(purchase.diamonds) + " diamonds · Unclaimed";
+        details.append(title,description);
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "pending-claim";
+        button.textContent = "Claim purchase";
+
+        button.addEventListener("click",async()=>{
+            button.disabled = true;
+            button.textContent = "Claiming…";
+            try{
+                const {data:result,error:claimError} = await client.rpc(
+                    "claim_purchase_entitlement",
+                    {p_entitlement_id:purchase.id}
+                );
+                if(claimError) throw claimError;
+
+                if(result && result.status === "completed"){
+                    setStatus(
+                        String(result.diamonds) + " diamonds added to your wallet.",
+                        "success"
+                    );
+                    await loadWallet();
+                    await loadUnclaimedPurchases();
+                }else if(result && result.status === "already_claimed"){
+                    setStatus(
+                        "This purchase was already claimed. No duplicate credit was made.",
+                        "success"
+                    );
+                    await loadUnclaimedPurchases();
+                }else{
+                    throw new Error("The purchase could not be claimed.");
+                }
+            }catch(error){
+                button.disabled = false;
+                button.textContent = "Claim purchase";
+                setStatus(
+                    "We couldn't claim that purchase: " + error.message,
+                    "error"
+                );
+            }
+        });
+
+        row.append(details,button);
+        pendingPurchaseList.append(row);
+    });
+}
+
+/*
+=====================================================
+*/
+
 /*
 =====================================================
 INITIALIZE
@@ -1355,27 +1406,57 @@ INITIALIZE
 async function initialize(){
 
     setStatus(
-        "Connecting to your CEEQWINN player..."
+        "Opening the CEEQWINN Game Store..."
     );
 
+    /*
+        Browsing is open to everyone.
+        Do not create a Supabase guest identity
+        just because someone opened the shop.
+        Create it only when they start buying.
+    */
 
-    await getCurrentPlayer();
+    const {
+        data: sessionData,
+        error: sessionError
+    } = await client.auth.getSession();
 
-
-    if(!currentUser){
-
-        throw new Error(
-            "CEEQWINN player could not be loaded."
-        );
-
+    if(sessionError){
+        throw sessionError;
     }
 
+    if(sessionData.session){
+        currentSession = sessionData.session;
 
-    await loadWallet();
+        const {
+            data: userData,
+            error: userError
+        } = await client.auth.getUser();
 
+        if(userError){
+            throw userError;
+        }
+
+        if(!userData.user){
+            throw new Error("Your saved CEEQWINN account could not be loaded.");
+        }
+
+        currentUser = userData.user;
+
+        await loadWallet();
+        await loadUnclaimedPurchases();
+
+        setStatus(
+            "Welcome back to the CEEQWINN Game Store.",
+            "success"
+        );
+        return;
+    }
+
+    walletBalance.textContent = "Guest";
 
     setStatus(
-        "Welcome to the CEEQWINN Game Store.",
+        "Browse freely. No email or account is required. A guest wallet starts only when you choose to buy.",
         "success"
     );
 
@@ -1390,27 +1471,24 @@ START PURCHASE
 
 async function beginPurchase(){
 
-    if(!currentUser){
-
-        setStatus(
-            "Your CEEQWINN player is still loading.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
     buyButton.disabled = true;
 
-
     setStatus(
-        "Preparing your Wonderland purchase..."
+        "Preparing your guest purchase..."
     );
 
-
     try{
+
+        /*
+            Create a guest identity only when the customer
+            actually begins checkout. No email or registration
+            form is shown or required.
+        */
+        if(!currentUser){
+            await getCurrentPlayer();
+            await loadWallet();
+        }
+
 
         /*
             Supabase:
@@ -1434,7 +1512,7 @@ async function beginPurchase(){
             error
         } =
             await client.rpc(
-                "start_purchase_session",
+                "start_purchase_session_v2",
                 {
                     p_product_id:
                         GAME_PRODUCT_ID
@@ -1442,41 +1520,10 @@ async function beginPurchase(){
             );
 
 
-        /*
-            If the anonymous JWT expired between
-            page load and the purchase click,
-            recover the player and retry once.
-        */
-
-        if(
-            error &&
-            isAuthError(error)
-        ){
-
-            console.warn(
-                "Purchase JWT expired. Recovering anonymous player..."
+        if(error && isAuthError(error)){
+            throw new Error(
+                "Your guest session needs to be restored before this purchase can continue. We have not replaced it or discarded its purchase history."
             );
-
-
-            await createFreshAnonymousPlayer();
-
-
-            const retry =
-                await client.rpc(
-                    "start_purchase_session",
-                    {
-                        p_product_id:
-                            GAME_PRODUCT_ID
-                    }
-                );
-
-
-            data =
-                retry.data;
-
-            error =
-                retry.error;
-
         }
 
 
@@ -1512,23 +1559,6 @@ async function beginPurchase(){
             );
 
         }
-
-
-        /*
-            Store ONLY the opaque purchase-session ID.
-
-            Never store:
-
-            - ticket code
-            - ticket ID
-            - reservation code
-        */
-
-        sessionStorage.setItem(
-            "ceeqwinn_purchase_session",
-            data.purchase_session_id
-        );
-
 
         setStatus(
             "Opening the Wonderland checkout..."
