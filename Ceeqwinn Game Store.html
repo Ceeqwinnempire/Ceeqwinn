@@ -1350,7 +1350,7 @@ async function loadUnclaimedPurchases(){
         const button = document.createElement("button");
         button.type = "button";
         button.className = "pending-claim";
-        button.textContent = "Claim purchase";
+        button.textContent = "Claim diamonds";
 
         button.addEventListener("click",async()=>{
             button.disabled = true;
@@ -1380,7 +1380,7 @@ async function loadUnclaimedPurchases(){
                 }
             }catch(error){
                 button.disabled = false;
-                button.textContent = "Claim purchase";
+                button.textContent = "Claim diamonds";
                 setStatus(
                     "We couldn't claim that purchase: " + error.message,
                     "error"
@@ -1507,6 +1507,28 @@ async function beginPurchase(){
             the browser.
         */
 
+        /*
+            Expire abandoned one-hour reservations in a separate RPC call.
+            This must commit before a new reservation is attempted; otherwise
+            a later checkout error would roll back the cleanup as well.
+            Expired Selar tickets are retired, never recycled.
+        */
+        const {
+            data: expiryResult,
+            error: expiryError
+        } = await client.rpc(
+            "retire_expired_purchase_reservations",
+            { p_product_id: GAME_PRODUCT_ID }
+        );
+
+        if(expiryError){
+            throw expiryError;
+        }
+
+        /*
+            Supabase now chooses one ticket that already has its own
+            active Selar checkout URL and one-use return token.
+        */
         let {
             data,
             error
@@ -1528,9 +1550,28 @@ async function beginPurchase(){
 
 
         if(error){
+            const databaseMessage = String(error.message || error);
 
             throw error;
+            if(databaseMessage.includes("CHECKOUT_LINK_NOT_READY")){
+                throw new Error(
+                    "The next ticket is not ready for checkout yet. Its Selar checkout and return link must be configured before it can be sold."
+                );
+            }
 
+            if(databaseMessage.includes("OUT_OF_STOCK")){
+                throw new Error(
+                    "There are no prepared tickets available right now. Please try again after new checkout tickets have been set up."
+                );
+            }
+
+            if(databaseMessage.includes("EXPIRED_RESERVATIONS_NEED_CLEANUP")){
+                throw new Error(
+                    "An expired reservation still needs to be cleared. Please refresh the store and try again."
+                );
+            }
+
+            throw error;
         }
 
 
@@ -1643,3 +1684,11 @@ initialize()
 </body>
 </html>
 
+  "use strict";
+
+  const SUPABASE_URL = "https://iwuambqesluciawsgyww.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_ZG6WuGdx";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_zG6WuGdx";
+
+  function start() {
+    if (!window.supabase || typeof window.supabase.createClient !== "function") return;
