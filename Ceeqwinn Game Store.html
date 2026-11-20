@@ -813,10 +813,6 @@ h1{
 
 </div>
 
-<div class="purchase-return-notice">
-    <strong>Important: Complete your return to CEEQWINN</strong>
-    After Selar checkout, tap the CEEQWINN return link and wait for the CEEQWINN confirmation page to open. That return is required for CEEQWINN to record and deliver your purchase. If you do not return to CEEQWINN, your purchase may remain unconfirmed in your player account. Keep your Selar receipt as payment evidence.
-</div>
 
 </article>
 
@@ -856,7 +852,12 @@ Wonderland Edition · 100 Diamonds
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
+<script>if (!window.supabase || typeof window.supabase.createClient !== "function") {
+    document.getElementById("walletBalance").textContent = "Unavailable";
+    document.getElementById("status").textContent = "The wallet service could not load. Check your connection and refresh this page.";
+    document.getElementById("status").className = "status-card error";
+} else {
+
 
 /*
 =====================================================
@@ -1263,29 +1264,6 @@ async function getCurrentPlayer(){
         Now ask Supabase for the player.
     */
 
-    let {
-        data,
-        error
-    } =
-        await client.auth.getUser();
-
-
-    /*
-        Never replace an existing guest identity after an auth error.
-        A replacement user would not own the old purchases.
-    */
-    if(error && isAuthError(error)){
-        throw new Error(
-            "Your saved guest session needs recovery. We have kept its identity intact so your purchases are not silently separated."
-        );
-    }
-
-
-    if(error){
-
-        throw error;
-
-    }
     const {data,error} = await runWithSessionRefresh(()=>client.auth.getUser());
 
 
@@ -1311,34 +1289,6 @@ LOAD WALLET
 
 async function loadWallet(){
 
-    const {
-        data,
-        error
-    } =
-        await client
-            .from("wallets")
-            .select(
-                "balance_diamonds"
-            )
-            .eq(
-                "player_id",
-                currentUser.id
-            )
-            .single();
-
-
-    if(error){
-
-        if(isAuthError(error)){
-            throw new Error(
-                "Your saved guest session needs recovery. We will not create a replacement identity that could hide your purchases."
-            );
-        }
-
-
-        throw error;
-
-    }
     const {data} = await runWithSessionRefresh(()=>client
         .from("wallets")
         .select("balance_diamonds")
@@ -1361,17 +1311,10 @@ LOAD AND DISPLAY UNCLAIMED PURCHASES
 async function loadUnclaimedPurchases(){
     if(!currentUser) return;
 
-    const {data,error} = await client
     const {data} = await runWithSessionRefresh(()=>client
         .from("purchase_entitlements")
         .select("id,product_name,diamonds,created_at")
         .eq("status","unclaimed")
-        .order("created_at",{ascending:true});
-
-    if(error){
-        console.warn("Unclaimed purchase list could not load:",error);
-        return;
-    }
         .order("created_at",{ascending:true}));
 
     pendingPurchaseList.replaceChildren();
@@ -1406,12 +1349,9 @@ async function loadUnclaimedPurchases(){
             button.disabled = true;
             button.textContent = "Claiming…";
             try{
-                const {data:result,error:claimError} = await client.rpc(
                 const {data:result} = await runWithSessionRefresh(()=>client.rpc(
                     "claim_purchase_entitlement",
                     {p_entitlement_id:purchase.id}
-                );
-                if(claimError) throw claimError;
                 ));
 
                 if(result && result.status === "completed"){
@@ -1486,20 +1426,6 @@ async function initialize(){
         const usableSession = await getWorkingSession();
         currentSession = usableSession;
 
-        const {
-            data: userData,
-            error: userError
-        } = await client.auth.getUser();
-
-        if(userError && isAuthError(userError)){
-            throw new Error(
-                "Your saved CEEQWINN session could not be refreshed. We have kept the existing player identity intact; please restore the same account before continuing."
-            );
-        }
-
-        if(userError){
-            throw userError;
-        }
         const {data: userData} = await runWithSessionRefresh(()=>client.auth.getUser());
 
         if(!userData.user){
@@ -1578,35 +1504,15 @@ async function beginPurchase(){
             a later checkout error would roll back the cleanup as well.
             Expired Selar tickets are retired, never recycled.
         */
-        const {
-            data: expiryResult,
-            error: expiryError
-        } = await client.rpc(
         await runWithSessionRefresh(()=>client.rpc(
             "retire_expired_purchase_reservations",
             { p_product_id: GAME_PRODUCT_ID }
-        );
-
-        if(expiryError){
-            throw expiryError;
-        }
         ));
 
         /*
             Supabase now chooses one ticket that already has its own
             active Selar checkout URL and one-use return token.
         */
-        let {
-            data,
-            error
-        } =
-            await client.rpc(
-                "start_purchase_session_v2",
-                {
-                    p_product_id:
-                        GAME_PRODUCT_ID
-                }
-            );
         const {data} = await runWithSessionRefresh(()=>client.rpc(
             "start_purchase_session_v2",
             {p_product_id:GAME_PRODUCT_ID}
@@ -1728,7 +1634,10 @@ START
 =====================================================
 */
 
-initialize()
+Promise.race([
+    initialize(),
+    new Promise((_, reject) => setTimeout(() => reject(new Error("The wallet connection timed out. Please refresh once. If it continues, contact CEEQWINN support.")), 12000))
+])
 
 .catch(error => {
 
@@ -1750,66 +1659,10 @@ initialize()
 
 });
 
+
+}
 </script>
 
 </body>
 </html>
 
-  statusElement.textContent=message;
-  statusElement.className="status "+type;
-}
-function isAuthError(error){
-  const message=String(error?.message || error || "").toLowerCase();
-  return message.includes("jwt") || message.includes("expired") || message.includes("token") || message.includes("invalid claims") || message.includes("authentication");
-}
-async function runWithSessionRefresh(operation){
-  let result=await operation();
-  if(result?.error && isAuthError(result.error)){
-    const {data,error}=await client.auth.refreshSession();
-    if(error || !data?.session){
-      throw new Error("Your saved CEEQWINN session could not be refreshed. Keep this browser data and do not create a new guest identity; your purchases remain attached to the original identity.");
-    }
-    result=await operation();
-  }
-  if(result?.error) throw result.error;
-  return result;
-}
-function makeText(tag,className,text){
-  const element=document.createElement(tag);
-  if(className) element.className=className;
-  return element;
-}
-async function loadUnclaimedPurchases(){
-  const {data,error}=await client
-  const {data}=await runWithSessionRefresh(()=>client
-    .from("purchase_entitlements")
-    .select("id,product_name,diamonds,created_at")
-    .eq("status","unclaimed")
-    .order("created_at",{ascending:true});
-  if(error) throw error;
-    .order("created_at",{ascending:true}));
-  purchasesElement.replaceChildren();
-  if(!data || data.length===0){
-    purchasesElement.append(makeText("p","intro","There are no unclaimed purchases waiting right now."));
-      button.disabled=true;
-      button.textContent="Claiming…";
-      try{
-        const {data:result,error:claimError}=await client.rpc(
-        const {data:result}=await runWithSessionRefresh(()=>client.rpc(
-          "claim_purchase_entitlement",
-          {p_entitlement_id:purchase.id}
-        );
-        if(claimError) throw claimError;
-        ));
-        if(result?.status==="completed"){
-          setStatus(String(result.diamonds)+" diamonds have been added to your wallet.", "success");
-        }else if(result?.status==="already_claimed"){
-}
-
-async function loadPurchaseLinkHistory(){
-  const {data,error}=await client.rpc("get_my_purchase_link_history",{p_limit:5});
-  if(error) throw error;
-  const {data}=await runWithSessionRefresh(()=>client.rpc("get_my_purchase_link_history",{p_limit:5}));
-
-  historyElement.replaceChildren();
-  const rows=Array.isArray(data)?data:[];
