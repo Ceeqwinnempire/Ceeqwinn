@@ -25,15 +25,32 @@ button{border:0;border-radius:999px;padding:12px 18px;color:white;background:lin
 button:disabled{opacity:.55;cursor:wait}
 .footer{text-align:center;color:#93858b;font-size:11px;margin-top:24px}
 @media(max-width:460px){body{padding:14px}.purchase{align-items:flex-start;flex-direction:column}.purchase button{width:100%}}
+
+.history{margin-top:22px;padding:18px;border:1px solid rgba(198,167,94,.35);border-radius:18px;background:rgba(255,255,255,.58)}
+.history h2{margin:0 0 7px;font:500 23px Georgia,serif;color:var(--ruby)}
+.history-intro{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.6}
+.history-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-top:1px solid #eadde1}
+.history-row h3{margin:0 0 5px;font-size:14px}
+.history-row p{margin:0;color:var(--muted);font-size:12px;line-height:1.55}
+.history-state{display:inline-block;margin:0 0 5px;padding:4px 8px;border-radius:999px;background:#f4edf0;color:var(--ruby);font-size:10px;font-weight:800;letter-spacing:.4px}
+.history-row button{flex:0 0 auto}
+.history-empty{margin:10px 0;color:var(--muted);font-size:13px;line-height:1.6}
+@media(max-width:460px){.history-row{align-items:stretch;flex-direction:column}.history-row button{width:100%}}
+
 </style>
 </head>
 <body>
 <main>
 <div class="brand">CEEQWINN</div>
 <h1>Your Treasure <span>Awaits</span></h1>
-<p class="intro">Your purchases are kept safely in your CEEQWINN account. You can claim them now or leave them waiting until you're ready.</p>
+<p class="intro">Your purchases are saved to your CEEQWINN guest identity. Claim them now or leave them waiting; the Game Store and Story Reader will check again when you return.</p>
 <div id="status" class="status" role="status" aria-live="polite">Checking your CEEQWINN purchases…</div>
 <section id="purchases" aria-label="Unclaimed purchases"></section>
+<section class="history" aria-labelledby="historyHeading">
+<h2 id="historyHeading">Recent purchase links</h2>
+<p class="history-intro">Your five most recent checkout attempts appear here. Active reservations can be reopened before they expire. Completed purchases remain listed here too.</p>
+<div id="historyList" aria-live="polite"><p class="history-empty">Loading your purchase links…</p></div>
+</section>
 <div class="footer">CEEQWINN Game Store · Your purchases remain yours until claimed</div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -46,6 +63,7 @@ const client=supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY,{
 });
 const statusElement=document.getElementById("status");
 const purchasesElement=document.getElementById("purchases");
+const historyElement=document.getElementById("historyList");
 function setStatus(message,type=""){
   statusElement.textContent=message;
   statusElement.className="status "+type;
@@ -76,7 +94,7 @@ async function loadUnclaimedPurchases(){
       makeText("h2","",purchase.product_name || "CEEQWINN purchase"),
       makeText("p","",String(purchase.diamonds)+" diamonds · Waiting to be claimed")
     );
-    const button=makeText("button","","Claim purchase");
+    const button=makeText("button","","Claim diamonds");
     button.type="button";
     button.addEventListener("click",async()=>{
       button.disabled=true;
@@ -95,9 +113,10 @@ async function loadUnclaimedPurchases(){
           throw new Error("The claim could not be completed.");
         }
         await loadUnclaimedPurchases();
+        await loadPurchaseLinkHistory().catch((historyError)=>console.warn("Purchase history refresh failed:",historyError));
       }catch(error){
         button.disabled=false;
-        button.textContent="Claim purchase";
+        button.textContent="Claim diamonds";
         setStatus("We couldn't claim this purchase: "+(error.message || "Please try again."),"error");
       }
     });
@@ -106,6 +125,68 @@ async function loadUnclaimedPurchases(){
   });
   return data.length;
 }
+
+async function loadPurchaseLinkHistory(){
+  const {data,error}=await client.rpc("get_my_purchase_link_history",{p_limit:5});
+  if(error) throw error;
+
+  historyElement.replaceChildren();
+  const rows=Array.isArray(data)?data:[];
+  if(rows.length===0){
+    historyElement.append(makeText("p","history-empty","No recent checkout links were found for this CEEQWINN identity."));
+    return 0;
+  }
+
+  rows.forEach((item)=>{
+    const row=document.createElement("article");
+    row.className="history-row";
+
+    const details=document.createElement("div");
+    const heading=makeText("h3","",item.product_name || "CEEQWINN purchase");
+    const state=makeText("span","history-state","");
+    if(item.entitlement_status==="claimed"){
+      state.textContent="CLAIMED";
+    }else if(item.entitlement_status==="unclaimed"){
+      state.textContent="PURCHASED · READY TO CLAIM";
+    }else if(item.reservation_status==="expired"){
+      state.textContent="EXPIRED";
+    }else if(item.reservation_status==="awaiting_payment"){
+      state.textContent="CHECKOUT IN PROGRESS";
+    }else{
+      state.textContent=String(item.reservation_status || "RECORDED").toUpperCase();
+    }
+
+    const amount=new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN",maximumFractionDigits:0}).format(Number(item.price_naira)||0);
+    const amount="₦"+(Number(item.price_naira)||0).toLocaleString();
+    const summary=makeText("p","",amount+" · "+String(item.diamonds)+" diamonds");
+    const timing=makeText("p","",item.reserved_at ? "Started "+new Date(item.reserved_at).toLocaleString() : "Purchase attempt recorded");
+    if(item.can_resume && item.expires_at){
+      timing.textContent+=" · Reservation ends "+new Date(item.expires_at).toLocaleString();
+    }
+    details.append(state,heading,summary,timing);
+
+    row.append(details);
+
+    if(item.can_resume && item.checkout_url){
+      const button=makeText("button","","Continue to Selar checkout");
+      button.type="button";
+      button.addEventListener("click",()=>{
+        window.location.assign(item.checkout_url);
+      });
+      row.append(button);
+    }else if(item.reservation_status==="expired"){
+      row.append(makeText("p","history-empty","This reservation has expired. If you completed payment, keep your Selar receipt and contact support."));
+    }else if(item.entitlement_status==="unclaimed"){
+      row.append(makeText("p","history-empty","Your purchase is saved. Claim it in the section above."));
+    }else if(item.entitlement_status==="claimed"){
+      row.append(makeText("p","history-empty","Your diamonds have already been credited."));
+    }
+
+    historyElement.append(row);
+  });
+  return rows.length;
+}
+
 async function initialize(){
   const pageUrl=new URL(window.location.href);
   const returnToken=pageUrl.searchParams.get("token");
@@ -113,12 +194,12 @@ async function initialize(){
     pageUrl.searchParams.delete("token");
     window.history.replaceState(null,"",pageUrl.pathname+pageUrl.search+pageUrl.hash);
   }
-  const {data:sessionData,error:sessionError}=await client.auth.getSession();
-  if(sessionError) throw sessionError;
-  if(!sessionData.session){
-    setStatus("This purchase belongs to the guest session used when checkout began. Please reopen this page in the same browser where you started the purchase, or sign in if you have already linked an account.","error");
-    return;
-  }
+  /*
+    The Selar return token is the checkout-completion signal.
+    Process it even if this page cannot restore a browser session:
+    the server attaches the entitlement to the original guest player.
+    Claiming still requires that original guest identity.
+  */
   if(returnToken){
     setStatus("Confirming your Selar return and saving your purchase…");
     const {data,error}=await client.functions.invoke("sequence-selar-return",{
@@ -127,12 +208,38 @@ async function initialize(){
     if(error || !data?.ok){
       throw new Error(data?.error || error?.message || "The return could not be confirmed.");
     }
-    setStatus("Your purchase is safely saved. You can claim it now or leave it waiting.","success");
+    setStatus("Your purchase has been saved to the guest identity used at checkout.","success");
   }
+
+  const {data:sessionData,error:sessionError}=await client.auth.getSession();
+  if(sessionError) throw sessionError;
+
+  if(!sessionData.session){
+    historyElement.replaceChildren(makeText("p","history-empty","To view guest purchase links, reopen CEEQWINN in the same browser where you started checkout. Signed-in customers should use the same CEEQWINN identity they used when purchasing."));
+    setStatus(
+      returnToken
+        ? "Your purchase confirmation has been saved. To see and claim the diamonds, reopen CEEQWINN in the same browser where you started checkout so the original guest identity can be restored. Do not create a new guest account."
+        : "Open CEEQWINN in the same browser where you started checkout to see purchases saved to that guest identity.",
+      "error"
+    );
+    return;
+  }
+
+  try{
+    await loadPurchaseLinkHistory();
+  }catch(historyError){
+    console.warn("Purchase history could not be loaded:",historyError);
+    historyElement.replaceChildren(makeText("p","history-empty","Your recent checkout links could not be loaded right now. Your saved purchases are not changed; please refresh and try again."));
+  }
+
   const count=await loadUnclaimedPurchases();
-  if(!returnToken && count>0){
-    setStatus("You have "+count+" unclaimed purchase"+(count===1?"":"s")+". Claim whenever you're ready.","success");
-  }else if(count===0 && !returnToken){
+  if(count>0){
+    setStatus(
+      "You have "+count+" unclaimed purchase"+(count===1?"":"s")+
+      " safely waiting in your CEEQWINN account. Claim now or leave them here; the next time you open the Game Store or Story Reader, they will appear again.",
+      "success"
+    );
+  }else if(!returnToken){
     setStatus("Your CEEQWINN purchase list is up to date.");
   }
 }
