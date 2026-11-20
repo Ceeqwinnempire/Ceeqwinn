@@ -691,6 +691,15 @@ h1{
 .purchase-reminder-link{display:inline-block;margin-top:12px;color:var(--ruby);font-size:13px;font-weight:800;text-decoration:none}
 @media(max-width:480px){.pending-purchase{align-items:flex-start;flex-direction:column}.pending-claim{width:100%}}
 
+
+.purchase-help{margin:18px auto 0;text-align:center;font-size:12px;color:var(--muted)}
+.purchase-help a{color:var(--ruby);font-weight:700;text-decoration:none}
+.purchase-help a:hover{text-decoration:underline}
+
+
+.purchase-return-notice{margin:14px 0 0;padding:12px 14px;border:1px solid rgba(140,35,66,.18);border-radius:12px;background:rgba(255,248,250,.82);color:var(--muted);font-size:12px;line-height:1.65}
+.purchase-return-notice strong{display:block;margin-bottom:4px;color:var(--ruby);font-size:12px}
+
 </style>
 
 </head>
@@ -778,6 +787,11 @@ h1{
 
 </p>
 
+<div class="purchase-return-notice">
+    <strong>Important: Complete your return to CEEQWINN</strong>
+    After Selar checkout, tap the CEEQWINN return link and wait for the CEEQWINN confirmation page to open. That page confirms CEEQWINN has received your purchase return; your Selar receipt is your proof of payment. If you leave Selar without returning, your purchase may not be recorded automatically. Keep your Selar receipt or order confirmation.
+</div>
+
 <div class="product-bottom">
 
     <div class="price">
@@ -798,10 +812,17 @@ h1{
     </button>
 
 </div>
+
+<div class="purchase-return-notice">
+    <strong>Important: Complete your return to CEEQWINN</strong>
+    After Selar checkout, tap the CEEQWINN return link and wait for the CEEQWINN confirmation page to open. That return is required for CEEQWINN to record and deliver your purchase. If you do not return to CEEQWINN, your purchase may remain unconfirmed in your player account. Keep your Selar receipt as payment evidence.
+</div>
+
 </article>
 
 </section>
 
+<p class="purchase-help"><a href="purchase-return.html">Need help completing a purchase? View your purchase links.</a></p>
 
 <section id="pendingPurchasePanel" class="purchase-reminder" hidden aria-live="polite">
   <div class="reminder-heading">
@@ -995,6 +1016,27 @@ function isAuthError(error){
 
     );
 
+}
+
+
+/*
+=====================================================
+RETRY ONCE AFTER REFRESHING AN EXPIRED/INVALID SESSION
+=====================================================
+*/
+async function runWithSessionRefresh(operation){
+    let result = await operation();
+    if(result && result.error && isAuthError(result.error)){
+        const {data,error} = await client.auth.refreshSession();
+        if(error || !data || !data.session){
+            throw new Error("Your saved CEEQWINN session could not be refreshed. Keep this browser data and do not create a new guest identity; your existing purchases remain attached to the original identity.");
+        }
+        currentSession = data.session;
+        if(data.user) currentUser = data.user;
+        result = await operation();
+    }
+    if(result && result.error) throw result.error;
+    return result;
 }
 
 
@@ -1244,6 +1286,7 @@ async function getCurrentPlayer(){
         throw error;
 
     }
+    const {data,error} = await runWithSessionRefresh(()=>client.auth.getUser());
 
 
     if(!data || !data.user){
@@ -1296,6 +1339,11 @@ async function loadWallet(){
         throw error;
 
     }
+    const {data} = await runWithSessionRefresh(()=>client
+        .from("wallets")
+        .select("balance_diamonds")
+        .eq("player_id",currentUser.id)
+        .single());
 
 
     walletBalance.textContent =
@@ -1314,6 +1362,7 @@ async function loadUnclaimedPurchases(){
     if(!currentUser) return;
 
     const {data,error} = await client
+    const {data} = await runWithSessionRefresh(()=>client
         .from("purchase_entitlements")
         .select("id,product_name,diamonds,created_at")
         .eq("status","unclaimed")
@@ -1323,6 +1372,7 @@ async function loadUnclaimedPurchases(){
         console.warn("Unclaimed purchase list could not load:",error);
         return;
     }
+        .order("created_at",{ascending:true}));
 
     pendingPurchaseList.replaceChildren();
 
@@ -1357,10 +1407,12 @@ async function loadUnclaimedPurchases(){
             button.textContent = "Claiming…";
             try{
                 const {data:result,error:claimError} = await client.rpc(
+                const {data:result} = await runWithSessionRefresh(()=>client.rpc(
                     "claim_purchase_entitlement",
                     {p_entitlement_id:purchase.id}
                 );
                 if(claimError) throw claimError;
+                ));
 
                 if(result && result.status === "completed"){
                     setStatus(
@@ -1426,16 +1478,29 @@ async function initialize(){
     }
 
     if(sessionData.session){
-        currentSession = sessionData.session;
+        /*
+            Refresh an expired or nearly expired token before
+            calling getUser(). Never silently create a replacement
+            guest identity if the saved session cannot be refreshed.
+        */
+        const usableSession = await getWorkingSession();
+        currentSession = usableSession;
 
         const {
             data: userData,
             error: userError
         } = await client.auth.getUser();
 
+        if(userError && isAuthError(userError)){
+            throw new Error(
+                "Your saved CEEQWINN session could not be refreshed. We have kept the existing player identity intact; please restore the same account before continuing."
+            );
+        }
+
         if(userError){
             throw userError;
         }
+        const {data: userData} = await runWithSessionRefresh(()=>client.auth.getUser());
 
         if(!userData.user){
             throw new Error("Your saved CEEQWINN account could not be loaded.");
@@ -1517,6 +1582,7 @@ async function beginPurchase(){
             data: expiryResult,
             error: expiryError
         } = await client.rpc(
+        await runWithSessionRefresh(()=>client.rpc(
             "retire_expired_purchase_reservations",
             { p_product_id: GAME_PRODUCT_ID }
         );
@@ -1524,6 +1590,7 @@ async function beginPurchase(){
         if(expiryError){
             throw expiryError;
         }
+        ));
 
         /*
             Supabase now chooses one ticket that already has its own
@@ -1540,6 +1607,11 @@ async function beginPurchase(){
                         GAME_PRODUCT_ID
                 }
             );
+        const {data} = await runWithSessionRefresh(()=>client.rpc(
+            "start_purchase_session_v2",
+            {p_product_id:GAME_PRODUCT_ID}
+        ));
+        let error = null;
 
 
         if(error && isAuthError(error)){
@@ -1552,7 +1624,6 @@ async function beginPurchase(){
         if(error){
             const databaseMessage = String(error.message || error);
 
-            throw error;
             if(databaseMessage.includes("CHECKOUT_LINK_NOT_READY")){
                 throw new Error(
                     "The next ticket is not ready for checkout yet. Its Selar checkout and return link must be configured before it can be sold."
@@ -1684,11 +1755,61 @@ initialize()
 </body>
 </html>
 
-  "use strict";
+  statusElement.textContent=message;
+  statusElement.className="status "+type;
+}
+function isAuthError(error){
+  const message=String(error?.message || error || "").toLowerCase();
+  return message.includes("jwt") || message.includes("expired") || message.includes("token") || message.includes("invalid claims") || message.includes("authentication");
+}
+async function runWithSessionRefresh(operation){
+  let result=await operation();
+  if(result?.error && isAuthError(result.error)){
+    const {data,error}=await client.auth.refreshSession();
+    if(error || !data?.session){
+      throw new Error("Your saved CEEQWINN session could not be refreshed. Keep this browser data and do not create a new guest identity; your purchases remain attached to the original identity.");
+    }
+    result=await operation();
+  }
+  if(result?.error) throw result.error;
+  return result;
+}
+function makeText(tag,className,text){
+  const element=document.createElement(tag);
+  if(className) element.className=className;
+  return element;
+}
+async function loadUnclaimedPurchases(){
+  const {data,error}=await client
+  const {data}=await runWithSessionRefresh(()=>client
+    .from("purchase_entitlements")
+    .select("id,product_name,diamonds,created_at")
+    .eq("status","unclaimed")
+    .order("created_at",{ascending:true});
+  if(error) throw error;
+    .order("created_at",{ascending:true}));
+  purchasesElement.replaceChildren();
+  if(!data || data.length===0){
+    purchasesElement.append(makeText("p","intro","There are no unclaimed purchases waiting right now."));
+      button.disabled=true;
+      button.textContent="Claiming…";
+      try{
+        const {data:result,error:claimError}=await client.rpc(
+        const {data:result}=await runWithSessionRefresh(()=>client.rpc(
+          "claim_purchase_entitlement",
+          {p_entitlement_id:purchase.id}
+        );
+        if(claimError) throw claimError;
+        ));
+        if(result?.status==="completed"){
+          setStatus(String(result.diamonds)+" diamonds have been added to your wallet.", "success");
+        }else if(result?.status==="already_claimed"){
+}
 
-  const SUPABASE_URL = "https://iwuambqesluciawsgyww.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_ZG6WuGdx";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Cf4ctw1m5RTNUHQ5mfsidQ_zG6WuGdx";
+async function loadPurchaseLinkHistory(){
+  const {data,error}=await client.rpc("get_my_purchase_link_history",{p_limit:5});
+  if(error) throw error;
+  const {data}=await runWithSessionRefresh(()=>client.rpc("get_my_purchase_link_history",{p_limit:5}));
 
-  function start() {
-    if (!window.supabase || typeof window.supabase.createClient !== "function") return;
+  historyElement.replaceChildren();
+  const rows=Array.isArray(data)?data:[];
